@@ -1,0 +1,11 @@
+# sample expense entity to be stored (can have other expenses nested within under "expense key")
+expenseEntity {
+    id: "expjsndkvj df8vudf9vudf9 udfv0d9f" # auto generated, 64 characters lone
+    timestamp: "" # generated at the time of adding expense
+    date: "" # custom date selected by user or current date
+    expenseCategory: "" # selected by user when adding expense (from a drop down menu, user can also create/delete custom categories)
+    expenseLabel: ""  # selected by user when adding expense (from a drop down menu, user can also create/delete custom labels)
+    expenseNote: ""  # added by user when adding expense (from a Text input)
+    expenseAmount: "" # total expense amount including total from nested expense entities 
+    expense: "" # could be empty, same expense amount or contain nested expense entity
+}
