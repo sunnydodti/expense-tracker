@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:expense_tracker/forms/expense_form.dart';
+import 'package:expense_tracker/pages/expense_page.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,16 +13,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _counter = 0;
-
-  ExpenseForm _addExpense() {
-    return ExpenseForm();
-  }
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  void _addExpense() {
+    // if (_formKey.currentState.validate()) {
+    print("clicked");
+    // Open the new form.
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ExpensePage(formMode: "Add"),
+      ),
+    );
+    // }
   }
 
   @override
@@ -53,7 +54,6 @@ class _HomePageState extends State<HomePage> {
               Icon(Icons.abc_outlined)
             ],
           ),
-
           // child: Placeholder(),
         ),
         floatingActionButton: FloatingActionButton(

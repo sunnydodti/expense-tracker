@@ -1,0 +1,48 @@
+[
+    {
+        "id": "1",
+        "timestame": "2019-01-01 00:00:00",
+        "category": "food",
+        "label": "Pizza",
+        "note": "Pizza Hut",
+        "amount": "10.00",
+        "currency": "INR",
+        "containsNestedExpenses": "false",
+        "expenses": []
+    },
+    {
+        "id": "2",
+        "timestame": "2018-01-01 00:00:00",
+        "category": "party",
+        "label": "",
+        "note": "at home",
+        "amount": "1000.00",
+        "currency": "INR",
+        "containsNestedExpenses": "true",
+        "expenses": [
+            {
+                "id": "1",
+                "timestame": "2019-01-01 00:00:00",
+                "category": "food",
+                "label": "Pizza",
+                "note": "Pizza Hut",
+                "amount": "10.00",
+                "currency": "INR",
+                "containsNestedExpenses": "false",
+                "expenses": []
+            },
+            {
+                "id": "1",
+                "timestame": "2019-01-01 00:00:00",
+                "category": "food",
+                "label": "Pizza",
+                "note": "Pizza Hut",
+                "amount": "10.00",
+                "currency": "INR",
+                "containsNestedExpenses": "false",
+                "expenses": []
+            }
+
+        ]
+    }
+]

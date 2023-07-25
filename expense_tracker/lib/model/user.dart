@@ -1,14 +1,12 @@
-class User {
-  final String? userName;
-  final String? email;
-  final String? name;
-  final String? profilePictureUrl;
-  final DateTime? creationDate;
+import 'package:expense_tracker/model/expense.dart';
 
-  const User(
-    this.userName,
-    this.email,
-    this.name,
-    this.profilePictureUrl,
-    this.creationDate);
+class User {
+  String? userName;
+  String? email;
+  String? name;
+  String? profilePictureUrl;
+  DateTime? creationDate;
+  List<String>? expenseCategories;
+  List<String>? expenseLabels;
+  List<Expense>? expenses;
 }
