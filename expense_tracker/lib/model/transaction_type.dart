@@ -1,6 +1,7 @@
 enum TransactionType {
   income,
   expense,
+  reimbursement,
   // transfer,
   // loan,
   // borrow,
@@ -10,17 +11,10 @@ enum TransactionType {
   // unknown
 }
 
-// create function that will retiurn a list of transaction types
 List<String> getTransactionTypes() {
-  return [
-    "income",
-    "expense",
-    // "transfer",
-    // "loan",
-    // "borrow",
-    // "payback",
-    // "receive",
-    // "refund",
-    // "unknown"
-  ];
+  List<String> transactionTypes = [];
+  for (TransactionType transactionType in TransactionType.values) {
+    transactionTypes.add(transactionType.name);
+  }
+  return transactionTypes;
 }

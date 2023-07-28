@@ -1,14 +1,14 @@
 import 'package:expense_tracker/model/transaction_type.dart';
 
 class Expense {
-  // create id, timestamp, date, category, list of tags, note, amount, currency, containsNestedExpenses, expenses[list of expenses<Expense>]
+  // create id, date, date, category, list of tags, note, amount, currency, containsNestedExpenses, expenses[list of expenses<Expense>]
   String? id; // required
   String? currency; // required
   double? amount; // required
   TransactionType? transactionType; // required
   String? category; // required
   List<String>? tags;
-  DateTime? timestamp; // required
+  DateTime? date; // required
   String? note;
   bool? containsNestedExpenses; // required
   List<Expense>? expenses;
@@ -23,7 +23,7 @@ class Expense {
     required this.transactionType,
     required this.category,
     required this.tags,
-    required this.timestamp,
+    required this.date,
     required this.note,
     required this.containsNestedExpenses,
     required this.expenses,
@@ -35,7 +35,7 @@ class Expense {
     required this.amount,
     required this.transactionType,
     required this.category,
-    required this.timestamp,
+    required this.date,
     required this.containsNestedExpenses,
   });
 
@@ -48,7 +48,7 @@ class Expense {
       'transactionType': transactionType,
       'category': category,
       'tags': tags,
-      'timestamp': timestamp,
+      'date': date,
       'note': note,
       'containsNestedExpenses': containsNestedExpenses,
       'expenses': expenses,
@@ -64,7 +64,7 @@ class Expense {
       transactionType: map['transactionType'],
       category: map['category'],
       tags: map['label'],
-      timestamp: map['timestamp'],
+      date: map['date'],
       note: map['note'],
       containsNestedExpenses: map['containsNestedExpenses'],
       expenses: map['expenses'],
@@ -80,12 +80,12 @@ class Expense {
     this.id = id;
   }
 
-  DateTime? getTimestamp() {
-    return timestamp;
+  DateTime? getDate() {
+    return date;
   }
 
-  void setTimestamp(DateTime timestamp) {
-    this.timestamp = timestamp;
+  void setDate(DateTime date) {
+    this.date = date;
   }
 
   String? getCategory() {
@@ -155,7 +155,7 @@ class Expense {
   // create a method that will return a string representation of the expense
   @override
   String toString() {
-    return 'Expense{id: $id, currency: $currency, amount: $amount, transactionType: $transactionType, category: $category, label: $tags, timestamp: $timestamp, note: $note, containsNestedExpenses: $containsNestedExpenses, expenses: $expenses}';
+    return 'Expense{id: $id, currency: $currency, amount: $amount, transactionType: $transactionType, category: $category, label: $tags, date: $date, note: $note, containsNestedExpenses: $containsNestedExpenses, expenses: $expenses}';
   }
 
   //create a methods to add and remove expenses from the list of expenses

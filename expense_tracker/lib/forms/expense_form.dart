@@ -4,6 +4,7 @@ import 'package:expense_tracker/model/transaction_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:expense_tracker/builder/form_builder.dart';
+import 'package:intl/intl.dart';
 
 class ExpenseForm extends StatefulWidget {
   const ExpenseForm({Key? key, required this.formMode}) : super(key: key);
@@ -24,12 +25,12 @@ class _ExpenseFormState extends State<ExpenseForm> {
   var _value = false;
 
   // --------------------------------- form data input --------------------------------- //
-  String _userCurrency = currencies.values.first;
+  String? _userCurrency;
   double? _userAmount;
   TransactionType? _userTransactionType;
   String? _userCategory;
   List<String>? _userTags;
-  DateTime? _userTimestamp;
+  DateTime? _userDate;
   String? _userNote;
   bool? _userContainsNestedExpenses;
   List<Expense>? _userExpenses;
@@ -39,13 +40,31 @@ class _ExpenseFormState extends State<ExpenseForm> {
   TextEditingController transactionTypeController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
   TextEditingController tagsController = TextEditingController();
-  TextEditingController timestampController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
   TextEditingController noteController = TextEditingController();
   TextEditingController containsNestedExpensesController =
       TextEditingController();
   TextEditingController expensesController = TextEditingController();
 
   //--------------------------------- methods --------------------------------- //
+
+  // --------------------------------- initState --------------------------------- //
+  @override
+  void initState() {
+    super.initState();
+
+    _userCurrency = currencies.values.first;
+
+    currencyController.text = defaultCurrency;
+    amountController.text = '';
+    transactionTypeController.text = '';
+    categoryController.text = '';
+    tagsController.text = '';
+    dateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    noteController.text = '';
+    containsNestedExpensesController.text = '';
+    expensesController.text = '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,12 +81,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
                   child: Container(
                       padding: const EdgeInsets.all(10),
                       child: DropdownButtonFormField(
-                        items: currencies.entries
-                            .map((e) => DropdownMenuItem(
-                                  value: e.key,
-                                  child: Text("(${e.value}) ${e.key}"),
-                                ))
-                            .toList(),
+                        value:
+                            FromBuilder.getCurrencyDropdownItems().first.value,
+                        items: FromBuilder.getCurrencyDropdownItems(),
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'currency',
@@ -95,7 +111,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
                           onPressed: () {
                             amountController.clear();
                           },
-                          icon: Icon(Icons.clear),
+                          icon: const Icon(Icons.clear),
                         ),
                       ),
                       keyboardType: TextInputType.number,
@@ -112,6 +128,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
                   child: Container(
                       padding: const EdgeInsets.all(10),
                       child: DropdownButtonFormField(
+                        value: FromBuilder.getTransactionTypeDropdownItems()
+                            .first
+                            .value,
                         items: FromBuilder.getTransactionTypeDropdownItems(),
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
@@ -132,12 +151,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
                   child: Container(
                       padding: const EdgeInsets.all(10),
                       child: DropdownButtonFormField(
-                        items: FromBuilder.getCategoriesList().map((category) {
-                          return DropdownMenuItem(
-                            value: category,
-                            child: Text(category),
-                          );
-                        }).toList(),
+                        value:
+                            FromBuilder.getCategoryDropdownItems().first.value,
+                        items: FromBuilder.getCategoryDropdownItems(),
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Category',
@@ -150,26 +166,70 @@ class _ExpenseFormState extends State<ExpenseForm> {
                 // --------------------------------- tags --------------------------------- //
                 Expanded(
                   flex: 2,
-                  // add child widget ths lets user select tags
                   child: Container(
                     padding: const EdgeInsets.all(10),
-                    child: TagsDialog(),
+                    child: DropdownButtonFormField(
+                      value: FromBuilder.getTagsDropdownItems().first.value,
+                      items: FromBuilder.getTagsDropdownItems(),
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Tags',
+                      ),
+                      onChanged: (value) {
+                        print('category: $value');
+                      },
+                    ),
                   ),
                 ),
-                // --------------------------------- timestamp --------------------------------- //
+                // --------------------------------- date --------------------------------- //
                 Expanded(
                     flex: 2,
                     child: Container(
                       padding: const EdgeInsets.all(10),
                       child: TextField(
-                        controller: timestampController,
+                        controller: dateController,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'timestamp',
+                          labelText: 'Date',
+                          // prefix: const Icon(Icons.calendar_today),
+                          // suffix: IconButton(
+                          //     icon: const Icon(Icons.clear),
+                          //     onPressed: () {
+                          //       dateController.clear();
+                          //     }),
                         ),
-                        keyboardType: TextInputType.datetime,
+                        readOnly: true,
+                        onTap: () async {
+                          DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2101));
+                          if (pickedDate != null) {
+                            String formattedDate =
+                                DateFormat('yyyy-MM-dd HH:mm:ss')
+                                    .format(pickedDate);
+                            setState(() {
+                              dateController.text = formattedDate;
+                            });
+                            print('date: $formattedDate');
+                          } else {
+                            print("Date is not selected");
+                          }
+
+                          if (pickedDate != null) {
+                            setState(() {
+                              dateController.text =
+                                  DateFormat('yyyy-MM-dd').format(pickedDate);
+                            });
+                          } else {
+                            // dateController.text =
+                            //     DateFormat('yyyy-MM-dd').format(DateTime.now());
+                          }
+                        },
+                        // keyboardType: TextInputType.datetime,
                         onChanged: (value) {
-                          print('timestamp: $value');
+                          print('Date: $value');
                         },
                       ),
                     )),
