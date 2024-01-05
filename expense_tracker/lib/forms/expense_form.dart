@@ -1,6 +1,6 @@
 import 'package:expense_tracker/forms/tags_dialog.dart';
-import 'package:expense_tracker/model/expense.dart';
-import 'package:expense_tracker/model/transaction_type.dart';
+import 'package:expense_tracker/models/expense.dart';
+import 'package:expense_tracker/models/transaction_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:expense_tracker/builder/form_builder.dart';
@@ -10,15 +10,15 @@ class ExpenseForm extends StatefulWidget {
   const ExpenseForm({Key? key, required this.formMode}) : super(key: key);
   final String formMode;
   @override
-  _ExpenseFormState createState() => _ExpenseFormState();
+  ExpenseFormState createState() => ExpenseFormState();
 }
 
-class _ExpenseFormState extends State<ExpenseForm> {
+class ExpenseFormState extends State<ExpenseForm> {
   final _formKey = GlobalKey<FormState>();
 
   // --------------------------------- form data display --------------------------------- //
   // creata a dictionary of common currencies
-  static Map<String, String> currencies = FromBuilder.getCurrenciesList();
+  static Map<String, String> currencies = FromBuilder.getCurrenciesListMap();
   String defaultCurrency = currencies.values.first;
   final List<String> tags = ['Item 1', 'Item 2', 'Item 3'];
   final List<String> selectedTags = [];
@@ -77,7 +77,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
               children: [
                 // --------------------------------- currency --------------------------------- //
                 Expanded(
-                  flex: 1,
+                  flex: 4,
                   child: Container(
                       padding: const EdgeInsets.all(10),
                       child: DropdownButtonFormField(
@@ -98,7 +98,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
                 ),
                 // --------------------------------- amount --------------------------------- //
                 Expanded(
-                  flex: 3,
+                  flex: 7,
                   child: Container(
                     padding: const EdgeInsets.all(10),
                     child: TextField(
@@ -122,9 +122,13 @@ class _ExpenseFormState extends State<ExpenseForm> {
                     ),
                   ),
                 ),
+              ],
+            ),
+            Row(
+              children: [
+                // --------------------------------- transaction type --------------------------------- //
                 Expanded(
-                  flex: 4,
-                  // --------------------------------- transaction type --------------------------------- //
+                  flex: 1,
                   child: Container(
                       padding: const EdgeInsets.all(10),
                       child: DropdownButtonFormField(
@@ -141,13 +145,10 @@ class _ExpenseFormState extends State<ExpenseForm> {
                         },
                       )),
                 ),
-              ],
-            ),
-            Row(
-              children: [
+
                 // --------------------------------- category --------------------------------- //
                 Expanded(
-                  flex: 3,
+                  flex: 1,
                   child: Container(
                       padding: const EdgeInsets.all(10),
                       child: DropdownButtonFormField(
@@ -163,6 +164,10 @@ class _ExpenseFormState extends State<ExpenseForm> {
                         },
                       )),
                 ),
+              ],
+            ),
+            Row(
+              children: [
                 // --------------------------------- tags --------------------------------- //
                 Expanded(
                   flex: 2,
@@ -211,6 +216,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
                                     .format(pickedDate);
                             setState(() {
                               dateController.text = formattedDate;
+                              print(dateController.text);
                             });
                             print('date: $formattedDate');
                           } else {
@@ -233,7 +239,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
                         },
                       ),
                     )),
-                // --------------------------------- tags --------------------------------- //
               ],
             ),
             // currency

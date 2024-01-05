@@ -23,7 +23,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Expense Tracker',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        // primarySwatch: Colors.grey,
+        colorScheme: const ColorScheme.dark()
       ),
       
       home: const HomePage(title: 'Expense Tracker'),

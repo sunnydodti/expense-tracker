@@ -1,14 +1,15 @@
-import 'package:expense_tracker/model/transaction_type.dart';
+import 'package:expense_tracker/models/transaction_type.dart';
 
 class Expense {
   // create id, date, date, category, list of tags, note, amount, currency, containsNestedExpenses, expenses[list of expenses<Expense>]
   String? id; // required
+  String? title; // required
   String? currency; // required
   double? amount; // required
   TransactionType? transactionType; // required
+  DateTime? date; // required
   String? category; // required
   List<String>? tags;
-  DateTime? date; // required
   String? note;
   bool? containsNestedExpenses; // required
   List<Expense>? expenses;
@@ -18,6 +19,7 @@ class Expense {
   // create a constructor that will take in all the above parameters
   Expense.full({
     required this.id,
+    required this.title,
     required this.currency,
     required this.amount,
     required this.transactionType,
@@ -31,6 +33,7 @@ class Expense {
 
   Expense.minimal({
     required this.id,
+    required this.title,
     required this.currency,
     required this.amount,
     required this.transactionType,
@@ -43,6 +46,7 @@ class Expense {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'title': title,
       'currency': currency,
       'amount': amount,
       'transactionType': transactionType,
@@ -59,6 +63,7 @@ class Expense {
   factory Expense.fromMap(Map<String, dynamic> map) {
     return Expense.full(
       id: map['id'],
+      title: map['title'],
       currency: map['currency'],
       amount: map['amount'],
       transactionType: map['transactionType'],
@@ -78,6 +83,14 @@ class Expense {
 
   void setId(String id) {
     this.id = id;
+  }
+
+  String? getTitle() {
+    return title;
+  }
+
+  void setTitle(String title) {
+    this.title = title;
   }
 
   DateTime? getDate() {

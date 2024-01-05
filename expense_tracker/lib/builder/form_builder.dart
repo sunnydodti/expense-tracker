@@ -1,4 +1,4 @@
-import 'package:expense_tracker/model/transaction_type.dart';
+import 'package:expense_tracker/models/transaction_type.dart';
 import 'package:flutter/material.dart';
 
 class FromBuilder {
@@ -40,8 +40,8 @@ class FromBuilder {
   //getters for transaction types and categories
   static List<String> getTransactionTypesList() => transactionTypes;
   static List<String> getCategoriesList() => categories;
-  static Map<String, String> getCurrenciesList() => currencies;
-  List<String> getTagsList() => tags;
+  static Map<String, String> getCurrenciesListMap() => currencies;
+  static List<String> getTagsList() => tags;
 
   static List<DropdownMenuItem> getTransactionTypeDropdownItems() {
     List<DropdownMenuItem> dropdownItems = [];
@@ -110,6 +110,7 @@ class FromBuilder {
         .map((e) => DropdownMenuItem(
               value: e.key,
               child: Text("(${e.value}) ${e.key}"),
+              // child: Text(e.value),
             ))
         .toList();
   }

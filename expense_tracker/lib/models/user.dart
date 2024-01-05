@@ -1,4 +1,4 @@
-import 'package:expense_tracker/model/expense.dart';
+import 'package:expense_tracker/models/expense.dart';
 
 class User {
   String? userName;

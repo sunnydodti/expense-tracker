@@ -1,6 +1,6 @@
 enum TransactionType {
-  income,
   expense,
+  income,
   reimbursement,
   // transfer,
   // loan,

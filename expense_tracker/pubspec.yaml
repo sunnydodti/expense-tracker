@@ -12,9 +12,13 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_core: ^2.14.0
   intl: ^0.18.1
-  universal_io: ^2.2.2
+  universal_io:
   currency_picker: ^2.0.16
   multiselect_formfield: ^0.1.0
+  sqflite: ^2.2.8+4
+  path: ^1.8.2
+  path_provider: any
+
 
 dev_dependencies:
   flutter_test:
@@ -26,6 +30,8 @@ flutter:
   
   assets:
     - 'assets/'
+    - 'lib/data/samples/sample_expenses.json'
+    - 'lib/data/samples/sample_expenses_nested.json'
       
   fonts:
     - family: Caveat

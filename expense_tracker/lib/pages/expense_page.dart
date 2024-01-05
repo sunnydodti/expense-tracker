@@ -1,4 +1,5 @@
 import 'package:expense_tracker/forms/expense_form.dart';
+import 'package:expense_tracker/forms/expense_form_v2.dart';
 import 'package:flutter/material.dart';
 
 class ExpensePage extends StatefulWidget {
@@ -15,18 +16,24 @@ class _ExpensePageState extends State<ExpensePage> {
   Widget build(BuildContext context) {
     return Material(
       child: Scaffold(
-          backgroundColor: Colors.blue[50],
           appBar: AppBar(
             leading: SafeArea(child: BackButton(
               onPressed: () {
                 Navigator.pop(context);
               },
             )),
-            title: Center(
-              child: Text("${widget.formMode} Expense"),
-            ),
+            centerTitle: true,
+            title: Text("${widget.formMode} Expense"),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.check),
+                tooltip: "Save",
+                onPressed: () => {},
+              ),
+            ],
           ),
-          body: ExpenseForm(formMode: widget.formMode)),
+          // body: ExpenseForm(formMode: widget.formMode)),
+          body: ExpenseFormV2(formMode: widget.formMode)),
     );
   }
 }
