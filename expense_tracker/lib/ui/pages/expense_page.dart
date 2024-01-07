@@ -1,4 +1,3 @@
-import 'package:expense_tracker/forms/expense_form.dart';
 import 'package:expense_tracker/forms/expense_form_v2.dart';
 import 'package:flutter/material.dart';
 
@@ -32,7 +31,6 @@ class _ExpensePageState extends State<ExpensePage> {
               ),
             ],
           ),
-          // body: ExpenseForm(formMode: widget.formMode)),
           body: ExpenseFormV2(formMode: widget.formMode)),
     );
   }

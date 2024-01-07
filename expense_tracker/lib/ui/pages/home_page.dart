@@ -1,17 +1,23 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:convert';
-
+// import 'package:expense_tracker/data/database/database_helper.dart';
+import 'package:expense_tracker/data/database/database_helper.dart';
 import 'package:expense_tracker/data/samples/get_sample_data.dart';
-import 'package:expense_tracker/pages/expense_page.dart';
+import 'package:expense_tracker/ui/pages/expense_page.dart';
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqlite_api.dart';
 
-import '../models/expense_new.dart';
+import '../../models/expense_new.dart';
+import '../widgets/expense_list_item.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
+  HomePage({super.key, required this.title});
 
   final String title;
+
+  DatabaseHelper databaseHelper = DatabaseHelper();
+  late List<Expense> expensesList;
+  int count = 0;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -19,13 +25,16 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   var expenseCount = 1;
-  final List<Expense> expenses = [
-    Expense("_title", "_currency", 651, "_transactionType", DateTime.now(), "_category")
-  ];
+
+  DatabaseHelper databaseHelper = DatabaseHelper();
+  late List<Expense> expensesList;
+  int count = 0;
+
+  List<Map<String, dynamic>> demoExpenses = <Map<String, dynamic>>[];
 
   void _addExpense() {
     // if (_formKey.currentState.validate()) {
-    print("clicked");
+    debugPrint("clicked");
     // Open the new form.
     Navigator.push(
       context,
@@ -34,6 +43,28 @@ class _HomePageState extends State<HomePage> {
       ),
     );
     // }
+  }
+
+  @override
+  void initState() {
+    expensesList = <Expense>[];
+    setState(() {
+      demoExpenses = GetSampleData.getDemoExpenses();
+      // demoExpenses = <Map<String, dynamic>>[];
+    });
+    // var expenses = ;
+    initializeExpenses();
+  }
+
+  Future<void> initializeExpenses() async {
+    final Database databaseFuture = await databaseHelper.initializeDatabase();
+    final database = databaseFuture;
+    final List<Map<String, dynamic>> expenseMapList = await databaseHelper.getExpenseMapList();
+
+    setState(() {
+      debugPrint("in init expenses ${expenseMapList.length} $expenseMapList");
+      demoExpenses = expenseMapList;
+    });
   }
 
   @override
@@ -48,18 +79,27 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           centerTitle: true,
           title: Text(widget.title),
-          // backgroundColor: Colors.black87,
+          backgroundColor: Colors.black,
           // foregroundColor: Colors.grey,
           actions: [
             IconButton(
               icon: Icon(Icons.person),
               tooltip: "Profile",
-              onPressed: () => {},
+              onPressed: () => {debugPrint("clicked profile")},
             ),
           ],
         ),
-        body:  getExpenseListView(),
+        // body:  getExpenseListView(),
+        // body:  ExpenseTile(),
+        body: demoExpenses == null
+            ? CircularProgressIndicator()
+            : demoExpenses.isEmpty
+            ? Center(
+          child: Text('No expenses available.'),
+        )
+            : getExpenseListViewV2(),
         floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.grey.shade500,
           tooltip: 'Add New Expense',
           onPressed: _addExpense,
           child: const Icon(Icons.add),
@@ -71,91 +111,7 @@ class _HomePageState extends State<HomePage> {
   ListView getExpenseListView() {
     TextStyle? textStyle = Theme.of(context).textTheme.bodyMedium;
 
-    // Parse the JSON data (replace with your actual data source if needed)
-    final jsonString = '''
-    [
-    {
-        "id": "1",
-        "title":"expense 1",
-        "timestamp": "2019-01-01 00:00:00",
-        "currency": "INR",
-        "amount": "10.00",
-        "transactionType": "expense",
-        "date":"2024-01-17",
-        "category": "food",
-        "tags": "Pizza",
-        "note": "Pizza Hut",
-        "containsNestedExpenses": "false",
-        "expenses": []
-    },
-    {
-        "id": "2",
-        "title": "expense 2",
-        "timestamp": "2018-01-01 00:00:00",
-        "currency": "INR",
-        "amount": "1000.00",
-        "transactionType": "expense",
-        "date": "2024-01-17",
-        "category": "party",
-        "tags": "",
-        "note": "at home",
-        "containsNestedExpenses": "false",
-        "expenses": []
-    }
-]
-  ''';
-    final parsedJson = jsonDecode(jsonString) as List<dynamic>;
-    // final expenses = parsedJson.cast<Map<String, dynamic>>().toList();
-
-    List<Map<String, dynamic>> expenses = [
-      {
-        "id": "1",
-        "title": "expense 1",
-        "timestamp": "2019-01-01 00:00:00",
-        "currency": "INR",
-        "amount": "10.00",
-        "transactionType": "expense",
-        "date": "2024-01-17",
-        "category": "food",
-        "tags": "Pizza",
-        "note": "Pizza Hut",
-        "containsNestedExpenses": "false",
-        "expenses": []
-      },
-      {
-        "id": "2",
-        "title": "expense 2",
-        "timestamp": "2018-01-01 00:00:00",
-        "currency": "INR",
-        "amount": "1000.00",
-        "transactionType": "expense",
-        "date": "2024-01-17",
-        "category": "party",
-        "tags": "",
-        "note": "at home",
-        "containsNestedExpenses": "false",
-        "expenses": []
-      },
-      // Add 8 more copies of the above data
-      ...List.generate(
-        8,
-            (index) => {
-          "id": "${index + 3}", // Incrementing the id for uniqueness
-          "title": "expense ${index + 3}",
-          "timestamp": "2022-01-01 00:00:00", // Update timestamp as needed
-          "currency": "USD", // Update currency as needed
-          "amount": "20.00", // Update amount as needed
-          "transactionType": "expense",
-          "date": "2024-01-17", // Update date as needed
-          "category": "misc", // Update category as needed
-          "tags": "Tag ${index + 3}", // Update tags as needed
-          "note": "Note ${index + 3}", // Update note as needed
-          "containsNestedExpenses": "false",
-          "expenses": []
-        },
-      ),
-    ];
-    final randomExpenseDataList = expenses.sublist(0, 10); // Get 10 random expense items
+    final randomExpenseDataList = demoExpenses.sublist(0, 10); // Get 10 random expense items
 
     return ListView.builder(
       itemCount: randomExpenseDataList.length,
@@ -192,7 +148,7 @@ class _HomePageState extends State<HomePage> {
                     '${double.parse(expenseData['amount']) > 0 ? '+' : '-'}'
                         '${double.parse(expenseData['amount']).toStringAsFixed(2)}',
                     style: TextStyle(
-                      color: double.parse(expenseData['amount']) > 0 ? Colors.green : Colors.red,
+                      color: Colors.red,
                     ),
                   ),
                 ),
@@ -203,11 +159,35 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
-
-
   }
 
   void _openEditingForm() {
     // Implement logic to open the editing form with expense data
+
+    // final randomExpenseDataList = expenses.sublist(0, 10); // Get 10 random expense items
+  }
+
+  void _deleteExpense(BuildContext context, Expense expense) async {
+    // int result = await databaseHelper.deleteExpense(expense.id);
+  }
+
+  void _showSnackbar(BuildContext context, String message) {
+    final SnackBar snackBar = SnackBar(content: Text(message));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  getExpenseListViewV2() {
+    final randomExpenseDataList = demoExpenses.sublist(0, demoExpenses.length); // Get 10 random expense items
+    // return Placeholder();
+    return Container(
+        color: Colors.grey.shade900,
+        child: ListView.builder(
+        itemCount: randomExpenseDataList.length,
+        itemBuilder: (context, index) {
+          debugPrint("$index  ${randomExpenseDataList[index]}");
+          return ExpenseListItem.fromMap(expenseMap: randomExpenseDataList[index]);
+        },
+      )
+    );
   }
 }

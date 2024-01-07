@@ -10,15 +10,15 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  firebase_core: ^2.14.0
+#  firebase_core: ^2.14.0
   intl: ^0.18.1
-  universal_io:
+#  universal_io:
   currency_picker: ^2.0.16
   multiselect_formfield: ^0.1.0
   sqflite: ^2.2.8+4
   path: ^1.8.2
   path_provider: any
-
+  faker:
 
 dev_dependencies:
   flutter_test:

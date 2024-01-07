@@ -1,7 +1,7 @@
 import 'package:expense_tracker/models/transaction_type.dart';
 
 class Expense {
-  String? _id; // required
+  int _id; // required
   String _title; // required
   String _currency; // required
   double _amount; // required
@@ -15,6 +15,7 @@ class Expense {
   List<Expense>? _expenses;
 
   Expense(
+    this._id,
     this._title,
     this._currency,
     this._amount,
@@ -36,7 +37,7 @@ class Expense {
   );
 
   // Getters
-  String? get id => _id;
+  int get id => _id;
   String get title => _title;
   String get currency => _currency;
   double get amount => _amount;
