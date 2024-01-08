@@ -70,7 +70,7 @@ class DatabaseHelper {
         SET modified_at = CURRENT_TIMESTAMP
         WHERE ${DBExpenseTableConstants.expenseColId} = OLD.${DBExpenseTableConstants.expenseColId};
       END;
-''');
+    ''');
     // populateDatabase(database);
   }
 

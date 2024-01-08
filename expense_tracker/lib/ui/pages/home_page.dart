@@ -4,6 +4,8 @@
 import 'package:expense_tracker/data/database/database_helper.dart';
 import 'package:expense_tracker/data/samples/get_sample_data.dart';
 import 'package:expense_tracker/ui/pages/expense_page.dart';
+import 'package:expense_tracker/ui/widgets/dismiss_temp.dart';
+import 'package:expense_tracker/ui/widgets/expense_list_item_v2.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqlite_api.dart';
 
@@ -35,10 +37,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     expensesList = <Expense>[];
-    setState(() {
-      demoExpenses = GetSampleData.getDemoExpenses();
-      // demoExpenses = <Map<String, dynamic>>[];
-    });
+    // setState(() {
+    //   demoExpenses = GetSampleData.getDemoExpenses();
+    //   // demoExpenses = <Map<String, dynamic>>[];
+    // });
     // var expenses = ;
     initializeExpenses();
   }
@@ -73,8 +75,8 @@ class _HomePageState extends State<HomePage> {
               tooltip: "Profile",
               onPressed: () async  => {
                 debugPrint("clicked profile"),
-                // await databaseHelper.populateDatabase(await databaseHelper.getDatabase),
-                await databaseHelper.deleteAllExpenses(),
+                await databaseHelper.populateDatabase(await databaseHelper.getDatabase),
+                // await databaseHelper.deleteAllExpenses(),
                 _refreshExpenses()
               },
             ),
@@ -83,12 +85,15 @@ class _HomePageState extends State<HomePage> {
         // body:  getExpenseListView(),
         // body:  ExpenseTile(),
         body: demoExpenses == null
-            ? CircularProgressIndicator()
+            ? Center(child: CircularProgressIndicator())
             : demoExpenses.isEmpty
             ? Center(
           child: Text('No expenses available.'),
         )
-            : getExpenseListViewV2(),
+            // : getExpenseListViewV2(),
+            : getExpenseListViewV3(),
+            // : TempDismiss(),
+            // : Center(child: CircularProgressIndicator()),
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.grey.shade500,
           tooltip: 'Add New Expense',
@@ -168,19 +173,28 @@ class _HomePageState extends State<HomePage> {
   }
 
   getExpenseListViewV2() {
-    final randomExpenseDataList = demoExpenses.sublist(0, demoExpenses.length); // Get 10 random expense items
+    final expenseList = demoExpenses; // Get 10 random expense items
     // return Placeholder();
     return RefreshIndicator(
         onRefresh: _refreshExpenses,
         color: Colors.grey.shade900,
         child: ListView.builder(
-        itemCount: randomExpenseDataList.length,
+        itemCount: expenseList.length,
         itemBuilder: (context, index) {
-          // debugPrint("$index  ${randomExpenseDataList[index]}");
-          return ExpenseListItem.fromMap(expenseMap: randomExpenseDataList[index]);
+          // debugPrint("$index  ${expenseList[index]}");
+          return ExpenseListItem.fromMap(expenseMap: expenseList[index]);
         },
       )
     );
+  }
+  getExpenseListViewV3() {
+    final expenseList = demoExpenses; // Get 10 random expense items
+    return RefreshIndicator(
+        onRefresh: _refreshExpenses,
+        color: Colors.grey.shade900,
+        child: ExpenseListItemV2.fromMapList(expenseMapListOG: demoExpenses)
+    );
+      // ExpenseListItemV2.fromMapList(expenseMapList: demoExpenses);
   }
 
   Future<void> _refreshExpenses() async {
