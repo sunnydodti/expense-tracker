@@ -44,8 +44,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> initializeExpenses() async {
-    final Database databaseFuture = await databaseHelper.initializeDatabase();
-    final database = databaseFuture;
+    await databaseHelper.initializeDatabase();
     final List<Map<String, dynamic>> expenseMapList = await databaseHelper.getExpenseMapList();
 
     setState(() {
@@ -74,7 +73,8 @@ class _HomePageState extends State<HomePage> {
               tooltip: "Profile",
               onPressed: () async  => {
                 debugPrint("clicked profile"),
-                databaseHelper.populateDatabase(await databaseHelper.getDatabase),
+                // await databaseHelper.populateDatabase(await databaseHelper.getDatabase),
+                await databaseHelper.deleteAllExpenses(),
                 _refreshExpenses()
               },
             ),
@@ -144,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              const Divider(),
+              // const Divider(),
             ],
           ),
         );
@@ -176,7 +176,7 @@ class _HomePageState extends State<HomePage> {
         child: ListView.builder(
         itemCount: randomExpenseDataList.length,
         itemBuilder: (context, index) {
-          debugPrint("$index  ${randomExpenseDataList[index]}");
+          // debugPrint("$index  ${randomExpenseDataList[index]}");
           return ExpenseListItem.fromMap(expenseMap: randomExpenseDataList[index]);
         },
       )
@@ -191,16 +191,17 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _addExpense() {
+  void _addExpense() async {
     // if (_formKey.currentState.validate()) {
     debugPrint("clicked");
     // Open the new form.
-    Navigator.push(
+    var result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ExpensePage(formMode: "Add"),
       ),
     );
-    // }
+    // debugPprint("after return $result");
+    if (result != null && result is bool && result) _refreshExpenses();
   }
 }
