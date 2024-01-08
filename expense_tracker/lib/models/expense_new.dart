@@ -1,7 +1,7 @@
 import 'package:expense_tracker/models/transaction_type.dart';
 
 class Expense {
-  int _id; // required
+  int? _id; // required
   String _title; // required
   String _currency; // required
   double _amount; // required
@@ -15,7 +15,7 @@ class Expense {
   List<Expense>? _expenses;
 
   Expense(
-    this._id,
+    // this._id,
     this._title,
     this._currency,
     this._amount,
@@ -24,6 +24,8 @@ class Expense {
     this._category,
     [this._tags, this._note, this._containsNestedExpenses, this._expenses]
   );
+
+  // Expense.empty();
 
   Expense.withId(
       this._id,
@@ -37,7 +39,7 @@ class Expense {
   );
 
   // Getters
-  int get id => _id;
+  int? get id => _id;
   String get title => _title;
   String get currency => _currency;
   double get amount => _amount;
@@ -104,12 +106,12 @@ class Expense {
     map['title'] = _title;
     map['currency'] = _currency;
     map['amount'] = _amount;
-    map['transactionType'] = _transactionType;
+    map['transaction_type'] = _transactionType;
     map['date'] = _date.toIso8601String();
     map['category'] = _category;
     map['tags'] = _tags;
     map['note'] = _note;
-    map['containsNestedExpenses'] = _containsNestedExpenses;
+    map['contains_nested_expenses'] = _containsNestedExpenses;
     map['expenses'] = _expenses?.map((expense) => expense.toMap()).toList();
     return map;
   }
@@ -120,13 +122,13 @@ class Expense {
         _title = map['title'],
         _currency = map['currency'],
         _amount = map['amount'],
-        _transactionType = map['transactionType'],
+        _transactionType = map['transaction_type'],
         _date = DateTime.parse(map['date']),
         _category = map['category'],
         // _tags = map['tags']?.cast<String>(),
         _tags = map['tags'],
         _note = map['note'],
-        _containsNestedExpenses = map['containsNestedExpenses'],
+        _containsNestedExpenses = map['contains_nested_expenses'],
         _expenses = (map['expenses'] as List<Map<String, dynamic>>?)
             ?.map((expenseMap) => Expense.fromMap(expenseMap))
             .toList();

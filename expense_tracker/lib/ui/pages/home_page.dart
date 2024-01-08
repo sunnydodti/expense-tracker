@@ -32,19 +32,6 @@ class _HomePageState extends State<HomePage> {
 
   List<Map<String, dynamic>> demoExpenses = <Map<String, dynamic>>[];
 
-  void _addExpense() {
-    // if (_formKey.currentState.validate()) {
-    debugPrint("clicked");
-    // Open the new form.
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ExpensePage(formMode: "Add"),
-      ),
-    );
-    // }
-  }
-
   @override
   void initState() {
     expensesList = <Expense>[];
@@ -85,7 +72,11 @@ class _HomePageState extends State<HomePage> {
             IconButton(
               icon: Icon(Icons.person),
               tooltip: "Profile",
-              onPressed: () => {debugPrint("clicked profile")},
+              onPressed: () async  => {
+                debugPrint("clicked profile"),
+                databaseHelper.populateDatabase(await databaseHelper.getDatabase),
+                _refreshExpenses()
+              },
             ),
           ],
         ),
@@ -179,7 +170,8 @@ class _HomePageState extends State<HomePage> {
   getExpenseListViewV2() {
     final randomExpenseDataList = demoExpenses.sublist(0, demoExpenses.length); // Get 10 random expense items
     // return Placeholder();
-    return Container(
+    return RefreshIndicator(
+        onRefresh: _refreshExpenses,
         color: Colors.grey.shade900,
         child: ListView.builder(
         itemCount: randomExpenseDataList.length,
@@ -189,5 +181,26 @@ class _HomePageState extends State<HomePage> {
         },
       )
     );
+  }
+
+  Future<void> _refreshExpenses() async {
+    // await Future.delayed(Duration(seconds: 2));
+    final List<Map<String, dynamic>> expenseMapList = await databaseHelper.getExpenseMapList();
+    setState(() {
+      demoExpenses = expenseMapList;
+    });
+  }
+
+  void _addExpense() {
+    // if (_formKey.currentState.validate()) {
+    debugPrint("clicked");
+    // Open the new form.
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ExpensePage(formMode: "Add"),
+      ),
+    );
+    // }
   }
 }

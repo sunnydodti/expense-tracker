@@ -15,7 +15,6 @@ import 'package:faker/faker.dart';
 class DatabaseHelper {
   static DatabaseHelper? _databaseHelper;
   Database? _database;
-  Random random = Random();
   // Private constructor to prevent external instantiation
   DatabaseHelper._createInstance();
 
@@ -65,6 +64,9 @@ class DatabaseHelper {
   // CRUD operations
   // CREATE
   Future<int> insertExpense(Expense expense) async {
+
+    debugPrint("insertign");
+    debugPrint(expense.toString());
     return await _database!.insert(
       DBExpenseTableConstants.expenseTable,
       expense.toMap(),
@@ -130,25 +132,29 @@ class DatabaseHelper {
   void populateDatabase(Database database) async {
     // Populate the database with 10 entries
     debugPrint("populating db");
-    for (int i = 1; i <= 10; i++) {
-      double amount = faker.randomGenerator.decimal() * (1000.0 - 1.0) + 1.0;
-      var expense  = {
-        DBExpenseTableConstants.expenseColTitle: faker.food.dish(),
-        DBExpenseTableConstants.expenseColCurrency: "₹",
-        DBExpenseTableConstants.expenseColAmount: double.parse(amount.toStringAsFixed(2)),
-        DBExpenseTableConstants.expenseColTransactionType: faker.randomGenerator.boolean() ? 'income' : 'expense',
-        DBExpenseTableConstants.expenseColDate: faker.date.dateTime().toIso8601String(),
-        DBExpenseTableConstants.expenseColCategory: faker.randomGenerator.boolean() ? 'Food' : 'Shopping',
-        DBExpenseTableConstants.expenseColTags: faker.randomGenerator.boolean() ? 'home' : 'work',
-        DBExpenseTableConstants.expenseColNote: faker.lorem.sentence(),
-        DBExpenseTableConstants.expenseColContainsNestedExpenses: faker.randomGenerator.boolean() ? 1 : 0,
-        DBExpenseTableConstants.expenseColExpenses: 'Nested expenses data', // Add appropriate nested expenses data
-      };
+    for (int i = 1; i <= 1; i++) {
+      var expense = generateRandomExpense();
       debugPrint("expense $i - !!!$expense!!!)");
       await database.insert(
         DBExpenseTableConstants.expenseTable,
         expense,
       );
     }
+  }
+  Map<String, dynamic> generateRandomExpense() {
+    double amount = faker.randomGenerator.decimal() * (1000.0 - 1.0) + 1.0;
+    var expense  = {
+      DBExpenseTableConstants.expenseColTitle: faker.food.dish(),
+      DBExpenseTableConstants.expenseColCurrency: "₹",
+      DBExpenseTableConstants.expenseColAmount: double.parse(amount.toStringAsFixed(2)),
+      DBExpenseTableConstants.expenseColTransactionType: faker.randomGenerator.boolean() ? 'income' : 'expense',
+      DBExpenseTableConstants.expenseColDate: faker.date.dateTime().toIso8601String(),
+      DBExpenseTableConstants.expenseColCategory: faker.randomGenerator.boolean() ? 'Food' : 'Shopping',
+      DBExpenseTableConstants.expenseColTags: faker.randomGenerator.boolean() ? 'home' : 'work',
+      DBExpenseTableConstants.expenseColNote: faker.lorem.sentence(),
+      DBExpenseTableConstants.expenseColContainsNestedExpenses: faker.randomGenerator.boolean() ? 1 : 0,
+      DBExpenseTableConstants.expenseColExpenses: 'Nested expenses data', // Add appropriate nested expenses data
+    };
+    return expense;
   }
 }

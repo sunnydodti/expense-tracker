@@ -1,6 +1,6 @@
 import 'package:expense_tracker/models/transaction_type.dart';
 
-class Expense {
+class ExpenseOld {
   // create id, date, date, category, list of tags, note, amount, currency, containsNestedExpenses, expenses[list of expenses<Expense>]
   String? id; // required
   String? title; // required
@@ -12,12 +12,12 @@ class Expense {
   List<String>? tags;
   String? note;
   bool? containsNestedExpenses; // required
-  List<Expense>? expenses;
+  List<ExpenseOld>? expenses;
 
-  Expense.empty();
+  ExpenseOld.empty();
 
   // create a constructor that will take in all the above parameters
-  Expense.full({
+  ExpenseOld.full({
     required this.id,
     required this.title,
     required this.currency,
@@ -31,7 +31,7 @@ class Expense {
     required this.expenses,
   });
 
-  Expense.minimal({
+  ExpenseOld.minimal({
     required this.id,
     required this.title,
     required this.currency,
@@ -60,8 +60,8 @@ class Expense {
   }
 
   // create a method that will return a expense from a map
-  factory Expense.fromMap(Map<String, dynamic> map) {
-    return Expense.full(
+  factory ExpenseOld.fromMap(Map<String, dynamic> map) {
+    return ExpenseOld.full(
       id: map['id'],
       title: map['title'],
       currency: map['currency'],
@@ -149,11 +149,11 @@ class Expense {
     this.containsNestedExpenses = containsNestedExpenses;
   }
 
-  List<Expense>? getExpenses() {
+  List<ExpenseOld>? getExpenses() {
     return expenses;
   }
 
-  void setExpenses(List<Expense> expenses) {
+  void setExpenses(List<ExpenseOld> expenses) {
     this.expenses = expenses;
   }
 
@@ -172,11 +172,11 @@ class Expense {
   }
 
   //create a methods to add and remove expenses from the list of expenses
-  void addExpense(Expense expense) {
+  void addExpense(ExpenseOld expense) {
     expenses?.add(expense);
   }
 
-  bool removeExpense(Expense expense) {
+  bool removeExpense(ExpenseOld expense) {
     return expenses!.remove(expense);
   }
 
@@ -192,7 +192,7 @@ class Expense {
   // create a method that will return the total amount of the expense
   double getTotalAmount() {
     double total = 0;
-    for (Expense expense in expenses!) {
+    for (ExpenseOld expense in expenses!) {
       total += expense.getTotalAmount();
     }
     return total + amount!;

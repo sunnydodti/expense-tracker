@@ -1,12 +1,12 @@
 import 'package:expense_tracker/builder/form_builder.dart';
-import 'package:expense_tracker/models/expense.dart';
+import 'package:expense_tracker/data/database/database_helper.dart';
+import 'package:expense_tracker/models/expense_new.dart';
 import 'package:expense_tracker/models/transaction_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class ExpenseFormV2 extends StatefulWidget {
-  // const ExpenseFormV2({super.key});
   const ExpenseFormV2({Key? key, required this.formMode}) : super(key: key);
   final String formMode;
   @override
@@ -17,7 +17,6 @@ class _ExpenseFormV2State extends State<ExpenseFormV2> {
   final _formKey = GlobalKey<FormState>();
 
   // ---------------------------------{ form data display --------------------------------- //
-  // creata a dictionary of common currencies
   static Map<String, String> currencies = FromBuilder.getCurrenciesListMap();
   // String defaultCurrency = FromBuilder.getCurrencyDropdownItems().first.value;
   String defaultCurrency = currencies.values.first;
@@ -105,8 +104,8 @@ class _ExpenseFormV2State extends State<ExpenseFormV2> {
                             _userCurrency = currencies[value.toString()]!;
                             currencyController.text = _userCurrency!;
                           });
-                          print('user currency: $_userCurrency');
-                          print('currency controller: ' + currencyController.text);
+                          debugPrint('user currency: $_userCurrency');
+                          debugPrint('currency controller: ' + currencyController.text);
                         },
                       )),
                 ),
@@ -138,7 +137,7 @@ class _ExpenseFormV2State extends State<ExpenseFormV2> {
                       keyboardType: TextInputType.number,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       onChanged: (value) {
-                        print('amount: $value');
+                        debugPrint('amount: $value');
                       },
                     ),
                   ),
@@ -169,9 +168,9 @@ class _ExpenseFormV2State extends State<ExpenseFormV2> {
                           return null; // Return null if the input is valid
                         },
                         onChanged: (value) {
-                          print('transaction type : $value');
+                          debugPrint('transaction type : $value');
                           transactionTypeController.text = value!;
-                          print(transactionTypeController.text);
+                          debugPrint(transactionTypeController.text);
                         },
                       )),
                 ),
@@ -207,11 +206,11 @@ class _ExpenseFormV2State extends State<ExpenseFormV2> {
                                 .format(pickedDate);
                             setState(() {
                               dateController.text = formattedDate;
-                              print(dateController.text);
+                              debugPrint(dateController.text);
                             });
-                            print('date: $formattedDate');
+                            debugPrint('date: $formattedDate');
                           } else {
-                            print("Date is not selected");
+                            debugPrint("Date is not selected");
                           }
 
                           if (pickedDate != null) {
@@ -226,7 +225,7 @@ class _ExpenseFormV2State extends State<ExpenseFormV2> {
                         },
                         // keyboardType: TextInputType.datetime,
                         onChanged: (value) {
-                          print('Date: $value');
+                          debugPrint('Date: $value');
                         },
                       ),
                     )),
@@ -255,7 +254,7 @@ class _ExpenseFormV2State extends State<ExpenseFormV2> {
                           return null; // Return null if the input is valid
                         },
                         onChanged: (value) {
-                          print('category: $value');
+                          debugPrint('category: $value');
                         },
                       )),
                 ),
@@ -272,7 +271,7 @@ class _ExpenseFormV2State extends State<ExpenseFormV2> {
                         labelText: 'Tags',
                       ),
                       onChanged: (value) {
-                        print('category: $value');
+                        debugPrint('category: $value');
                       },
                     ),
                   ),
@@ -303,7 +302,7 @@ class _ExpenseFormV2State extends State<ExpenseFormV2> {
                         ),
                         keyboardType: TextInputType.text,
                         onChanged: (value) {
-                          print('note: $value');
+                          debugPrint('note: $value');
                         },
                       ),
                     )
@@ -324,16 +323,34 @@ class _ExpenseFormV2State extends State<ExpenseFormV2> {
     // Validate the form
     if (_formKey.currentState?.validate() ?? false) {
       // Form is valid, perform your action
-      print('submitting');
-      print('currency: ${currencyController.text}');
-      print('amount: ${amountController.text}');
-      print('transaction type: ${transactionTypeController.text}');
-      print('date: ${dateController.text}');
-      print('category: ${categoryController.text}');
-      print('tags: ${tagsController.text}');
-      print('notes: ${notesController.text}');
-
-      // Navigator.pop(context);
+      debugPrint('submitting');
+      debugPrint('currency: ${currencyController.text}');
+      debugPrint('amount: ${amountController.text}');
+      debugPrint('transaction type: ${transactionTypeController.text}');
+      debugPrint('date: ${dateController.text}');
+      debugPrint('category: ${categoryController.text}');
+      debugPrint('tags: ${tagsController.text}');
+      debugPrint('notes: ${notesController.text}');
+      Expense expense = Expense(
+          "Placeholder Title",
+          currencyController.text,
+          double.parse(amountController.text),
+          transactionTypeController.text,
+          DateTime.parse(dateController.text),
+          categoryController.text);
+      insertExpense(expense).then((value) {
+        if (value) {
+          debugPrint("inserted");
+          Navigator.pop(context);
+        }}
+      );
     }
+  }
+
+  Future<bool> insertExpense(Expense expense) async {
+    DatabaseHelper databaseHelper = DatabaseHelper();
+    await databaseHelper.initializeDatabase();
+    await databaseHelper.insertExpense(expense);
+    return true;
   }
 }

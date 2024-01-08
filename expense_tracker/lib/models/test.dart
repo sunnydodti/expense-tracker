@@ -1,10 +1,9 @@
-// create an instance of the expense class and log it to the console
-import 'package:expense_tracker/models/expense.dart';
+import 'expense_new.dart';
 
 void main() {
-  Expense expense = Expense.empty();
+  // Expense expense = Expense.empty();
 
   print("hib4");
-  print(expense);
+  // print(expense);
   print("hil8r");
 }

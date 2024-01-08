@@ -75,6 +75,13 @@ class _ExpenseListItemState extends State<ExpenseListItem> {
   }
 
   Expanded displayNote() {
+    Text note;
+    widget.expenseMap['note'] == null
+        ? note = const Text("")
+        : note = Text(
+            '${widget.expenseMap['note']}',
+            style: const TextStyle(fontSize: 13.5),
+          );
     return Expanded(
       flex: 2,
       child: Align(
@@ -89,10 +96,7 @@ class _ExpenseListItemState extends State<ExpenseListItem> {
               padding: const EdgeInsets.all(5.0),
               child: Padding(
                 padding: EdgeInsets.zero,
-                child: Text(
-                  '${widget.expenseMap['note']}',
-                  style: const TextStyle(fontSize: 13.5),
-                ),
+                child: note,
               ),
           ),
         )
@@ -101,11 +105,15 @@ class _ExpenseListItemState extends State<ExpenseListItem> {
   }
 
   Container displayTags() {
+    Text tags;
+    widget.expenseMap['note'] == null
+        ? tags = const Text("")
+        : tags = Text(
+            widget.expenseMap['tags'],
+            style: const TextStyle(fontSize: 10.0),
+          );
     return Container(
-      child: Text(
-        widget.expenseMap['tags'],
-        style: const TextStyle(fontSize: 10.0),
-      )
+      child: tags
     );
   }
 

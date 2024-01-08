@@ -1,10 +1,10 @@
-import 'package:expense_tracker/forms/tags_dialog.dart';
-import 'package:expense_tracker/models/expense.dart';
 import 'package:expense_tracker/models/transaction_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:expense_tracker/builder/form_builder.dart';
 import 'package:intl/intl.dart';
+
+import '../models/expense_new.dart';
 
 class ExpenseForm extends StatefulWidget {
   const ExpenseForm({Key? key, required this.formMode}) : super(key: key);
