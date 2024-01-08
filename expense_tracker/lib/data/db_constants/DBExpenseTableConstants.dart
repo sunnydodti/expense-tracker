@@ -12,4 +12,6 @@ class DBExpenseTableConstants {
   static const String expenseColNote = "note";
   static const String expenseColContainsNestedExpenses = "contains_nested_expenses";
   static const String expenseColExpenses = "expenses";
+  static const String createdAt = "created_at";
+  static const String modifiedAt = "modified_at";
 }

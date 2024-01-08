@@ -55,10 +55,23 @@ class DatabaseHelper {
             ${DBExpenseTableConstants.expenseColTags} TEXT,
             ${DBExpenseTableConstants.expenseColNote} TEXT,
             ${DBExpenseTableConstants.expenseColContainsNestedExpenses} INTEGER,
-            ${DBExpenseTableConstants.expenseColExpenses} TEXT
+            ${DBExpenseTableConstants.expenseColExpenses} TEXT,
+            ${DBExpenseTableConstants.createdAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            ${DBExpenseTableConstants.modifiedAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP
           )
         ''');
-    populateDatabase(database);
+
+    await database.execute('''
+      CREATE TRIGGER update_modified_at
+      AFTER UPDATE ON ${DBExpenseTableConstants.expenseTable}
+      FOR EACH ROW
+      BEGIN
+        UPDATE ${DBExpenseTableConstants.expenseTable}
+        SET modified_at = CURRENT_TIMESTAMP
+        WHERE ${DBExpenseTableConstants.expenseColId} = OLD.${DBExpenseTableConstants.expenseColId};
+      END;
+''');
+    // populateDatabase(database);
   }
 
   // CRUD operations
@@ -66,7 +79,7 @@ class DatabaseHelper {
   Future<int> insertExpense(Expense expense) async {
 
     debugPrint("insertign");
-    debugPrint(expense.toString());
+    debugPrint(expense.toMap().toString());
     return await _database!.insert(
       DBExpenseTableConstants.expenseTable,
       expense.toMap(),
@@ -100,6 +113,12 @@ class DatabaseHelper {
     );
   }
 
+  // DELETE ALL
+  Future<int> deleteAllExpenses() async {
+    return await _database!.delete(DBExpenseTableConstants.expenseTable);
+  }
+
+
   // GET COUNT
   Future<int> getExpenseCount() async {
     final count = Sqflite.firstIntValue(await _database!.rawQuery(
@@ -129,7 +148,7 @@ class DatabaseHelper {
   //   return expenseList;
   // }
 
-  void populateDatabase(Database database) async {
+  Future<void> populateDatabase(Database database) async {
     // Populate the database with 10 entries
     debugPrint("populating db");
     for (int i = 1; i <= 1; i++) {

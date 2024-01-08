@@ -1,4 +1,4 @@
-import 'package:expense_tracker/models/transaction_type.dart';
+import 'package:expense_tracker/data/db_constants/DBExpenseTableConstants.dart';
 
 class Expense {
   int? _id; // required
@@ -13,6 +13,8 @@ class Expense {
   String? _note;
   bool? _containsNestedExpenses; // required
   List<Expense>? _expenses;
+  DateTime? _createdAt; // New field
+  DateTime? _modifiedAt; // New field
 
   Expense(
     // this._id,
@@ -51,6 +53,8 @@ class Expense {
   String? get note => _note;
   bool? get containsNestedExpenses => _containsNestedExpenses;
   List<Expense>? get expenses => _expenses;
+  DateTime? get createdAt => _createdAt;
+  DateTime? get modifiedAt => _createdAt;
 
   //Setters
   set title(String title) {
@@ -97,39 +101,51 @@ class Expense {
     _expenses = expenses;
   }
 
+  set createdAt(DateTime? createdAt) {
+    _createdAt = createdAt;
+  }
+
+  set modifiedAt(DateTime? modifiedAt) {
+    _modifiedAt = modifiedAt;
+  }
+
   // Methods
   //  // Expense Object to map
   // Getter for the Map representation
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = <String, dynamic>{};
-    if (id != null) map['id'] = _id;
-    map['title'] = _title;
-    map['currency'] = _currency;
-    map['amount'] = _amount;
-    map['transaction_type'] = _transactionType;
-    map['date'] = _date.toIso8601String();
-    map['category'] = _category;
-    map['tags'] = _tags;
-    map['note'] = _note;
-    map['contains_nested_expenses'] = _containsNestedExpenses;
-    map['expenses'] = _expenses?.map((expense) => expense.toMap()).toList();
+    if (id != null) map[DBExpenseTableConstants.expenseColId] = _id;
+    map[DBExpenseTableConstants.expenseColTitle] = _title;
+    map[DBExpenseTableConstants.expenseColCurrency] = _currency;
+    map[DBExpenseTableConstants.expenseColAmount] = _amount;
+    map[DBExpenseTableConstants.expenseColTransactionType] = _transactionType;
+    map[DBExpenseTableConstants.expenseColDate] = _date.toIso8601String();
+    map[DBExpenseTableConstants.expenseColCategory] = _category;
+    map[DBExpenseTableConstants.expenseColTags] = _tags;
+    map[DBExpenseTableConstants.expenseColNote] = _note;
+    map[DBExpenseTableConstants.expenseColContainsNestedExpenses] = _containsNestedExpenses;
+    map[DBExpenseTableConstants.expenseColExpenses] = _expenses?.map((expense) => expense.toMap()).toList();
+    if (_createdAt != null) map[DBExpenseTableConstants.createdAt] = _createdAt;
+    if (_modifiedAt != null) map[DBExpenseTableConstants.modifiedAt] = _modifiedAt;
     return map;
   }
 
   //  // map to Expense Object
   Expense.fromMap(Map<String, dynamic> map)
-      : _id = map['id'],
-        _title = map['title'],
-        _currency = map['currency'],
-        _amount = map['amount'],
-        _transactionType = map['transaction_type'],
-        _date = DateTime.parse(map['date']),
-        _category = map['category'],
-        // _tags = map['tags']?.cast<String>(),
-        _tags = map['tags'],
-        _note = map['note'],
-        _containsNestedExpenses = map['contains_nested_expenses'],
-        _expenses = (map['expenses'] as List<Map<String, dynamic>>?)
+      : _id = map[DBExpenseTableConstants.expenseColId],
+        _title = map[DBExpenseTableConstants.expenseColTitle],
+        _currency = map[DBExpenseTableConstants.expenseColCurrency],
+        _amount = map[DBExpenseTableConstants.expenseColAmount],
+        _transactionType = map[DBExpenseTableConstants.expenseColTransactionType],
+        _date = DateTime.parse(map[DBExpenseTableConstants.expenseColDate]),
+        _category = map[DBExpenseTableConstants.expenseColCategory],
+        // _tags = map[DBExpenseTableConstants.expenseColTags]?.cast<String>(),
+        _tags = map[DBExpenseTableConstants.expenseColTags],
+        _note = map[DBExpenseTableConstants.expenseColNote],
+        _containsNestedExpenses = map[DBExpenseTableConstants.expenseColContainsNestedExpenses],
+        _createdAt = map[DBExpenseTableConstants.createdAt],
+        _modifiedAt = map[DBExpenseTableConstants.modifiedAt],
+        _expenses = (map[DBExpenseTableConstants.expenseColExpenses] as List<Map<String, dynamic>>?)
             ?.map((expenseMap) => Expense.fromMap(expenseMap))
             .toList();
 }
