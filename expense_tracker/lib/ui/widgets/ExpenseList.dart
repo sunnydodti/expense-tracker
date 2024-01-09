@@ -64,17 +64,25 @@ class _ExpenseListState extends State<ExpenseList> {
 
    getExpenseListViewV2() {
     // return Placeholder();
-    return RefreshIndicator(
-        onRefresh: _refreshExpenses,
-        color: Colors.grey.shade900,
-        child: ListView.builder(
-          itemCount: allExpenses.length,
-          itemBuilder: (context, index) {
-            // debugPrint("$index  ${allExpenses[index]}");
-            return getExpenseListTile(index);
-          },
-        )
-    );
+    return Scaffold(
+      body: RefreshIndicator(
+          onRefresh: _refreshExpenses,
+          color: Colors.grey.shade900,
+          child: ListView.builder(
+            itemCount: allExpenses.length,
+            itemBuilder: (context, index) {
+              // debugPrint("$index  ${allExpenses[index]}");
+              return getExpenseListTile(index);
+            },
+          )
+      ),
+          floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.grey.shade500,
+          tooltip: 'Add New Expense',
+          onPressed: _addExpense,
+          child: const Icon(Icons.add),
+          )
+     );
   }
 
   Future<void> _refreshExpenses() async {
@@ -224,5 +232,20 @@ class _ExpenseListState extends State<ExpenseList> {
         ),
       ),
     );
+  }
+
+  void _addExpense() async {
+    // if (_formKey.currentState.validate()) {
+    debugPrint("clicked");
+    // Open the new form.
+    var result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ExpensePage(formMode: "Add"),
+      ),
+    );
+    debugPrint("after return $result");
+    // if (result != null && result is bool && result) _refreshExpensesHome();
+    _refreshExpenses();
   }
 }

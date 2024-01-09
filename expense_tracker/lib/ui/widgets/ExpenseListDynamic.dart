@@ -3,7 +3,10 @@ import 'package:expense_tracker/ui/pages/expense_page.dart';
 import 'package:flutter/material.dart';
 
 class ExpenseListDynamic extends StatefulWidget {
-  const ExpenseListDynamic({super.key});
+  final List<Map<String, dynamic>> allExpenses;
+  final Function onRefresh;
+
+  const ExpenseListDynamic({super.key, required this.allExpenses, required this.onRefresh});
 
   @override
   State<ExpenseListDynamic> createState() => _ExpenseListDynamicState();
@@ -16,7 +19,6 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     initializeExpenses();
   }
@@ -24,15 +26,14 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
   Future<void> initializeExpenses() async {
     await databaseHelper.initializeDatabase();
     final List<Map<String, dynamic>> expenseMapList = await databaseHelper.getExpenseMapList();
-    await Future.delayed(const Duration(seconds: 2));
     setState(() {
-      debugPrint("in init expenses ${expenseMapList.length} $expenseMapList");
       allExpenses = expenseMapList;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    // return getExpenseListViewV3();
     return allExpenses == null
         ? const Center(child: CircularProgressIndicator())
         : allExpenses.isEmpty
@@ -58,30 +59,38 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
         ],
       ),
     )
-        : getExpenseListViewV3();
+    : getExpenseListViewV3();
   }
 
   getExpenseListViewV3() {
-    return RefreshIndicator(
-        onRefresh: _refreshExpenses,
+    return Scaffold(
+      body: RefreshIndicator(
+        onRefresh: _refreshExpensesList,
         color: Colors.grey.shade900,
         child: ListView.builder(
-        itemCount: allExpenses.length,
-        itemBuilder: (context, index) {
-          // debugPrint("$index  ${expenseMapList[index]}");
-          return getDismissibleExpenseTile(index, allExpenses[index]);
-        },
+          itemCount: allExpenses.length,
+          itemBuilder: (context, index) {
+            // debugPrint("$index  ${expenseMapList[index]}");
+            return getDismissibleExpenseTile(index, allExpenses[index]);
+          },
+        ),
+      ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.grey.shade500,
+          tooltip: 'Add New Expense',
+          onPressed: _addExpense,
+          child: const Icon(Icons.add),
         ),
     );
     // ExpenseListItemV2.fromMapList(expenseMapList: allExpenses);
   }
 
-  Future<void> _refreshExpenses() async {
-    // await Future.delayed(Duration(seconds: 2));
+  Future<void> _refreshExpensesList() async {
     final List<Map<String, dynamic>> expenseMapList = await databaseHelper.getExpenseMapList();
     setState(() {
       allExpenses = expenseMapList;
     });
+    // onRefresh();
   }
 
   Dismissible getDismissibleExpenseTile(int index, Map<String, dynamic> expenseMap) {
@@ -307,5 +316,20 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
     // setState(() {
     //   expenseMapList.insert(index, expenseMap);
     // });
+  }
+
+  void _addExpense() async {
+    // if (_formKey.currentState.validate()) {
+    debugPrint("clicked");
+    // Open the new form.
+    var result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ExpensePage(formMode: "Add"),
+      ),
+    );
+    debugPrint("after return $result");
+    // if (result != null && result is bool && result) _refreshExpensesHome();
+    _refreshExpensesList();
   }
 }
