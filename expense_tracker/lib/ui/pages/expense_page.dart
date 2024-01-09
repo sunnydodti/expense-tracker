@@ -7,31 +7,34 @@ class ExpensePage extends StatefulWidget {
   final String formMode;
 
   @override
-  _ExpensePageState createState() => _ExpensePageState();
+  State<ExpensePage> createState() => _ExpensePageState();
 }
 
 class _ExpensePageState extends State<ExpensePage> {
   @override
   Widget build(BuildContext context) {
-    return Material(
+    return WillPopScope(
+      onWillPop: () => navigateBack(),
       child: Scaffold(
           appBar: AppBar(
             leading: SafeArea(child: BackButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              onPressed: () => navigateBack(),
             )),
             centerTitle: true,
             title: Text("${widget.formMode} Expense"),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.check),
-                tooltip: "Save",
-                onPressed: () => {},
-              ),
-            ],
+            // actions: [
+            //   IconButton(
+            //     icon: const Icon(Icons.check),
+            //     tooltip: "Save",
+            //     onPressed: () => {},
+            //   ),
+            // ],
           ),
           body: ExpenseFormV2(formMode: widget.formMode)),
     );
+  }
+
+  navigateBack() {
+    Navigator.pop(context);
   }
 }

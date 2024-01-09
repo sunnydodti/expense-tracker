@@ -13,70 +13,46 @@ class ExpenseListItem extends StatefulWidget {
 class _ExpenseListItemState extends State<ExpenseListItem> {
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-        key: Key(widget.expenseMap["id"].toString()),
-        background: Container(
-          color: Colors.red,
-          alignment: Alignment.centerLeft,
-          padding: EdgeInsets.only(left: 20.0),
-          child: Icon(Icons.delete, color: Colors.white),
-        ),
-        secondaryBackground: Container(
-          color: Colors.blue,
-          alignment: Alignment.centerRight,
-          padding: EdgeInsets.only(right: 20.0),
-          child: Icon(Icons.edit, color: Colors.white),
-        ),
-        onDismissed: (direction) {
-          if (direction == DismissDirection.startToEnd) {
-            // Swipe left to delete
-            _deleteItem(1);
-          } else {
-            // Swipe right to edit
-            _editItem(1);
-          }
-        },
-        child: getExpenseListTile());
+    return getExpenseListTile();
   }
-
   Container getExpenseListTile() {
     return Container(
-    decoration: BoxDecoration(
-      color: Colors.grey.shade800,
-      // borderRadius: BorderRadius.circular(5.0),
-    ),
-    margin: const EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
-    child: InkWell(
-      onTap: editExpense,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-        // padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        child: Column(
-          children:[
-            Row(
-              children: [
-                displayTitle(),
-                displayCategory(),
-              ],
-            ),
-            const SizedBox(height: 5.0),
-            Row(
-              children: [
-                displayTags()
-              ],
-            ),
-            const SizedBox(height: 5.0),
-            Row(
-              children: [
-                displayNote(),
-                displayAmount(),
-              ],
-            )
-          ],
+      decoration: BoxDecoration(
+        color: Colors.grey.shade800,
+        // borderRadius: BorderRadius.circular(5.0),
+      ),
+      margin: const EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
+      child: InkWell(
+        onTap: editExpense,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+          // padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Column(
+            children:[
+              Row(
+                children: [
+                  displayTitle(),
+                  displayCategory(),
+                ],
+              ),
+              const SizedBox(height: 5.0),
+              Row(
+                children: [
+                  displayTags()
+                ],
+              ),
+              const SizedBox(height: 5.0),
+              Row(
+                children: [
+                  displayNote(),
+                  displayAmount(),
+                ],
+              )
+            ],
+          ),
         ),
       ),
-    ),
-  );
+    );
   }
   void editExpense(){
     debugPrint("tapped");
