@@ -38,28 +38,28 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
         ? const Center(child: CircularProgressIndicator())
         : allExpenses.isEmpty
         ? Center(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: const [
-          Text(
-            'Click',
-            style: TextStyle(color: Colors.grey),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: const [
+              Text(
+                'Click',
+                style: TextStyle(color: Colors.grey),
+              ),
+              SizedBox(width: 8),  // Adjust the spacing between the icon and text
+              Icon(
+                Icons.add,  // Replace with the desired icon
+                color: Colors.grey,  // Replace with the desired icon color
+              ),
+              SizedBox(width: 8),  // Adjust the spacing between the icon and text
+              Text(
+                'icon to add an Expense',
+                style: TextStyle(color: Colors.grey),
+              ),
+            ],
           ),
-          SizedBox(width: 8),  // Adjust the spacing between the icon and text
-          Icon(
-            Icons.add,  // Replace with the desired icon
-            color: Colors.grey,  // Replace with the desired icon color
-          ),
-          SizedBox(width: 8),  // Adjust the spacing between the icon and text
-          Text(
-            'icon to add an Expense',
-            style: TextStyle(color: Colors.grey),
-          ),
-        ],
-      ),
-    )
-    : getExpenseListViewV3();
+        )
+        : getExpenseListViewV3();
   }
 
   getExpenseListViewV3() {
@@ -75,12 +75,15 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
           },
         ),
       ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.grey.shade500,
-          tooltip: 'Add New Expense',
-          onPressed: _addExpense,
-          child: const Icon(Icons.add),
-        ),
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.only(bottom: 35.0),
+          child: FloatingActionButton(
+            backgroundColor: Colors.grey.shade500,
+            tooltip: 'Add New Expense',
+            onPressed: _addExpense,
+            child: const Icon(Icons.add),
+          ),
+        )
     );
     // ExpenseListItemV2.fromMapList(expenseMapList: allExpenses);
   }
@@ -265,6 +268,8 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
   }
 
   void _deleteItem(index, Map<String, dynamic> expenseMap) {
+    int expenseLength = allExpenses.length;
+    debugPrint("$expenseLength");
     setState(() {
       // Create a copy of the list
       var newList = List<Map<String, dynamic>>.from(allExpenses);
@@ -278,7 +283,14 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
           label: 'Undo',
           onPressed: () {
             setState(() {
-              allExpenses.insert(index, expenseMap);
+
+              if (index+1 == expenseLength) {
+                debugPrint("adding at end $index");
+                allExpenses.add(expenseMap);
+              } else {
+                debugPrint("adding at $index");
+                allExpenses.insert(index, expenseMap);
+              }
             });
           },
         ),

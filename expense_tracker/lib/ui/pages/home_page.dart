@@ -71,8 +71,8 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        body: ExpenseList(rebuildCount: rebuildCount),
-        // body: ExpenseListDynamic(allExpenses: allExpenses, onRefresh: _refreshExpensesHome),
+        // body: ExpenseList(rebuildCount: rebuildCount),
+        body: ExpenseListDynamic(allExpenses: allExpenses, onRefresh: _refreshExpensesHome),
         // floatingActionButton: FloatingActionButton(
         //   backgroundColor: Colors.grey.shade500,
         //   tooltip: 'Add New Expense',
