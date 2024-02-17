@@ -36,13 +36,29 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
     // return getExpenseListViewV3();
     return allExpenses == null
         ? const Center(child: CircularProgressIndicator())
-        : allExpenses.isEmpty
-        ? NoExpenseView()
         : getExpenseListViewV3();
   }
 
-  Center NoExpenseView() {
-    return Center(
+  getExpenseListViewV3() {
+    return Scaffold(
+      body: RefreshIndicator(
+        onRefresh: _refreshExpensesList,
+        color: Colors.blue.shade500,
+        child: ListView.builder(
+          itemCount: allExpenses.isEmpty ? 1 : allExpenses.length,
+          itemBuilder: (context, index) {
+            return allExpenses.isEmpty ? getNoExpensesView() : getDismissibleExpenseTile(index, allExpenses[index]);
+          },
+        ),
+      ),
+      floatingActionButton: AddExpenseButtom()
+    );
+  }
+
+  Padding getNoExpensesView() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 100),
+      child: Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -63,23 +79,7 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
             ),
           ],
         ),
-      );
-  }
-
-  getExpenseListViewV3() {
-    return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: _refreshExpensesList,
-        color: Colors.grey.shade900,
-        child: ListView.builder(
-          itemCount: allExpenses.length,
-          itemBuilder: (context, index) {
-            // debugPrint("$index  ${expenseMapList[index]}");
-            return getDismissibleExpenseTile(index, allExpenses[index]);
-          },
-        ),
       ),
-      floatingActionButton: AddExpenseButtom()
     );
   }
 
@@ -98,7 +98,7 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
   Future<void> _refreshExpensesList() async {
     final List<Map<String, dynamic>> expenseMapList = await databaseHelper.getExpenseMapList();
     setState(() {
-      allExpenses = [];
+      allExpenses = expenseMapList;
     });
   }
 
