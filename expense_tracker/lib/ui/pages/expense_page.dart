@@ -14,11 +14,11 @@ class _ExpensePageState extends State<ExpensePage> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () => navigateBack(),
+      onWillPop: () => navigateBack(false),
       child: Scaffold(
           appBar: AppBar(
             leading: SafeArea(child: BackButton(
-              onPressed: () => navigateBack(),
+              onPressed: () => navigateBack(true),
             )),
             centerTitle: true,
             title: Text("${widget.formMode} Expense"),
@@ -34,7 +34,7 @@ class _ExpensePageState extends State<ExpensePage> {
     );
   }
 
-  navigateBack() {
-    Navigator.pop(context);
+  navigateBack(bool result) {
+    Navigator.pop(context, result);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:expense_tracker/data/database/database_helper.dart';
 import 'package:expense_tracker/ui/pages/expense_page.dart';
+import 'package:expense_tracker/ui/widgets/expense_tile_widgets.dart';
 import 'package:flutter/material.dart';
 
 class ExpenseList extends StatefulWidget {
@@ -72,7 +73,7 @@ class _ExpenseListState extends State<ExpenseList> {
             itemCount: allExpenses.length,
             itemBuilder: (context, index) {
               // debugPrint("$index  ${allExpenses[index]}");
-              return getExpenseListTile(index);
+              return getExpenseListTile(index, allExpenses[index]);
             },
           )
       ),
@@ -85,15 +86,7 @@ class _ExpenseListState extends State<ExpenseList> {
      );
   }
 
-  Future<void> _refreshExpenses() async {
-    // await Future.delayed(Duration(seconds: 2));
-    final List<Map<String, dynamic>> expenseMapList = await databaseHelper.getExpenseMapList();
-    setState(() {
-      allExpenses = expenseMapList;
-    });
-  }
-
-  Container getExpenseListTile(int index) {
+  Container getExpenseListTile(int index, Map<String, dynamic> expenseMap) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey.shade800,
@@ -102,33 +95,7 @@ class _ExpenseListState extends State<ExpenseList> {
       margin: const EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
       child: InkWell(
         onTap: editExpense,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-          // padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: Column(
-            children:[
-              Row(
-                children: [
-                  displayTitle(index),
-                  displayCategory(index),
-                ],
-              ),
-              const SizedBox(height: 5.0),
-              Row(
-                children: [
-                  displayTags(index)
-                ],
-              ),
-              const SizedBox(height: 5.0),
-              Row(
-                children: [
-                  displayNote(index),
-                  displayAmount(index),
-                ],
-              )
-            ],
-          ),
-        ),
+        child: ExpenseTileWidgets.expenseTile(expenseMap),
       ),
     );
   }
@@ -139,97 +106,6 @@ class _ExpenseListState extends State<ExpenseList> {
       context,
       MaterialPageRoute(
         builder: (context) => const ExpensePage(formMode: "Edit"),
-      ),
-    );
-  }
-  Expanded displayAmount(int index) {
-    return Expanded(
-      flex: 1,
-      child: Align(
-        alignment: Alignment.topRight,
-        child: Text(
-          '+ ${allExpenses[index]["currency"]}${allExpenses[index]["amount"]}',
-          style: const TextStyle(fontSize: 16.0),
-        ),
-      ),
-    );
-  }
-
-  Expanded displayNote(int index) {
-    Text note;
-    allExpenses[index]['note'] == null
-        ? note = const Text("")
-        : note = Text(
-      '${allExpenses[index]['note']}',
-      style: const TextStyle(fontSize: 13.5),
-    );
-    return Expanded(
-      flex: 2,
-      child: Align(
-          alignment: Alignment.topLeft,
-          child: FractionallySizedBox(
-            widthFactor: 1,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey, width: 1.0),
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-              padding: const EdgeInsets.all(5.0),
-              child: Padding(
-                padding: EdgeInsets.zero,
-                child: note,
-              ),
-            ),
-          )
-      ),
-    );
-  }
-
-  Container displayTags(int index) {
-    Text tags;
-    allExpenses[index]['note'] == null
-        ? tags = const Text("")
-        : tags = Text(
-      allExpenses[index]['tags'],
-      style: const TextStyle(fontSize: 10.0),
-    );
-    return Container(
-        child: tags
-    );
-  }
-
-  Expanded displayCategory(int index) {
-    return Expanded(
-      child: Align(
-        alignment: Alignment.topRight,
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(
-                '${allExpenses[index]['category']} ',
-                style: const TextStyle(
-                  fontSize: 16.0,
-                ),
-              ),
-              const Icon(Icons.category_outlined,
-                size: 20.0,)
-            ]
-        ),
-      ),
-    );
-  }
-
-  Expanded displayTitle(int index) {
-    return Expanded(
-      child: Align(
-        alignment: Alignment.topLeft,
-        child: Padding(
-          padding: EdgeInsets.zero,
-          child: Text(
-            allExpenses[index]['title'],
-            style: const TextStyle(fontSize: 16.0),
-          ),
-        ),
       ),
     );
   }
@@ -247,5 +123,13 @@ class _ExpenseListState extends State<ExpenseList> {
     debugPrint("after return $result");
     // if (result != null && result is bool && result) _refreshExpensesHome();
     _refreshExpenses();
+  }
+
+  Future<void> _refreshExpenses() async {
+    // await Future.delayed(Duration(seconds: 2));
+    final List<Map<String, dynamic>> expenseMapList = await databaseHelper.getExpenseMapList();
+    setState(() {
+      allExpenses = expenseMapList;
+    });
   }
 }
