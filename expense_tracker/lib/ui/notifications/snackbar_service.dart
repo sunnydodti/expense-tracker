@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class SnackBarService {
-  static void showSnackBarWithContext(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+  static void showSnackBarWithContext(BuildContext context, String message, {bool removeCurrent = false}) {
+    if (removeCurrent) ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
@@ -14,8 +14,8 @@ class SnackBarService {
     );
   }
 
-  static void showErrorSnackBarWithContext(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+  static void showErrorSnackBarWithContext(BuildContext context, String message, {bool removeCurrent = false}) {
+    if (removeCurrent) ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
@@ -26,8 +26,8 @@ class SnackBarService {
     );
   }
 
-  static void showSuccessSnackBarWithContext(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+  static void showSuccessSnackBarWithContext(BuildContext context, String message, {bool removeCurrent = false}) {
+    if (removeCurrent) ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
@@ -38,7 +38,8 @@ class SnackBarService {
     );
   }
 
-  static Future<bool> showUndoSnackBar(BuildContext context, String message) async {
+  static Future<bool> showUndoSnackBar(BuildContext context, String message, {bool removeCurrent = false}) async {
+    if (removeCurrent) ScaffoldMessenger.of(context).removeCurrentSnackBar();
     Completer<bool> completer = Completer<bool>();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

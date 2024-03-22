@@ -160,7 +160,6 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
     bool undoDelete = await SnackBarService.showUndoSnackBar(context, "Deleting - ${expenseMap['title']}");
     debugPrint("undoDelete $undoDelete");
 
-    // SnackBarService.showSnackBarWithContext(context, undoDelete.toString());
     if (undoDelete){
       setState(() {
         if (index+1 == expenseLength) {
