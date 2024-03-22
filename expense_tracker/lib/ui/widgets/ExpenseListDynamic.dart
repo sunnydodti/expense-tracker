@@ -4,6 +4,8 @@ import 'package:expense_tracker/ui/pages/expense_page.dart';
 import 'package:expense_tracker/ui/widgets/expense_tile_widgets.dart';
 import 'package:flutter/material.dart';
 
+import '../../data/db_constants/DBExpenseTableConstants.dart';
+
 class ExpenseListDynamic extends StatefulWidget {
   final List<Map<String, dynamic>> allExpenses;
 
@@ -27,8 +29,10 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
   Future<void> initializeExpenses() async {
     await databaseHelper.initializeDatabase();
     final List<Map<String, dynamic>> expenseMapList = await databaseHelper.getExpenseMapList();
+    List<Map<String, dynamic>> tempList = List.from(expenseMapList);
+    tempList.sort((a, b) => b[DBExpenseTableConstants.modifiedAt].compareTo(a[DBExpenseTableConstants.modifiedAt]));
     setState(() {
-      allExpenses = expenseMapList;
+      allExpenses = tempList;
     });
   }
 
@@ -41,6 +45,7 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
   }
 
   getExpenseListViewV3() {
+    // allExpenses.sort((a, b) => a[DBExpenseTableConstants.modifiedAt].compareTo(a[DBExpenseTableConstants.modifiedAt]));
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: _refreshExpensesList,
@@ -97,9 +102,11 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
   }
 
   Future<void> _refreshExpensesList() async {
-    final List<Map<String, dynamic>> expenseMapList = await databaseHelper.getExpenseMapList();
+    List<Map<String, dynamic>> expenseMapList = await databaseHelper.getExpenseMapList();
+    List<Map<String, dynamic>> tempList = List.from(expenseMapList);
+    tempList.sort((a, b) => b[DBExpenseTableConstants.modifiedAt].compareTo(a[DBExpenseTableConstants.modifiedAt]));
     setState(() {
-      allExpenses = expenseMapList;
+      allExpenses = tempList;
     });
   }
 
@@ -137,7 +144,6 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey.shade800,
-        // borderRadius: BorderRadius.circular(5.0),
       ),
       margin: const EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
       child: InkWell(
@@ -151,7 +157,6 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
     int expenseLength = allExpenses.length;
     debugPrint("$expenseLength");
     setState(() {
-      // Create a copy of the list
       var newList = List<Map<String, dynamic>>.from(allExpenses);
       newList.removeAt(index);
       allExpenses = newList; // Update the state with the modified list
@@ -186,27 +191,6 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
         SnackBarService.showErrorSnackBarWithContext(context, "Delete Failed");
       }
     }
-
-
-  //   ScaffoldMessenger.of(context).showSnackBar(
-  //     SnackBar(
-  //       content: const Text('Item deleted'),
-  //       action: SnackBarAction(
-  //         label: 'Undo',
-  //         onPressed: () {
-  //           setState(() {
-  //             if (index+1 == expenseLength) {
-  //               debugPrint("adding at end $index");
-  //               allExpenses.add(expenseMap);
-  //             } else {
-  //               debugPrint("adding at $index");
-  //               allExpenses.insert(index, expenseMap);
-  //             }
-  //           });
-  //         },
-  //       ),
-  //     ),
-  //   );
   }
 
   void _editItem(int index, Map<String, dynamic> expenseMap) async {
@@ -247,9 +231,7 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
   }
 
   void _addExpense() async {
-    // if (_formKey.currentState.validate()) {
     debugPrint("clicked");
-    // Open the new form.
     var result = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -257,7 +239,6 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
       ),
     );
     debugPrint("after return $result");
-    // if (result != null && result is bool && result) _refreshExpensesHome();
     _refreshExpensesList();
   }
 
