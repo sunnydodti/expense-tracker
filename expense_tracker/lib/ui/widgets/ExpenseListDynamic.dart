@@ -1,4 +1,5 @@
 import 'package:expense_tracker/data/database/database_helper.dart';
+import 'package:expense_tracker/ui/notifications/snackbar_service.dart';
 import 'package:expense_tracker/ui/pages/expense_page.dart';
 import 'package:expense_tracker/ui/widgets/expense_tile_widgets.dart';
 import 'package:flutter/material.dart';
@@ -123,7 +124,7 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
         onDismissed: (direction) {
           if (direction == DismissDirection.startToEnd) {
             // Swipe left to delete
-            _deleteExpense(index, expenseMap);
+            _deleteExpense(context, index, expenseMap);
           } else {
             // Swipe right to edit
             _editItem(index, expenseMap);
@@ -146,7 +147,7 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
     );
   }
 
-  void _deleteExpense(index, Map<String, dynamic> expenseMap) {
+  void _deleteExpense(BuildContext context, index, Map<String, dynamic> expenseMap) async {
     int expenseLength = allExpenses.length;
     debugPrint("$expenseLength");
     setState(() {
@@ -155,25 +156,58 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
       newList.removeAt(index);
       allExpenses = newList; // Update the state with the modified list
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text('Item deleted'),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () {
-            setState(() {
-              if (index+1 == expenseLength) {
-                debugPrint("adding at end $index");
-                allExpenses.add(expenseMap);
-              } else {
-                debugPrint("adding at $index");
-                allExpenses.insert(index, expenseMap);
-              }
-            });
-          },
-        ),
-      ),
-    );
+
+    bool undoDelete = await SnackBarService.showUndoSnackBar(context, "Deleting - ${expenseMap['title']}");
+    debugPrint("undoDelete $undoDelete");
+
+    // SnackBarService.showSnackBarWithContext(context, undoDelete.toString());
+    if (undoDelete){
+      setState(() {
+        if (index+1 == expenseLength) {
+          debugPrint("adding at end $index");
+          allExpenses.add(expenseMap);
+        } else {
+          debugPrint("adding at $index");
+          allExpenses.insert(index, expenseMap);
+        }
+      });
+      SnackBarService.showSuccessSnackBarWithContext(context, "Restored - ${expenseMap['title']}");
+    } else {
+      int id = await _deleteExpenseFromDatabase(expenseMap);
+      if (id == 0) {
+        setState(() {
+          if (index+1 == expenseLength) {
+            debugPrint("adding at end $index");
+            allExpenses.add(expenseMap);
+          } else {
+            debugPrint("adding at $index");
+            allExpenses.insert(index, expenseMap);
+          }
+        });
+        SnackBarService.showErrorSnackBarWithContext(context, "Delete Failed");
+      }
+    }
+
+
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: const Text('Item deleted'),
+  //       action: SnackBarAction(
+  //         label: 'Undo',
+  //         onPressed: () {
+  //           setState(() {
+  //             if (index+1 == expenseLength) {
+  //               debugPrint("adding at end $index");
+  //               allExpenses.add(expenseMap);
+  //             } else {
+  //               debugPrint("adding at $index");
+  //               allExpenses.insert(index, expenseMap);
+  //             }
+  //           });
+  //         },
+  //       ),
+  //     ),
+  //   );
   }
 
   void _editItem(int index, Map<String, dynamic> expenseMap) async {
@@ -226,5 +260,10 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
     debugPrint("after return $result");
     // if (result != null && result is bool && result) _refreshExpensesHome();
     _refreshExpensesList();
+  }
+
+  Future<int> _deleteExpenseFromDatabase(Map<String, dynamic> expenseMap) async {
+    DatabaseHelper databaseHelper = DatabaseHelper();
+    return await databaseHelper.deleteExpense(expenseMap['id']);
   }
 }

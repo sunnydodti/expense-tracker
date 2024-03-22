@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:expense_tracker/data/database/database_helper.dart';
+import 'package:expense_tracker/ui/drawer/home_drawer.dart';
 import 'package:expense_tracker/ui/widgets/ExpenseList.dart';
 import 'package:expense_tracker/ui/widgets/ExpenseListDynamic.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,7 @@ class _HomePageState extends State<HomePage> {
         colorScheme: ColorScheme.dark()
       ),
       home: Scaffold(
-        drawer: SafeArea(child: Placeholder()),
+        drawer: SafeArea(child: HomeDrawer()),
         appBar: AppBar(
           centerTitle: true,
           title: Text(widget.title),
