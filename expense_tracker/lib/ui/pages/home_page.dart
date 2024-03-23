@@ -55,7 +55,8 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         // body: ExpenseList(rebuildCount: rebuildCount),
-        body: ExpenseListDynamic(allExpenses: allExpenses),
+        // body: ExpenseListDynamic(allExpenses: allExpenses),
+        body: ExpenseListDynamic(),
       ),
     );
   }

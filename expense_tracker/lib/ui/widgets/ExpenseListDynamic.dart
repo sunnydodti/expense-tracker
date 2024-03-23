@@ -7,9 +7,11 @@ import 'package:flutter/material.dart';
 import '../../data/db_constants/DBExpenseTableConstants.dart';
 
 class ExpenseListDynamic extends StatefulWidget {
-  final List<Map<String, dynamic>> allExpenses;
+  const ExpenseListDynamic({super.key});
 
-  const ExpenseListDynamic({super.key, required this.allExpenses});
+  // final List<Map<String, dynamic>> allExpenses;
+  //
+  // const ExpenseListDynamic({super.key, required this.allExpenses});
 
   @override
   State<ExpenseListDynamic> createState() => _ExpenseListDynamicState();
@@ -57,7 +59,7 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
           },
         ),
       ),
-      floatingActionButton: AddExpenseButtom()
+      floatingActionButton: addExpenseButton()
     );
   }
 
@@ -89,7 +91,7 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
     );
   }
 
-  Padding AddExpenseButtom() {
+  Padding addExpenseButton() {
     return Padding(
       padding: const EdgeInsets.only(bottom: 35.0),
       child: FloatingActionButton(
@@ -159,7 +161,7 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
     setState(() {
       var newList = List<Map<String, dynamic>>.from(allExpenses);
       newList.removeAt(index);
-      allExpenses = newList; // Update the state with the modified list
+      allExpenses = newList;
     });
 
     bool undoDelete = await SnackBarService.showUndoSnackBar(context, "Deleting - ${expenseMap['title']}");
@@ -197,7 +199,6 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
     int expenseLength = allExpenses.length;
     debugPrint("$expenseMap");
     setState(() {
-      // Create a copy of the list
       var newList = List<Map<String, dynamic>>.from(allExpenses);
       newList.removeAt(index);
       allExpenses = newList; // Update the state with the modified list
@@ -235,7 +236,7 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
     var result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ExpensePage(formMode: "Add"),
+        builder: (context) => const ExpensePage(formMode: "Add"),
       ),
     );
     debugPrint("after return $result");
