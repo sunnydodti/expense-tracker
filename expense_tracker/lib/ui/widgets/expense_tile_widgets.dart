@@ -83,8 +83,14 @@ class ExpenseTileWidgets {
 
   static Expanded noteWidget(Map<String, dynamic> expenseMap) {
     Text note;
-    expenseMap['note'] == null
-        ? note = const Text("")
+    (expenseMap['note'] == null || expenseMap['note'] == "")
+        ? note = const Text(
+        "Add Notes",
+        style: TextStyle(
+            fontSize: 13.5,
+            color: Colors.grey
+        ),
+    )
         : note = Text(
       '${expenseMap['note']}',
       style: const TextStyle(fontSize: 13.5),
