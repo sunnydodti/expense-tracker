@@ -1,6 +1,7 @@
 import 'package:expense_tracker/data/db_constants/DBExpenseTableConstants.dart';
 import 'package:expense_tracker/models/transaction_type.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ExpenseTileWidgets {
 
@@ -13,6 +14,7 @@ class ExpenseTileWidgets {
             children: [
               titleWidget(expenseMap),
               categoryWidget(expenseMap),
+              getExpenseDate(expenseMap)
             ],
           ),
           const SizedBox(height: 5.0),
@@ -29,6 +31,21 @@ class ExpenseTileWidgets {
             ],
           )
         ],
+      ),
+    );
+  }
+
+  static Expanded getExpenseDate(Map<String, dynamic> expenseMap) {
+    return Expanded(
+      child: Align(
+        alignment: Alignment.topRight,
+        child: Padding(
+          padding: EdgeInsets.zero,
+          child: Text(
+            DateFormat('dd-MM-yy').format(DateTime.parse(expenseMap[DBExpenseTableConstants.expenseColDate])),
+            style: const TextStyle(fontSize: 16.0),
+          ),
+        ),
       ),
     );
   }
@@ -51,7 +68,7 @@ class ExpenseTileWidgets {
   static Expanded categoryWidget(Map<String, dynamic> expenseMap) {
     return Expanded(
       child: Align(
-        alignment: Alignment.topRight,
+        alignment: Alignment.topLeft,
         child: Padding(
           padding: const EdgeInsets.only(right: 0.0),
           child: Row(
@@ -136,7 +153,7 @@ class ExpenseTileWidgets {
     return Align(
       alignment: Alignment.topLeft,
       child: Padding(
-        padding: const EdgeInsets.only(left: 30.0),
+        padding: const EdgeInsets.only(left: 45.0),
         child: Text(
           _getAmountText(expenseMap),
           style: TextStyle(
