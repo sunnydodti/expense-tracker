@@ -1,3 +1,5 @@
+import 'package:expense_tracker/data/db_constants/DBExpenseTableConstants.dart';
+import 'package:expense_tracker/models/transaction_type.dart';
 import 'package:flutter/material.dart';
 
 class ExpenseTileWidgets {
@@ -85,16 +87,16 @@ class ExpenseTileWidgets {
     Text note;
     (expenseMap['note'] == null || expenseMap['note'] == "")
         ? note = const Text(
-        "Add Notes",
-        style: TextStyle(
-            fontSize: 13.5,
-            color: Colors.grey
-        ),
-    )
+          "Add Notes",
+          style: TextStyle(
+              fontSize: 13.5,
+              color: Colors.grey
+          ),
+        )
         : note = Text(
-      '${expenseMap['note']}',
-      style: const TextStyle(fontSize: 13.5),
-    );
+            '${expenseMap['note']}',
+            style: const TextStyle(fontSize: 13.5),
+        );
     return Expanded(
       flex: 2,
       child: Align(
@@ -122,11 +124,37 @@ class ExpenseTileWidgets {
       flex: 1,
       child: Align(
         alignment: Alignment.topRight,
-        child: Text(
-          '+ ${expenseMap["currency"]}${expenseMap["amount"]}',
-          style: const TextStyle(fontSize: 16.0),
-        ),
+        child: _getAmount(expenseMap),
       ),
     );
   }
-}
+
+  static Align _getAmount(Map<String, dynamic> expenseMap) {
+    String transactionType = expenseMap[DBExpenseTableConstants.expenseColTransactionType];
+    return Align(
+      alignment: Alignment.topRight,
+      child: Text(
+        _getAmountText(expenseMap),
+        style: TextStyle(
+          fontSize: 16.0,
+          color: _getAmountColor(transactionType),
+        ),
+        textAlign: TextAlign.left
+      ),
+    );
+  }
+
+  static String _getAmountText(Map<String, dynamic> expenseMap) {
+    String amountText = "${expenseMap[DBExpenseTableConstants.expenseColCurrency]}"
+        "${expenseMap[DBExpenseTableConstants.expenseColAmount]}";
+    amountText = (expenseMap[DBExpenseTableConstants.expenseColTransactionType] == TransactionType.expense.name)
+      ? "- $amountText"
+      : "+ $amountText";
+    return amountText;
+  }
+  static Color _getAmountColor(String transactionType){
+      if (transactionType == TransactionType.expense.name) return Colors.red.shade300;
+      if (transactionType == TransactionType.income.name) return Colors.green.shade300;
+      return Colors.white;
+    }
+  }
