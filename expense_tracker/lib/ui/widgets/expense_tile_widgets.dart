@@ -7,26 +7,25 @@ class ExpenseTileWidgets {
   static Container expenseTile(Map<String, dynamic> expenseMap) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-      // padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: Column(
         children:[
           Row(
             children: [
-              ExpenseTileWidgets.titleWidget(expenseMap),
-              ExpenseTileWidgets.categoryWidget(expenseMap),
+              titleWidget(expenseMap),
+              categoryWidget(expenseMap),
             ],
           ),
           const SizedBox(height: 5.0),
           Row(
             children: [
-              ExpenseTileWidgets.tagsWidget(expenseMap)
+              tagsWidget(expenseMap)
             ],
           ),
           const SizedBox(height: 5.0),
           Row(
             children: [
-              ExpenseTileWidgets.noteWidget(expenseMap),
-              ExpenseTileWidgets.amountWidget(expenseMap),
+              noteWidget(expenseMap),
+              amountWidget(expenseMap),
             ],
           )
         ],
@@ -53,19 +52,22 @@ class ExpenseTileWidgets {
     return Expanded(
       child: Align(
         alignment: Alignment.topRight,
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(
-                '${expenseMap['category']} ',
-                style: const TextStyle(
-                  fontSize: 16.0,
+        child: Padding(
+          padding: const EdgeInsets.only(right: 0.0),
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  '${expenseMap['category']} ',
+                  style: const TextStyle(
+                    fontSize: 16.0,
+                  ),
                 ),
-              ),
-              const Icon(Icons.category_outlined,
-                size: 20.0,)
-            ]
-        ),
+                const Icon(Icons.category_outlined,
+                  size: 20.0,)
+              ]
+          ),
+        )
       ),
     );
   }
@@ -132,15 +134,17 @@ class ExpenseTileWidgets {
   static Align _getAmount(Map<String, dynamic> expenseMap) {
     String transactionType = expenseMap[DBExpenseTableConstants.expenseColTransactionType];
     return Align(
-      alignment: Alignment.topRight,
-      child: Text(
-        _getAmountText(expenseMap),
-        style: TextStyle(
-          fontSize: 16.0,
-          color: _getAmountColor(transactionType),
+      alignment: Alignment.topLeft,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 30.0),
+        child: Text(
+          _getAmountText(expenseMap),
+          style: TextStyle(
+            fontSize: 16.0,
+            color: _getAmountColor(transactionType),
+          ),
         ),
-        textAlign: TextAlign.left
-      ),
+      )
     );
   }
 
