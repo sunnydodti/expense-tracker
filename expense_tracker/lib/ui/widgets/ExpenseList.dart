@@ -3,6 +3,8 @@ import 'package:expense_tracker/ui/pages/expense_page.dart';
 import 'package:expense_tracker/ui/widgets/expense_tile_widgets.dart';
 import 'package:flutter/material.dart';
 
+import '../../models/expense_new.dart';
+
 class ExpenseList extends StatefulWidget {
   final int rebuildCount;
   const ExpenseList({super.key, required this.rebuildCount});
@@ -14,7 +16,7 @@ class ExpenseList extends StatefulWidget {
 class _ExpenseListState extends State<ExpenseList> {
 
   DatabaseHelper databaseHelper = DatabaseHelper();
-  List<Map<String, dynamic>> allExpenses = <Map<String, dynamic>>[];
+  List<Expense> allExpenses = <Expense>[];
 
   @override
   void initState() {
@@ -29,7 +31,7 @@ class _ExpenseListState extends State<ExpenseList> {
     // await Future.delayed(const Duration(seconds: 2));
     setState(() {
       debugPrint("in init expenses ${expenseMapList.length} $expenseMapList");
-      allExpenses = expenseMapList;
+      allExpenses = Expense.fromMapList(expenseMapList);
     });
   }
 
@@ -86,7 +88,7 @@ class _ExpenseListState extends State<ExpenseList> {
      );
   }
 
-  Container getExpenseListTile(int index, Map<String, dynamic> expenseMap) {
+  Container getExpenseListTile(int index, Expense expense) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey.shade800,
@@ -95,7 +97,7 @@ class _ExpenseListState extends State<ExpenseList> {
       margin: const EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
       child: InkWell(
         onTap: editExpense,
-        child: ExpenseTileWidgets.expenseTile(expenseMap),
+        child: ExpenseTileWidgets.expenseTile(expense),
       ),
     );
   }
@@ -129,7 +131,7 @@ class _ExpenseListState extends State<ExpenseList> {
     // await Future.delayed(Duration(seconds: 2));
     final List<Map<String, dynamic>> expenseMapList = await databaseHelper.getExpenseMapList();
     setState(() {
-      allExpenses = expenseMapList;
+      allExpenses = Expense.fromMapList(expenseMapList);
     });
   }
 }

@@ -1,7 +1,6 @@
 import 'package:expense_tracker/builder/form_builder.dart';
-import 'package:expense_tracker/data/database/database_helper.dart';
-import 'package:expense_tracker/models/expense_new.dart';
-import 'package:expense_tracker/models/transaction_type.dart';
+import 'package:expense_tracker/models/expense.dart';
+import 'package:expense_tracker/service/expense_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -22,7 +21,6 @@ class _ExpenseFormV2State extends State<ExpenseFormV2> {
   String defaultCurrency = currencies.values.first;
   final List<String> tags = ['Item 1', 'Item 2', 'Item 3'];
   final List<String> selectedTags = [];
-  var _value = false;
   // --------------------------------- form data display }--------------------------------- //
 
   // ---------------------------------{ form data input --------------------------------- //
@@ -102,8 +100,8 @@ class _ExpenseFormV2State extends State<ExpenseFormV2> {
               ],
             ),
             ElevatedButton(
-              onPressed: _sumbitExpense,
-              child: Text('Submit'),
+              onPressed: _submitExpense,
+              child: const Text('Submit'),
             ),
           ],
         ),
@@ -356,7 +354,7 @@ class _ExpenseFormV2State extends State<ExpenseFormV2> {
                           currencyController.text = _userCurrency!;
                         });
                         debugPrint('user currency: $_userCurrency');
-                        debugPrint('currency controller: ' + currencyController.text);
+                        debugPrint('currency controller: ${currencyController.text}');
                       },
                     )),
               );
@@ -365,10 +363,9 @@ class _ExpenseFormV2State extends State<ExpenseFormV2> {
 
 
   // ---------------------------------{ methods --------------------------------- //
-  void _sumbitExpense() {
-    // Validate the form
+  void _submitExpense() {
     if (_formKey.currentState?.validate() ?? false) {
-      // Form is valid, perform your action
+
       debugPrint('submitting');
       debugPrint('currency: ${currencyController.text}');
       debugPrint('amount: ${amountController.text}');
@@ -377,15 +374,22 @@ class _ExpenseFormV2State extends State<ExpenseFormV2> {
       debugPrint('category: ${categoryController.text}');
       debugPrint('tags: ${tagsController.text}');
       debugPrint('notes: ${notesController.text}');
-      Expense expense = Expense(
+
+      ExpenseFormModel expense = ExpenseFormModel(
           titleController.text,
           currencyController.text,
           double.parse(amountController.text),
           transactionTypeController.text,
           DateTime.parse(dateController.text),
-          categoryController.text);
+          categoryController.text,
+          false,
+      );
+
       expense.tags = tagsController.text;
       expense.note = notesController.text;
+      expense.createdAt = DateTime.now();
+      expense.modifiedAt = DateTime.now();
+
       insertExpense(expense).then((value) {
         if (value) {
           debugPrint("inserted");
@@ -395,11 +399,9 @@ class _ExpenseFormV2State extends State<ExpenseFormV2> {
     }
   }
 
-  Future<bool> insertExpense(Expense expense) async {
-    DatabaseHelper databaseHelper = DatabaseHelper();
-    await databaseHelper.initializeDatabase();
-    await databaseHelper.insertExpense(expense);
-    return true;
+  Future<bool> insertExpense(ExpenseFormModel expense) async {
+    ExpenseService expenseService = ExpenseService();
+    return await expenseService.addExpense(expense);
   }
 
   String? validateField(var value, String errorMessage) {

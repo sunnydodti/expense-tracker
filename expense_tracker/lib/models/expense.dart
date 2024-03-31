@@ -1,3 +1,4 @@
+import 'package:expense_tracker/data/db_constants/DBExpenseTableConstants.dart';
 import 'package:expense_tracker/models/transaction_type.dart';
 
 class ExpenseOld {
@@ -198,3 +199,144 @@ class ExpenseOld {
     return total + amount!;
   }
 }
+
+class ExpenseV2 {
+  int id;
+  String title;
+  String currency;
+  double amount;
+  String transactionType;
+  DateTime date;
+  String category;
+  List<String>? tags;
+  String? tag;
+  String? note;
+  bool? containsNestedExpenses;
+  List<ExpenseV2>? expenses;
+
+  DateTime createdAt;
+  DateTime modifiedAt;
+
+  ExpenseV2({
+    required this.id,
+    required this.title,
+    required this.currency,
+    required this.amount,
+    required this.transactionType,
+    required this.date,
+    required this.category,
+    required this.createdAt,
+    required this.modifiedAt,
+    this.tags,
+    this.tag,
+    this.note,
+    containsNestedExpenses,
+    expenses,
+  }){
+   this.expenses =  expenses ?? List.empty(growable: true);
+   this.containsNestedExpenses = containsNestedExpenses ?? false;
+  }
+
+  factory ExpenseV2.fromMap(Map<String, dynamic> map) {
+    return ExpenseV2(
+      id: map[DBExpenseTableConstants.id],
+      title: map[DBExpenseTableConstants.title],
+      currency: map[DBExpenseTableConstants.currency],
+      amount: map[DBExpenseTableConstants.amount],
+      transactionType: map[DBExpenseTableConstants.transactionType],
+      date: DateTime.parse(map[DBExpenseTableConstants.date]),
+      category: map[DBExpenseTableConstants.category],
+      tags: List<String>.from(map[DBExpenseTableConstants.tags]),
+      tag: map[DBExpenseTableConstants.tag],
+      note: map[DBExpenseTableConstants.note],
+      containsNestedExpenses: map[DBExpenseTableConstants.containsNestedExpenses] ?? false,
+      expenses: map[DBExpenseTableConstants.expenses] != null ? List<ExpenseV2>.from(map[DBExpenseTableConstants.expenses].map((x) => ExpenseV2.fromMap(x))) : List.empty(growable: true),
+      createdAt: DateTime.parse(map[DBExpenseTableConstants.createdAt]),
+      modifiedAt: DateTime.parse(map[DBExpenseTableConstants.modifiedAt]),
+    );
+  }
+
+}
+
+class ExpenseFormModel {
+  int? id;
+  String title;
+  String currency;
+  double amount;
+  String transactionType;
+  DateTime date;
+  String category;
+  bool containsNestedExpenses;
+  String? tags;
+  String? note;
+  List<ExpenseFormModel>? expenses;
+  DateTime? createdAt;
+  DateTime? modifiedAt;
+
+  ExpenseFormModel(
+      this.title,
+      this.currency,
+      this.amount,
+      this.transactionType,
+      this.date,
+      this.category,
+      this.containsNestedExpenses,
+      [this.tags, this.note, this.expenses]
+      );
+
+  // Expense.empty();
+
+  ExpenseFormModel.withId(
+      this.id,
+      this.title,
+      this.currency,
+      this.amount,
+      this.transactionType,
+      this.date,
+      this.category,
+      this.containsNestedExpenses,
+      [this.tags, this.note, this.expenses]
+      );
+
+  // Methods
+  //  // Expense Object to map
+  // Getter for the Map representation
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> map = <String, dynamic>{};
+    if (id != null) map[DBExpenseTableConstants.id] = id;
+    map[DBExpenseTableConstants.title] = title;
+    map[DBExpenseTableConstants.currency] = currency;
+    map[DBExpenseTableConstants.amount] = amount;
+    map[DBExpenseTableConstants.transactionType] = transactionType;
+    map[DBExpenseTableConstants.date] = date.toIso8601String();
+    map[DBExpenseTableConstants.category] = category;
+    map[DBExpenseTableConstants.tags] = tags;
+    map[DBExpenseTableConstants.note] = note;
+    map[DBExpenseTableConstants.containsNestedExpenses] = containsNestedExpenses;
+    map[DBExpenseTableConstants.expenses] = expenses?.map((expense) => expense.toMap()).toList();
+    map[DBExpenseTableConstants.createdAt] = createdAt!.toIso8601String();
+    map[DBExpenseTableConstants.modifiedAt] = modifiedAt!.toIso8601String();
+    return map;
+  }
+
+  //  // map to Expense Object
+  ExpenseFormModel.fromMap(Map<String, dynamic> map)
+      : id = map[DBExpenseTableConstants.id],
+        title = map[DBExpenseTableConstants.title],
+        currency = map[DBExpenseTableConstants.currency],
+        amount = map[DBExpenseTableConstants.amount],
+        transactionType = map[DBExpenseTableConstants.transactionType],
+        date = DateTime.parse(map[DBExpenseTableConstants.date]),
+        category = map[DBExpenseTableConstants.category],
+  // tags = map[DBExpenseTableConstants.Tags]?.cast<String>(),
+        tags = map[DBExpenseTableConstants.tags],
+        note = map[DBExpenseTableConstants.note],
+        containsNestedExpenses = map[DBExpenseTableConstants.containsNestedExpenses],
+        createdAt = map[DBExpenseTableConstants.createdAt],
+        modifiedAt = map[DBExpenseTableConstants.modifiedAt],
+        expenses = (map[DBExpenseTableConstants.expenses] as List<Map<String, dynamic>>?)
+            ?.map((expenseMap) => ExpenseFormModel.fromMap(expenseMap))
+            .toList();
+
+}
+

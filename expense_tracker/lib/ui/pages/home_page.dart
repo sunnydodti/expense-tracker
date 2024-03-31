@@ -1,39 +1,30 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:expense_tracker/data/database/database_helper.dart';
 import 'package:expense_tracker/ui/drawer/home_drawer.dart';
-import 'package:expense_tracker/ui/widgets/ExpenseList.dart';
 import 'package:expense_tracker/ui/widgets/ExpenseListDynamic.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/expense_provider.dart';
+import 'expense_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
+  const HomePage({super.key});
 
-  final String title;
+  final String title = "Expense Tracker";
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  int rebuildCount = 0;
-
   DatabaseHelper databaseHelper = DatabaseHelper();
-  int count = 0;
-
-  List<Map<String, dynamic>> allExpenses = [];
-
-  @override
-  void initState() {
-    super.initState();
-    initializeExpenses();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return Consumer<ExpenseProvider>(
+        builder: (context, expenseProvider, child) => MaterialApp(
       theme: ThemeData(
-        colorScheme: ColorScheme.dark()
+        colorScheme: const ColorScheme.dark()
       ),
       home: Scaffold(
         drawer: SafeArea(child: HomeDrawer()),
@@ -43,55 +34,47 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Colors.black,
           actions: [
             IconButton(
-              icon: Icon(Icons.person),
+              icon: const Icon(Icons.person),
               tooltip: "Profile",
               onPressed: () async  => {
                 debugPrint("clicked profile"),
-                await databaseHelper.populateDatabase(await databaseHelper.getDatabase),
-                // await databaseHelper.deleteAllExpenses(),
-                _refreshExpensesHome()
+                await databaseHelper.populateDatabase(),
+                _refreshExpensesHome(expenseProvider)
               },
             ),
           ],
         ),
-        // body: ExpenseList(rebuildCount: rebuildCount),
-        // body: ExpenseListDynamic(allExpenses: allExpenses),
-        body: ExpenseListDynamic(),
+        body: const ExpenseListDynamic(),
+        floatingActionButton: addExpenseButton(context, expenseProvider)
+      ),
+    ));
+  }
+
+  Padding addExpenseButton(BuildContext context, ExpenseProvider expenseProvider) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 35.0),
+      child: FloatingActionButton(
+        backgroundColor: Colors.grey.shade500,
+        tooltip: 'Add New Expense',
+        onPressed: () => _addExpense(context, expenseProvider),
+        child: const Icon(Icons.add),
       ),
     );
   }
 
-  Future<void> initializeExpenses() async {
-    await databaseHelper.initializeDatabase();
-    final List<Map<String, dynamic>> expenseMapList = await databaseHelper.getExpenseMapList();
+  void _addExpense(BuildContext context, ExpenseProvider expenseProvider) async {
+    debugPrint("clicked");
+    var result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ExpensePage(formMode: "Add"),
+      ),
+    );
+    debugPrint("after return $result");
+    expenseProvider.refreshExpenses();
 
-    setState(() {
-      debugPrint("in init expenses ${expenseMapList.length} $expenseMapList");
-      allExpenses = expenseMapList;
-    });
   }
-
-  Future<void> _refreshExpensesHome() async {
-    final List<Map<String, dynamic>> expenseMapList = await databaseHelper.getExpenseMapList();
-    setState(() {
-      allExpenses = expenseMapList;
-      rebuildCount += 1;
-      debugPrint("rebuildCount $rebuildCount");
-    });
+  Future<void> _refreshExpensesHome(ExpenseProvider expenseProvider) async {
+    expenseProvider.refreshExpenses();
   }
-
-  // void _addExpense() async {
-  //   // if (_formKey.currentState.validate()) {
-  //   debugPrint("clicked");
-  //   // Open the new form.
-  //   var result = await Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => ExpensePage(formMode: "Add"),
-  //     ),
-  //   );
-  //   debugPrint("after return $result");
-  //   // if (result != null && result is bool && result) _refreshExpensesHome();
-  //   _refreshExpensesHome();
-  // }
 }

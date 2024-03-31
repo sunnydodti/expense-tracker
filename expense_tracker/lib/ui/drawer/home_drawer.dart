@@ -1,6 +1,8 @@
-import 'package:expense_tracker/data/database/database_helper.dart';
+import 'package:expense_tracker/providers/expense_provider.dart';
+import 'package:expense_tracker/service/expense_service.dart';
 import 'package:expense_tracker/ui/notifications/snackbar_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeDrawer extends StatefulWidget {
   @override
@@ -80,7 +82,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
   }
 
   Future<void> _handleDelete(BuildContext context) async {
-    int deleteCount = await _deleteFromDatabase();
+    int deleteCount = await _deleteFromDatabase(context);
     if (deleteCount > 0)
       SnackBarService.showSuccessSnackBarWithContext(context, "All Expenses Deleted");
     else if (deleteCount == 0)
@@ -93,18 +95,13 @@ class _HomeDrawerState extends State<HomeDrawer> {
     });
   }
 
-  Future<int> _deleteFromDatabase() async {
-    DatabaseHelper databaseHelper = DatabaseHelper();
-    return await databaseHelper.deleteAllExpenses();
-  }
-
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.green,
-        duration: const Duration(seconds: 2),
-      ),
-    );
+  Future<int> _deleteFromDatabase(BuildContext context) async {
+    ExpenseService expenseService = ExpenseService();
+    int result = await expenseService.deleteAllExpenses();
+    if (result > 0) {
+      final expenseProvider = Provider.of<ExpenseProvider>(context, listen: false);
+      expenseProvider.refreshExpenses();
+    }
+    return result;
   }
 }

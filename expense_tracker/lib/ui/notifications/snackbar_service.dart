@@ -3,6 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class SnackBarService {
+
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+  GlobalKey<ScaffoldMessengerState>();
+
+  //region Section 1: SnackBarWithContext
+
   static void showSnackBarWithContext(BuildContext context, String message, {bool removeCurrent = false}) {
     if (removeCurrent) ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -38,7 +44,7 @@ class SnackBarService {
     );
   }
 
-  static Future<bool> showUndoSnackBar(BuildContext context, String message, {bool removeCurrent = false}) async {
+  static Future<bool> showUndoSnackBarWithContext(BuildContext context, String message, {bool removeCurrent = false}) async {
     if (removeCurrent) ScaffoldMessenger.of(context).removeCurrentSnackBar();
     Completer<bool> completer = Completer<bool>();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -60,4 +66,22 @@ class SnackBarService {
     }
     return completer.future;
   }
+  //endregion
+
+  //region Section 2: SnackBarWithoutContext
+
+  void showSuccessSnackBar(String message, {bool removeCurrent = false}) {
+    if (removeCurrent) scaffoldMessengerKey.currentState?.removeCurrentSnackBar();
+    scaffoldMessengerKey.currentState?.showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 2),
+        backgroundColor: Colors.green,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  //endregion
+
 }

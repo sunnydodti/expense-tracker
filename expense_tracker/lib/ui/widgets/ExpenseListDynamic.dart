@@ -1,65 +1,35 @@
 import 'package:expense_tracker/data/database/database_helper.dart';
+import 'package:expense_tracker/models/expense_new.dart';
 import 'package:expense_tracker/ui/notifications/snackbar_service.dart';
 import 'package:expense_tracker/ui/pages/expense_page.dart';
 import 'package:expense_tracker/ui/widgets/expense_tile_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import '../../data/db_constants/DBExpenseTableConstants.dart';
+import '../../providers/expense_provider.dart';
 
-class ExpenseListDynamic extends StatefulWidget {
-  const ExpenseListDynamic({super.key});
-
-  // final List<Map<String, dynamic>> allExpenses;
-  //
-  // const ExpenseListDynamic({super.key, required this.allExpenses});
-
-  @override
-  State<ExpenseListDynamic> createState() => _ExpenseListDynamicState();
-}
-
-class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
-
-  DatabaseHelper databaseHelper = DatabaseHelper();
-  List<Map<String, dynamic>> allExpenses = <Map<String, dynamic>>[];
-
-  @override
-  void initState() {
-    super.initState();
-    initializeExpenses();
-  }
-
-  Future<void> initializeExpenses() async {
-    await databaseHelper.initializeDatabase();
-    final List<Map<String, dynamic>> expenseMapList = await databaseHelper.getExpenseMapList();
-    List<Map<String, dynamic>> tempList = List.from(expenseMapList);
-    tempList.sort((a, b) => b[DBExpenseTableConstants.modifiedAt].compareTo(a[DBExpenseTableConstants.modifiedAt]));
-    setState(() {
-      allExpenses = tempList;
-    });
-  }
+class ExpenseListDynamic extends StatelessWidget {
+  const ExpenseListDynamic({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // return getExpenseListViewV3();
-    return allExpenses == null
-        ? const Center(child: CircularProgressIndicator())
-        : getExpenseListViewV3();
-  }
-
-  getExpenseListViewV3() {
-    // allExpenses.sort((a, b) => a[DBExpenseTableConstants.modifiedAt].compareTo(a[DBExpenseTableConstants.modifiedAt]));
-    return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: _refreshExpensesList,
-        color: Colors.blue.shade500,
-        child: ListView.builder(
-          itemCount: allExpenses.isEmpty ? 1 : allExpenses.length,
-          itemBuilder: (context, index) {
-            return allExpenses.isEmpty ? getNoExpensesView() : getDismissibleExpenseTile(index, allExpenses[index]);
-          },
-        ),
-      ),
-      floatingActionButton: addExpenseButton()
+    return Consumer<ExpenseProvider>(
+        builder: (context, expenseProvider, child) => Scaffold(
+            body: RefreshIndicator(
+              onRefresh: () => expenseProvider.refreshExpenses(), // to be moved to provider
+              color: Colors.blue.shade500,
+              child: ListView.builder(
+                itemCount: expenseProvider.expenses.isEmpty
+                    ? 1
+                    : expenseProvider.expenses.length,
+                itemBuilder: (context, index) {
+                  return expenseProvider.expenses.isEmpty
+                      ? getNoExpensesView()
+                      : getDismissibleExpenseTile(context, index, expenseProvider.expenses[index], expenseProvider);
+                },
+              ),
+            ),
+        )
     );
   }
 
@@ -91,118 +61,91 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
     );
   }
 
-  Padding addExpenseButton() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 35.0),
-      child: FloatingActionButton(
-        backgroundColor: Colors.grey.shade500,
-        tooltip: 'Add New Expense',
-        onPressed: _addExpense,
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-
-  Future<void> _refreshExpensesList() async {
-    List<Map<String, dynamic>> expenseMapList = await databaseHelper.getExpenseMapList();
-    List<Map<String, dynamic>> tempList = List.from(expenseMapList);
-    tempList.sort((a, b) => b[DBExpenseTableConstants.modifiedAt].compareTo(a[DBExpenseTableConstants.modifiedAt]));
-    setState(() {
-      allExpenses = tempList;
-    });
-  }
-
-  Dismissible getDismissibleExpenseTile(int index, Map<String, dynamic> expenseMap) {
+  Dismissible getDismissibleExpenseTile(BuildContext context, int index, Expense expense, ExpenseProvider expenseProvider) {
     return Dismissible(
-        key: Key(expenseMap["id"].toString()),
-        background: Container(
-          color: Colors.red.shade400,
-          alignment: Alignment.centerLeft,
-          padding: const EdgeInsets.only(left: 20.0),
-          margin: const EdgeInsets.only(top: 0.0, bottom: 10.0),
-          child: const Icon(Icons.delete, color: Colors.white),
-        ),
-        secondaryBackground: Container(
-          color: Colors.blue.shade400,
-          alignment: Alignment.centerRight,
-          padding: const EdgeInsets.only(right: 20.0),
-          margin: const EdgeInsets.only(top: 0.0, bottom: 10.0),
-          child: const Icon(Icons.edit, color: Colors.white),
+    key: Key(expense.id.toString()),
+    background: Container(
+    color: Colors.red.shade400,
+    alignment: Alignment.centerLeft,
+    padding: const EdgeInsets.only(left: 20.0),
+    margin: const EdgeInsets.only(top: 0.0, bottom: 10.0),
+    child: const Icon(Icons.delete, color: Colors.white),
+    ),
+    secondaryBackground: Container(
+    color: Colors.blue.shade400,
+    alignment: Alignment.centerRight,
+    padding: const EdgeInsets.only(right: 20.0),
+    margin: const EdgeInsets.only(top: 0.0, bottom: 10.0),
+    child: const Icon(Icons.edit, color: Colors.white),
 
-        ),
-        onDismissed: (direction) {
-          if (direction == DismissDirection.startToEnd) {
-            // Swipe left to delete
-            _deleteExpense(context, index, expenseMap);
+    ),
+    onDismissed: (direction) {
+    if (direction == DismissDirection.startToEnd) {
+    // Swipe left to delete
+    _deleteExpense(context, index, expense, expenseProvider);
           } else {
             // Swipe right to edit
-            _editItem(index, expenseMap);
+            _editItem(context, index, expense, expenseProvider);
           }
         },
-        child: getExpenseListTile(expenseMap));
+        child: getExpenseListTile(context, expense));
   }
 
-  Container getExpenseListTile(Map<String, dynamic> expenseMap) {
+  Container getExpenseListTile(BuildContext context, Expense expense) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey.shade800,
       ),
       margin: const EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
       child: InkWell(
-        onTap: _editExpense,
-        child: ExpenseTileWidgets.expenseTile(expenseMap)
+          onTap: () => _editExpense(context, expense),
+          child: ExpenseTileWidgets.expenseTile(expense)
       ),
     );
   }
 
-  void _deleteExpense(BuildContext context, index, Map<String, dynamic> expenseMap) async {
-    int expenseLength = allExpenses.length;
+  void _deleteExpense(BuildContext context, int index, Expense expense, ExpenseProvider expenseProvider) async {
+    int expenseLength = expenseProvider.expenses.length;
     debugPrint("$expenseLength");
-    setState(() {
-      var newList = List<Map<String, dynamic>>.from(allExpenses);
-      newList.removeAt(index);
-      allExpenses = newList;
-    });
+    // setState(() {
+    //   var newList = List<Map<String, dynamic>>.from(allExpenses);
+    //   newList.removeAt(index);
+    //   allExpenses = newList;
+    // });
+    expenseProvider.deleteExpense(expense.id!);
 
-    bool undoDelete = await SnackBarService.showUndoSnackBar(context, "Deleting - ${expenseMap['title']}");
+    bool undoDelete = await SnackBarService.showUndoSnackBarWithContext(context, "Deleting - ${expense.title}");
     debugPrint("undoDelete $undoDelete");
 
     if (undoDelete){
-      setState(() {
-        if (index+1 == expenseLength) {
+      if (index+1 == expenseLength) {
           debugPrint("adding at end $index");
-          allExpenses.add(expenseMap);
+          expenseProvider.addExpense(expense);
         } else {
           debugPrint("adding at $index");
-          allExpenses.insert(index, expenseMap);
+          expenseProvider.insertExpense(index, expense);
         }
-      });
-      SnackBarService.showSuccessSnackBarWithContext(context, "Restored - ${expenseMap['title']}");
+      SnackBarService.showSuccessSnackBarWithContext(context, "Restored - ${expense.title}");
     } else {
-      int id = await _deleteExpenseFromDatabase(expenseMap);
+      int id = await _deleteExpenseFromDatabase(expense);
       if (id == 0) {
-        setState(() {
-          if (index+1 == expenseLength) {
-            debugPrint("adding at end $index");
-            allExpenses.add(expenseMap);
-          } else {
-            debugPrint("adding at $index");
-            allExpenses.insert(index, expenseMap);
-          }
-        });
+        if (index+1 == expenseLength) {
+          debugPrint("adding at end $index");
+          expenseProvider.addExpense(expense);
+        } else {
+          debugPrint("adding at $index");
+          expenseProvider.insertExpense(index, expense);
+        }
         SnackBarService.showErrorSnackBarWithContext(context, "Delete Failed");
       }
     }
   }
 
-  void _editItem(int index, Map<String, dynamic> expenseMap) async {
-    int expenseLength = allExpenses.length;
-    debugPrint("$expenseMap");
-    setState(() {
-      var newList = List<Map<String, dynamic>>.from(allExpenses);
-      newList.removeAt(index);
-      allExpenses = newList; // Update the state with the modified list
-    });
+  void _editItem(BuildContext context, int index, Expense expense, ExpenseProvider expenseProvider) async {
+    int expenseLength = expenseProvider.expenses.length;
+    debugPrint("$expense");
+
+    expenseProvider.deleteExpense(expense.id!);
 
     bool result = await Navigator.push(
       context,
@@ -210,18 +153,16 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
         builder: (context) => const ExpensePage(formMode: "Edit"),
       ),
     );
-    setState(() {
-      if (index+1 == expenseLength) {
-        debugPrint("adding at end $index");
-        allExpenses.add(expenseMap);
-      } else {
-        debugPrint("adding at $index");
-        allExpenses.insert(index, expenseMap);
-      }
-    });
+    if (index+1 == expenseLength) {
+      debugPrint("adding at end $index");
+      expenseProvider.addExpense(expense);
+    } else {
+      debugPrint("adding at $index");
+      expenseProvider.insertExpense(index, expense);
+    }
   }
 
-  void _editExpense(){
+  void _editExpense(BuildContext context, Expense expense){
     debugPrint("editing");
     Navigator.push(
       context,
@@ -231,7 +172,7 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
     );
   }
 
-  void _addExpense() async {
+  void _addExpense(BuildContext context, ExpenseProvider expenseProvider) async {
     debugPrint("clicked");
     var result = await Navigator.push(
       context,
@@ -240,11 +181,14 @@ class _ExpenseListDynamicState extends State<ExpenseListDynamic> {
       ),
     );
     debugPrint("after return $result");
-    _refreshExpensesList();
+    expenseProvider.refreshExpenses();
+
   }
 
-  Future<int> _deleteExpenseFromDatabase(Map<String, dynamic> expenseMap) async {
+  Future<int> _deleteExpenseFromDatabase(Expense expense) async {
     DatabaseHelper databaseHelper = DatabaseHelper();
-    return await databaseHelper.deleteExpense(expenseMap['id']);
+    return await databaseHelper.deleteExpense(expense.id!);
   }
+
+
 }

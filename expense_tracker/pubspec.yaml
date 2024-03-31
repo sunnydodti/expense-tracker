@@ -19,6 +19,7 @@ dependencies:
   path: ^1.8.2
   path_provider: any
   faker:
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:

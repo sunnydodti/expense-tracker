@@ -3,31 +3,33 @@ import 'package:expense_tracker/models/transaction_type.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../models/expense_new.dart';
+
 class ExpenseTileWidgets {
 
-  static Container expenseTile(Map<String, dynamic> expenseMap) {
+  static Container expenseTile(Expense expense) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
       child: Column(
         children:[
           Row(
             children: [
-              titleWidget(expenseMap),
-              categoryWidget(expenseMap),
-              getExpenseDate(expenseMap)
+              titleWidget(expense),
+              categoryWidget(expense),
+              getExpenseDate(expense)
             ],
           ),
           const SizedBox(height: 5.0),
           Row(
             children: [
-              tagsWidget(expenseMap)
+              tagsWidget(expense)
             ],
           ),
           const SizedBox(height: 5.0),
           Row(
             children: [
-              noteWidget(expenseMap),
-              amountWidget(expenseMap),
+              noteWidget(expense),
+              amountWidget(expense),
             ],
           )
         ],
@@ -35,14 +37,14 @@ class ExpenseTileWidgets {
     );
   }
 
-  static Expanded getExpenseDate(Map<String, dynamic> expenseMap) {
+  static Expanded getExpenseDate(Expense expense) {
     return Expanded(
       child: Align(
         alignment: Alignment.topRight,
         child: Padding(
           padding: EdgeInsets.zero,
           child: Text(
-            DateFormat('dd-MM-yy').format(DateTime.parse(expenseMap[DBExpenseTableConstants.expenseColDate])),
+            DateFormat('dd-MM-yy').format(expense.date),
             style: const TextStyle(fontSize: 16.0),
           ),
         ),
@@ -50,14 +52,14 @@ class ExpenseTileWidgets {
     );
   }
 
-  static Expanded titleWidget(Map<String, dynamic> expenseMap) {
+  static Expanded titleWidget(Expense expense) {
     return Expanded(
       child: Align(
         alignment: Alignment.topLeft,
         child: Padding(
           padding: EdgeInsets.zero,
           child: Text(
-            expenseMap['title'],
+            expense.title,
             style: const TextStyle(fontSize: 16.0),
           ),
         ),
@@ -65,7 +67,7 @@ class ExpenseTileWidgets {
     );
   }
 
-  static Expanded categoryWidget(Map<String, dynamic> expenseMap) {
+  static Expanded categoryWidget(Expense expense) {
     return Expanded(
       child: Align(
         alignment: Alignment.topLeft,
@@ -75,7 +77,7 @@ class ExpenseTileWidgets {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  '${expenseMap['category']} ',
+                  '${expense.category} ',
                   style: const TextStyle(
                     fontSize: 16.0,
                   ),
@@ -89,12 +91,12 @@ class ExpenseTileWidgets {
     );
   }
 
-  static Container tagsWidget(Map<String, dynamic> expenseMap) {
+  static Container tagsWidget(Expense expense) {
     Text tags;
-    expenseMap['note'] == null
+    expense.note == null
         ? tags = const Text("")
         : tags = Text(
-      expenseMap['tags'],
+      expense.tags!,
       style: const TextStyle(fontSize: 10.0),
     );
     return Container(
@@ -102,9 +104,9 @@ class ExpenseTileWidgets {
     );
   }
 
-  static Expanded noteWidget(Map<String, dynamic> expenseMap) {
+  static Expanded noteWidget(Expense expense) {
     Text note;
-    (expenseMap['note'] == null || expenseMap['note'] == "")
+    (expense.note == null || expense.note == "")
         ? note = const Text(
           "Add Notes",
           style: TextStyle(
@@ -113,7 +115,7 @@ class ExpenseTileWidgets {
           ),
         )
         : note = Text(
-            '${expenseMap['note']}',
+            '${expense.note}',
             style: const TextStyle(fontSize: 13.5),
         );
     return Expanded(
@@ -138,24 +140,24 @@ class ExpenseTileWidgets {
     );
   }
 
-  static Expanded amountWidget(Map<String, dynamic> expenseMap) {
+  static Expanded amountWidget(Expense expense) {
     return Expanded(
       flex: 1,
       child: Align(
         alignment: Alignment.topRight,
-        child: _getAmount(expenseMap),
+        child: _getAmount(expense),
       ),
     );
   }
 
-  static Align _getAmount(Map<String, dynamic> expenseMap) {
-    String transactionType = expenseMap[DBExpenseTableConstants.expenseColTransactionType];
+  static Align _getAmount(Expense expense) {
+    String transactionType = expense.transactionType;
     return Align(
       alignment: Alignment.topLeft,
       child: Padding(
         padding: const EdgeInsets.only(left: 45.0),
         child: Text(
-          _getAmountText(expenseMap),
+          _getAmountText(expense),
           style: TextStyle(
             fontSize: 16.0,
             color: _getAmountColor(transactionType),
@@ -165,10 +167,10 @@ class ExpenseTileWidgets {
     );
   }
 
-  static String _getAmountText(Map<String, dynamic> expenseMap) {
-    String amountText = "${expenseMap[DBExpenseTableConstants.expenseColCurrency]}"
-        "${expenseMap[DBExpenseTableConstants.expenseColAmount]}";
-    amountText = (expenseMap[DBExpenseTableConstants.expenseColTransactionType] == TransactionType.expense.name)
+  static String _getAmountText(Expense expense) {
+    String amountText = "${expense.currency}"
+        "${expense.amount}";
+    amountText = (expense.transactionType == TransactionType.expense.name)
       ? "- $amountText"
       : "+ $amountText";
     return amountText;
