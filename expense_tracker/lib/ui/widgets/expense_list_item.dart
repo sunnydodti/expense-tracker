@@ -1,6 +1,10 @@
-import 'package:expense_tracker/forms/expense_form_v2.dart';
+import 'package:expense_tracker/forms/expense_form.dart';
+import 'package:expense_tracker/forms/form_modes.dart';
 import 'package:expense_tracker/ui/pages/expense_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/expense_provider.dart';
 
 class ExpenseListItem extends StatefulWidget {
   // final Expense expense;
@@ -54,15 +58,24 @@ class _ExpenseListItemState extends State<ExpenseListItem> {
       ),
     );
   }
-  void editExpense(){
+  void editExpense() async {
     debugPrint("tapped");
-    Navigator.push(
+    int result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const ExpensePage(formMode: "Edit"),
+        builder: (context) => const ExpensePage(formMode: FormMode.edit),
       ),
     );
+    if (result > 0){
+      _refreshExpenses();
+    }
   }
+
+  _refreshExpenses() {
+    final expenseProvider = Provider.of<ExpenseProvider>(context, listen: false);
+    expenseProvider.refreshExpenses();
+  }
+
   Expanded displayAmount() {
     return Expanded(
       flex: 1,
@@ -162,7 +175,7 @@ class _ExpenseListItemState extends State<ExpenseListItem> {
     widget.expenseMap;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Item deleted'),
+        content: const Text('Item deleted'),
         action: SnackBarAction(
           label: 'Undo',
           onPressed: () {
@@ -178,7 +191,7 @@ class _ExpenseListItemState extends State<ExpenseListItem> {
   void _editItem(int index) {
     // Implement editing logic here
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         content: Text('Edit item'),
 
       ),

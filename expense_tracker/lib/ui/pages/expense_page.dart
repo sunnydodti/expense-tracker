@@ -1,40 +1,42 @@
-import 'package:expense_tracker/forms/expense_form_v2.dart';
+import 'package:expense_tracker/forms/expense_form.dart';
+import 'package:expense_tracker/forms/form_modes.dart';
 import 'package:flutter/material.dart';
 
-class ExpensePage extends StatefulWidget {
-  const ExpensePage({Key? key, required this.formMode}) : super(key: key);
+import '../../models/expense_new.dart';
 
-  final String formMode;
+class ExpensePage extends StatelessWidget {
+  final FormMode formMode;
+  final Expense? expense;
 
-  @override
-  State<ExpensePage> createState() => _ExpensePageState();
-}
+  const ExpensePage({Key? key, required this.formMode, this.expense}) : super(key: key);
 
-class _ExpensePageState extends State<ExpensePage> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () => navigateBack(false),
+      onWillPop: () => navigateBack(context, false),
       child: Scaffold(
           appBar: AppBar(
             leading: SafeArea(child: BackButton(
-              onPressed: () => navigateBack(true),
+              onPressed: () => navigateBack(context, false),
             )),
             centerTitle: true,
-            title: Text("${widget.formMode} Expense"),
-            // actions: [
-            //   IconButton(
-            //     icon: const Icon(Icons.check),
-            //     tooltip: "Save",
-            //     onPressed: () => {},
-            //   ),
-            // ],
+            title: Text("${formMode.name.replaceFirst(
+              RegExp(r'^\w'),
+              formMode.name[0].toUpperCase(),
+            )} Expense"),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.check),
+                tooltip: "Save",
+                onPressed: () => {},
+              ),
+            ],
           ),
-          body: ExpenseFormV2(formMode: widget.formMode)),
+          body: ExpenseForm(formMode: formMode, expense: expense)),
     );
   }
 
-  navigateBack(bool result) {
+  navigateBack(BuildContext context, bool result) {
     Navigator.pop(context, result);
   }
 }

@@ -10,14 +10,13 @@ import '../../models/expense_new.dart';
 
 import 'package:faker/faker.dart';
 
-
-
 class DatabaseHelper {
   static DatabaseHelper? _databaseHelper;
   static Database? _database;
+
   DatabaseHelper._createInstance();
 
-  factory DatabaseHelper(){
+  factory DatabaseHelper() {
     _databaseHelper ??= DatabaseHelper._createInstance();
     return _databaseHelper!;
   }
@@ -89,19 +88,40 @@ class DatabaseHelper {
   // READ
   Future<List<Expense>> getExpenses() async {
     Database database = await getDatabase;
-    final List<Map<String, dynamic>> expenseMaps = await database.query(DBExpenseTableConstants.expenseTable);
-    return expenseMaps.map((expenseMap) => Expense.fromMap(expenseMap)).toList();
+    final List<Map<String, dynamic>> expenseMaps =
+        await database.query(DBExpenseTableConstants.expenseTable);
+    return expenseMaps
+        .map((expenseMap) => Expense.fromMap(expenseMap))
+        .toList();
   }
 
   // UPDATE
-  Future<int> updateExpense(Expense expense) async {
+  Future<int> updateExpense(ExpenseFormModel expense) async {
+    expense.modifiedAt ??= DateTime.now();
+    debugPrint("updating");
+    debugPrint(expense.toMap().toString());
     Database database = await getDatabase;
-    return await database.update(
+    return database.update(
       DBExpenseTableConstants.expenseTable,
       expense.toMap(),
       where: '${DBExpenseTableConstants.id} = ?',
       whereArgs: [expense.id],
     );
+  }
+
+  Future<int> updateExpenseV2(ExpenseFormModel expense) async {
+    expense.modifiedAt ??= DateTime.now();
+    debugPrint("updating");
+    debugPrint(expense.toMap().toString());
+    Database database = await getDatabase;
+    return database.rawUpdate('''
+      UPDATE ${DBExpenseTableConstants.expenseTable}
+      SET ${DBExpenseTableConstants.amount} = ?
+      WHERE ${DBExpenseTableConstants.id} = ? 
+      ''',[
+        expense.amount,
+        expense.id
+    ]);
   }
 
   // DELETE
@@ -120,7 +140,6 @@ class DatabaseHelper {
     return await database.delete(DBExpenseTableConstants.expenseTable);
   }
 
-
   // GET COUNT
   Future<int> getExpenseCount() async {
     Database database = await getDatabase;
@@ -133,9 +152,7 @@ class DatabaseHelper {
   // Get all Expenses (map) from database
   Future<List<Map<String, dynamic>>> getExpenseMapList() async {
     Database database = await getDatabase;
-    var result = await database.query(
-      DBExpenseTableConstants.expenseTable
-    );
+    var result = await database.query(DBExpenseTableConstants.expenseTable);
     return result;
   }
 
@@ -152,21 +169,29 @@ class DatabaseHelper {
       );
     }
   }
+
   Map<String, dynamic> generateRandomExpense() {
     double amount = faker.randomGenerator.decimal() * (1000.0 - 1.0) + 1.0;
-    var expense  = {
+    var expense = {
       DBExpenseTableConstants.title: faker.food.dish(),
-      DBExpenseTableConstants.currency: "₹",
+      DBExpenseTableConstants.currency: "INR",
       DBExpenseTableConstants.amount: double.parse(amount.toStringAsFixed(2)),
-      DBExpenseTableConstants.transactionType: faker.randomGenerator.boolean() ? 'income' : 'expense',
+      DBExpenseTableConstants.transactionType:
+          faker.randomGenerator.boolean() ? 'income' : 'expense',
       DBExpenseTableConstants.date: faker.date.dateTime().toIso8601String(),
-      DBExpenseTableConstants.category: faker.randomGenerator.boolean() ? 'Food' : 'Shopping',
-      DBExpenseTableConstants.tags: faker.randomGenerator.boolean() ? 'home' : 'work',
+      DBExpenseTableConstants.category:
+          faker.randomGenerator.boolean() ? 'Food' : 'Shopping',
+      DBExpenseTableConstants.tags:
+          faker.randomGenerator.boolean() ? 'home' : 'work',
       DBExpenseTableConstants.note: faker.lorem.sentence(),
-      DBExpenseTableConstants.containsNestedExpenses: faker.randomGenerator.boolean() ? 1 : 0,
-      DBExpenseTableConstants.expenses: 'Nested expenses data', // Add appropriate nested expenses data
-      DBExpenseTableConstants.createdAt: faker.date.dateTime().toIso8601String(),
-      DBExpenseTableConstants.modifiedAt: faker.date.dateTime().toIso8601String(),
+      DBExpenseTableConstants.containsNestedExpenses:
+          faker.randomGenerator.boolean() ? 1 : 0,
+      DBExpenseTableConstants.expenses: 'Nested expenses data',
+      // Add appropriate nested expenses data
+      DBExpenseTableConstants.createdAt:
+          faker.date.dateTime().toIso8601String(),
+      DBExpenseTableConstants.modifiedAt:
+          faker.date.dateTime().toIso8601String(),
     };
     return expense;
   }

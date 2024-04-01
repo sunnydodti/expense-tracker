@@ -6,6 +6,7 @@ import 'package:expense_tracker/ui/widgets/expense_tile_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../forms/form_modes.dart';
 import '../../providers/expense_provider.dart';
 
 class ExpenseListDynamic extends StatelessWidget {
@@ -64,41 +65,40 @@ class ExpenseListDynamic extends StatelessWidget {
   Dismissible getDismissibleExpenseTile(BuildContext context, int index, Expense expense, ExpenseProvider expenseProvider) {
     return Dismissible(
     key: Key(expense.id.toString()),
-    background: Container(
-    color: Colors.red.shade400,
-    alignment: Alignment.centerLeft,
-    padding: const EdgeInsets.only(left: 20.0),
-    margin: const EdgeInsets.only(top: 0.0, bottom: 10.0),
-    child: const Icon(Icons.delete, color: Colors.white),
-    ),
-    secondaryBackground: Container(
-    color: Colors.blue.shade400,
-    alignment: Alignment.centerRight,
-    padding: const EdgeInsets.only(right: 20.0),
-    margin: const EdgeInsets.only(top: 0.0, bottom: 10.0),
-    child: const Icon(Icons.edit, color: Colors.white),
-
-    ),
-    onDismissed: (direction) {
-    if (direction == DismissDirection.startToEnd) {
-    // Swipe left to delete
-    _deleteExpense(context, index, expense, expenseProvider);
-          } else {
-            // Swipe right to edit
-            _editItem(context, index, expense, expenseProvider);
-          }
-        },
-        child: getExpenseListTile(context, expense));
+      background: Container(
+        color: Colors.red.shade400,
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.only(left: 20.0),
+        margin: const EdgeInsets.only(top: 0.0, bottom: 10.0),
+        child: const Icon(Icons.delete, color: Colors.white),
+      ),
+      secondaryBackground: Container(
+        color: Colors.blue.shade400,
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20.0),
+        margin: const EdgeInsets.only(top: 0.0, bottom: 10.0),
+        child: const Icon(Icons.edit, color: Colors.white),
+      ),
+      onDismissed: (direction) {
+        if (direction == DismissDirection.startToEnd) {
+        // Swipe left to delete
+        _deleteExpense(context, index, expense, expenseProvider);
+        } else {
+          // Swipe right to edit
+          _editItem(context, index, expense, expenseProvider);
+        }
+      },
+      child: getExpenseListTile(context, expense, expenseProvider));
   }
 
-  Container getExpenseListTile(BuildContext context, Expense expense) {
+  Container getExpenseListTile(BuildContext context, Expense expense, ExpenseProvider expenseProvider) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey.shade800,
       ),
       margin: const EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
       child: InkWell(
-          onTap: () => _editExpense(context, expense),
+          onTap: () => _editExpense(context, expense, expenseProvider),
           child: ExpenseTileWidgets.expenseTile(expense)
       ),
     );
@@ -107,11 +107,7 @@ class ExpenseListDynamic extends StatelessWidget {
   void _deleteExpense(BuildContext context, int index, Expense expense, ExpenseProvider expenseProvider) async {
     int expenseLength = expenseProvider.expenses.length;
     debugPrint("$expenseLength");
-    // setState(() {
-    //   var newList = List<Map<String, dynamic>>.from(allExpenses);
-    //   newList.removeAt(index);
-    //   allExpenses = newList;
-    // });
+
     expenseProvider.deleteExpense(expense.id!);
 
     bool undoDelete = await SnackBarService.showUndoSnackBarWithContext(context, "Deleting - ${expense.title}");
@@ -150,7 +146,7 @@ class ExpenseListDynamic extends StatelessWidget {
     bool result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const ExpensePage(formMode: "Edit"),
+        builder: (context) => ExpensePage(formMode: FormMode.edit, expense: expense),
       ),
     );
     if (index+1 == expenseLength) {
@@ -160,29 +156,18 @@ class ExpenseListDynamic extends StatelessWidget {
       debugPrint("adding at $index");
       expenseProvider.insertExpense(index, expense);
     }
+    if (result) expenseProvider.refreshExpenses();
   }
 
-  void _editExpense(BuildContext context, Expense expense){
+  void _editExpense(BuildContext context, Expense expense, ExpenseProvider expenseProvider) async {
     debugPrint("editing");
-    Navigator.push(
+    bool result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const ExpensePage(formMode: "Edit"),
+        builder: (context) => ExpensePage(formMode: FormMode.edit, expense: expense),
       ),
     );
-  }
-
-  void _addExpense(BuildContext context, ExpenseProvider expenseProvider) async {
-    debugPrint("clicked");
-    var result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const ExpensePage(formMode: "Add"),
-      ),
-    );
-    debugPrint("after return $result");
-    expenseProvider.refreshExpenses();
-
+    if (result) expenseProvider.refreshExpenses();
   }
 
   Future<int> _deleteExpenseFromDatabase(Expense expense) async {

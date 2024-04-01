@@ -1,6 +1,8 @@
 import 'package:expense_tracker/ui/pages/expense_page.dart';
 import 'package:flutter/material.dart';
 
+import '../../forms/form_modes.dart';
+
 class ExpenseListItemV2 extends StatefulWidget {
   // final Expense expense;
   final List<Map<String, dynamic>> expenseMapListOG;
@@ -104,7 +106,7 @@ class _ExpenseListItemV2State extends State<ExpenseListItemV2> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const ExpensePage(formMode: "Edit"),
+        builder: (context) => const ExpensePage(formMode: FormMode.edit),
       ),
     );
   }

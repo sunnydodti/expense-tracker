@@ -3,6 +3,7 @@ import 'package:expense_tracker/models/transaction_type.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../builder/form_builder.dart';
 import '../../models/expense_new.dart';
 
 class ExpenseTileWidgets {
@@ -168,7 +169,7 @@ class ExpenseTileWidgets {
   }
 
   static String _getAmountText(Expense expense) {
-    String amountText = "${expense.currency}"
+    String amountText = "${FromBuilder.getCurrenciesListMap()[expense.currency]}"
         "${expense.amount}";
     amountText = (expense.transactionType == TransactionType.expense.name)
       ? "- $amountText"

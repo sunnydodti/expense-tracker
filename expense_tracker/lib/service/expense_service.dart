@@ -10,6 +10,11 @@ class ExpenseService {
     return id > 0 ? true : false;
   }
 
+  Future<bool> updateExpense(ExpenseFormModel expense) async {
+    int result = await _databaseHelper.updateExpense(expense);
+    return result > 0 ? true : false;
+  }
+
   Future<List<ExpenseV2>> getExpenses() async {
     List<Map<String, dynamic>> expenseList = await _databaseHelper.getExpenseMapList();
     return _mapToModelList(expenseList);

@@ -1,4 +1,5 @@
 import 'package:expense_tracker/data/database/database_helper.dart';
+import 'package:expense_tracker/forms/form_modes.dart';
 import 'package:expense_tracker/ui/drawer/home_drawer.dart';
 import 'package:expense_tracker/ui/widgets/ExpenseListDynamic.dart';
 import 'package:flutter/material.dart';
@@ -34,13 +35,17 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Colors.black,
           actions: [
             IconButton(
-              icon: const Icon(Icons.person),
-              tooltip: "Profile",
+              icon: const Icon(Icons.add),
+              tooltip: "add random expense",
               onPressed: () async  => {
-                debugPrint("clicked profile"),
                 await databaseHelper.populateDatabase(),
                 _refreshExpensesHome(expenseProvider)
               },
+            ),
+            IconButton(
+              icon: const Icon(Icons.person),
+              tooltip: "Profile",
+              onPressed: () async  => {},
             ),
           ],
         ),
@@ -63,18 +68,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _addExpense(BuildContext context, ExpenseProvider expenseProvider) async {
-    debugPrint("clicked");
     var result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const ExpensePage(formMode: "Add"),
+        builder: (context) => const ExpensePage(formMode: FormMode.add),
       ),
     );
-    debugPrint("after return $result");
-    expenseProvider.refreshExpenses();
+    if (result) expenseProvider.refreshExpenses();
 
   }
-  Future<void> _refreshExpensesHome(ExpenseProvider expenseProvider) async {
-    expenseProvider.refreshExpenses();
-  }
+  Future<void> _refreshExpensesHome(ExpenseProvider expenseProvider) =>
+      expenseProvider.refreshExpenses();
 }

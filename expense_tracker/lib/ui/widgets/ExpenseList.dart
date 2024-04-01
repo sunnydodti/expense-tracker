@@ -3,6 +3,7 @@ import 'package:expense_tracker/ui/pages/expense_page.dart';
 import 'package:expense_tracker/ui/widgets/expense_tile_widgets.dart';
 import 'package:flutter/material.dart';
 
+import '../../forms/form_modes.dart';
 import '../../models/expense_new.dart';
 
 class ExpenseList extends StatefulWidget {
@@ -96,18 +97,18 @@ class _ExpenseListState extends State<ExpenseList> {
       ),
       margin: const EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
       child: InkWell(
-        onTap: editExpense,
+        onTap: () => editExpense(expense),
         child: ExpenseTileWidgets.expenseTile(expense),
       ),
     );
   }
 
-  void editExpense(){
+  void editExpense(Expense expense) {
     debugPrint("tapped");
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const ExpensePage(formMode: "Edit"),
+        builder: (context) => ExpensePage(formMode: FormMode.edit, expense: expense),
       ),
     );
   }
@@ -119,7 +120,7 @@ class _ExpenseListState extends State<ExpenseList> {
     var result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ExpensePage(formMode: "Add"),
+        builder: (context) => const ExpensePage(formMode: FormMode.add),
       ),
     );
     debugPrint("after return $result");
