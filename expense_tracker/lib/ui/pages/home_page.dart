@@ -49,7 +49,11 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        body: const ExpenseListDynamic(),
+        body: Column(
+          children: const [
+            Expanded(child: ExpenseListDynamic())
+          ],
+        ),
         floatingActionButton: addExpenseButton(context, expenseProvider)
       ),
     ));

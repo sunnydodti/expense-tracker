@@ -99,9 +99,13 @@ class _HomeDrawerState extends State<HomeDrawer> {
     ExpenseService expenseService = ExpenseService();
     int result = await expenseService.deleteAllExpenses();
     if (result > 0) {
-      final expenseProvider = Provider.of<ExpenseProvider>(context, listen: false);
-      expenseProvider.refreshExpenses();
+      _refreshExpenses();
     }
     return result;
+  }
+
+  _refreshExpenses() {
+    final expenseProvider = Provider.of<ExpenseProvider>(context, listen: false);
+    expenseProvider.refreshExpenses();
   }
 }

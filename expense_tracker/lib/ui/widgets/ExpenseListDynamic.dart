@@ -14,23 +14,126 @@ class ExpenseListDynamic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    _refreshExpenses(context);
     return Consumer<ExpenseProvider>(
         builder: (context, expenseProvider, child) => Scaffold(
-            body: RefreshIndicator(
-              onRefresh: () => expenseProvider.refreshExpenses(), // to be moved to provider
-              color: Colors.blue.shade500,
-              child: ListView.builder(
-                itemCount: expenseProvider.expenses.isEmpty
-                    ? 1
-                    : expenseProvider.expenses.length,
-                itemBuilder: (context, index) {
-                  return expenseProvider.expenses.isEmpty
-                      ? getNoExpensesView()
-                      : getDismissibleExpenseTile(context, index, expenseProvider.expenses[index], expenseProvider);
-                },
+              body: RefreshIndicator(
+                  onRefresh: () => expenseProvider.refreshExpenses(),
+                  color: Colors.blue.shade500,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      getSummaryTile(expenseProvider),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: expenseProvider.expenses.isEmpty
+                              ? 1
+                              : expenseProvider.expenses.length,
+                          itemBuilder: (context, index) {
+                            return expenseProvider.expenses.isEmpty
+                                ? getNoExpensesView()
+                                : getDismissibleExpenseTile(
+                                    context,
+                                    index,
+                                    expenseProvider.expenses[index],
+                                    expenseProvider);
+                          },
+                        ),
+                      )
+                    ],
+                  )),
+            ));
+  }
+
+  Container getSummaryTile(ExpenseProvider expenseProvider) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey.shade800,
+      ),
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      child: Column(
+        children: [
+          Container(
+              decoration: BoxDecoration(
+                color: Colors.grey.shade700,
               ),
-            ),
-        )
+              margin: const EdgeInsets.only(
+                  top: 10, bottom: 5, left: 10, right: 10),
+              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+              width: double.infinity,
+              child: Column(
+                children: [
+                  getSummaryText("Total Balance"),
+                  const SizedBox(height: 5),
+                  getSummaryAmount(expenseProvider.getTotalBalance()),
+                ],
+              )),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade700,
+                    ),
+                    margin: const EdgeInsets.only(
+                        top: 5, bottom: 10, left: 10, right: 5),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                    child: Column(
+                      children: [
+                        getSummaryText("Total Income"),
+                        const SizedBox(height: 5),
+                        getSummaryAmount(expenseProvider.getTotalIncome()),
+                      ],
+                    )),
+              ),
+              Expanded(
+                child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade700,
+                    ),
+                    margin: const EdgeInsets.only(
+                        top: 5, bottom: 10, left: 5, right: 10),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                    child: Column(
+                      children: [
+                        getSummaryText("Total Expense"),
+                        const SizedBox(height: 5),
+                        getSummaryAmount(
+                            expenseProvider.getTotalExpenses() * -1),
+                      ],
+                    )),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Text getSummaryAmount(double amount) {
+    String sign = amount > 0 ? '+' : (amount < 0 ? '-' : '');
+    return Text(
+      '$sign ₹${amount.abs().round()}',
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 18,
+        color: amount > 0 ? Colors.green.shade400 : (amount < 0 ? Colors.red.shade400 : Colors.white70),
+      ),
+    );
+  }
+
+  Text getSummaryText(String summaryText) {
+    return Text(
+      summaryText,
+      textAlign: TextAlign.center,
+      style: const TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 18,
+        color: Colors.white70,
+      ),
     );
   }
 
@@ -62,70 +165,75 @@ class ExpenseListDynamic extends StatelessWidget {
     );
   }
 
-  Dismissible getDismissibleExpenseTile(BuildContext context, int index, Expense expense, ExpenseProvider expenseProvider) {
+  Dismissible getDismissibleExpenseTile(BuildContext context, int index,
+      Expense expense, ExpenseProvider expenseProvider) {
     return Dismissible(
-    key: Key(expense.id.toString()),
-      background: Container(
-        color: Colors.red.shade400,
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.only(left: 20.0),
-        margin: const EdgeInsets.only(top: 0.0, bottom: 10.0),
-        child: const Icon(Icons.delete, color: Colors.white),
-      ),
-      secondaryBackground: Container(
-        color: Colors.blue.shade400,
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20.0),
-        margin: const EdgeInsets.only(top: 0.0, bottom: 10.0),
-        child: const Icon(Icons.edit, color: Colors.white),
-      ),
-      onDismissed: (direction) {
-        if (direction == DismissDirection.startToEnd) {
-        // Swipe left to delete
-        _deleteExpense(context, index, expense, expenseProvider);
-        } else {
-          // Swipe right to edit
-          _editItem(context, index, expense, expenseProvider);
-        }
-      },
-      child: getExpenseListTile(context, expense, expenseProvider));
+        key: Key(expense.id.toString()),
+        background: Container(
+          color: Colors.red.shade400,
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.only(left: 20.0),
+          margin: const EdgeInsets.only(top: 0.0, bottom: 10.0),
+          child: const Icon(Icons.delete, color: Colors.white),
+        ),
+        secondaryBackground: Container(
+          color: Colors.blue.shade400,
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.only(right: 20.0),
+          margin: const EdgeInsets.only(top: 0.0, bottom: 10.0),
+          child: const Icon(Icons.edit, color: Colors.white),
+        ),
+        onDismissed: (direction) {
+          if (direction == DismissDirection.startToEnd) {
+            // Swipe left to delete
+            _deleteExpense(context, index, expense, expenseProvider);
+          } else {
+            // Swipe right to edit
+            _editItem(context, index, expense, expenseProvider);
+          }
+        },
+        child: getExpenseListTile(context, expense, expenseProvider));
   }
 
-  Container getExpenseListTile(BuildContext context, Expense expense, ExpenseProvider expenseProvider) {
+  Container getExpenseListTile(
+      BuildContext context, Expense expense, ExpenseProvider expenseProvider) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey.shade800,
+        borderRadius: BorderRadius.circular(10),
       ),
       margin: const EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
       child: InkWell(
           onTap: () => _editExpense(context, expense, expenseProvider),
-          child: ExpenseTileWidgets.expenseTile(expense)
-      ),
+          child: ExpenseTileWidgets.expenseTile(expense)),
     );
   }
 
-  void _deleteExpense(BuildContext context, int index, Expense expense, ExpenseProvider expenseProvider) async {
+  void _deleteExpense(BuildContext context, int index, Expense expense,
+      ExpenseProvider expenseProvider) async {
     int expenseLength = expenseProvider.expenses.length;
     debugPrint("$expenseLength");
 
     expenseProvider.deleteExpense(expense.id!);
 
-    bool undoDelete = await SnackBarService.showUndoSnackBarWithContext(context, "Deleting - ${expense.title}");
+    bool undoDelete = await SnackBarService.showUndoSnackBarWithContext(
+        context, "Deleting - ${expense.title}");
     debugPrint("undoDelete $undoDelete");
 
-    if (undoDelete){
-      if (index+1 == expenseLength) {
-          debugPrint("adding at end $index");
-          expenseProvider.addExpense(expense);
-        } else {
-          debugPrint("adding at $index");
-          expenseProvider.insertExpense(index, expense);
-        }
-      SnackBarService.showSuccessSnackBarWithContext(context, "Restored - ${expense.title}");
+    if (undoDelete) {
+      if (index + 1 == expenseLength) {
+        debugPrint("adding at end $index");
+        expenseProvider.addExpense(expense);
+      } else {
+        debugPrint("adding at $index");
+        expenseProvider.insertExpense(index, expense);
+      }
+      SnackBarService.showSuccessSnackBarWithContext(
+          context, "Restored - ${expense.title}");
     } else {
       int id = await _deleteExpenseFromDatabase(expense);
       if (id == 0) {
-        if (index+1 == expenseLength) {
+        if (index + 1 == expenseLength) {
           debugPrint("adding at end $index");
           expenseProvider.addExpense(expense);
         } else {
@@ -137,7 +245,8 @@ class ExpenseListDynamic extends StatelessWidget {
     }
   }
 
-  void _editItem(BuildContext context, int index, Expense expense, ExpenseProvider expenseProvider) async {
+  void _editItem(BuildContext context, int index, Expense expense,
+      ExpenseProvider expenseProvider) async {
     int expenseLength = expenseProvider.expenses.length;
     debugPrint("$expense");
 
@@ -146,10 +255,11 @@ class ExpenseListDynamic extends StatelessWidget {
     bool result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ExpensePage(formMode: FormMode.edit, expense: expense),
+        builder: (context) =>
+            ExpensePage(formMode: FormMode.edit, expense: expense),
       ),
     );
-    if (index+1 == expenseLength) {
+    if (index + 1 == expenseLength) {
       debugPrint("adding at end $index");
       expenseProvider.addExpense(expense);
     } else {
@@ -159,12 +269,14 @@ class ExpenseListDynamic extends StatelessWidget {
     if (result) expenseProvider.refreshExpenses();
   }
 
-  void _editExpense(BuildContext context, Expense expense, ExpenseProvider expenseProvider) async {
+  void _editExpense(BuildContext context, Expense expense,
+      ExpenseProvider expenseProvider) async {
     debugPrint("editing");
     bool result = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ExpensePage(formMode: FormMode.edit, expense: expense),
+        builder: (context) =>
+            ExpensePage(formMode: FormMode.edit, expense: expense),
       ),
     );
     if (result) expenseProvider.refreshExpenses();
@@ -175,5 +287,9 @@ class ExpenseListDynamic extends StatelessWidget {
     return await databaseHelper.deleteExpense(expense.id!);
   }
 
-
+  _refreshExpenses(BuildContext context) {
+    final expenseProvider =
+        Provider.of<ExpenseProvider>(context, listen: false);
+    expenseProvider.refreshExpenses();
+  }
 }

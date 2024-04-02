@@ -32,7 +32,7 @@ class SnackBarService {
     );
   }
 
-  static void showSuccessSnackBarWithContext(BuildContext context, String message, {bool removeCurrent = false}) {
+  static Future<bool> showSuccessSnackBarWithContext(BuildContext context, String message, {bool removeCurrent = false}) async {
     if (removeCurrent) ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -42,6 +42,7 @@ class SnackBarService {
         behavior: SnackBarBehavior.floating,
       ),
     );
+    return true;
   }
 
   static Future<bool> showUndoSnackBarWithContext(BuildContext context, String message, {bool removeCurrent = false}) async {
