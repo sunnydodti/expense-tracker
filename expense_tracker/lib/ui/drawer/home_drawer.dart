@@ -96,7 +96,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
   }
 
   Future<int> _deleteFromDatabase(BuildContext context) async {
-    ExpenseService expenseService = ExpenseService();
+    ExpenseService expenseService = await ExpenseService.create();
     int result = await expenseService.deleteAllExpenses();
     if (result > 0) {
       _refreshExpenses();

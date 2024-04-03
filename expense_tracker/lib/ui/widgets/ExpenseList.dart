@@ -27,7 +27,7 @@ class _ExpenseListState extends State<ExpenseList> {
 
   Future<void> initializeExpenses() async {
     await databaseHelper.initializeDatabase();
-    final List<Map<String, dynamic>> expenseMapList = await databaseHelper.getExpenseMapList();
+    final List<Map<String, dynamic>> expenseMapList = [];//await databaseHelper.getExpenseMapList();
     // await Future.delayed(const Duration(seconds: 2));
     setState(() {
       debugPrint("in init expenses ${expenseMapList.length} $expenseMapList");
@@ -129,7 +129,7 @@ class _ExpenseListState extends State<ExpenseList> {
 
   Future<void> _refreshExpenses() async {
     // await Future.delayed(Duration(seconds: 2));
-    final List<Map<String, dynamic>> expenseMapList = await databaseHelper.getExpenseMapList();
+    final List<Map<String, dynamic>> expenseMapList = []; //await databaseHelper.getExpenseMapList();
     setState(() {
       allExpenses = Expense.fromMapList(expenseMapList);
     });

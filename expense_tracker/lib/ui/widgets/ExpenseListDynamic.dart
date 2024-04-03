@@ -1,4 +1,5 @@
 import 'package:expense_tracker/data/database/database_helper.dart';
+import 'package:expense_tracker/data/database/expense_helper.dart';
 import 'package:expense_tracker/models/enums/form_modes.dart';
 import 'package:expense_tracker/models/expense.dart';
 import 'package:expense_tracker/providers/expense_provider.dart';
@@ -200,7 +201,7 @@ class ExpenseListDynamic extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey.shade800,
-        borderRadius: BorderRadius.circular(10),
+        // borderRadius: BorderRadius.circular(10),
       ),
       margin: const EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
       child: InkWell(
@@ -284,7 +285,8 @@ class ExpenseListDynamic extends StatelessWidget {
 
   Future<int> _deleteExpenseFromDatabase(Expense expense) async {
     DatabaseHelper databaseHelper = DatabaseHelper();
-    return await databaseHelper.deleteExpense(expense.id!);
+    ExpenseHelper expenseHelper = await databaseHelper.expenseHelper;
+    return await expenseHelper.deleteExpense(expense.id!);
   }
 
   _refreshExpenses(BuildContext context) {

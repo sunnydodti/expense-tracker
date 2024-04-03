@@ -485,12 +485,12 @@ class _ExpenseFormState extends State<ExpenseForm> {
   }
 
   Future<bool> insertExpense(ExpenseFormModel expense) async {
-    ExpenseService expenseService = ExpenseService();
+    ExpenseService expenseService = await ExpenseService.create();
     return await expenseService.addExpense(expense);
   }
 
   Future<bool> updateExpense(ExpenseFormModel expense) async {
-    ExpenseService expenseService = ExpenseService();
+    ExpenseService expenseService = await ExpenseService.create();
     return await expenseService.updateExpense(expense);
   }
 

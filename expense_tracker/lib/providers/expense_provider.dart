@@ -6,7 +6,15 @@ import '../models/expense.dart';
 import '../models/enums/transaction_type.dart';
 
 class ExpenseProvider extends ChangeNotifier {
-  final ExpenseService _expenseService = ExpenseService();
+  late final ExpenseService _expenseService;
+
+  ExpenseProvider() {
+    _init();
+  }
+
+  Future<void> _init() async {
+    _expenseService = await ExpenseService.create();
+  }
 
   // List<Expense> _expenses = Expense.fromMapList(_expenseMapList());
   List<Expense> _expenses = [];
