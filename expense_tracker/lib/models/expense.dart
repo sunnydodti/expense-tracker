@@ -1,4 +1,4 @@
-import 'package:expense_tracker/data/db_constants/DBConstants.dart';
+import 'package:expense_tracker/data/constants/DBConstants.dart';
 
 class Expense {
   int? _id; // required

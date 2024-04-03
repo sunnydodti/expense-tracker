@@ -5,7 +5,8 @@ class DBConstants {
 }
 
 class ExpenseConstants {
-  final String expenseTable = "expense_table";
+  final String table = "expense_table";
+
   final String id = "id";
   final String title = "title";
   final String currency = "currency";
@@ -20,4 +21,34 @@ class ExpenseConstants {
   final String expenses = "expenses";
   final String createdAt = "created_at";
   final String modifiedAt = "modified_at";
+}
+
+class CategoryConstants {
+  final String table = "categories";
+
+  final String id = "id";
+  final String name = "name";
+}
+
+class TagConstants {
+  final String table = "tags";
+
+  final String id = "id";
+  final String name = "name";
+}
+
+class CurrencyConstants {
+  final String table = "currencies";
+
+  final String id = "id";
+  final String name = "name";
+  final String symbol = "symbol";
+  final String country = "country";
+}
+
+class TransactionTypeConstants {
+  final String table = "transaction_types";
+
+  final String id = "id";
+  final String type = "type";
 }

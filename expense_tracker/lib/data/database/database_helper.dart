@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:expense_tracker/data/db_constants/DBConstants.dart';
+import 'package:expense_tracker/data/constants/DBConstants.dart';
 import 'package:expense_tracker/models/expense.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
@@ -39,7 +39,7 @@ class DatabaseHelper {
 
   void createDatabase(Database database, int newVersion) async {
     await database.execute('''
-          CREATE TABLE ${DBConstants.expense.expenseTable}(
+          CREATE TABLE ${DBConstants.expense.table}(
             ${DBConstants.expense.id} INTEGER PRIMARY KEY AUTOINCREMENT,
             ${DBConstants.expense.title} TEXT,
             ${DBConstants.expense.currency} TEXT,
@@ -58,10 +58,10 @@ class DatabaseHelper {
 
     await database.execute('''
       CREATE TRIGGER update_modified_at
-      AFTER UPDATE ON ${DBConstants.expense.expenseTable}
+      AFTER UPDATE ON ${DBConstants.expense.table}
       FOR EACH ROW
       BEGIN
-        UPDATE ${DBConstants.expense.expenseTable}
+        UPDATE ${DBConstants.expense.table}
         SET modified_at = CURRENT_TIMESTAMP
         WHERE ${DBConstants.expense.id} = OLD.${DBConstants.expense.id};
       END;
@@ -77,7 +77,7 @@ class DatabaseHelper {
     debugPrint(expense.toMap().toString());
     Database database = await getDatabase;
     return await database.insert(
-      DBConstants.expense.expenseTable,
+      DBConstants.expense.table,
       expense.toMap(),
     );
   }
@@ -86,7 +86,7 @@ class DatabaseHelper {
   Future<List<Expense>> getExpenses() async {
     Database database = await getDatabase;
     final List<Map<String, dynamic>> expenseMaps =
-        await database.query(DBConstants.expense.expenseTable);
+        await database.query(DBConstants.expense.table);
     return expenseMaps
         .map((expenseMap) => Expense.fromMap(expenseMap))
         .toList();
@@ -99,7 +99,7 @@ class DatabaseHelper {
     debugPrint(expense.toMap().toString());
     Database database = await getDatabase;
     return database.update(
-      DBConstants.expense.expenseTable,
+      DBConstants.expense.table,
       expense.toMap(),
       where: '${DBConstants.expense.id} = ?',
       whereArgs: [expense.id],
@@ -112,7 +112,7 @@ class DatabaseHelper {
     debugPrint(expense.toMap().toString());
     Database database = await getDatabase;
     return database.rawUpdate('''
-      UPDATE ${DBConstants.expense.expenseTable}
+      UPDATE ${DBConstants.expense.table}
       SET ${DBConstants.expense.amount} = ?
       WHERE ${DBConstants.expense.id} = ? 
       ''',[
@@ -125,7 +125,7 @@ class DatabaseHelper {
   Future<int> deleteExpense(int id) async {
     Database database = await getDatabase;
     return await database.delete(
-      DBConstants.expense.expenseTable,
+      DBConstants.expense.table,
       where: '${DBConstants.expense.id} = ?',
       whereArgs: [id],
     );
@@ -134,14 +134,14 @@ class DatabaseHelper {
   // DELETE ALL
   Future<int> deleteAllExpenses() async {
     Database database = await getDatabase;
-    return await database.delete(DBConstants.expense.expenseTable);
+    return await database.delete(DBConstants.expense.table);
   }
 
   // GET COUNT
   Future<int> getExpenseCount() async {
     Database database = await getDatabase;
     final count = Sqflite.firstIntValue(await database.rawQuery(
-      'SELECT COUNT(*) FROM ${DBConstants.expense.expenseTable}',
+      'SELECT COUNT(*) FROM ${DBConstants.expense.table}',
     ));
     return count ?? 0;
   }
@@ -149,7 +149,7 @@ class DatabaseHelper {
   // Get all Expenses (map) from database
   Future<List<Map<String, dynamic>>> getExpenseMapList() async {
     Database database = await getDatabase;
-    var result = await database.query(DBConstants.expense.expenseTable);
+    var result = await database.query(DBConstants.expense.table);
     return result;
   }
 
@@ -161,7 +161,7 @@ class DatabaseHelper {
       var expense = generateRandomExpense();
       debugPrint("expense $i - !!!$expense!!!)");
       await database.insert(
-        DBConstants.expense.expenseTable,
+        DBConstants.expense.table,
         expense,
       );
     }
