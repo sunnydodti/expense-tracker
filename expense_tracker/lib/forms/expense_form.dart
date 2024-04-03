@@ -58,12 +58,17 @@ class _ExpenseFormState extends State<ExpenseForm> {
     titleController.text = expense.title;
     currencyController.text = expense.currency;
     amountPrefixController.text = _currencies[expense.currency]!;
-    amountController.text = expense.amount.toString();
+    amountController.text = _formatAmount(expense.amount);
     transactionTypeController.text = expense.transactionType;
     dateController.text = DateFormat('yyyy-MM-dd').format(expense.date);
     categoryController.text = expense.category;
     tagsController.text = expense.tags!;
     notesController.text = expense.note!;
+  }
+
+  String _formatAmount(double amount) {
+    if (amount % 1 == 0) return amount.toInt().toString();
+    return amount.toStringAsFixed(2);
   }
 
   void _populateFormFieldsWithDefaults() {
@@ -385,8 +390,10 @@ class _ExpenseFormState extends State<ExpenseForm> {
             ),
           ),
           validator: (value) => validateField(value, "enter amount"),
-          keyboardType: TextInputType.number,
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+          keyboardType: const TextInputType.numberWithOptions(decimal: false),
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}$')),
+          ],
           onChanged: (value) {
             debugPrint('amount: $value');
           },
@@ -463,8 +470,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
         updateExpense(expense).then((value) {
           if (value) {
             debugPrint("Expense updated successfully");
-            Navigator.pop(
-                context, value);
+            Navigator.pop(context, value);
           } else {
             debugPrint("Failed to update expense");
           }
