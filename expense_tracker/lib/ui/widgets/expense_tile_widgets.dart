@@ -170,7 +170,7 @@ class ExpenseTileWidgets {
 
   static String _getAmountText(Expense expense) {
     String amountText = "${FromBuilder.getCurrenciesListMap()[expense.currency]}"
-        "${expense.amount}";
+        "${expense.amount.round()}";
     amountText = (expense.transactionType == TransactionType.expense.name)
       ? "- $amountText"
       : "+ $amountText";
