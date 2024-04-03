@@ -1,8 +1,7 @@
 import 'package:expense_tracker/forms/expense_form.dart';
-import 'package:expense_tracker/forms/form_modes.dart';
+import 'package:expense_tracker/models/enums/form_modes.dart';
+import 'package:expense_tracker/models/expense.dart';
 import 'package:flutter/material.dart';
-
-import '../../models/expense_new.dart';
 
 class ExpensePage extends StatelessWidget {
   final FormMode formMode;

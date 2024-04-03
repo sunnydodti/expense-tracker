@@ -1,10 +1,8 @@
-import 'package:expense_tracker/data/db_constants/DBExpenseTableConstants.dart';
-import 'package:expense_tracker/models/transaction_type.dart';
+import 'package:expense_tracker/builder/form_builder.dart';
+import 'package:expense_tracker/models/expense.dart';
+import 'package:expense_tracker/models/enums/transaction_type.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import '../../builder/form_builder.dart';
-import '../../models/expense_new.dart';
 
 class ExpenseTileWidgets {
 

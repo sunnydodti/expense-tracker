@@ -1,10 +1,9 @@
-import 'package:expense_tracker/builder/form_builder.dart';
 import 'package:expense_tracker/service/expense_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../models/expense_new.dart';
-import '../models/transaction_type.dart';
+import '../models/expense.dart';
+import '../models/enums/transaction_type.dart';
 
 class ExpenseProvider extends ChangeNotifier {
   final ExpenseService _expenseService = ExpenseService();

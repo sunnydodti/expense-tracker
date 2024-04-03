@@ -1,13 +1,13 @@
 import 'package:expense_tracker/data/database/database_helper.dart';
-import 'package:expense_tracker/models/expense_new.dart';
+import 'package:expense_tracker/models/enums/form_modes.dart';
+import 'package:expense_tracker/models/expense.dart';
+import 'package:expense_tracker/providers/expense_provider.dart';
 import 'package:expense_tracker/ui/notifications/snackbar_service.dart';
 import 'package:expense_tracker/ui/pages/expense_page.dart';
 import 'package:expense_tracker/ui/widgets/expense_tile_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../forms/form_modes.dart';
-import '../../providers/expense_provider.dart';
 
 class ExpenseListDynamic extends StatelessWidget {
   const ExpenseListDynamic({Key? key}) : super(key: key);

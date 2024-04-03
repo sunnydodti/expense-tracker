@@ -1,5 +1,5 @@
 import 'package:expense_tracker/forms/expense_form.dart';
-import 'package:expense_tracker/forms/form_modes.dart';
+import 'package:expense_tracker/models/enums/form_modes.dart';
 import 'package:expense_tracker/ui/pages/expense_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

@@ -1,13 +1,10 @@
 import 'dart:io';
 
+import 'package:expense_tracker/data/db_constants/DBConstants.dart';
+import 'package:expense_tracker/models/expense.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:expense_tracker/data/db_constants/DBExpenseTableConstants.dart';
-
-import '../../models/expense.dart';
-import '../../models/expense_new.dart';
-
 import 'package:faker/faker.dart';
 
 class DatabaseHelper {
@@ -42,31 +39,31 @@ class DatabaseHelper {
 
   void createDatabase(Database database, int newVersion) async {
     await database.execute('''
-          CREATE TABLE ${DBExpenseTableConstants.expenseTable}(
-            ${DBExpenseTableConstants.id} INTEGER PRIMARY KEY AUTOINCREMENT,
-            ${DBExpenseTableConstants.title} TEXT,
-            ${DBExpenseTableConstants.currency} TEXT,
-            ${DBExpenseTableConstants.amount} REAL,
-            ${DBExpenseTableConstants.transactionType} TEXT,
-            ${DBExpenseTableConstants.date} DATE,
-            ${DBExpenseTableConstants.category} TEXT,
-            ${DBExpenseTableConstants.tags} TEXT,
-            ${DBExpenseTableConstants.note} TEXT,
-            ${DBExpenseTableConstants.containsNestedExpenses} INTEGER,
-            ${DBExpenseTableConstants.expenses} TEXT,
-            ${DBExpenseTableConstants.createdAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            ${DBExpenseTableConstants.modifiedAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          CREATE TABLE ${DBConstants.expense.expenseTable}(
+            ${DBConstants.expense.id} INTEGER PRIMARY KEY AUTOINCREMENT,
+            ${DBConstants.expense.title} TEXT,
+            ${DBConstants.expense.currency} TEXT,
+            ${DBConstants.expense.amount} REAL,
+            ${DBConstants.expense.transactionType} TEXT,
+            ${DBConstants.expense.date} DATE,
+            ${DBConstants.expense.category} TEXT,
+            ${DBConstants.expense.tags} TEXT,
+            ${DBConstants.expense.note} TEXT,
+            ${DBConstants.expense.containsNestedExpenses} INTEGER,
+            ${DBConstants.expense.expenses} TEXT,
+            ${DBConstants.expense.createdAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            ${DBConstants.expense.modifiedAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP
           )
         ''');
 
     await database.execute('''
       CREATE TRIGGER update_modified_at
-      AFTER UPDATE ON ${DBExpenseTableConstants.expenseTable}
+      AFTER UPDATE ON ${DBConstants.expense.expenseTable}
       FOR EACH ROW
       BEGIN
-        UPDATE ${DBExpenseTableConstants.expenseTable}
+        UPDATE ${DBConstants.expense.expenseTable}
         SET modified_at = CURRENT_TIMESTAMP
-        WHERE ${DBExpenseTableConstants.id} = OLD.${DBExpenseTableConstants.id};
+        WHERE ${DBConstants.expense.id} = OLD.${DBConstants.expense.id};
       END;
     ''');
   }
@@ -80,7 +77,7 @@ class DatabaseHelper {
     debugPrint(expense.toMap().toString());
     Database database = await getDatabase;
     return await database.insert(
-      DBExpenseTableConstants.expenseTable,
+      DBConstants.expense.expenseTable,
       expense.toMap(),
     );
   }
@@ -89,7 +86,7 @@ class DatabaseHelper {
   Future<List<Expense>> getExpenses() async {
     Database database = await getDatabase;
     final List<Map<String, dynamic>> expenseMaps =
-        await database.query(DBExpenseTableConstants.expenseTable);
+        await database.query(DBConstants.expense.expenseTable);
     return expenseMaps
         .map((expenseMap) => Expense.fromMap(expenseMap))
         .toList();
@@ -102,9 +99,9 @@ class DatabaseHelper {
     debugPrint(expense.toMap().toString());
     Database database = await getDatabase;
     return database.update(
-      DBExpenseTableConstants.expenseTable,
+      DBConstants.expense.expenseTable,
       expense.toMap(),
-      where: '${DBExpenseTableConstants.id} = ?',
+      where: '${DBConstants.expense.id} = ?',
       whereArgs: [expense.id],
     );
   }
@@ -115,9 +112,9 @@ class DatabaseHelper {
     debugPrint(expense.toMap().toString());
     Database database = await getDatabase;
     return database.rawUpdate('''
-      UPDATE ${DBExpenseTableConstants.expenseTable}
-      SET ${DBExpenseTableConstants.amount} = ?
-      WHERE ${DBExpenseTableConstants.id} = ? 
+      UPDATE ${DBConstants.expense.expenseTable}
+      SET ${DBConstants.expense.amount} = ?
+      WHERE ${DBConstants.expense.id} = ? 
       ''',[
         expense.amount,
         expense.id
@@ -128,8 +125,8 @@ class DatabaseHelper {
   Future<int> deleteExpense(int id) async {
     Database database = await getDatabase;
     return await database.delete(
-      DBExpenseTableConstants.expenseTable,
-      where: '${DBExpenseTableConstants.id} = ?',
+      DBConstants.expense.expenseTable,
+      where: '${DBConstants.expense.id} = ?',
       whereArgs: [id],
     );
   }
@@ -137,14 +134,14 @@ class DatabaseHelper {
   // DELETE ALL
   Future<int> deleteAllExpenses() async {
     Database database = await getDatabase;
-    return await database.delete(DBExpenseTableConstants.expenseTable);
+    return await database.delete(DBConstants.expense.expenseTable);
   }
 
   // GET COUNT
   Future<int> getExpenseCount() async {
     Database database = await getDatabase;
     final count = Sqflite.firstIntValue(await database.rawQuery(
-      'SELECT COUNT(*) FROM ${DBExpenseTableConstants.expenseTable}',
+      'SELECT COUNT(*) FROM ${DBConstants.expense.expenseTable}',
     ));
     return count ?? 0;
   }
@@ -152,19 +149,19 @@ class DatabaseHelper {
   // Get all Expenses (map) from database
   Future<List<Map<String, dynamic>>> getExpenseMapList() async {
     Database database = await getDatabase;
-    var result = await database.query(DBExpenseTableConstants.expenseTable);
+    var result = await database.query(DBConstants.expense.expenseTable);
     return result;
   }
 
   Future<void> populateDatabase() async {
     Database database = await getDatabase;
-    // Populate the database with 10 entries
+    // Populate the database with x entries
     debugPrint("populating db");
     for (int i = 1; i <= 1; i++) {
       var expense = generateRandomExpense();
       debugPrint("expense $i - !!!$expense!!!)");
       await database.insert(
-        DBExpenseTableConstants.expenseTable,
+        DBConstants.expense.expenseTable,
         expense,
       );
     }
@@ -173,24 +170,24 @@ class DatabaseHelper {
   Map<String, dynamic> generateRandomExpense() {
     double amount = faker.randomGenerator.decimal() * (1000.0 - 1.0) + 1.0;
     var expense = {
-      DBExpenseTableConstants.title: faker.food.dish(),
-      DBExpenseTableConstants.currency: "INR",
-      DBExpenseTableConstants.amount: double.parse(amount.toStringAsFixed(2)),
-      DBExpenseTableConstants.transactionType:
+      DBConstants.expense.title: faker.food.dish(),
+      DBConstants.expense.currency: "INR",
+      DBConstants.expense.amount: double.parse(amount.toStringAsFixed(2)),
+      DBConstants.expense.transactionType:
           faker.randomGenerator.boolean() ? 'income' : 'expense',
-      DBExpenseTableConstants.date: faker.date.dateTime().toIso8601String(),
-      DBExpenseTableConstants.category:
+      DBConstants.expense.date: faker.date.dateTime().toIso8601String(),
+      DBConstants.expense.category:
           faker.randomGenerator.boolean() ? 'Food' : 'Shopping',
-      DBExpenseTableConstants.tags:
+      DBConstants.expense.tags:
           faker.randomGenerator.boolean() ? 'home' : 'work',
-      DBExpenseTableConstants.note: faker.lorem.sentence(),
-      DBExpenseTableConstants.containsNestedExpenses:
+      DBConstants.expense.note: faker.lorem.sentence(),
+      DBConstants.expense.containsNestedExpenses:
           faker.randomGenerator.boolean() ? 1 : 0,
-      DBExpenseTableConstants.expenses: 'Nested expenses data',
+      DBConstants.expense.expenses: 'Nested expenses data',
       // Add appropriate nested expenses data
-      DBExpenseTableConstants.createdAt:
+      DBConstants.expense.createdAt:
           faker.date.dateTime().toIso8601String(),
-      DBExpenseTableConstants.modifiedAt:
+      DBConstants.expense.modifiedAt:
           faker.date.dateTime().toIso8601String(),
     };
     return expense;

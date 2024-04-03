@@ -1,7 +1,7 @@
 import 'package:expense_tracker/ui/pages/expense_page.dart';
 import 'package:flutter/material.dart';
 
-import '../../forms/form_modes.dart';
+import '../../models/enums/form_modes.dart';
 
 class ExpenseListItemV2 extends StatefulWidget {
   // final Expense expense;

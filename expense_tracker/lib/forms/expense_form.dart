@@ -1,12 +1,10 @@
 import 'package:expense_tracker/builder/form_builder.dart';
-import 'package:expense_tracker/forms/form_modes.dart';
+import 'package:expense_tracker/models/enums/form_modes.dart';
 import 'package:expense_tracker/models/expense.dart';
 import 'package:expense_tracker/service/expense_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-
-import '../models/expense_new.dart';
 
 class ExpenseForm extends StatefulWidget {
   final FormMode formMode;
