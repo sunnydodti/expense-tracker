@@ -216,11 +216,20 @@ class ExpenseListDynamic extends StatelessWidget {
 
     expenseProvider.deleteExpense(expense.id!);
 
-    bool undoDelete = await SnackBarService.showUndoSnackBarWithContext(
-        context, "Deleting - ${expense.title}");
-    debugPrint("undoDelete $undoDelete");
+    SnackBarService.showUndoSnackBarWithContextAndCallback(
+      context,
+      "Deleting - ${expense.title}",
+          () => undoExpenseDeletion(
+              index, expenseLength, expenseProvider, expense, context),
+      onNotUndo: () => completeExpenseDeletion(
+          expense, index, expenseLength, expenseProvider, context));
+  }
 
-    if (undoDelete) {
+  completeExpenseDeletion(Expense expense, int index, int expenseLength,
+      ExpenseProvider expenseProvider, BuildContext context) async {
+    debugPrint("Expense deleted");
+    int id = await _deleteExpenseFromDatabase(expense);
+    if (id == 0) {
       if (index + 1 == expenseLength) {
         debugPrint("adding at end $index");
         expenseProvider.addExpense(expense);
@@ -228,22 +237,23 @@ class ExpenseListDynamic extends StatelessWidget {
         debugPrint("adding at $index");
         expenseProvider.insertExpense(index, expense);
       }
-      SnackBarService.showSuccessSnackBarWithContext(
-          context, "Restored - ${expense.title}");
-    } else {
-      int id = await _deleteExpenseFromDatabase(expense);
-      if (id == 0) {
-        if (index + 1 == expenseLength) {
-          debugPrint("adding at end $index");
-          expenseProvider.addExpense(expense);
-        } else {
-          debugPrint("adding at $index");
-          expenseProvider.insertExpense(index, expense);
-        }
-        SnackBarService.showErrorSnackBarWithContext(context, "Delete Failed");
-      }
+      SnackBarService.showErrorSnackBarWithContext(context, "Delete Failed");
     }
   }
+
+  undoExpenseDeletion(int index, int expenseLength,
+      ExpenseProvider expenseProvider, Expense expense, BuildContext context) {
+    if (index + 1 == expenseLength) {
+      debugPrint("adding at end $index");
+      expenseProvider.addExpense(expense);
+    } else {
+      debugPrint("adding at $index");
+      expenseProvider.insertExpense(index, expense);
+    }
+    SnackBarService.showSuccessSnackBarWithContext(
+        context, "Restored - ${expense.title}");
+  }
+
 
   void _editItem(BuildContext context, int index, Expense expense,
       ExpenseProvider expenseProvider) async {

@@ -66,7 +66,7 @@ class SnackBarService {
 
   static void emptyFunction() {}
 
-  static void showUndoSnackBarWithContextAndCallback(BuildContext context, String message, Function onUndo, {bool removeCurrent = false, Function onNotUndo = emptyFunction}) async {
+  static showUndoSnackBarWithContextAndCallback(BuildContext context, String message, Function onUndo, {bool removeCurrent = false, Function onNotUndo = emptyFunction}) async {
     if (removeCurrent) ScaffoldMessenger.of(context).removeCurrentSnackBar();
     bool isUndoPressed = false;
     ScaffoldMessenger.of(context).showSnackBar(
@@ -76,12 +76,15 @@ class SnackBarService {
         action: SnackBarAction(
           label: 'Undo',
           onPressed: () {
+            isUndoPressed = true;
             onUndo();
           },
         ),
       ),
     );
-    if (!isUndoPressed) onNotUndo();
+    await Future.delayed(const Duration(seconds: 5));
+    debugPrint("undo: $isUndoPressed");
+    if (isUndoPressed == false) onNotUndo();
   }
   //endregion
 
