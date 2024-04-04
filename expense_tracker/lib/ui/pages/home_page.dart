@@ -15,78 +15,82 @@ class HomePage extends StatelessWidget {
   final String title = "Expense Tracker";
 
   static final DatabaseHelper _databaseHelper = DatabaseHelper();
-  static final Future<ExpenseHelper> _expenseHelper = _databaseHelper
-      .expenseHelper;
+  static final Future<ExpenseHelper> _expenseHelper =
+      _databaseHelper.expenseHelper;
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ExpenseProvider>(
-        builder: (context, expenseProvider, child) =>
-            MaterialApp(
-              theme: ThemeData(
-                  colorScheme: const ColorScheme.dark()
-              ),
-              home: Scaffold(
-                  drawer: SafeArea(child: HomeDrawer()),
-                  appBar: AppBar(
-                    centerTitle: true,
-                    title: Text(title),
-                    backgroundColor: Colors.black,
-                    actions: [
-                      IconButton(
-                        icon: const Icon(Icons.add),
-                        tooltip: "add random expense",
-                        onPressed: () async => populateExpense(expenseProvider),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.person),
-                        tooltip: "Profile",
-                        onPressed: () async => {},
-                      ),
-                    ],
+    return FutureBuilder<void>(
+      future: _refreshExpensesHome(context),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator(); // Or any loading indicator
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          // Once the future is completed, build the UI
+          return MaterialApp(
+            theme: ThemeData(colorScheme: const ColorScheme.dark()),
+            home: Scaffold(
+              drawer: SafeArea(child: HomeDrawer()),
+              appBar: AppBar(
+                centerTitle: true,
+                title: Text(title),
+                backgroundColor: Colors.black,
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    tooltip: "add random expense",
+                    onPressed: () => populateExpense(context),
                   ),
-                  body: Column(
-                    children: const [
-                      Expanded(child: ExpenseListDynamic())
-                    ],
+                  IconButton(
+                    icon: const Icon(Icons.person),
+                    tooltip: "Profile",
+                    onPressed: () => {},
                   ),
-                  floatingActionButton: addExpenseButton(
-                      context, expenseProvider)
+                ],
               ),
-            )
+              body: Column(
+                children: const [Expanded(child: ExpenseListDynamic())],
+              ),
+              floatingActionButton: addExpenseButton(context),
+            ),
+          );
+        }
+      },
     );
   }
-
-  void populateExpense(ExpenseProvider expenseProvider) async {
+  void populateExpense(BuildContext context) async {
     ExpenseHelper helper = await _expenseHelper;
-    await helper.populateDatabase();
-    _refreshExpensesHome(expenseProvider);
+    helper.populateDatabase().then((value) => _refreshExpensesHome(context));
   }
 
-  Padding addExpenseButton(BuildContext context,
-      ExpenseProvider expenseProvider) {
+  Padding addExpenseButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 35.0),
       child: FloatingActionButton(
         backgroundColor: Colors.grey.shade500,
         tooltip: 'Add New Expense',
-        onPressed: () => _addExpense(context, expenseProvider),
+        onPressed: () => _addExpense(context),
         child: const Icon(Icons.add),
       ),
     );
   }
 
-  void _addExpense(BuildContext context,
-      ExpenseProvider expenseProvider) async {
-    var result = await Navigator.push(
+  void _addExpense(BuildContext context) async {
+    Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => const ExpensePage(formMode: FormMode.add),
       ),
-    );
-    if (result) expenseProvider.refreshExpenses();
+    ).then((result) {
+      if (result) _refreshExpensesHome(context);
+    });
   }
 
-  Future<void> _refreshExpensesHome(ExpenseProvider expenseProvider) =>
-      expenseProvider.refreshExpenses();
+  Future<void> _refreshExpensesHome(BuildContext context) async {
+    final expenseProvider =
+        Provider.of<ExpenseProvider>(context, listen: false);
+    expenseProvider.refreshExpenses();
+  }
 }

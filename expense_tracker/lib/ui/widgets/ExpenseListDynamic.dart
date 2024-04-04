@@ -15,7 +15,6 @@ class ExpenseListDynamic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _refreshExpenses(context);
     return Consumer<ExpenseProvider>(
         builder: (context, expenseProvider, child) => Scaffold(
               body: RefreshIndicator(
@@ -273,14 +272,15 @@ class ExpenseListDynamic extends StatelessWidget {
   void _editExpense(BuildContext context, Expense expense,
       ExpenseProvider expenseProvider) async {
     debugPrint("editing");
-    bool result = await Navigator.push(
+    Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) =>
             ExpensePage(formMode: FormMode.edit, expense: expense),
       ),
-    );
-    if (result) expenseProvider.refreshExpenses();
+    ).then((result) => {
+      if (result) _refreshExpenses(context)
+    });
   }
 
   Future<int> _deleteExpenseFromDatabase(Expense expense) async {

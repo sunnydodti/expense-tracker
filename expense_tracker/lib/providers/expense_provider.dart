@@ -6,14 +6,14 @@ import '../models/expense.dart';
 import '../models/enums/transaction_type.dart';
 
 class ExpenseProvider extends ChangeNotifier {
-  late final ExpenseService _expenseService;
+  late final Future<ExpenseService> _expenseService;
 
   ExpenseProvider() {
     _init();
   }
 
   Future<void> _init() async {
-    _expenseService = await ExpenseService.create();
+    _expenseService = ExpenseService.create();
   }
 
   // List<Expense> _expenses = Expense.fromMapList(_expenseMapList());
@@ -109,8 +109,9 @@ class ExpenseProvider extends ChangeNotifier {
   }
 
   ///delete all expense. this does not delete in db
-  void _deleteExpenses() {
-    _expenseService.deleteAllExpenses();
+  void _deleteExpenses() async {
+    ExpenseService expenseService = await _expenseService;
+    expenseService.deleteAllExpenses();
     _expenses = [];
     notifyListeners();
   }
@@ -128,6 +129,8 @@ class ExpenseProvider extends ChangeNotifier {
   }
 
   Future<List<Expense>> _fetchExpenses() async {
-    return _expenseService.fetchExpenses();
+    ExpenseService expenseService = await _expenseService;
+    return await expenseService.fetchExpenses();
   }
 }
+
