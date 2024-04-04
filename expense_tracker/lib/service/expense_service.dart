@@ -1,6 +1,6 @@
-import 'package:expense_tracker/data/database/database_helper.dart';
-import 'package:expense_tracker/data/database/expense_helper.dart';
-import 'package:expense_tracker/models/expense.dart';
+import '../data/database/database_helper.dart';
+import '../data/database/expense_helper.dart';
+import '../models/expense.dart';
 
 class ExpenseService {
   late final DatabaseHelper _databaseHelper;
@@ -32,5 +32,4 @@ class ExpenseService {
   Future<int> deleteAllExpenses() async {
     return _expenseHelper.deleteAllExpenses();
   }
-
 }

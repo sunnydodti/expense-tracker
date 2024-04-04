@@ -1,4 +1,3 @@
-
 class DBConstants {
   /// Expense
   static ExpenseConstants expense = ExpenseConstants();

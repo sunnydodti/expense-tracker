@@ -1,10 +1,11 @@
 import 'dart:io';
 
-import 'package:expense_tracker/data/constants/DBConstants.dart';
-import 'package:expense_tracker/data/database/expense_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+
+import '../constants/DBConstants.dart';
+import 'expense_helper.dart';
 
 class DatabaseHelper {
   static DatabaseHelper? _databaseHelper;
@@ -67,8 +68,7 @@ class DatabaseHelper {
     ''');
   }
 
-  Future<ExpenseHelper> get expenseHelper async => ExpenseHelper(await getDatabase);
-  // CategoryHelper get categoryHelper => CategoryHelper(_database);
-
-
+  Future<ExpenseHelper> get expenseHelper async =>
+      ExpenseHelper(await getDatabase);
+// CategoryHelper get categoryHelper => CategoryHelper(_database);
 }

@@ -1,13 +1,15 @@
-import 'package:expense_tracker/forms/expense_form.dart';
-import 'package:expense_tracker/models/enums/form_modes.dart';
-import 'package:expense_tracker/models/expense.dart';
 import 'package:flutter/material.dart';
+
+import '../../forms/expense_form.dart';
+import '../../models/enums/form_modes.dart';
+import '../../models/expense.dart';
 
 class ExpensePage extends StatelessWidget {
   final FormMode formMode;
   final Expense? expense;
 
-  const ExpensePage({Key? key, required this.formMode, this.expense}) : super(key: key);
+  const ExpensePage({Key? key, required this.formMode, this.expense})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +17,8 @@ class ExpensePage extends StatelessWidget {
       onWillPop: () => navigateBack(context, false),
       child: Scaffold(
           appBar: AppBar(
-            leading: SafeArea(child: BackButton(
+            leading: SafeArea(
+                child: BackButton(
               onPressed: () => navigateBack(context, false),
             )),
             centerTitle: true,

@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/expense_provider.dart';
-import 'expense_page.dart';
+import 'expense_screen.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -24,7 +24,7 @@ class HomePage extends StatelessWidget {
       future: _refreshExpensesHome(context),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator(); // Or any loading indicator
+          return const CircularProgressIndicator(); // Or any loading indicator
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
@@ -60,6 +60,7 @@ class HomePage extends StatelessWidget {
       },
     );
   }
+
   void populateExpense(BuildContext context) async {
     ExpenseHelper helper = await _expenseHelper;
     helper.populateDatabase().then((value) => _refreshExpensesHome(context));

@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class SnackBarService {
-
   //region Section 1: SnackBarWithContext
 
-  static showSnackBarWithContext(BuildContext context, String message, {bool removeCurrent = false}) {
+  static showSnackBarWithContext(BuildContext context, String message,
+      {bool removeCurrent = false}) {
     if (removeCurrent) ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -17,7 +17,8 @@ class SnackBarService {
     );
   }
 
-  static showErrorSnackBarWithContext(BuildContext context, String message, {bool removeCurrent = false}) {
+  static showErrorSnackBarWithContext(BuildContext context, String message,
+      {bool removeCurrent = false}) {
     if (removeCurrent) ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -29,7 +30,8 @@ class SnackBarService {
     );
   }
 
-  static showSuccessSnackBarWithContext(BuildContext context, String message, {bool removeCurrent = false}) async {
+  static showSuccessSnackBarWithContext(BuildContext context, String message,
+      {bool removeCurrent = false}) async {
     if (removeCurrent) ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -41,7 +43,9 @@ class SnackBarService {
     );
   }
 
-  static Future<bool> showUndoSnackBarWithContext(BuildContext context, String message, {bool removeCurrent = false}) async {
+  static Future<bool> showUndoSnackBarWithContext(
+      BuildContext context, String message,
+      {bool removeCurrent = false}) async {
     if (removeCurrent) ScaffoldMessenger.of(context).removeCurrentSnackBar();
     Completer<bool> completer = Completer<bool>();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -66,7 +70,9 @@ class SnackBarService {
 
   static void emptyFunction() {}
 
-  static showUndoSnackBarWithContextAndCallback(BuildContext context, String message, Function onUndo, {bool removeCurrent = false, Function onNotUndo = emptyFunction}) async {
+  static showUndoSnackBarWithContextAndCallback(
+      BuildContext context, String message, Function onUndo,
+      {bool removeCurrent = false, Function onNotUndo = emptyFunction}) async {
     if (removeCurrent) ScaffoldMessenger.of(context).removeCurrentSnackBar();
     bool isUndoPressed = false;
     ScaffoldMessenger.of(context).showSnackBar(
@@ -86,10 +92,9 @@ class SnackBarService {
     debugPrint("undo: $isUndoPressed");
     if (isUndoPressed == false) onNotUndo();
   }
-  //endregion
+//endregion
 
-  //region Section 2: SnackBarWithoutContext
+//region Section 2: SnackBarWithoutContext
 
-  //endregion
-
+//endregion
 }

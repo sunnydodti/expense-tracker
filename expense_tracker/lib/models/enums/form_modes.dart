@@ -1,4 +1,1 @@
-enum FormMode {
-  edit,
-  add
-}
+enum FormMode { edit, add }

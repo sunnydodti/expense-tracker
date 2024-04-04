@@ -1,8 +1,9 @@
-import 'package:expense_tracker/data/constants/DBConstants.dart';
-import 'package:expense_tracker/models/expense.dart';
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
+
+import '../../models/expense.dart';
+import '../constants/DBConstants.dart';
 
 class ExpenseHelper {
   final Database _database;
@@ -35,7 +36,7 @@ class ExpenseHelper {
   Future<List<Expense>> getExpenses() async {
     Database database = getDatabase;
     final List<Map<String, dynamic>> expenseMaps =
-    await database.query(DBConstants.expense.table);
+        await database.query(DBConstants.expense.table);
     return expenseMaps
         .map((expenseMap) => Expense.fromMap(expenseMap))
         .toList();
@@ -64,10 +65,7 @@ class ExpenseHelper {
       UPDATE ${DBConstants.expense.table}
       SET ${DBConstants.expense.amount} = ?
       WHERE ${DBConstants.expense.id} = ? 
-      ''',[
-      expense.amount,
-      expense.id
-    ]);
+      ''', [expense.amount, expense.id]);
   }
 
   // DELETE
@@ -123,23 +121,20 @@ class ExpenseHelper {
       DBConstants.expense.currency: "INR",
       DBConstants.expense.amount: double.parse(amount.toStringAsFixed(2)),
       DBConstants.expense.transactionType:
-      faker.randomGenerator.boolean() ? 'income' : 'expense',
+          faker.randomGenerator.boolean() ? 'income' : 'expense',
       DBConstants.expense.date: faker.date.dateTime().toIso8601String(),
       DBConstants.expense.category:
-      faker.randomGenerator.boolean() ? 'Food' : 'Shopping',
+          faker.randomGenerator.boolean() ? 'Food' : 'Shopping',
       DBConstants.expense.tags:
-      faker.randomGenerator.boolean() ? 'home' : 'work',
+          faker.randomGenerator.boolean() ? 'home' : 'work',
       DBConstants.expense.note: faker.lorem.sentence(),
       DBConstants.expense.containsNestedExpenses:
-      faker.randomGenerator.boolean() ? 1 : 0,
+          faker.randomGenerator.boolean() ? 1 : 0,
       DBConstants.expense.expenses: 'Nested expenses data',
       // Add appropriate nested expenses data
-      DBConstants.expense.createdAt:
-      faker.date.dateTime().toIso8601String(),
-      DBConstants.expense.modifiedAt:
-      faker.date.dateTime().toIso8601String(),
+      DBConstants.expense.createdAt: faker.date.dateTime().toIso8601String(),
+      DBConstants.expense.modifiedAt: faker.date.dateTime().toIso8601String(),
     };
     return expense;
   }
-
 }

@@ -1,7 +1,8 @@
-import 'package:expense_tracker/providers/expense_provider.dart';
-import 'package:expense_tracker/ui/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'providers/expense_provider.dart';
+import 'ui/screens/home_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

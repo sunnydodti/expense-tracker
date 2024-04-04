@@ -31,9 +31,7 @@ flutter:
   
   assets:
     - 'assets/'
-    - 'lib/data/samples/sample_expenses.json'
-    - 'lib/data/samples/sample_expenses_nested.json'
-      
+
   fonts:
     - family: Caveat
       fonts:

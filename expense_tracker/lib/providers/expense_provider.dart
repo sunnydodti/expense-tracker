@@ -16,7 +16,6 @@ class ExpenseProvider extends ChangeNotifier {
     _expenseService = ExpenseService.create();
   }
 
-  // List<Expense> _expenses = Expense.fromMapList(_expenseMapList());
   List<Expense> _expenses = [];
 
   /// get list of all expenses
@@ -28,7 +27,6 @@ class ExpenseProvider extends ChangeNotifier {
     double totalExpense = 0;
     double totalReimbursement = 0;
 
-    // Iterate through expenses and sum amounts based on transaction type
     for (var expense in _expenses) {
       if (expense.transactionType == TransactionType.expense.name) {
         totalExpense += expense.amount;
@@ -44,7 +42,6 @@ class ExpenseProvider extends ChangeNotifier {
       }
     }
 
-    // Calculate total balance
     double totalBalance = totalIncome - totalExpense - totalReimbursement;
     return totalBalance;
   }
@@ -128,6 +125,7 @@ class ExpenseProvider extends ChangeNotifier {
     }
   }
 
+  /// fetch updated expenses from db
   Future<List<Expense>> _fetchExpenses() async {
     ExpenseService expenseService = await _expenseService;
     return await expenseService.fetchExpenses();

@@ -11,6 +11,7 @@ class Expense {
   // List<String>? _tags;
   String? _tags;
   String? _note;
+
   // bool? _containsNestedExpenses; // required
   List<Expense>? _expenses;
   DateTime? _createdAt; // New field
@@ -25,37 +26,44 @@ class Expense {
       this._date,
       this._category,
       // [this._tags, this._note, this._containsNestedExpenses, this._expenses]
-      [this._tags, this._note, this._expenses]
-      );
+      [this._tags,
+      this._note,
+      this._expenses]);
 
   // Expense.empty();
 
-  Expense.withId(
-      this._id,
-      this._title,
-      this._currency,
-      this._amount,
-      this._transactionType,
-      this._date,
-      this._category,
+  Expense.withId(this._id, this._title, this._currency, this._amount,
+      this._transactionType, this._date, this._category,
       // [this._containsNestedExpenses, this._tags, this._note, this._expenses]
-      [this._tags, this._note, this._expenses]
-      );
+      [this._tags,
+      this._note,
+      this._expenses]);
 
   // Getters
   int? get id => _id;
+
   String get title => _title;
+
   String get currency => _currency;
+
   double get amount => _amount;
+
   String get transactionType => _transactionType;
+
   DateTime get date => _date;
+
   String get category => _category;
+
   // List<String>? get tags => _tags;
   String? get tags => _tags;
+
   String? get note => _note;
+
   // bool? get containsNestedExpenses => _containsNestedExpenses;
   List<Expense>? get expenses => _expenses;
+
   DateTime? get createdAt => _createdAt;
+
   DateTime? get modifiedAt => _createdAt;
 
   //Setters
@@ -94,6 +102,7 @@ class Expense {
   set tags(String? tags) {
     _tags = tags;
   }
+
   set tag(String? tag) {
     _tags = tag;
   }
@@ -133,26 +142,32 @@ class Expense {
     map[DBConstants.expense.tags] = _tags;
     map[DBConstants.expense.note] = _note;
     // map[DBExpenseTableConstants.containsNestedExpenses] = _containsNestedExpenses;
-    map[DBConstants.expense.expenses] = _expenses?.map((expense) => expense.toMap()).toList();
+    map[DBConstants.expense.expenses] =
+        _expenses?.map((expense) => expense.toMap()).toList();
     if (_createdAt != null) map[DBConstants.expense.createdAt] = _createdAt;
     if (_modifiedAt != null) map[DBConstants.expense.modifiedAt] = _modifiedAt;
     return map;
   }
+
   static List<Expense> fromMapList(List<Map<String, dynamic>> expenseMapList) {
     return expenseMapList.isEmpty
         ? []
-        : expenseMapList.map((expenseMap) => Expense.fromMap(expenseMap)).toList();
+        : expenseMapList
+            .map((expenseMap) => Expense.fromMap(expenseMap))
+            .toList();
     // return <Expense>[];
   }
+
   //  // map to Expense Object
-  static Expense fromMap(Map<String, dynamic> map){
+  static Expense fromMap(Map<String, dynamic> map) {
     Expense expense = Expense(
       map[DBConstants.expense.title],
       map[DBConstants.expense.currency],
       map[DBConstants.expense.amount],
       map[DBConstants.expense.transactionType],
       DateTime.parse(map[DBConstants.expense.date]),
-      map[DBConstants.expense.category],);
+      map[DBConstants.expense.category],
+    );
 
     expense.id = map[DBConstants.expense.id];
     expense.tags = map[DBConstants.expense.tags];
@@ -164,13 +179,9 @@ class Expense {
     return expense;
   }
 
-  // _expenses = (map[DBExpenseTableConstants.expenses]! as List<Map<String, dynamic>>?)
-  //     ?.map((expenseMap) => Expense.fromMap(expenseMap))
-  //     .toList();
   static bool _parseIntAsBool(int value) {
     return value != 0;
   }
-
 }
 
 class ExpenseFormModel {
@@ -188,16 +199,9 @@ class ExpenseFormModel {
   DateTime? createdAt;
   DateTime? modifiedAt;
 
-  ExpenseFormModel(
-      this.title,
-      this.currency,
-      this.amount,
-      this.transactionType,
-      this.date,
-      this.category,
-      this.containsNestedExpenses,
-      [this.tags, this.note, this.expenses]
-      );
+  ExpenseFormModel(this.title, this.currency, this.amount, this.transactionType,
+      this.date, this.category, this.containsNestedExpenses,
+      [this.tags, this.note, this.expenses]);
 
   // Expense.empty();
 
@@ -210,8 +214,9 @@ class ExpenseFormModel {
       this.date,
       this.category,
       this.containsNestedExpenses,
-      [this.tags, this.note, this.expenses]
-      );
+      [this.tags,
+      this.note,
+      this.expenses]);
 
   // Methods
   //  // Expense Object to map
@@ -228,7 +233,8 @@ class ExpenseFormModel {
     map[DBConstants.expense.tags] = tags;
     map[DBConstants.expense.note] = note;
     map[DBConstants.expense.containsNestedExpenses] = containsNestedExpenses;
-    map[DBConstants.expense.expenses] = expenses?.map((expense) => expense.toMap()).toList();
+    map[DBConstants.expense.expenses] =
+        expenses?.map((expense) => expense.toMap()).toList();
     map[DBConstants.expense.createdAt] = createdAt!.toIso8601String();
     map[DBConstants.expense.modifiedAt] = modifiedAt!.toIso8601String();
     return map;
@@ -243,15 +249,15 @@ class ExpenseFormModel {
         transactionType = map[DBConstants.expense.transactionType],
         date = DateTime.parse(map[DBConstants.expense.date]),
         category = map[DBConstants.expense.category],
-  // tags = map[DBExpenseTableConstants.Tags]?.cast<String>(),
+        // tags = map[DBExpenseTableConstants.Tags]?.cast<String>(),
         tags = map[DBConstants.expense.tags],
         note = map[DBConstants.expense.note],
-        containsNestedExpenses = map[DBConstants.expense.containsNestedExpenses],
+        containsNestedExpenses =
+            map[DBConstants.expense.containsNestedExpenses],
         createdAt = map[DBConstants.expense.createdAt],
         modifiedAt = map[DBConstants.expense.modifiedAt],
-        expenses = (map[DBConstants.expense.expenses] as List<Map<String, dynamic>>?)
-            ?.map((expenseMap) => ExpenseFormModel.fromMap(expenseMap))
-            .toList();
-
+        expenses =
+            (map[DBConstants.expense.expenses] as List<Map<String, dynamic>>?)
+                ?.map((expenseMap) => ExpenseFormModel.fromMap(expenseMap))
+                .toList();
 }
-

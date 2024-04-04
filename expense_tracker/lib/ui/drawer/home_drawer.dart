@@ -1,15 +1,18 @@
-import 'package:expense_tracker/providers/expense_provider.dart';
-import 'package:expense_tracker/service/expense_service.dart';
-import 'package:expense_tracker/ui/notifications/snackbar_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../providers/expense_provider.dart';
+import '../../service/expense_service.dart';
+import '../notifications/snackbar_service.dart';
+
 class HomeDrawer extends StatefulWidget {
+  const HomeDrawer({super.key});
+
   @override
-  _HomeDrawerState createState() => _HomeDrawerState();
+  HomeDrawerState createState() => HomeDrawerState();
 }
 
-class _HomeDrawerState extends State<HomeDrawer> {
+class HomeDrawerState extends State<HomeDrawer> {
   bool _isDeleteDialogVisible = false;
 
   @override
@@ -47,8 +50,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 // Handle Settings option
               },
             ),
-            if (_isDeleteDialogVisible)
-              _buildDeleteConfirmationDialog(context),
+            if (_isDeleteDialogVisible) _buildDeleteConfirmationDialog(context),
           ],
         ),
       ),
@@ -83,12 +85,17 @@ class _HomeDrawerState extends State<HomeDrawer> {
 
   Future<void> _handleDelete(BuildContext context) async {
     int deleteCount = await _deleteFromDatabase(context);
-    if (deleteCount > 0)
-      SnackBarService.showSuccessSnackBarWithContext(context, "All Expenses Deleted");
-    else if (deleteCount == 0)
-      SnackBarService.showSnackBarWithContext(context, "Nothing to Deleted");
-    else
-      SnackBarService.showErrorSnackBarWithContext(context, "Delete Failed");
+    if (mounted) {
+      // Check if widget is still mounted
+      if (deleteCount > 0) {
+        SnackBarService.showSuccessSnackBarWithContext(
+            context, "All Expenses Deleted");
+      } else if (deleteCount == 0) {
+        SnackBarService.showSnackBarWithContext(context, "Nothing to Deleted");
+      } else {
+        SnackBarService.showErrorSnackBarWithContext(context, "Delete Failed");
+      }
+    }
 
     setState(() {
       _isDeleteDialogVisible = false;
@@ -105,7 +112,8 @@ class _HomeDrawerState extends State<HomeDrawer> {
   }
 
   _refreshExpenses() {
-    final expenseProvider = Provider.of<ExpenseProvider>(context, listen: false);
+    final expenseProvider =
+        Provider.of<ExpenseProvider>(context, listen: false);
     expenseProvider.refreshExpenses();
   }
 }
