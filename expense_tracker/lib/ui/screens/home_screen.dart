@@ -7,16 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/expense_provider.dart';
+import '../../service/expense_service.dart';
 import 'expense_screen.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   final String title = "Expense Tracker";
-
-  static final DatabaseHelper _databaseHelper = DatabaseHelper();
-  static final Future<ExpenseHelper> _expenseHelper =
-      _databaseHelper.expenseHelper;
+  static final Future<ExpenseService> _expenseService = ExpenseService.create();
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +60,8 @@ class HomePage extends StatelessWidget {
   }
 
   void populateExpense(BuildContext context) async {
-    ExpenseHelper helper = await _expenseHelper;
-    helper.populateDatabase().then((value) => _refreshExpensesHome(context));
+    ExpenseService service = await _expenseService;
+    service.populateDatabase(count: 1).then((value) => _refreshExpensesHome(context));
   }
 
   Padding addExpenseButton(BuildContext context) {

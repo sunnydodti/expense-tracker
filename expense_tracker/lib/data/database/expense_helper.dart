@@ -20,15 +20,13 @@ class ExpenseHelper {
 
   // CRUD operations
   // CREATE
-  Future<int> addExpense(ExpenseFormModel expense) async {
-    expense.createdAt ??= DateTime.now();
-    expense.modifiedAt ??= DateTime.now();
+  Future<int> addExpense(Map<String, dynamic> expenseMap) async {
     debugPrint("inserting");
-    debugPrint(expense.toMap().toString());
+    debugPrint(expenseMap.toString());
     Database database = getDatabase;
     return await database.insert(
       DBConstants.expense.table,
-      expense.toMap(),
+      expenseMap,
     );
   }
 
@@ -44,7 +42,6 @@ class ExpenseHelper {
 
   // UPDATE
   Future<int> updateExpense(ExpenseFormModel expense) async {
-    expense.modifiedAt ??= DateTime.now();
     debugPrint("updating");
     debugPrint(expense.toMap().toString());
     Database database = getDatabase;
@@ -56,16 +53,18 @@ class ExpenseHelper {
     );
   }
 
-  Future<int> updateExpenseV2(ExpenseFormModel expense) async {
-    expense.modifiedAt ??= DateTime.now();
+  Future<int> updateExpenseV2(Map<String, dynamic> expenseMap) async {
     debugPrint("updating");
-    debugPrint(expense.toMap().toString());
+    debugPrint(expenseMap.toString());
     Database database = getDatabase;
     return database.rawUpdate('''
       UPDATE ${DBConstants.expense.table}
       SET ${DBConstants.expense.amount} = ?
       WHERE ${DBConstants.expense.id} = ? 
-      ''', [expense.amount, expense.id]);
+      ''', [
+      expenseMap[DBConstants.expense.amount],
+      expenseMap[DBConstants.expense.id]
+    ]);
   }
 
   // DELETE
@@ -100,41 +99,15 @@ class ExpenseHelper {
     return result;
   }
 
-  Future<void> populateDatabase() async {
+  Future<void> populateDatabase(List<Map<String, dynamic>> expenses) async {
     Database database = getDatabase;
-    // Populate the database with x entries
     debugPrint("populating db");
-    for (int i = 1; i <= 1; i++) {
-      var expense = generateRandomExpense();
-      debugPrint("expense $i - !!!$expense!!!)");
+    for (var expense in expenses) {
+      debugPrint("expense - !!!$expense!!!)");
       await database.insert(
         DBConstants.expense.table,
         expense,
       );
     }
-  }
-
-  Map<String, dynamic> generateRandomExpense() {
-    double amount = faker.randomGenerator.decimal() * (1000.0 - 1.0) + 1.0;
-    var expense = {
-      DBConstants.expense.title: faker.food.dish(),
-      DBConstants.expense.currency: "INR",
-      DBConstants.expense.amount: double.parse(amount.toStringAsFixed(2)),
-      DBConstants.expense.transactionType:
-          faker.randomGenerator.boolean() ? 'income' : 'expense',
-      DBConstants.expense.date: faker.date.dateTime().toIso8601String(),
-      DBConstants.expense.category:
-          faker.randomGenerator.boolean() ? 'Food' : 'Shopping',
-      DBConstants.expense.tags:
-          faker.randomGenerator.boolean() ? 'home' : 'work',
-      DBConstants.expense.note: faker.lorem.sentence(),
-      DBConstants.expense.containsNestedExpenses:
-          faker.randomGenerator.boolean() ? 1 : 0,
-      DBConstants.expense.expenses: 'Nested expenses data',
-      // Add appropriate nested expenses data
-      DBConstants.expense.createdAt: faker.date.dateTime().toIso8601String(),
-      DBConstants.expense.modifiedAt: faker.date.dateTime().toIso8601String(),
-    };
-    return expense;
   }
 }
