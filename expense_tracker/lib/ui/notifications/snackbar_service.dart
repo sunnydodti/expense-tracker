@@ -18,12 +18,12 @@ class SnackBarService {
   }
 
   static showErrorSnackBarWithContext(BuildContext context, String message,
-      {bool removeCurrent = false}) {
+      {bool removeCurrent = false, int duration = 2}) {
     if (removeCurrent) ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: const Duration(seconds: 2),
+        duration: Duration(seconds: duration),
         backgroundColor: Colors.red,
         behavior: SnackBarBehavior.floating,
       ),
@@ -31,12 +31,12 @@ class SnackBarService {
   }
 
   static showSuccessSnackBarWithContext(BuildContext context, String message,
-      {bool removeCurrent = false}) async {
+      {bool removeCurrent = false, int duration = 2}) async {
     if (removeCurrent) ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: const Duration(seconds: 2),
+        duration: Duration(seconds: duration),
         backgroundColor: Colors.green,
         behavior: SnackBarBehavior.floating,
       ),
@@ -45,13 +45,13 @@ class SnackBarService {
 
   static Future<bool> showUndoSnackBarWithContext(
       BuildContext context, String message,
-      {bool removeCurrent = false}) async {
+      {bool removeCurrent = false, int duration = 2}) async {
     if (removeCurrent) ScaffoldMessenger.of(context).removeCurrentSnackBar();
     Completer<bool> completer = Completer<bool>();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: const Duration(seconds: 4),
+        duration: Duration(seconds: duration),
         action: SnackBarAction(
           label: 'Undo',
           onPressed: () {
@@ -72,13 +72,15 @@ class SnackBarService {
 
   static showUndoSnackBarWithContextAndCallback(
       BuildContext context, String message, Function onUndo,
-      {bool removeCurrent = false, Function onNotUndo = emptyFunction}) async {
+      {bool removeCurrent = false,
+      int duration = 2,
+      Function onNotUndo = emptyFunction}) async {
     if (removeCurrent) ScaffoldMessenger.of(context).removeCurrentSnackBar();
     bool isUndoPressed = false;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: const Duration(seconds: 4),
+        duration: Duration(seconds: duration),
         action: SnackBarAction(
           label: 'Undo',
           onPressed: () {
