@@ -31,13 +31,9 @@ class ExpenseHelper {
   }
 
   // READ
-  Future<List<Expense>> getExpenses() async {
+  Future<List<Map<String, dynamic>>> getExpenses() async {
     Database database = getDatabase;
-    final List<Map<String, dynamic>> expenseMaps =
-        await database.query(DBConstants.expense.table);
-    return expenseMaps
-        .map((expenseMap) => Expense.fromMap(expenseMap))
-        .toList();
+    return await database.query(DBConstants.expense.table);
   }
 
   // UPDATE

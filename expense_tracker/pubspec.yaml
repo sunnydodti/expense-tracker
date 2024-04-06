@@ -19,6 +19,7 @@ dependencies:
   path_provider: any
   faker:
   provider: ^6.1.2
+  file_picker:
 
 dev_dependencies:
   flutter_test:

@@ -1,8 +1,10 @@
+import 'package:expense_tracker/models/ExportResult.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/expense_provider.dart';
 import '../../service/expense_service.dart';
+import '../../service/export_service.dart';
 import '../notifications/snackbar_service.dart';
 
 class HomeDrawer extends StatefulWidget {
@@ -40,21 +42,26 @@ class HomeDrawerState extends State<HomeDrawer> {
             ),
             ListTile(
               title: const Text('Export'),
-              onTap: () {
-                // Handle Export option
-              },
+              onTap: () => _exportExpenses(context),
             ),
             ListTile(
               title: const Text('Settings'),
-              onTap: () {
-                // Handle Settings option
-              },
+              onTap: () => {},
             ),
             if (_isDeleteDialogVisible) _buildDeleteConfirmationDialog(context),
           ],
         ),
       ),
     );
+  }
+
+  void _exportExpenses(BuildContext context) {
+    Navigator.pop(context);
+    ExportService exportService = ExportService();
+    exportService.exportAllExpensesToJson().then((ExportResult result) => {
+    if (result.result) SnackBarService.showSuccessSnackBarWithContext(context, "${result.message} path:${result.outputPath}", duration: 5)
+      else SnackBarService.showErrorSnackBarWithContext(context, result.message)
+    });
   }
 
   Widget _buildDeleteConfirmationDialog(BuildContext context) {

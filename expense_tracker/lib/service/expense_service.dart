@@ -32,7 +32,13 @@ class ExpenseService {
   }
 
   Future<List<Expense>> fetchExpenses() async {
-    return _expenseHelper.getExpenses();
+    List<Map<String, dynamic>> expenseMapList = await _expenseHelper.getExpenses();
+    return expenseMapList
+        .map((expenseMap) => Expense.fromMap(expenseMap))
+        .toList();
+  }
+  Future<List<Map<String, dynamic>>> fetchExpenseMaps() async {
+    return await _expenseHelper.getExpenses();
   }
 
   Future<int> deleteAllExpenses() async {
