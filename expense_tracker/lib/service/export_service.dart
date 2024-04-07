@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../data/constants/file_name_constants.dart';
-import '../models/ExportResult.dart';
+import '../models/export_result.dart';
 import 'expense_service.dart';
 
 class ExportService {
@@ -29,7 +29,7 @@ class ExportService {
     try {
       ExpenseService expenseService = await _expenseService;
       List<Map<String, dynamic>> data = await expenseService.fetchExpenseMaps();
-      String fileName = FileNameConstants.exportedFileName.replaceFirst("{0}", DateTime.now().toString());
+      String fileName = FileConstants.exportedFileName.replaceFirst("{0}", DateTime.now().toString());
       File file = File("${await getExportPath()}/$fileName");
       debugPrint("exporting to ${file.path}");
       file.writeAsStringSync(getFormattedJSONString(data));

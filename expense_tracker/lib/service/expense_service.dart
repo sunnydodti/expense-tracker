@@ -1,6 +1,6 @@
 import 'package:faker/faker.dart';
 
-import '../data/constants/DBConstants.dart';
+import '../data/constants/db_constants.dart';
 import '../data/database/database_helper.dart';
 import '../data/database/expense_helper.dart';
 import '../models/expense.dart';
@@ -32,11 +32,13 @@ class ExpenseService {
   }
 
   Future<List<Expense>> fetchExpenses() async {
-    List<Map<String, dynamic>> expenseMapList = await _expenseHelper.getExpenses();
+    List<Map<String, dynamic>> expenseMapList =
+        await _expenseHelper.getExpenses();
     return expenseMapList
         .map((expenseMap) => Expense.fromMap(expenseMap))
         .toList();
   }
+
   Future<List<Map<String, dynamic>>> fetchExpenseMaps() async {
     return await _expenseHelper.getExpenses();
   }
@@ -47,7 +49,7 @@ class ExpenseService {
 
   Future<void> populateDatabase({int count = 1}) async {
     List<Map<String, dynamic>> expenseMapList = [];
-    for (int i = 0; i <= count-1; i++) {
+    for (int i = 0; i <= count - 1; i++) {
       var expense = generateRandomExpense();
       expenseMapList.add(expense);
     }
@@ -63,20 +65,25 @@ class ExpenseService {
       DBConstants.expense.currency: "INR",
       DBConstants.expense.amount: double.parse(amount.toStringAsFixed(2)),
       DBConstants.expense.transactionType:
-      faker.randomGenerator.boolean() ? 'income' : 'expense',
+          faker.randomGenerator.boolean() ? 'income' : 'expense',
       DBConstants.expense.date: faker.date.dateTime().toIso8601String(),
       DBConstants.expense.category:
-      faker.randomGenerator.boolean() ? 'Food' : 'Shopping',
+          faker.randomGenerator.boolean() ? 'Food' : 'Shopping',
       DBConstants.expense.tags:
-      faker.randomGenerator.boolean() ? 'home' : 'work',
+          faker.randomGenerator.boolean() ? 'home' : 'work',
       DBConstants.expense.note: faker.lorem.sentence(),
       DBConstants.expense.containsNestedExpenses:
-      faker.randomGenerator.boolean() ? 1 : 0,
+          faker.randomGenerator.boolean() ? 1 : 0,
       DBConstants.expense.expenses: 'Nested expenses data',
       // Add appropriate nested expenses data
       DBConstants.expense.createdAt: faker.date.dateTime().toIso8601String(),
       DBConstants.expense.modifiedAt: faker.date.dateTime().toIso8601String(),
     };
     return expense;
+  }
+
+  Future<bool> importExpense(Map<String, dynamic> expense) async {
+    if (await _expenseHelper.addExpense(expense) > 0) return true;
+    return false;
   }
 }

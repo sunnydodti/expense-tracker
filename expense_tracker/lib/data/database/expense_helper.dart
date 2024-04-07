@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../models/expense.dart';
-import '../constants/DBConstants.dart';
+import '../constants/db_constants.dart';
 
 class ExpenseHelper {
   final Database _database;

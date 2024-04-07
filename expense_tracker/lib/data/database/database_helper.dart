@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../constants/DBConstants.dart';
+import '../constants/db_constants.dart';
 import 'expense_helper.dart';
 
 class DatabaseHelper {

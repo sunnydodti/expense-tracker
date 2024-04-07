@@ -6,12 +6,12 @@ class SnackBarService {
   //region Section 1: SnackBarWithContext
 
   static showSnackBarWithContext(BuildContext context, String message,
-      {bool removeCurrent = false}) {
+      {bool removeCurrent = false, int duration = 2}) {
     if (removeCurrent) ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: const Duration(seconds: 2),
+        duration: Duration(seconds: duration),
         behavior: SnackBarBehavior.floating,
       ),
     );
