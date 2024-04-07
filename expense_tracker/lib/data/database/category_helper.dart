@@ -11,9 +11,19 @@ class CategoryHelper {
 
   Database get getDatabase => _database;
 
+  static final List<String> defaultCategories = [
+    "Food",
+    "Transport",
+    "Shopping",
+    "Entertainment",
+    "Health",
+    "Bills",
+    "Others"
+  ];
+
   static Future<void> createTable(Database database) async {
     var result = await database.rawQuery(
-        'SELECT name FROM sqlite_master WHERE type = "table" AND name = "${DBConstants.category.table}"');
+        """SELECT name FROM sqlite_master WHERE type = 'table' AND name = '${DBConstants.category.table}'""");
 
     if (result.isEmpty) {
       await database.execute('''CREATE TABLE ${DBConstants.category.table} (
@@ -23,6 +33,22 @@ class CategoryHelper {
         ${DBConstants.category.modifiedAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
         ''');
+    }
+  }
+
+  static Future<void> populateDefaults(Database database) async {
+    var result = await database.rawQuery(
+        '''SELECT name FROM sqlite_master WHERE type = 'table' AND name = '${DBConstants.category.table}' ''');
+
+    try {
+      if (result.isNotEmpty) {
+        for (String category in defaultCategories) {
+          await database.execute(
+              '''insert into ${DBConstants.category.table} (${DBConstants.category.name}) values ('$category')''');
+        }
+      }
+    } on Exception catch (e) {
+      debugPrint("Error at Defaults $e");
     }
   }
 
@@ -41,11 +67,14 @@ class CategoryHelper {
     return await database.query(DBConstants.category.table);
   }
 
-  Future<List<Map<String, dynamic>>> getCategoryByName(String categoryName) async {
+  Future<List<Map<String, dynamic>>> getCategoryByName(
+      String categoryName) async {
     Database database = getDatabase;
-    return await database.query(DBConstants.category.table,
+    return await database.query(
+      DBConstants.category.table,
       where: '${DBConstants.category.name} = ?',
-      whereArgs: [categoryName],);
+      whereArgs: [categoryName],
+    );
   }
 
   Future<int> updateCategory(CategoryFormModel category) async {
@@ -82,7 +111,4 @@ class CategoryHelper {
     ));
     return count ?? 0;
   }
-
-
-
 }

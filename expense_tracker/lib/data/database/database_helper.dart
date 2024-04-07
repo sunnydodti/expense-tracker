@@ -42,6 +42,7 @@ class DatabaseHelper {
   void createDatabase(Database database, int newVersion) async {
     await ExpenseHelper.createTable(database);
     await CategoryHelper.createTable(database);
+    await CategoryHelper.populateDefaults(database);
   }
 
   Future<ExpenseHelper> get expenseHelper async =>
