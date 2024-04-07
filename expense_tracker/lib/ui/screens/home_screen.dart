@@ -1,8 +1,6 @@
-import 'package:expense_tracker/data/database/database_helper.dart';
-import 'package:expense_tracker/data/database/expense_helper.dart';
 import 'package:expense_tracker/models/enums/form_modes.dart';
 import 'package:expense_tracker/ui/drawer/home_drawer.dart';
-import 'package:expense_tracker/ui/widgets/ExpenseListDynamic.dart';
+import 'package:expense_tracker/ui/widgets/expense_list_dynamic.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -30,7 +28,7 @@ class HomePage extends StatelessWidget {
           return MaterialApp(
             theme: ThemeData(colorScheme: const ColorScheme.dark()),
             home: Scaffold(
-              drawer: SafeArea(child: HomeDrawer()),
+              drawer: const SafeArea(child: HomeDrawer()),
               appBar: AppBar(
                 centerTitle: true,
                 title: Text(title),
@@ -44,7 +42,7 @@ class HomePage extends StatelessWidget {
                   IconButton(
                     icon: const Icon(Icons.person),
                     tooltip: "Profile",
-                    onPressed: () => {},
+                    onPressed: _handelProfile,
                   ),
                 ],
               ),
@@ -59,9 +57,13 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  void _handelProfile() => {};
+
   void populateExpense(BuildContext context) async {
     ExpenseService service = await _expenseService;
-    service.populateDatabase(count: 1).then((value) => _refreshExpensesHome(context));
+    service
+        .populateDatabase(count: 1)
+        .then((value) => _refreshExpensesHome(context));
   }
 
   Padding addExpenseButton(BuildContext context) {

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/constants/file_name_constants.dart';
+import '../../data/constants/response_constants.dart';
 import '../../models/import_result.dart';
 import '../../providers/expense_provider.dart';
 import '../../service/expense_service.dart';
@@ -78,7 +79,9 @@ class HomeDrawerState extends State<HomeDrawer> {
             ),
             ListTile(
               title: const Text('Settings'),
-              onTap: () => {},
+              onTap: () => {
+                Navigator.pop(context),
+                SnackBarService.showSnackBarWithContext(context, ResponseConstants.upcoming.getRandomMessage)},
             ),
             if (_isDeleteDialogVisible) _buildDeleteConfirmationDialog(context),
             if (_isImportDialogVisible) _buildImportDialog(context),

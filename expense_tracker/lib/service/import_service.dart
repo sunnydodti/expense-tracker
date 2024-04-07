@@ -5,10 +5,8 @@ import 'package:expense_tracker/data/constants/db_constants.dart';
 import 'package:expense_tracker/models/import_result.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../data/constants/file_name_constants.dart';
-import '../providers/expense_provider.dart';
 import 'expense_service.dart';
 
 class ImportService {

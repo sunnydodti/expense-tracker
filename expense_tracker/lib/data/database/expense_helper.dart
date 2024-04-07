@@ -1,4 +1,3 @@
-import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -12,10 +11,35 @@ class ExpenseHelper {
 
   Database get getDatabase => _database;
 
-  Future<void> createTable(Database db) async {
-    await db.execute(
-      'CREATE TABLE expenses(id INTEGER PRIMARY KEY, ...)',
-    );
+  static Future<void> createTable(Database database) async {
+    await database.execute('''
+          CREATE TABLE ${DBConstants.expense.table}(
+            ${DBConstants.expense.id} INTEGER PRIMARY KEY AUTOINCREMENT,
+            ${DBConstants.expense.title} TEXT,
+            ${DBConstants.expense.currency} TEXT,
+            ${DBConstants.expense.amount} REAL,
+            ${DBConstants.expense.transactionType} TEXT,
+            ${DBConstants.expense.date} DATE,
+            ${DBConstants.expense.category} TEXT,
+            ${DBConstants.expense.tags} TEXT,
+            ${DBConstants.expense.note} TEXT,
+            ${DBConstants.expense.containsNestedExpenses} INTEGER,
+            ${DBConstants.expense.expenses} TEXT,
+            ${DBConstants.expense.createdAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            ${DBConstants.expense.modifiedAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+          )
+        ''');
+
+    await database.execute('''
+      CREATE TRIGGER update_modified_at
+      AFTER UPDATE ON ${DBConstants.expense.table}
+      FOR EACH ROW
+      BEGIN
+        UPDATE ${DBConstants.expense.table}
+        SET modified_at = CURRENT_TIMESTAMP
+        WHERE ${DBConstants.expense.id} = OLD.${DBConstants.expense.id};
+      END;
+    ''');
   }
 
   // CRUD operations
@@ -88,16 +112,9 @@ class ExpenseHelper {
     return count ?? 0;
   }
 
-  // Get all Expenses (map) from database
-  Future<List<Map<String, dynamic>>> getExpenseMapList() async {
+  Future<void> populateExpense(List<Map<String, dynamic>> expenses) async {
     Database database = getDatabase;
-    var result = await database.query(DBConstants.expense.table);
-    return result;
-  }
-
-  Future<void> populateDatabase(List<Map<String, dynamic>> expenses) async {
-    Database database = getDatabase;
-    debugPrint("populating db");
+    debugPrint("populating ${DBConstants.expense.table}");
     for (var expense in expenses) {
       debugPrint("expense - !!!$expense!!!)");
       await database.insert(

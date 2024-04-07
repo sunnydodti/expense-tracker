@@ -1,10 +1,12 @@
 class DBConstants {
-  /// Expense
+  static String databaseName = "expense_tracker";
+
   static ExpenseConstants expense = ExpenseConstants();
+  static CategoryConstants category = CategoryConstants();
 }
 
 class ExpenseConstants {
-  final String table = "expense_table";
+  final String table = "expenses";
 
   final String id = "id";
   final String title = "title";
@@ -18,6 +20,7 @@ class ExpenseConstants {
   final String note = "note";
   final String containsNestedExpenses = "contains_nested_expenses";
   final String expenses = "expenses";
+
   final String createdAt = "created_at";
   final String modifiedAt = "modified_at";
 }
@@ -27,6 +30,9 @@ class CategoryConstants {
 
   final String id = "id";
   final String name = "name";
+
+  final String createdAt = "created_at";
+  final String modifiedAt = "modified_at";
 }
 
 class TagConstants {
@@ -34,6 +40,9 @@ class TagConstants {
 
   final String id = "id";
   final String name = "name";
+
+  final String createdAt = "created_at";
+  final String modifiedAt = "modified_at";
 }
 
 class CurrencyConstants {
@@ -43,6 +52,9 @@ class CurrencyConstants {
   final String name = "name";
   final String symbol = "symbol";
   final String country = "country";
+
+  final String createdAt = "created_at";
+  final String modifiedAt = "modified_at";
 }
 
 class TransactionTypeConstants {
@@ -50,4 +62,7 @@ class TransactionTypeConstants {
 
   final String id = "id";
   final String type = "type";
+
+  final String createdAt = "created_at";
+  final String modifiedAt = "modified_at";
 }

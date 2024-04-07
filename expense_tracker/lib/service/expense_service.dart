@@ -53,7 +53,7 @@ class ExpenseService {
       var expense = generateRandomExpense();
       expenseMapList.add(expense);
     }
-    await _expenseHelper.populateDatabase(
+    await _expenseHelper.populateExpense(
       expenseMapList,
     );
   }

@@ -1,3 +1,5 @@
+import 'package:expense_tracker/models/category.dart';
+import 'package:expense_tracker/service/category_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -21,6 +23,8 @@ class ExpenseForm extends StatefulWidget {
 class _ExpenseFormState extends State<ExpenseForm> {
   final _formKey = GlobalKey<FormState>();
 
+  final Future<CategoryService> _categoryService = CategoryService.create();
+
   //region Section 1: --------------------------------- form data display ---------------------------------
   late Map<String, String> _currencies;
   late String _defaultCurrency;
@@ -28,6 +32,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
   final List<String> tags = ['Item 1', 'Item 2', 'Item 3'];
   final List<String> selectedTags = [];
+
+  List<Category> _categories = [];
+  Category? _selectedCategory;
 
   //endregion
 
@@ -43,7 +50,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
   TextEditingController amountController = TextEditingController();
   TextEditingController transactionTypeController = TextEditingController();
   TextEditingController dateController = TextEditingController();
-  TextEditingController categoryController = TextEditingController();
   TextEditingController tagsController = TextEditingController();
   TextEditingController notesController = TextEditingController();
 
@@ -53,16 +59,23 @@ class _ExpenseFormState extends State<ExpenseForm> {
   //endregion
 
   //region Section 4: --------------------------------- methods ---------------------------------
-  void _populateFormFieldsForEdit(Expense expense) {
+  Future<void> _populateFormFieldsForEdit(Expense expense) async {
     titleController.text = expense.title;
     currencyController.text = expense.currency;
     amountPrefixController.text = _currencies[expense.currency]!;
     amountController.text = _formatAmount(expense.amount);
     transactionTypeController.text = expense.transactionType;
     dateController.text = DateFormat('yyyy-MM-dd').format(expense.date);
-    categoryController.text = expense.category;
     tagsController.text = expense.tags!;
     notesController.text = expense.note!;
+
+    CategoryService categoryService = await _categoryService;
+    List<Category> categories = await categoryService.getCategories();
+    setState(() {
+      _categories = categories;
+      _selectedCategory =
+          categoryService.getMatchingCategory(expense.category, _categories);
+    });
   }
 
   String _formatAmount(double amount) {
@@ -70,19 +83,22 @@ class _ExpenseFormState extends State<ExpenseForm> {
     return amount.toStringAsFixed(2);
   }
 
-  void _populateFormFieldsWithDefaults() {
-    {
-      titleController.text = '';
-      currencyController.text = _defaultCurrency;
-      amountPrefixController.text = _currencies[_defaultCurrency]!;
-      amountController.text = "";
-      transactionTypeController.text =
-          FromBuilder.getTransactionTypesList().first;
-      dateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      categoryController.text = FromBuilder.getCategoriesList().first;
-      tagsController.text = FromBuilder.getTagsList().first;
-      notesController.text = '';
-    }
+  void _populateFormFieldsWithDefaults() async {
+    titleController.text = '';
+    currencyController.text = _defaultCurrency;
+    amountPrefixController.text = _currencies[_defaultCurrency]!;
+    amountController.text = "";
+    transactionTypeController.text =
+        FromBuilder.getTransactionTypesList().first;
+    dateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    tagsController.text = FromBuilder.getTagsList().first;
+    notesController.text = '';
+    CategoryService categoryService = await _categoryService;
+    List<Category> categories = await categoryService.getCategories();
+    setState(() {
+      _categories = categories;
+      _selectedCategory = _categories.isNotEmpty ? _categories[0] : null;
+    });
   }
 
   //endregion
@@ -91,7 +107,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
   @override
   void initState() {
     super.initState();
-
     _currencies = FromBuilder.getCurrenciesListMap();
     _defaultCurrency = _currencies.keys.first;
 
@@ -199,7 +214,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
                 icon: const Icon(Icons.clear),
               ),
             ),
-            validator: (value) => validateField(value, "enter Title"),
+            validator: (value) => validateTextField(value, "enter Title"),
             keyboardType: TextInputType.text,
             onChanged: (value) {
               debugPrint('title: $value');
@@ -255,7 +270,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
             border: OutlineInputBorder(),
             labelText: 'Tags',
           ),
-          validator: (value) => validateField(value, "select tags"),
+          validator: (value) => validateTextField(value, "select tags"),
           onChanged: (value) {
             debugPrint('tags: $value');
             tagsController.text = value;
@@ -271,17 +286,17 @@ class _ExpenseFormState extends State<ExpenseForm> {
       flex: 1,
       child: Container(
           padding: const EdgeInsets.all(10),
-          child: DropdownButtonFormField(
-            value: categoryController.text,
-            items: FromBuilder.getCategoryDropdownItems(),
+          child: DropdownButtonFormField<Category>(
+            value: _selectedCategory,
+            items: FromBuilder.getCategoryDropdownItemsV2(_categories),
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Category',
             ),
-            validator: (value) => validateField(value, "select category"),
+            validator: (value) => validateCategory("select category"),
             onChanged: (value) {
-              debugPrint('category: $value');
-              categoryController.text = value;
+              debugPrint('category: ${value!.name}');
+              _selectedCategory = value;
             },
           )),
     );
@@ -359,7 +374,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
               labelText: 'Transaction Type',
             ),
             validator: (value) =>
-                validateField(value, "select transaction type"),
+                validateTextField(value, "select transaction type"),
             onChanged: (value) {
               debugPrint('transaction type : $value');
               transactionTypeController.text = value!;
@@ -388,7 +403,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
               icon: const Icon(Icons.clear),
             ),
           ),
-          validator: (value) => validateField(value, "enter amount"),
+          validator: (value) => validateTextField(value, "enter amount"),
           keyboardType: const TextInputType.numberWithOptions(decimal: false),
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}$')),
@@ -416,7 +431,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
               border: OutlineInputBorder(),
               labelText: 'Currency',
             ),
-            validator: (value) => validateField(value, "select currency"),
+            validator: (value) => validateTextField(value, "select currency"),
             onChanged: (value) {
               debugPrint('selected currency: $value');
               setState(() {
@@ -444,7 +459,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
       debugPrint('amount: ${amountController.text}');
       debugPrint('transaction type: ${transactionTypeController.text}');
       debugPrint('date: ${dateController.text}');
-      debugPrint('category: ${categoryController.text}');
+      debugPrint('category: ${_selectedCategory?.name}');
       debugPrint('tags: ${tagsController.text}');
       debugPrint('notes: ${notesController.text}');
 
@@ -454,7 +469,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
         double.parse(amountController.text),
         transactionTypeController.text,
         DateTime.parse(dateController.text),
-        categoryController.text,
+        _selectedCategory!.name,
         false,
       );
 
@@ -495,12 +510,19 @@ class _ExpenseFormState extends State<ExpenseForm> {
     return await expenseService.updateExpense(expense);
   }
 
-  String? validateField(var value, String errorMessage) {
+  String? validateTextField(var value, String errorMessage) {
     if (value == null || value.isEmpty) {
       return 'Please $errorMessage';
     }
     // Add additional validation logic if needed
     return null; // Return null if the input is valid
+  }
+
+  String? validateCategory(String errorMessage) {
+    if (_selectedCategory == null) {
+      return 'Please $errorMessage';
+    }
+    return null;
   }
 // --------------------------------- methods }--------------------------------- //
 }
