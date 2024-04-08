@@ -20,7 +20,6 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         theme: ThemeData(
-          // primarySwatch: Colors.grey,
           colorScheme: const ColorScheme.dark()
         ),
         home: const HomePage(),

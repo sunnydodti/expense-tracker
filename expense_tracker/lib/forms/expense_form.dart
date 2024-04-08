@@ -166,8 +166,10 @@ class _ExpenseFormState extends State<ExpenseForm> {
     );
   }
 
-  Form _getExpenseFormFields(BuildContext context) {
-    return Form(
+  Container _getExpenseFormFields(BuildContext context) {
+    return Container(
+      color: Colors.grey.shade900,
+      child: Form(
       key: _formKey,
       child: Column(
         children: [
@@ -554,6 +556,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
     }
     return null;
   }
+
   String? validateTag(String errorMessage) {
     if (_selectedTag == null) {
       return 'Please $errorMessage';

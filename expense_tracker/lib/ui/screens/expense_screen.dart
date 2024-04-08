@@ -16,6 +16,7 @@ class ExpensePage extends StatelessWidget {
     return WillPopScope(
       onWillPop: () => navigateBack(context, false),
       child: Scaffold(
+        // backgroundColor: Colors.grey.shade900,
           appBar: AppBar(
             leading: SafeArea(
                 child: BackButton(

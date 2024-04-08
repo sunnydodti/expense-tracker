@@ -10,7 +10,6 @@ import '../notifications/snackbar_service.dart';
 import '../screens/expense_screen.dart';
 import 'expense_tile_widgets.dart';
 
-
 class ExpenseListDynamic extends StatelessWidget {
   const ExpenseListDynamic({Key? key}) : super(key: key);
 
@@ -49,14 +48,14 @@ class ExpenseListDynamic extends StatelessWidget {
   Container getSummaryTile(ExpenseProvider expenseProvider) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey.shade800,
+        color: Colors.grey.shade900,
       ),
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       child: Column(
         children: [
           Container(
               decoration: BoxDecoration(
-                color: Colors.grey.shade700,
+                color: Colors.grey.shade800,
               ),
               margin: const EdgeInsets.only(
                   top: 10, bottom: 5, left: 10, right: 10),
@@ -75,7 +74,7 @@ class ExpenseListDynamic extends StatelessWidget {
               Expanded(
                 child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade700,
+                      color: Colors.grey.shade800,
                     ),
                     margin: const EdgeInsets.only(
                         top: 5, bottom: 10, left: 10, right: 5),
@@ -92,7 +91,7 @@ class ExpenseListDynamic extends StatelessWidget {
               Expanded(
                 child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade700,
+                      color: Colors.grey.shade800,
                     ),
                     margin: const EdgeInsets.only(
                         top: 5, bottom: 10, left: 5, right: 10),
@@ -122,7 +121,9 @@ class ExpenseListDynamic extends StatelessWidget {
       style: TextStyle(
         fontWeight: FontWeight.bold,
         // fontSize: 12,
-        color: amount > 0 ? Colors.green.shade400 : (amount < 0 ? Colors.red.shade400 : Colors.white70),
+        color: amount > 0
+            ? Colors.green.shade400
+            : (amount < 0 ? Colors.red.shade400 : Colors.white70),
       ),
     );
   }
@@ -202,7 +203,7 @@ class ExpenseListDynamic extends StatelessWidget {
       BuildContext context, Expense expense, ExpenseProvider expenseProvider) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey.shade800,
+        color: Colors.grey.shade900,
         // borderRadius: BorderRadius.circular(10),
       ),
       margin: const EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
@@ -217,15 +218,15 @@ class ExpenseListDynamic extends StatelessWidget {
     int expenseLength = expenseProvider.expenses.length;
     debugPrint("$expenseLength");
 
-    expenseProvider.deleteExpense(expense.id!);
+    expenseProvider.deleteExpense(expense.id);
 
     SnackBarService.showUndoSnackBarWithContextAndCallback(
-      context,
-      "Deleting - ${expense.title}",
-          () => undoExpenseDeletion(
-              index, expenseLength, expenseProvider, expense, context),
-      onNotUndo: () => completeExpenseDeletion(
-          expense, index, expenseLength, expenseProvider, context));
+        context,
+        "Deleting - ${expense.title}",
+        () => undoExpenseDeletion(
+            index, expenseLength, expenseProvider, expense, context),
+        onNotUndo: () => completeExpenseDeletion(
+            expense, index, expenseLength, expenseProvider, context));
   }
 
   completeExpenseDeletion(Expense expense, int index, int expenseLength,
@@ -257,13 +258,12 @@ class ExpenseListDynamic extends StatelessWidget {
         context, "Restored - ${expense.title}");
   }
 
-
   void _editItem(BuildContext context, int index, Expense expense,
       ExpenseProvider expenseProvider) async {
     int expenseLength = expenseProvider.expenses.length;
     debugPrint("$expense");
 
-    expenseProvider.deleteExpense(expense.id!);
+    expenseProvider.deleteExpense(expense.id);
 
     bool result = await Navigator.push(
       context,
@@ -291,15 +291,13 @@ class ExpenseListDynamic extends StatelessWidget {
         builder: (context) =>
             ExpensePage(formMode: FormMode.edit, expense: expense),
       ),
-    ).then((result) => {
-      if (result) _refreshExpenses(context)
-    });
+    ).then((result) => {if (result) _refreshExpenses(context)});
   }
 
   Future<int> _deleteExpenseFromDatabase(Expense expense) async {
     DatabaseHelper databaseHelper = DatabaseHelper();
     ExpenseHelper expenseHelper = await databaseHelper.expenseHelper;
-    return await expenseHelper.deleteExpense(expense.id!);
+    return await expenseHelper.deleteExpense(expense.id);
   }
 
   _refreshExpenses(BuildContext context) {

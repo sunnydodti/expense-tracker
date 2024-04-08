@@ -20,7 +20,7 @@ class HomePage extends StatelessWidget {
       future: _refreshExpensesHome(context),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator(); // Or any loading indicator
+          return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
