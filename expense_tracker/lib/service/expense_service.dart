@@ -131,10 +131,8 @@ class ExpenseService {
     }
 
     if (sortBy == DBConstants.expense.modifiedAt) {
-      debugPrint("------------------------------");
       sortedByDate.sort((a, b) {
         final compareValue = a.modifiedAt.compareTo(b.modifiedAt);
-        debugPrint("(${a.title} - ${a.modifiedAt}) > (${b.title} - ${b.modifiedAt}) = $compareValue");
         return compareValue * (ascending ? 1 : -1);
       });
     }

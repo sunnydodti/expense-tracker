@@ -1,4 +1,4 @@
-import 'package:expense_tracker/models/category.dart';
+import 'package:expense_tracker/models/expense_category.dart';
 import 'package:flutter/material.dart';
 
 import '../models/enums/transaction_type.dart';
@@ -105,10 +105,10 @@ class FromBuilder {
     }).toList();
   }
 
-  static List<DropdownMenuItem<Category>> getCategoryDropdownItemsV2(
-      List<Category> categories) {
+  static List<DropdownMenuItem<ExpenseCategory>> getCategoryDropdownItemsV2(
+      List<ExpenseCategory> categories) {
     return categories.map((category) {
-      return DropdownMenuItem<Category>(
+      return DropdownMenuItem<ExpenseCategory>(
         value: category,
         child: Text(category.name),
       );

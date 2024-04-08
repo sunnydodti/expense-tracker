@@ -1,10 +1,11 @@
+import 'package:expense_tracker/data/constants/response_constants.dart';
 import 'package:expense_tracker/models/export_result.dart';
+import 'package:expense_tracker/ui/screens/category_screen.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/constants/file_name_constants.dart';
-import '../../data/constants/response_constants.dart';
 import '../../models/import_result.dart';
 import '../../providers/expense_provider.dart';
 import '../../service/expense_service.dart';
@@ -58,7 +59,6 @@ class HomeDrawerState extends State<HomeDrawer> {
             ListTile(
               title: const Text('Delete'),
               onTap: () {
-                // Navigator.pop(context);
                 setState(() {
                   _isDeleteDialogVisible = true;
                 });
@@ -66,7 +66,6 @@ class HomeDrawerState extends State<HomeDrawer> {
             ),
             ListTile(
               title: const Text('Import'),
-              // onTap: () => _importExpenses(context),
               onTap: () {
                 setState(() {
                   _isImportDialogVisible = true;
@@ -79,9 +78,23 @@ class HomeDrawerState extends State<HomeDrawer> {
             ),
             ListTile(
               title: const Text('Settings'),
-              onTap: () => {
-                Navigator.pop(context),
-                SnackBarService.showSnackBarWithContext(context, ResponseConstants.upcoming.getRandomMessage)},
+              onTap: () {
+                Navigator.pop(context);
+                SnackBarService.showSnackBarWithContext(
+                    context, ResponseConstants.upcoming.getRandomMessage);
+              },
+            ),
+            ListTile(
+              title: const Text('Categories'),
+              onTap: () => _navigateToCategoryScreen(context),
+            ),
+            ListTile(
+              title: const Text('Tags'),
+              onTap: () {
+                Navigator.pop(context);
+                SnackBarService.showSnackBarWithContext(
+                    context, ResponseConstants.upcoming.getRandomMessage);
+              },
             ),
             if (_isDeleteDialogVisible) _buildDeleteConfirmationDialog(context),
             if (_isImportDialogVisible) _buildImportDialog(context),
@@ -89,6 +102,15 @@ class HomeDrawerState extends State<HomeDrawer> {
         ),
       ),
     );
+  }
+
+  _navigateToCategoryScreen(BuildContext context) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CategoryScreen(),
+      ),
+    ).then((value) => Navigator.pop(context));
   }
 
   Widget _buildDeleteConfirmationDialog(BuildContext context) {
@@ -172,8 +194,8 @@ class HomeDrawerState extends State<HomeDrawer> {
               if (result.result)
                 {
                   _refreshExpenses(),
-                  SnackBarService.showSuccessSnackBarWithContext(
-                      context, "imported ${result.successCount}/${result.totalExpenses}",
+                  SnackBarService.showSuccessSnackBarWithContext(context,
+                      "imported ${result.successCount}/${result.totalExpenses}",
                       duration: 2)
                 }
               else

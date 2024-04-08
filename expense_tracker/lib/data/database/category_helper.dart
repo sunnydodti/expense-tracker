@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../models/category.dart';
+import '../../models/expense_category.dart';
 import '../constants/db_constants.dart';
 
 class CategoryHelper {

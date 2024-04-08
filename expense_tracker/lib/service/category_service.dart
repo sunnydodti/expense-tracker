@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/database/category_helper.dart';
 import '../data/database/database_helper.dart';
-import '../models/category.dart';
+import '../models/expense_category.dart';
 
 class CategoryService {
   late final CategoryHelper _categoryHelper;
@@ -16,19 +16,19 @@ class CategoryService {
     return CategoryService._(categoryHelper);
   }
 
-  Future<List<Category>> getCategories() async {
+  Future<List<ExpenseCategory>> getCategories() async {
     try {
       final List<Map<String, dynamic>> categories = await _categoryHelper.getCategories();
-      return categories.map((categoryMap) => Category.fromMap(categoryMap)).toList();
+      return categories.map((categoryMap) => ExpenseCategory.fromMap(categoryMap)).toList();
     } catch (e) {
       debugPrint("Error getting categories: $e");
       return [];
     }
   }
-  Future<Category?> getCategoryByName(String categoryName) async {
+  Future<ExpenseCategory?> getCategoryByName(String categoryName) async {
     try {
       final List<Map<String, dynamic>> category = await _categoryHelper.getCategoryByName(categoryName);
-      return Category.fromMap(category.first);
+      return ExpenseCategory.fromMap(category.first);
     } catch (e) {
       debugPrint("Error getting category ($categoryName): $e");
       return null;
@@ -65,7 +65,7 @@ class CategoryService {
     }
   }
 
-  Category? getMatchingCategory(String name, List<Category> categories) {
+  ExpenseCategory? getMatchingCategory(String name, List<ExpenseCategory> categories) {
     try {
       if (name.isEmpty) return null;
       final matchingCategories = categories.where((category) => category.name == name);

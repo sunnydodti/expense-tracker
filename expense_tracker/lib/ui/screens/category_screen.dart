@@ -1,0 +1,53 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/category_provider.dart';
+import '../widgets/category_list.dart';
+
+class CategoryScreen extends StatelessWidget {
+  const CategoryScreen({super.key});
+
+  final String title = "Categories";
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<void>(
+      future: _refreshCategories(context),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          return Scaffold(
+            appBar: AppBar(
+              leading: SafeArea(
+                  child: BackButton(
+                onPressed: () => navigateBack(context, false),
+              )),
+              centerTitle: true,
+              title: Text(title, textScaleFactor: 0.9),
+              backgroundColor: Colors.black,
+            ),
+            body: Column(
+              children: const [
+                Expanded(
+                  child: CategoryList(),
+                )
+              ],
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  Future<void> _refreshCategories(BuildContext context) async {
+    final expenseProvider =
+        Provider.of<CategoryProvider>(context, listen: false);
+    expenseProvider.refreshCategories();
+  }
+
+  navigateBack(BuildContext context, bool result) =>
+      Navigator.pop(context, result);
+}

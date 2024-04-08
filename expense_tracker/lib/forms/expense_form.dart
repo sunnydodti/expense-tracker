@@ -1,4 +1,4 @@
-import 'package:expense_tracker/models/category.dart';
+import 'package:expense_tracker/models/expense_category.dart';
 import 'package:expense_tracker/service/category_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,8 +33,8 @@ class _ExpenseFormState extends State<ExpenseForm> {
   late String _defaultCurrency;
   late Color _highlightColor;
 
-  List<Category> _categories = [];
-  Category? _selectedCategory;
+  List<ExpenseCategory> _categories = [];
+  ExpenseCategory? _selectedCategory;
 
   List<Tag> _tags = [];
   Tag? _selectedTag;
@@ -73,7 +73,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
     CategoryService categoryService = await _categoryService;
     TagService tagService = await _tagService;
 
-    List<Category> categories = await categoryService.getCategories();
+    List<ExpenseCategory> categories = await categoryService.getCategories();
     List<Tag> tags = await tagService.getTags();
 
     setState(() {
@@ -82,8 +82,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
       _selectedCategory =
           categoryService.getMatchingCategory(expense.category, _categories);
-      _selectedTag =
-          tagService.getMatchingTag(expense.tags ?? "", _tags);
+      _selectedTag = tagService.getMatchingTag(expense.tags ?? "", _tags);
     });
   }
 
@@ -105,7 +104,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
     CategoryService categoryService = await _categoryService;
     TagService tagService = await _tagService;
 
-    List<Category> categories = await categoryService.getCategories();
+    List<ExpenseCategory> categories = await categoryService.getCategories();
     List<Tag> tags = await tagService.getTags();
 
     setState(() {
@@ -170,35 +169,36 @@ class _ExpenseFormState extends State<ExpenseForm> {
     return Container(
       color: Colors.grey.shade900,
       child: Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          Row(
-            children: [getTitleField()],
-          ),
-          Row(
-            children: [
-              getCurrencyField(),
-              getAmountField(),
-            ],
-          ),
-          Row(
-            children: [
-              getTransactionTypeField(),
-              getDateField(context),
-            ],
-          ),
-          Row(
-            children: [
-              getCategoryField(),
-              getTagsField(),
-            ],
-          ),
-          Row(
-            children: [getNotesField()],
-          ),
-          getSubmitButton(),
-        ],
+        key: _formKey,
+        child: Column(
+          children: [
+            Row(
+              children: [getTitleField()],
+            ),
+            Row(
+              children: [
+                getCurrencyField(),
+                getAmountField(),
+              ],
+            ),
+            Row(
+              children: [
+                getTransactionTypeField(),
+                getDateField(context),
+              ],
+            ),
+            Row(
+              children: [
+                getCategoryField(),
+                getTagsField(),
+              ],
+            ),
+            Row(
+              children: [getNotesField()],
+            ),
+            getSubmitButton(),
+          ],
+        ),
       ),
     );
   }
@@ -310,7 +310,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
       flex: 1,
       child: Container(
           padding: _fieldPadding(),
-          child: DropdownButtonFormField<Category>(
+          child: DropdownButtonFormField<ExpenseCategory>(
             isExpanded: true,
             value: _selectedCategory,
             items: FromBuilder.getCategoryDropdownItemsV2(_categories),

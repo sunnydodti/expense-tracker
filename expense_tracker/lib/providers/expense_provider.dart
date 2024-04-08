@@ -1,10 +1,10 @@
-import 'package:expense_tracker/data/constants/db_constants.dart';
-import 'package:expense_tracker/service/expense_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../data/constants/db_constants.dart';
 import '../models/expense.dart';
 import '../models/enums/transaction_type.dart';
+import '../service/expense_service.dart';
 
 class ExpenseProvider extends ChangeNotifier {
   late final Future<ExpenseService> _expenseService;
@@ -100,13 +100,13 @@ class ExpenseProvider extends ChangeNotifier {
     }
   }
 
-  /// delete an expense at index. this does not delete in db
+  /// delete an expense at index
   void deleteExpense(int id) {
     _expenses.removeWhere((expense) => expense.id == id);
     notifyListeners();
   }
 
-  ///delete all expense. this does not delete in db
+  ///delete all expense
   void _deleteExpenses() async {
     ExpenseService expenseService = await _expenseService;
     expenseService.deleteAllExpenses();
