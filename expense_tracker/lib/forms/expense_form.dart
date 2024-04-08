@@ -129,17 +129,22 @@ class _ExpenseFormState extends State<ExpenseForm> {
     return Material(
       child: Theme(
         data: theme.copyWith(
+            textTheme: Theme.of(context).textTheme.apply(
+                  fontSizeFactor: 0.6,
+                ),
             inputDecorationTheme: InputDecorationTheme(
-          focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-            color: _highlightColor,
-          )),
-          prefixIconColor: _highlightColor,
-          suffixIconColor: _highlightColor,
-          labelStyle: TextStyle(
-            color: _highlightColor, // Define your label color
-          ),
-        )),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+              focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                color: _highlightColor,
+              )),
+              prefixIconColor: _highlightColor,
+              suffixIconColor: _highlightColor,
+              labelStyle: TextStyle(
+                color: _highlightColor,
+              ),
+            )),
         child: _getExpenseFormFields(context),
       ),
     );
@@ -195,12 +200,12 @@ class _ExpenseFormState extends State<ExpenseForm> {
     return Expanded(
         flex: 1,
         child: Container(
-          padding: const EdgeInsets.all(10),
+          padding: _fieldPadding(),
           child: TextFormField(
             controller: titleController,
             maxLines: 1,
             decoration: InputDecoration(
-              border: const OutlineInputBorder(),
+              border: _fieldBorder(),
               focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
                 color: _highlightColor,
@@ -211,7 +216,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
                 onPressed: () {
                   titleController.clear();
                 },
-                icon: const Icon(Icons.clear),
+                icon: Icon(Icons.clear, size: _getIconSize()),
               ),
             ),
             validator: (value) => validateTextField(value, "enter Title"),
@@ -230,21 +235,21 @@ class _ExpenseFormState extends State<ExpenseForm> {
     return Expanded(
         flex: 1,
         child: Container(
-          padding: const EdgeInsets.all(10),
+          padding: _fieldPadding(),
           child: TextFormField(
             controller: notesController,
             maxLines: 1,
             // textInputAction: TextInputAction.newline,
             // onEditingComplete: () {},
             decoration: InputDecoration(
-              border: const OutlineInputBorder(),
-              prefixIcon: const Icon(Icons.edit),
+              border: _fieldBorder(),
+              prefixIcon: Icon(Icons.edit, size: _getIconSize()),
               labelText: 'Notes',
               suffixIcon: IconButton(
                 onPressed: () {
                   notesController.clear();
                 },
-                icon: const Icon(Icons.clear),
+                icon: Icon(Icons.clear, size: _getIconSize()),
               ),
             ),
             keyboardType: TextInputType.text,
@@ -262,8 +267,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
     return Expanded(
       flex: 1,
       child: Container(
-        padding: const EdgeInsets.all(10),
+        padding: _fieldPadding(),
         child: DropdownButtonFormField(
+          isExpanded: true,
           value: tagsController.text,
           items: FromBuilder.getTagsDropdownItems(),
           decoration: const InputDecoration(
@@ -285,8 +291,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
     return Expanded(
       flex: 1,
       child: Container(
-          padding: const EdgeInsets.all(10),
+          padding: _fieldPadding(),
           child: DropdownButtonFormField<Category>(
+            isExpanded: true,
             value: _selectedCategory,
             items: FromBuilder.getCategoryDropdownItemsV2(_categories),
             decoration: const InputDecoration(
@@ -307,13 +314,13 @@ class _ExpenseFormState extends State<ExpenseForm> {
     return Expanded(
         flex: 1,
         child: Container(
-          padding: const EdgeInsets.all(10),
+          padding: _fieldPadding(),
           child: TextFormField(
             controller: dateController,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              border: const OutlineInputBorder(),
               labelText: 'Date',
-              prefixIcon: Icon(Icons.calendar_today),
+              prefixIcon: Icon(Icons.calendar_today, size: _getIconSize()),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -364,13 +371,15 @@ class _ExpenseFormState extends State<ExpenseForm> {
     return Expanded(
       flex: 1,
       child: Container(
-          padding: const EdgeInsets.all(10),
+          padding: _fieldPadding(),
           child: DropdownButtonFormField(
+            isExpanded: true,
             value: transactionTypeController.text,
             items: FromBuilder.getTransactionTypeDropdownItems(),
-            decoration: const InputDecoration(
-              prefixIcon: Icon(Icons.monetization_on_outlined),
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              prefixIcon:
+                  Icon(Icons.monetization_on_outlined, size: _getIconSize()),
+              border: const OutlineInputBorder(),
               labelText: 'Transaction Type',
             ),
             validator: (value) =>
@@ -389,11 +398,11 @@ class _ExpenseFormState extends State<ExpenseForm> {
     return Expanded(
       flex: 5,
       child: Container(
-        padding: const EdgeInsets.all(10),
+        padding: _fieldPadding(),
         child: TextFormField(
           controller: amountController,
           decoration: InputDecoration(
-            border: const OutlineInputBorder(),
+            border: _fieldBorder(),
             prefixText: amountPrefixController.text,
             labelText: 'Amount',
             suffixIcon: IconButton(
@@ -423,8 +432,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
     return Expanded(
       flex: 3,
       child: Container(
-          padding: const EdgeInsets.all(10),
+          padding: _fieldPadding(),
           child: DropdownButtonFormField(
+            isExpanded: true,
             value: currencyController.text,
             items: FromBuilder.getCurrencyDropdownItems(),
             decoration: const InputDecoration(
@@ -452,6 +462,13 @@ class _ExpenseFormState extends State<ExpenseForm> {
   // --------------------------------- currency }--------------------------------- //
 
   // ---------------------------------{ methods --------------------------------- //
+
+  EdgeInsets _fieldPadding() => const EdgeInsets.all(6);
+
+  OutlineInputBorder _fieldBorder() => const OutlineInputBorder();
+
+  double _getIconSize() => 20;
+
   void _submitExpense() {
     if (_formKey.currentState?.validate() ?? false) {
       debugPrint('submitting');

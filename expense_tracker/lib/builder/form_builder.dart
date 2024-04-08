@@ -52,7 +52,7 @@ class FromBuilder {
     for (String transactionType in transactionTypes) {
       var newItem = DropdownMenuItem(
         value: transactionType,
-        child: Text(transactionType),
+        child: Text(transactionType, maxLines: 1),
       );
       dropdownItems.add(newItem);
     }
@@ -104,7 +104,8 @@ class FromBuilder {
     }).toList();
   }
 
-  static List<DropdownMenuItem<Category>> getCategoryDropdownItemsV2(List<Category> categories) {
+  static List<DropdownMenuItem<Category>> getCategoryDropdownItemsV2(
+      List<Category> categories) {
     return categories.map((category) {
       return DropdownMenuItem<Category>(
         value: category,
