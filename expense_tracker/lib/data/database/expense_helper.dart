@@ -12,7 +12,12 @@ class ExpenseHelper {
   Database get getDatabase => _database;
 
   static Future<void> createTable(Database database) async {
-    await database.execute('''
+    var result = await database.rawQuery(
+        """SELECT name FROM sqlite_master WHERE type = 'table' AND name = '${DBConstants.expense.table}'""");
+
+    if (result.isEmpty) {
+      debugPrint("creating table ${DBConstants.expense.table}");
+      await database.execute('''
           CREATE TABLE ${DBConstants.expense.table}(
             ${DBConstants.expense.id} INTEGER PRIMARY KEY AUTOINCREMENT,
             ${DBConstants.expense.title} TEXT,
@@ -30,7 +35,8 @@ class ExpenseHelper {
           )
         ''');
 
-    await database.execute('''
+      debugPrint("creating trigger ${DBConstants.expense.triggerModifiedAt}");
+      await database.execute('''
       CREATE TRIGGER ${DBConstants.expense.triggerModifiedAt}
       AFTER UPDATE ON ${DBConstants.expense.table}
       BEGIN
@@ -39,12 +45,13 @@ class ExpenseHelper {
         WHERE ROWID = NEW.ROWID;
       END;
     ''');
+    }
   }
 
   // CRUD operations
   // CREATE
   Future<int> addExpense(Map<String, dynamic> expenseMap) async {
-    debugPrint("inserting");
+    debugPrint("adding expense ${expenseMap[DBConstants.expense.title]}");
     debugPrint(expenseMap.toString());
     Database database = getDatabase;
     return await database.insert(
@@ -55,13 +62,14 @@ class ExpenseHelper {
 
   // READ
   Future<List<Map<String, dynamic>>> getExpenses() async {
+    debugPrint("getting expenses");
     Database database = getDatabase;
     return await database.query(DBConstants.expense.table);
   }
 
   // UPDATE
   Future<int> updateExpense(ExpenseFormModel expense) async {
-    debugPrint("updating");
+    debugPrint("updating expense ${expense.id} - ${expense.title}");
     debugPrint(expense.toMap().toString());
     Database database = getDatabase;
     return database.update(
@@ -73,7 +81,7 @@ class ExpenseHelper {
   }
 
   Future<int> updateExpenseV2(Map<String, dynamic> expenseMap) async {
-    debugPrint("updating");
+    debugPrint("updating expense V2 ${expenseMap[DBConstants.expense.id]} - ${expenseMap[DBConstants.expense.title]}");
     debugPrint(expenseMap.toString());
     Database database = getDatabase;
     return database.rawUpdate('''
@@ -88,6 +96,7 @@ class ExpenseHelper {
 
   // DELETE
   Future<int> deleteExpense(int id) async {
+    debugPrint("deleting ${DBConstants.expense.table} - $id");
     Database database = getDatabase;
     return await database.delete(
       DBConstants.expense.table,
@@ -98,12 +107,14 @@ class ExpenseHelper {
 
   // DELETE ALL
   Future<int> deleteAllExpenses() async {
+    debugPrint("deleting ${DBConstants.expense.table}");
     Database database = getDatabase;
     return await database.delete(DBConstants.expense.table);
   }
 
   // GET COUNT
   Future<int> getExpenseCount() async {
+    debugPrint("getting ${DBConstants.expense.table} count");
     Database database = getDatabase;
     final count = Sqflite.firstIntValue(await database.rawQuery(
       'SELECT COUNT(*) FROM ${DBConstants.expense.table}',

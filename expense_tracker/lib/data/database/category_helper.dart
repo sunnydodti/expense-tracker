@@ -26,6 +26,7 @@ class CategoryHelper {
         """SELECT name FROM sqlite_master WHERE type = 'table' AND name = '${DBConstants.category.table}'""");
 
     if (result.isEmpty) {
+      debugPrint("creating table ${DBConstants.category.table}");
       await database.execute('''CREATE TABLE ${DBConstants.category.table} (
         ${DBConstants.category.id} INTEGER PRIMARY KEY AUTOINCREMENT, 
         ${DBConstants.category.name} TEXT,
@@ -34,15 +35,16 @@ class CategoryHelper {
         )
         ''');
 
+      debugPrint("creating trigger ${DBConstants.category.triggerModifiedAt}");
       await database.execute('''
-      CREATE TRIGGER ${DBConstants.category.triggerModifiedAt}
-      AFTER UPDATE ON ${DBConstants.category.table}
-      BEGIN
-        UPDATE ${DBConstants.category.table}
-        SET modified_at = CURRENT_TIMESTAMP
-        WHERE ROWID = NEW.ROWID;
-      END;
-    ''');
+        CREATE TRIGGER ${DBConstants.category.triggerModifiedAt}
+        AFTER UPDATE ON ${DBConstants.category.table}
+        BEGIN
+          UPDATE ${DBConstants.category.table}
+          SET modified_at = CURRENT_TIMESTAMP
+          WHERE ROWID = NEW.ROWID;
+        END;
+      ''');
     }
   }
 
@@ -52,18 +54,19 @@ class CategoryHelper {
 
     try {
       if (result.isNotEmpty) {
+        debugPrint("populating default ${DBConstants.category.table}");
         for (String category in defaultCategories) {
           await database.execute(
               '''insert into ${DBConstants.category.table} (${DBConstants.category.name}) values ('$category')''');
         }
       }
     } on Exception catch (e) {
-      debugPrint("Error at populateDefaults $e");
+      debugPrint("Error at populating default categories $e");
     }
   }
 
   Future<int> addCategory(Map<String, dynamic> categoryMap) async {
-    debugPrint("adding category");
+    debugPrint("adding category ${categoryMap[DBConstants.category.name]}");
     debugPrint(categoryMap.toString());
     Database database = getDatabase;
     return await database.insert(
@@ -73,12 +76,14 @@ class CategoryHelper {
   }
 
   Future<List<Map<String, dynamic>>> getCategories() async {
+    debugPrint("getting categories");
     Database database = getDatabase;
     return await database.query(DBConstants.category.table);
   }
 
   Future<List<Map<String, dynamic>>> getCategoryByName(
       String categoryName) async {
+    debugPrint("getting category $categoryName}");
     Database database = getDatabase;
     return await database.query(
       DBConstants.category.table,
@@ -88,7 +93,7 @@ class CategoryHelper {
   }
 
   Future<int> updateCategory(CategoryFormModel category) async {
-    debugPrint("updating ${DBConstants.category.table}");
+    debugPrint("updating tag ${category.id} - ${category.name}");
     debugPrint(category.toMap().toString());
     Database database = getDatabase;
     return database.update(
@@ -110,11 +115,13 @@ class CategoryHelper {
   }
 
   Future<int> deleteAllCategories() async {
+    debugPrint("deleting ${DBConstants.category.table}");
     Database database = getDatabase;
     return await database.delete(DBConstants.category.table);
   }
 
   Future<int> getCategoryCount() async {
+    debugPrint("getting ${DBConstants.category.table} count");
     Database database = getDatabase;
     final count = Sqflite.firstIntValue(await database.rawQuery(
       'SELECT COUNT(*) FROM ${DBConstants.category.table}',
