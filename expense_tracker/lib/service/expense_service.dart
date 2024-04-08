@@ -1,4 +1,5 @@
 import 'package:faker/faker.dart';
+import 'package:flutter/material.dart';
 
 import '../data/constants/db_constants.dart';
 import '../data/database/database_helper.dart';
@@ -19,16 +20,26 @@ class ExpenseService {
   }
 
   Future<bool> addExpense(ExpenseFormModel expense) async {
-    expense.createdAt ??= DateTime.now();
-    expense.modifiedAt ??= DateTime.now();
-    int id = await _expenseHelper.addExpense(expense.toMap());
-    return id > 0 ? true : false;
+    try {
+      expense.createdAt ??= DateTime.now();
+      expense.modifiedAt ??= DateTime.now();
+      int id = await _expenseHelper.addExpense(expense.toMap());
+      return id > 0 ? true : false;
+    } on Exception catch (e) {
+      debugPrint("Error adding expense (${expense.title}): $e");
+      return false;
+    }
   }
 
   Future<bool> updateExpense(ExpenseFormModel expense) async {
-    expense.modifiedAt ??= DateTime.now();
-    int result = await _expenseHelper.updateExpense(expense);
-    return result > 0 ? true : false;
+    try {
+      expense.modifiedAt ??= DateTime.now();
+      int result = await _expenseHelper.updateExpense(expense);
+      return result > 0 ? true : false;
+    } on Exception catch (e) {
+      debugPrint("Error updating expense (${expense.title}): $e");
+      return false;
+    }
   }
 
   Future<List<Expense>> fetchExpenses() async {
@@ -40,22 +51,36 @@ class ExpenseService {
   }
 
   Future<List<Map<String, dynamic>>> fetchExpenseMaps() async {
-    return await _expenseHelper.getExpenses();
+    try {
+      return await _expenseHelper.getExpenses();
+    } on Exception catch (e) {
+      debugPrint("Error getting expenses: $e");
+      return [];
+    }
   }
 
   Future<int> deleteAllExpenses() async {
-    return _expenseHelper.deleteAllExpenses();
+    try {
+      return _expenseHelper.deleteAllExpenses();
+    } on Exception catch (e) {
+      debugPrint("Error deleting expenses: $e");
+      return -1;
+    }
   }
 
-  Future<void> populateDatabase({int count = 1}) async {
-    List<Map<String, dynamic>> expenseMapList = [];
-    for (int i = 0; i <= count - 1; i++) {
-      var expense = generateRandomExpense();
-      expenseMapList.add(expense);
+  Future<void> populateExpense({int count = 1}) async {
+    try {
+      List<Map<String, dynamic>> expenseMapList = [];
+      for (int i = 0; i <= count - 1; i++) {
+        var expense = generateRandomExpense();
+        expenseMapList.add(expense);
+      }
+      await _expenseHelper.populateExpense(
+        expenseMapList,
+      );
+    } on Exception catch (e) {
+      debugPrint("Error populating expense: $e");
     }
-    await _expenseHelper.populateExpense(
-      expenseMapList,
-    );
   }
 
   Map<String, dynamic> generateRandomExpense() {
@@ -83,7 +108,11 @@ class ExpenseService {
   }
 
   Future<bool> importExpense(Map<String, dynamic> expense) async {
-    if (await _expenseHelper.addExpense(expense) > 0) return true;
+    try {
+      if (await _expenseHelper.addExpense(expense) > 0) return true;
+    } on Exception catch (e) {
+      debugPrint("Error importing expense (${expense[DBConstants.expense.title]}): $e");
+    }
     return false;
   }
 }

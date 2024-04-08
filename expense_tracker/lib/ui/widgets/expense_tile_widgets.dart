@@ -182,6 +182,7 @@ class ExpenseTileWidgets {
       : "+ $amountText";
     return amountText;
   }
+
   static Color _getAmountColor(String transactionType){
       if (transactionType == TransactionType.expense.name) return Colors.red.shade300;
       if (transactionType == TransactionType.income.name) return Colors.green.shade300;

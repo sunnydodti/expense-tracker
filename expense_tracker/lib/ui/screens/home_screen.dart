@@ -62,7 +62,7 @@ class HomePage extends StatelessWidget {
   void populateExpense(BuildContext context) async {
     ExpenseService service = await _expenseService;
     service
-        .populateDatabase(count: 1)
+        .populateExpense(count: 1)
         .then((value) => _refreshExpensesHome(context));
   }
 
