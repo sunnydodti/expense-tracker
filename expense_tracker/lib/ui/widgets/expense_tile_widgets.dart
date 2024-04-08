@@ -9,7 +9,7 @@ class ExpenseTileWidgets {
 
   static Container expenseTile(Expense expense) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
       child: Column(
         children:[
           Row(
@@ -37,6 +37,8 @@ class ExpenseTileWidgets {
     );
   }
 
+  static double getTextScaleFactor() => 1.1;
+
   static Expanded getExpenseDate(Expense expense) {
     return Expanded(
       child: Align(
@@ -45,7 +47,8 @@ class ExpenseTileWidgets {
           padding: EdgeInsets.zero,
           child: Text(
             DateFormat('dd-MM-yy').format(expense.date),
-            style: const TextStyle(fontSize: 16.0),
+            textScaleFactor: getTextScaleFactor(),
+            // style: const TextStyle(fontSize: 16.0),
           ),
         ),
       ),
@@ -60,7 +63,8 @@ class ExpenseTileWidgets {
           padding: EdgeInsets.zero,
           child: Text(
             expense.title,
-            style: const TextStyle(fontSize: 16.0),
+            textScaleFactor: getTextScaleFactor(),
+            // style: const TextStyle(fontSize: 16.0),
           ),
         ),
       ),
@@ -78,12 +82,13 @@ class ExpenseTileWidgets {
               children: [
                 Text(
                   '${expense.category} ',
-                  style: const TextStyle(
-                    fontSize: 16.0,
-                  ),
+                  textScaleFactor: getTextScaleFactor(),
+                  // style: const TextStyle(
+                  //   fontSize: 16.0,
+                  // ),
                 ),
                 const Icon(Icons.category_outlined,
-                  size: 20.0,)
+                  size: 16.0,)
               ]
           ),
         )
@@ -110,13 +115,14 @@ class ExpenseTileWidgets {
         ? note = const Text(
           "Add Notes",
           style: TextStyle(
-              fontSize: 13.5,
+              // fontSize: 13.5,
               color: Colors.grey
           ),
         )
         : note = Text(
             '${expense.note}',
-            style: const TextStyle(fontSize: 13.5),
+            textScaleFactor: 0.9,
+            // style: const TextStyle(fontSize: 13.5),
         );
     return Expanded(
       flex: 2,
@@ -155,11 +161,12 @@ class ExpenseTileWidgets {
     return Align(
       alignment: Alignment.topLeft,
       child: Padding(
-        padding: const EdgeInsets.only(left: 45.0),
+        padding: const EdgeInsets.only(left: 40.0),
         child: Text(
           _getAmountText(expense),
+          textScaleFactor: 1.2,
           style: TextStyle(
-            fontSize: 16.0,
+            // fontSize: 16.0,
             color: _getAmountColor(transactionType),
           ),
         ),

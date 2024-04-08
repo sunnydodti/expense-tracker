@@ -31,16 +31,16 @@ class HomePage extends StatelessWidget {
               drawer: const SafeArea(child: HomeDrawer()),
               appBar: AppBar(
                 centerTitle: true,
-                title: Text(title),
+                title: Text(title, textScaleFactor: 0.9),
                 backgroundColor: Colors.black,
                 actions: [
                   IconButton(
-                    icon: const Icon(Icons.add),
+                    icon: const Icon(Icons.add, size: 20),
                     tooltip: "add random expense",
                     onPressed: () => populateExpense(context),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.person),
+                    icon: const Icon(Icons.person, size: 20),
                     tooltip: "Profile",
                     onPressed: _handelProfile,
                   ),
@@ -69,11 +69,11 @@ class HomePage extends StatelessWidget {
   Padding addExpenseButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 35.0),
-      child: FloatingActionButton(
+      child: FloatingActionButton.small(
         backgroundColor: Colors.grey.shade500,
         tooltip: 'Add New Expense',
         onPressed: () => _addExpense(context),
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add, size: 20),
       ),
     );
   }
