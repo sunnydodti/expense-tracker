@@ -1,3 +1,4 @@
+import 'package:expense_tracker/data/constants/db_constants.dart';
 import 'package:expense_tracker/service/expense_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -116,8 +117,10 @@ class ExpenseProvider extends ChangeNotifier {
   /// refresh expenses from db
   Future<void> refreshExpenses({bool notify = true}) async {
     try {
+      ExpenseService expenseService = await _expenseService;
       List<Expense> updatedExpenses = await _fetchExpenses();
-      _expenses = updatedExpenses;
+      _expenses = expenseService.sortAndFilter(updatedExpenses,
+          sortBy: DBConstants.expense.modifiedAt);
 
       if (notify) notifyListeners();
     } catch (e) {
@@ -131,4 +134,3 @@ class ExpenseProvider extends ChangeNotifier {
     return await expenseService.fetchExpenses();
   }
 }
-

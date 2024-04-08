@@ -1,7 +1,7 @@
 import 'package:expense_tracker/data/constants/db_constants.dart';
 
 class Expense {
-  int? _id; // required
+  int _id; // required
   String _title; // required
   String _currency; // required
   double _amount; // required
@@ -14,33 +14,26 @@ class Expense {
 
   // bool? _containsNestedExpenses; // required
   List<Expense>? _expenses;
-  DateTime? _createdAt; // New field
-  DateTime? _modifiedAt; // New field
+  DateTime _createdAt; // New field
+  DateTime _modifiedAt; // New field
 
   Expense(
-      // this._id,
+      this._id,
       this._title,
       this._currency,
       this._amount,
       this._transactionType,
       this._date,
       this._category,
+      this._createdAt,
+      this._modifiedAt,
       // [this._tags, this._note, this._containsNestedExpenses, this._expenses]
       [this._tags,
       this._note,
       this._expenses]);
 
-  // Expense.empty();
-
-  Expense.withId(this._id, this._title, this._currency, this._amount,
-      this._transactionType, this._date, this._category,
-      // [this._containsNestedExpenses, this._tags, this._note, this._expenses]
-      [this._tags,
-      this._note,
-      this._expenses]);
-
   // Getters
-  int? get id => _id;
+  int get id => _id;
 
   String get title => _title;
 
@@ -62,12 +55,12 @@ class Expense {
   // bool? get containsNestedExpenses => _containsNestedExpenses;
   List<Expense>? get expenses => _expenses;
 
-  DateTime? get createdAt => _createdAt;
+  DateTime get createdAt => _createdAt;
 
-  DateTime? get modifiedAt => _createdAt;
+  DateTime get modifiedAt => _modifiedAt;
 
   //Setters
-  set id(int? id) {
+  set id(int id) {
     _id = id;
   }
 
@@ -119,11 +112,11 @@ class Expense {
     _expenses = expenses;
   }
 
-  set createdAt(DateTime? createdAt) {
+  set createdAt(DateTime createdAt) {
     _createdAt = createdAt;
   }
 
-  set modifiedAt(DateTime? modifiedAt) {
+  set modifiedAt(DateTime modifiedAt) {
     _modifiedAt = modifiedAt;
   }
 
@@ -132,7 +125,7 @@ class Expense {
   // Getter for the Map representation
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = <String, dynamic>{};
-    if (id != null) map[DBConstants.expense.id] = _id;
+    map[DBConstants.expense.id] = _id;
     map[DBConstants.expense.title] = _title;
     map[DBConstants.expense.currency] = _currency;
     map[DBConstants.expense.amount] = _amount;
@@ -141,11 +134,10 @@ class Expense {
     map[DBConstants.expense.category] = _category;
     map[DBConstants.expense.tags] = _tags;
     map[DBConstants.expense.note] = _note;
-    // map[DBExpenseTableConstants.containsNestedExpenses] = _containsNestedExpenses;
     map[DBConstants.expense.expenses] =
         _expenses?.map((expense) => expense.toMap()).toList();
-    if (_createdAt != null) map[DBConstants.expense.createdAt] = _createdAt;
-    if (_modifiedAt != null) map[DBConstants.expense.modifiedAt] = _modifiedAt;
+    map[DBConstants.expense.createdAt] = _createdAt;
+    map[DBConstants.expense.modifiedAt] = _modifiedAt;
     return map;
   }
 
@@ -161,12 +153,15 @@ class Expense {
   //  // map to Expense Object
   static Expense fromMap(Map<String, dynamic> map) {
     Expense expense = Expense(
+      map[DBConstants.expense.id],
       map[DBConstants.expense.title],
       map[DBConstants.expense.currency],
       map[DBConstants.expense.amount],
       map[DBConstants.expense.transactionType],
       DateTime.parse(map[DBConstants.expense.date]),
       map[DBConstants.expense.category],
+      DateTime.parse(map[DBConstants.expense.createdAt]),
+      DateTime.parse(map[DBConstants.expense.modifiedAt])
     );
 
     expense.id = map[DBConstants.expense.id];
@@ -235,8 +230,6 @@ class ExpenseFormModel {
     map[DBConstants.expense.containsNestedExpenses] = containsNestedExpenses;
     map[DBConstants.expense.expenses] =
         expenses?.map((expense) => expense.toMap()).toList();
-    map[DBConstants.expense.createdAt] = createdAt!.toIso8601String();
-    map[DBConstants.expense.modifiedAt] = modifiedAt!.toIso8601String();
     return map;
   }
 

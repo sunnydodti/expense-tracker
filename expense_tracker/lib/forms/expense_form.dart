@@ -508,9 +508,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
       expense.tags = _selectedTag!.name;
       expense.note = notesController.text;
-      expense.createdAt =
-          widget.expense != null ? widget.expense!.createdAt : DateTime.now();
-      expense.modifiedAt = DateTime.now();
 
       if (widget.formMode == FormMode.edit) {
         expense.id = widget.expense!.id;

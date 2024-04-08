@@ -21,8 +21,6 @@ class ExpenseService {
 
   Future<bool> addExpense(ExpenseFormModel expense) async {
     try {
-      expense.createdAt ??= DateTime.now();
-      expense.modifiedAt ??= DateTime.now();
       int id = await _expenseHelper.addExpense(expense.toMap());
       return id > 0 ? true : false;
     } on Exception catch (e) {
@@ -33,7 +31,6 @@ class ExpenseService {
 
   Future<bool> updateExpense(ExpenseFormModel expense) async {
     try {
-      expense.modifiedAt ??= DateTime.now();
       int result = await _expenseHelper.updateExpense(expense);
       return result > 0 ? true : false;
     } on Exception catch (e) {
@@ -111,8 +108,36 @@ class ExpenseService {
     try {
       if (await _expenseHelper.addExpense(expense) > 0) return true;
     } on Exception catch (e) {
-      debugPrint("Error importing expense (${expense[DBConstants.expense.title]}): $e");
+      debugPrint(
+          "Error importing expense (${expense[DBConstants.expense.title]}): $e");
     }
     return false;
+  }
+
+  /// sorting and filtering
+  List<Expense> sortAndFilter<T>(List<Expense> data,
+      {String sortBy = "date", bool ascending = false}) {
+    // final filterFunction = (item) => item['price'] > 10; // Filter based on price
+
+    // final filteredData = data.where((item) => filterFunction(item)).toList();
+
+    final sortedByDate = data.toList();
+
+    if (sortBy == DBConstants.expense.date) {
+      sortedByDate.sort((a, b) {
+        final compareValue = a.date.compareTo(b.date);
+        return compareValue! * (ascending ? 1 : -1);
+      });
+    }
+
+    if (sortBy == DBConstants.expense.modifiedAt) {
+      debugPrint("------------------------------");
+      sortedByDate.sort((a, b) {
+        final compareValue = a.modifiedAt.compareTo(b.modifiedAt);
+        debugPrint("(${a.title} - ${a.modifiedAt}) > (${b.title} - ${b.modifiedAt}) = $compareValue");
+        return compareValue * (ascending ? 1 : -1);
+      });
+    }
+    return sortedByDate;
   }
 }
