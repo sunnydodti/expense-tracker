@@ -33,6 +33,16 @@ class CategoryHelper {
         ${DBConstants.category.modifiedAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
         ''');
+
+      await database.execute('''
+      CREATE TRIGGER ${DBConstants.category.triggerModifiedAt}
+      AFTER UPDATE ON ${DBConstants.category.table}
+      BEGIN
+        UPDATE ${DBConstants.category.table}
+        SET modified_at = CURRENT_TIMESTAMP
+        WHERE ROWID = NEW.ROWID;
+      END;
+    ''');
     }
   }
 
@@ -48,7 +58,7 @@ class CategoryHelper {
         }
       }
     } on Exception catch (e) {
-      debugPrint("Error at Defaults $e");
+      debugPrint("Error at populateDefaults $e");
     }
   }
 

@@ -7,6 +7,7 @@ class DBConstants {
 
 class ExpenseConstants {
   final String table = "expenses";
+  final String triggerModifiedAt = "update_modified_at_expenses";
 
   final String id = "id";
   final String title = "title";
@@ -27,6 +28,7 @@ class ExpenseConstants {
 
 class CategoryConstants {
   final String table = "categories";
+  final String triggerModifiedAt = "update_modified_at_categories";
 
   final String id = "id";
   final String name = "name";

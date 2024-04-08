@@ -31,13 +31,12 @@ class ExpenseHelper {
         ''');
 
     await database.execute('''
-      CREATE TRIGGER update_modified_at
+      CREATE TRIGGER ${DBConstants.expense.triggerModifiedAt}
       AFTER UPDATE ON ${DBConstants.expense.table}
-      FOR EACH ROW
       BEGIN
         UPDATE ${DBConstants.expense.table}
         SET modified_at = CURRENT_TIMESTAMP
-        WHERE ${DBConstants.expense.id} = OLD.${DBConstants.expense.id};
+        WHERE ROWID = NEW.ROWID;
       END;
     ''');
   }

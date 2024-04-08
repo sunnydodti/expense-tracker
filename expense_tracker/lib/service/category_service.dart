@@ -66,7 +66,12 @@ class CategoryService {
   }
 
   Category? getMatchingCategory(String name, List<Category> categories) {
-    final matchingCategories = categories.where((category) => category.name == name);
-    return matchingCategories.isNotEmpty ? matchingCategories.first : null;
+    try {
+      final matchingCategories = categories.where((category) => category.name == name);
+      return matchingCategories.isNotEmpty ? matchingCategories.first : null;
+    } on Exception catch (e) {
+      debugPrint("Error getting category ($name): $e");
+      return null;
+    }
   }
 }
