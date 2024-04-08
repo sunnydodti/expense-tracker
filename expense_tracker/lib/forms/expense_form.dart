@@ -111,7 +111,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
     setState(() {
       _categories = categories;
       _tags = tags;
-      
+
       _selectedCategory = _categories.isNotEmpty ? _categories[0] : null;
       _selectedTag = _tags.isNotEmpty ? _tags[0] : null;
     });
@@ -146,11 +146,11 @@ class _ExpenseFormState extends State<ExpenseForm> {
       child: Theme(
         data: theme.copyWith(
             textTheme: Theme.of(context).textTheme.apply(
-                  fontSizeFactor: 0.6,
+                  fontSizeFactor: .9,
                 ),
             inputDecorationTheme: InputDecorationTheme(
               contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+                  const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
               focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
                 color: _highlightColor,

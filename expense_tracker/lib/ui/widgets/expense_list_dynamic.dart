@@ -118,9 +118,10 @@ class ExpenseListDynamic extends StatelessWidget {
     String sign = amount > 0 ? '+' : (amount < 0 ? '-' : '');
     return Text(
       '$sign ₹${amount.abs().round()}',
+      textScaleFactor: 1.1,
       style: TextStyle(
         fontWeight: FontWeight.bold,
-        fontSize: 12,
+        // fontSize: 12,
         color: amount > 0 ? Colors.green.shade400 : (amount < 0 ? Colors.red.shade400 : Colors.white70),
       ),
     );
@@ -130,9 +131,10 @@ class ExpenseListDynamic extends StatelessWidget {
     return Text(
       summaryText,
       textAlign: TextAlign.center,
+      textScaleFactor: 1.1,
       style: const TextStyle(
         fontWeight: FontWeight.bold,
-        fontSize: 12,
+        // fontSize: 12,
         color: Colors.white70,
       ),
     );
