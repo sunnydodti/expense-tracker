@@ -3,6 +3,7 @@ class DBConstants {
 
   static ExpenseConstants expense = ExpenseConstants();
   static CategoryConstants category = CategoryConstants();
+  static TagConstants tag = TagConstants();
 }
 
 class ExpenseConstants {
@@ -39,6 +40,7 @@ class CategoryConstants {
 
 class TagConstants {
   final String table = "tags";
+  final String triggerModifiedAt = "update_modified_at_tags";
 
   final String id = "id";
   final String name = "name";

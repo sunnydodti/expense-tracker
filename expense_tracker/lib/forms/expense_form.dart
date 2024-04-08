@@ -7,7 +7,9 @@ import 'package:intl/intl.dart';
 import '../builder/form_builder.dart';
 import '../models/enums/form_modes.dart';
 import '../models/expense.dart';
+import '../models/tag.dart';
 import '../service/expense_service.dart';
+import '../service/tag_service.dart';
 
 class ExpenseForm extends StatefulWidget {
   final FormMode formMode;
@@ -24,17 +26,18 @@ class _ExpenseFormState extends State<ExpenseForm> {
   final _formKey = GlobalKey<FormState>();
 
   final Future<CategoryService> _categoryService = CategoryService.create();
+  final Future<TagService> _tagService = TagService.create();
 
   //region Section 1: --------------------------------- form data display ---------------------------------
   late Map<String, String> _currencies;
   late String _defaultCurrency;
   late Color _highlightColor;
 
-  final List<String> tags = ['Item 1', 'Item 2', 'Item 3'];
-  final List<String> selectedTags = [];
-
   List<Category> _categories = [];
   Category? _selectedCategory;
+
+  List<Tag> _tags = [];
+  Tag? _selectedTag;
 
   //endregion
 
@@ -50,7 +53,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
   TextEditingController amountController = TextEditingController();
   TextEditingController transactionTypeController = TextEditingController();
   TextEditingController dateController = TextEditingController();
-  TextEditingController tagsController = TextEditingController();
   TextEditingController notesController = TextEditingController();
 
   // TextEditingController containsNestedExpensesController =
@@ -66,15 +68,22 @@ class _ExpenseFormState extends State<ExpenseForm> {
     amountController.text = _formatAmount(expense.amount);
     transactionTypeController.text = expense.transactionType;
     dateController.text = DateFormat('yyyy-MM-dd').format(expense.date);
-    tagsController.text = expense.tags!;
     notesController.text = expense.note!;
 
     CategoryService categoryService = await _categoryService;
+    TagService tagService = await _tagService;
+
     List<Category> categories = await categoryService.getCategories();
+    List<Tag> tags = await tagService.getTags();
+
     setState(() {
       _categories = categories;
+      _tags = tags;
+
       _selectedCategory =
           categoryService.getMatchingCategory(expense.category, _categories);
+      _selectedTag =
+          tagService.getMatchingTag(expense.tags ?? "", _tags);
     });
   }
 
@@ -91,13 +100,20 @@ class _ExpenseFormState extends State<ExpenseForm> {
     transactionTypeController.text =
         FromBuilder.getTransactionTypesList().first;
     dateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    tagsController.text = FromBuilder.getTagsList().first;
     notesController.text = '';
+
     CategoryService categoryService = await _categoryService;
+    TagService tagService = await _tagService;
+
     List<Category> categories = await categoryService.getCategories();
+    List<Tag> tags = await tagService.getTags();
+
     setState(() {
       _categories = categories;
+      _tags = tags;
+      
       _selectedCategory = _categories.isNotEmpty ? _categories[0] : null;
+      _selectedTag = _tags.isNotEmpty ? _tags[0] : null;
     });
   }
 
@@ -268,18 +284,18 @@ class _ExpenseFormState extends State<ExpenseForm> {
       flex: 1,
       child: Container(
         padding: _fieldPadding(),
-        child: DropdownButtonFormField(
+        child: DropdownButtonFormField<Tag>(
           isExpanded: true,
-          value: tagsController.text,
-          items: FromBuilder.getTagsDropdownItems(),
+          value: _selectedTag,
+          items: FromBuilder.getTagsDropdownItemsV2(_tags),
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
             labelText: 'Tags',
           ),
-          validator: (value) => validateTextField(value, "select tags"),
+          validator: (value) => validateTag("select tags"),
           onChanged: (value) {
             debugPrint('tags: $value');
-            tagsController.text = value;
+            _selectedTag = value;
           },
         ),
       ),
@@ -477,7 +493,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
       debugPrint('transaction type: ${transactionTypeController.text}');
       debugPrint('date: ${dateController.text}');
       debugPrint('category: ${_selectedCategory?.name}');
-      debugPrint('tags: ${tagsController.text}');
+      debugPrint('tags: ${_selectedTag?.name}');
       debugPrint('notes: ${notesController.text}');
 
       ExpenseFormModel expense = ExpenseFormModel(
@@ -490,7 +506,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
         false,
       );
 
-      expense.tags = tagsController.text;
+      expense.tags = _selectedTag!.name;
       expense.note = notesController.text;
       expense.createdAt =
           widget.expense != null ? widget.expense!.createdAt : DateTime.now();
@@ -537,6 +553,12 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
   String? validateCategory(String errorMessage) {
     if (_selectedCategory == null) {
+      return 'Please $errorMessage';
+    }
+    return null;
+  }
+  String? validateTag(String errorMessage) {
+    if (_selectedTag == null) {
       return 'Please $errorMessage';
     }
     return null;

@@ -67,6 +67,7 @@ class CategoryService {
 
   Category? getMatchingCategory(String name, List<Category> categories) {
     try {
+      if (name.isEmpty) return null;
       final matchingCategories = categories.where((category) => category.name == name);
       return matchingCategories.isNotEmpty ? matchingCategories.first : null;
     } on Exception catch (e) {

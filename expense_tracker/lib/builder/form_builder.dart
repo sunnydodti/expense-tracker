@@ -2,6 +2,7 @@ import 'package:expense_tracker/models/category.dart';
 import 'package:flutter/material.dart';
 
 import '../models/enums/transaction_type.dart';
+import '../models/tag.dart';
 
 class FromBuilder {
   // ---------------------------------- data ----------------------------------
@@ -110,6 +111,15 @@ class FromBuilder {
       return DropdownMenuItem<Category>(
         value: category,
         child: Text(category.name),
+      );
+    }).toList();
+  }
+
+  static List<DropdownMenuItem<Tag>> getTagsDropdownItemsV2(List<Tag> tags) {
+    return tags.map((tag) {
+      return DropdownMenuItem<Tag>(
+        value: tag,
+        child: Text(tag.name),
       );
     }).toList();
   }
