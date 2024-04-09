@@ -3,6 +3,7 @@ import 'package:expense_tracker/models/export_result.dart';
 import 'package:expense_tracker/ui/screens/category_screen.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/constants/file_name_constants.dart';
@@ -22,6 +23,9 @@ class HomeDrawer extends StatefulWidget {
 }
 
 class HomeDrawerState extends State<HomeDrawer> {
+  final Logger _logger =
+      Logger(printer: SimplePrinter(), level: Level.info);
+
   bool _isDeleteDialogVisible = false;
   bool _isImportDialogVisible = false;
 
@@ -109,7 +113,7 @@ class HomeDrawerState extends State<HomeDrawer> {
       ),
     ).then((value) => Navigator.pop(context));
   }
-  
+
   _navigateToTagScreen(BuildContext context) async {
     Navigator.push(
       context,
@@ -196,7 +200,7 @@ class HomeDrawerState extends State<HomeDrawer> {
     importService
         .importFile(_selectedFilePath, _refreshExpenses)
         .then((ImportResult result) => {
-              debugPrint(result.toString()),
+              _logger.d(result.toString()),
               if (result.result)
                 {
                   _refreshExpenses(),

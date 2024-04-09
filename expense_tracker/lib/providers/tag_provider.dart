@@ -1,10 +1,13 @@
 import 'package:flutter/foundation.dart';
+import 'package:logger/logger.dart';
 
 import '../models/tag.dart';
 import '../service/tag_service.dart';
 
 class TagProvider extends ChangeNotifier {
   late final Future<TagService> _tagService;
+  static final Logger _logger =
+      Logger(printer: SimplePrinter(), level: Level.info);
 
   TagProvider() {
     _init();
@@ -35,15 +38,15 @@ class TagProvider extends ChangeNotifier {
   Tag? getTag(int id) {
     try {
       return _tags.firstWhere((tag) => tag.id == id);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      _logger.e('Error getting tag ($id): $e - \n$stackTrace');
       return null;
     }
   }
 
   /// edit an tag. this does not edit in db
   void editTag(Tag editedTag) {
-    final index =
-    _tags.indexWhere((tag) => tag.id == editedTag.id);
+    final index = _tags.indexWhere((tag) => tag.id == editedTag.id);
     if (index != -1) {
       _tags[index] = editedTag;
       notifyListeners();
@@ -63,8 +66,8 @@ class TagProvider extends ChangeNotifier {
       tags.sort((a, b) => b.createdAt.compareTo(a.modifiedAt));
       _tags = tags;
       if (notify) notifyListeners();
-    } catch (e) {
-      debugPrint('Error refreshing tags: $e');
+    } catch (e, stackTrace) {
+      _logger.e('Error refreshing tags: $e - \n$stackTrace');
     }
   }
 

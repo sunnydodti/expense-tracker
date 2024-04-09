@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
+import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -11,6 +11,8 @@ import 'tag_helper.dart';
 
 class DatabaseHelper {
   static DatabaseHelper? _databaseHelper;
+  static final Logger _logger =
+      Logger(printer: SimplePrinter(), level: Level.info);
 
   static Database? _database;
 
@@ -34,8 +36,8 @@ class DatabaseHelper {
       version: 1,
       onCreate: createDatabase,
       onOpen: (db) {
-        debugPrint(path);
-        debugPrint("Database is open");
+        _logger.i(path);
+        _logger.i("Database is open");
       },
     );
   }

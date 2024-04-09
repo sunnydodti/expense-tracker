@@ -3,6 +3,7 @@ import 'package:expense_tracker/service/category_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 
 import '../builder/form_builder.dart';
 import '../models/enums/form_modes.dart';
@@ -24,6 +25,9 @@ class ExpenseForm extends StatefulWidget {
 
 class _ExpenseFormState extends State<ExpenseForm> {
   final _formKey = GlobalKey<FormState>();
+
+  static final Logger _logger =
+      Logger(printer: SimplePrinter(), level: Level.info);
 
   final Future<CategoryService> _categoryService = CategoryService.create();
   final Future<TagService> _tagService = TagService.create();
@@ -240,7 +244,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
             validator: (value) => validateTextField(value, "enter Title"),
             keyboardType: TextInputType.text,
             onChanged: (value) {
-              debugPrint('title: $value');
+              _logger.d('title: $value');
             },
           ),
         ));
@@ -272,7 +276,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
             ),
             keyboardType: TextInputType.text,
             onChanged: (value) {
-              debugPrint('note: $value');
+              _logger.d('note: $value');
             },
           ),
         ));
@@ -296,7 +300,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
           ),
           validator: (value) => validateTag("select tags"),
           onChanged: (value) {
-            debugPrint('tags: $value');
+            _logger.d('tags: $value');
             _selectedTag = value;
           },
         ),
@@ -320,7 +324,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
             ),
             validator: (value) => validateCategory("select category"),
             onChanged: (value) {
-              debugPrint('category: ${value!.name}');
+              _logger.d('category: ${value!.name}');
               _selectedCategory = value;
             },
           )),
@@ -359,11 +363,11 @@ class _ExpenseFormState extends State<ExpenseForm> {
                     DateFormat('yyyy-MM-dd HH:mm:ss').format(pickedDate);
                 setState(() {
                   dateController.text = formattedDate;
-                  debugPrint(dateController.text);
+                  _logger.d(dateController.text);
                 });
-                debugPrint('date: $formattedDate');
+                _logger.d('date: $formattedDate');
               } else {
-                debugPrint("Date is not selected");
+                _logger.d("Date is not selected");
               }
 
               if (pickedDate != null) {
@@ -378,7 +382,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
             },
             // keyboardType: TextInputType.datetime,
             onChanged: (value) {
-              debugPrint('Date: $value');
+              _logger.d('Date: $value');
             },
           ),
         ));
@@ -403,9 +407,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
             validator: (value) =>
                 validateTextField(value, "select transaction type"),
             onChanged: (value) {
-              debugPrint('transaction type : $value');
+              _logger.d('transaction type : $value');
               transactionTypeController.text = value!;
-              debugPrint(transactionTypeController.text);
+              _logger.d(transactionTypeController.text);
             },
           )),
     );
@@ -436,7 +440,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
             FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}$')),
           ],
           onChanged: (value) {
-            debugPrint('amount: $value');
+            _logger.d('amount: $value');
           },
         ),
       ),
@@ -461,17 +465,17 @@ class _ExpenseFormState extends State<ExpenseForm> {
             ),
             validator: (value) => validateTextField(value, "select currency"),
             onChanged: (value) {
-              debugPrint('selected currency: $value');
+              _logger.d('selected currency: $value');
               setState(() {
                 _userCurrency = value;
                 currencyController.text = value;
                 amountPrefixController.text = _currencies[value]!;
               });
 
-              debugPrint('user currency: $_userCurrency');
-              debugPrint('currency controller: ${currencyController.text}');
-              debugPrint(
-                  'amountPrefix controller: ${amountPrefixController.text}');
+              _logger.d('user currency: $_userCurrency');
+              _logger.d('currency controller: ${currencyController.text}');
+              _logger
+                  .d('amountPrefix controller: ${amountPrefixController.text}');
             },
           )),
     );
@@ -489,14 +493,14 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
   void _submitExpense() {
     if (_formKey.currentState?.validate() ?? false) {
-      debugPrint('submitting');
-      debugPrint('currency: ${currencyController.text}');
-      debugPrint('amount: ${amountController.text}');
-      debugPrint('transaction type: ${transactionTypeController.text}');
-      debugPrint('date: ${dateController.text}');
-      debugPrint('category: ${_selectedCategory?.name}');
-      debugPrint('tags: ${_selectedTag?.name}');
-      debugPrint('notes: ${notesController.text}');
+      _logger.d('submitting');
+      _logger.d('currency: ${currencyController.text}');
+      _logger.d('amount: ${amountController.text}');
+      _logger.d('transaction type: ${transactionTypeController.text}');
+      _logger.d('date: ${dateController.text}');
+      _logger.d('category: ${_selectedCategory?.name}');
+      _logger.d('tags: ${_selectedTag?.name}');
+      _logger.d('notes: ${notesController.text}');
 
       ExpenseFormModel expense = ExpenseFormModel(
         titleController.text,
@@ -515,16 +519,16 @@ class _ExpenseFormState extends State<ExpenseForm> {
         expense.id = widget.expense!.id;
         updateExpense(expense).then((value) {
           if (value) {
-            debugPrint("Expense updated successfully");
+            _logger.d("Expense updated successfully");
             Navigator.pop(context, value);
           } else {
-            debugPrint("Failed to update expense");
+            _logger.d("Failed to update expense");
           }
         });
       } else {
         insertExpense(expense).then((value) {
           if (value) {
-            debugPrint("inserted");
+            _logger.d("inserted");
             Navigator.pop(context, value);
           }
         });

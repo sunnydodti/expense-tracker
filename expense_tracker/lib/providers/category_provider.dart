@@ -1,10 +1,13 @@
 import 'package:flutter/foundation.dart';
+import 'package:logger/logger.dart';
 
 import '../models/expense_category.dart';
 import '../service/category_service.dart';
 
 class CategoryProvider extends ChangeNotifier {
   late final Future<CategoryService> _categoryService;
+  static final Logger _logger =
+      Logger(printer: SimplePrinter(), level: Level.info);
 
   CategoryProvider() {
     _init();
@@ -35,7 +38,8 @@ class CategoryProvider extends ChangeNotifier {
   ExpenseCategory? getCategory(int id) {
     try {
       return _categories.firstWhere((category) => category.id == id);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      _logger.e('Error getting category ($id): $e - \n$stackTrace');
       return null;
     }
   }
@@ -43,7 +47,7 @@ class CategoryProvider extends ChangeNotifier {
   /// edit an category. this does not edit in db
   void editCategory(ExpenseCategory editedCategory) {
     final index =
-    _categories.indexWhere((category) => category.id == editedCategory.id);
+        _categories.indexWhere((category) => category.id == editedCategory.id);
     if (index != -1) {
       _categories[index] = editedCategory;
       notifyListeners();
@@ -63,8 +67,8 @@ class CategoryProvider extends ChangeNotifier {
       categories.sort((a, b) => b.createdAt.compareTo(a.modifiedAt));
       _categories = categories;
       if (notify) notifyListeners();
-    } catch (e) {
-      debugPrint('Error refreshing categories: $e');
+    } catch (e, stackTrace) {
+      _logger.e('Error refreshing categories: $e - \n$stackTrace');
     }
   }
 

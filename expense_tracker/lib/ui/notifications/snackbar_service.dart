@@ -1,8 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 class SnackBarService {
+  static final Logger _logger =
+      Logger(printer: SimplePrinter(), level: Level.info);
+
   //region Section 1: SnackBarWithContext
 
   static showSnackBarWithContext(BuildContext context, String message,
@@ -91,7 +95,7 @@ class SnackBarService {
       ),
     );
     await Future.delayed(const Duration(seconds: 5));
-    debugPrint("undo: $isUndoPressed");
+    _logger.i("undo: $isUndoPressed");
     if (isUndoPressed == false) onNotUndo();
   }
 //endregion

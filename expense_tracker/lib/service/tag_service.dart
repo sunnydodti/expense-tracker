@@ -23,8 +23,8 @@ class TagService {
       final List<Map<String, dynamic>> tags = await _tagHelper.getTags();
       List<Tag> tgs = tags.map((tagMap) => Tag.fromMap(tagMap)).toList();
       return tgs;
-    } catch (e) {
-      _logger.e("Error getting tags: $e");
+    } catch (e, stackTrace) {
+      _logger.e("Error getting tags: $e - \n$stackTrace");
       return [];
     }
   }
@@ -34,8 +34,8 @@ class TagService {
       final List<Map<String, dynamic>> tag =
           await _tagHelper.getTagByName(tagName);
       return Tag.fromMap(tag.first);
-    } catch (e) {
-      _logger.e("Error getting tag ($tagName): $e");
+    } catch (e, stackTrace) {
+      _logger.e("Error getting tag ($tagName): $e - \n$stackTrace");
       return null;
     }
   }
@@ -44,8 +44,8 @@ class TagService {
     try {
       final result = await _tagHelper.addTag(tag.toMap());
       return result;
-    } catch (e) {
-      _logger.e("Error adding tag: $e");
+    } catch (e, stackTrace) {
+      _logger.e("Error adding tag: $e - \n$stackTrace");
       return -1;
     }
   }
@@ -54,8 +54,8 @@ class TagService {
     try {
       final result = await _tagHelper.updateTag(tag);
       return result;
-    } catch (e) {
-      _logger.e("Error updating tag: $e");
+    } catch (e, stackTrace) {
+      _logger.e("Error updating tag: $e - \n$stackTrace");
       return -1;
     }
   }
@@ -64,8 +64,8 @@ class TagService {
     try {
       final result = await _tagHelper.deleteTag(id);
       return result;
-    } catch (e) {
-      _logger.e("Error deleting tag: $e");
+    } catch (e, stackTrace) {
+      _logger.e("Error deleting tag: $e - \n$stackTrace");
       return -1;
     }
   }
@@ -75,8 +75,8 @@ class TagService {
       if (name.isEmpty) return null;
       final matchingTags = tags.where((tag) => tag.name == name);
       return matchingTags.isNotEmpty ? matchingTags.first : null;
-    } on Exception catch (e) {
-      _logger.e("Error getting tag ($name): $e");
+    } on Exception catch (e, stackTrace) {
+      _logger.e("Error getting tag ($name): $e - \n$stackTrace");
       return null;
     }
   }

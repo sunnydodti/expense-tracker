@@ -1,5 +1,4 @@
 import 'package:faker/faker.dart';
-import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
 import '../data/constants/db_constants.dart';
@@ -25,8 +24,8 @@ class ExpenseService {
     try {
       int id = await _expenseHelper.addExpense(expense.toMap());
       return id > 0 ? true : false;
-    } on Exception catch (e) {
-      _logger.e("Error adding expense (${expense.title}): $e");
+    } on Exception catch (e, stackTrace) {
+      _logger.e("Error adding expense (${expense.title}): $e - \n$stackTrace");
       return false;
     }
   }
@@ -35,8 +34,9 @@ class ExpenseService {
     try {
       int result = await _expenseHelper.updateExpense(expense);
       return result > 0 ? true : false;
-    } on Exception catch (e) {
-      _logger.e("Error updating expense (${expense.title}): $e");
+    } on Exception catch (e, stackTrace) {
+      _logger
+          .e("Error updating expense (${expense.title}): $e - \n$stackTrace");
       return false;
     }
   }
@@ -52,8 +52,8 @@ class ExpenseService {
   Future<List<Map<String, dynamic>>> fetchExpenseMaps() async {
     try {
       return await _expenseHelper.getExpenses();
-    } on Exception catch (e) {
-      _logger.e("Error getting expenses: $e");
+    } on Exception catch (e, stackTrace) {
+      _logger.e("Error getting expenses: $e - \n$stackTrace");
       return [];
     }
   }
@@ -61,8 +61,8 @@ class ExpenseService {
   Future<int> deleteAllExpenses() async {
     try {
       return _expenseHelper.deleteAllExpenses();
-    } on Exception catch (e) {
-      _logger.e("Error deleting expenses: $e");
+    } on Exception catch (e, stackTrace) {
+      _logger.e("Error deleting expenses: $e - \n$stackTrace");
       return -1;
     }
   }
@@ -77,8 +77,8 @@ class ExpenseService {
       await _expenseHelper.populateExpense(
         expenseMapList,
       );
-    } on Exception catch (e) {
-      _logger.e("Error populating expense: $e");
+    } on Exception catch (e, stackTrace) {
+      _logger.e("Error populating expense: $e - \n$stackTrace");
     }
   }
 
@@ -109,9 +109,9 @@ class ExpenseService {
   Future<bool> importExpense(Map<String, dynamic> expense) async {
     try {
       if (await _expenseHelper.addExpense(expense) > 0) return true;
-    } on Exception catch (e) {
+    } on Exception catch (e, stackTrace) {
       _logger.e(
-          "Error importing expense (${expense[DBConstants.expense.title]}): $e");
+          "Error importing expense (${expense[DBConstants.expense.title]}): $e - \n$stackTrace");
     }
     return false;
   }

@@ -40,8 +40,8 @@ class ExportService {
       result.result = true;
       result.message = "Successfully Exported";
       result.path = file.path;
-    } catch (e) {
-      _logger.e('Error at exportAllExpensesToJson() $e');
+    } catch (e, stackTrace) {
+      _logger.e('Error at exportAllExpensesToJson() $e - \n$stackTrace');
     }
     return result;
   }

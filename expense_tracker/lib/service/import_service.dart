@@ -70,8 +70,8 @@ class ImportService {
                 }
             });
       }
-    } catch (e) {
-      _logger.e('Error importing JSON file: $e');
+    } catch (e, stackTrace) {
+      _logger.e('Error importing JSON file: $e - \n$stackTrace');
       result.message = "Error importing JSON file";
       return result;
     }

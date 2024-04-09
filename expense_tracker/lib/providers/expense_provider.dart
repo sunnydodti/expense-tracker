@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 import '../data/constants/db_constants.dart';
 import '../models/expense.dart';
@@ -8,6 +9,8 @@ import '../service/expense_service.dart';
 
 class ExpenseProvider extends ChangeNotifier {
   late final Future<ExpenseService> _expenseService;
+  static final Logger _logger =
+      Logger(printer: SimplePrinter(), level: Level.info);
 
   ExpenseProvider() {
     _init();
@@ -85,7 +88,8 @@ class ExpenseProvider extends ChangeNotifier {
   Expense? getExpense(int id) {
     try {
       return _expenses.firstWhere((expense) => expense.id == id);
-    } catch (e) {
+    } catch (e, stackTrace) {
+      _logger.e('Error getting expense ($id): $e - \n$stackTrace');
       return null;
     }
   }
@@ -123,8 +127,8 @@ class ExpenseProvider extends ChangeNotifier {
           sortBy: DBConstants.expense.modifiedAt);
 
       if (notify) notifyListeners();
-    } catch (e) {
-      debugPrint('Error refreshing expenses: $e');
+    } catch (e, stackTrace) {
+      _logger.e('Error refreshing expenses: $e - \n$stackTrace');
     }
   }
 

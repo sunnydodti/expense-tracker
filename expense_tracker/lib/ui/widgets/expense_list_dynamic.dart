@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/database/database_helper.dart';
@@ -12,6 +13,8 @@ import 'expense_tile_widgets.dart';
 
 class ExpenseListDynamic extends StatelessWidget {
   const ExpenseListDynamic({Key? key}) : super(key: key);
+  static final Logger _logger =
+      Logger(printer: SimplePrinter(), level: Level.info);
 
   @override
   Widget build(BuildContext context) {
@@ -216,7 +219,6 @@ class ExpenseListDynamic extends StatelessWidget {
   void _deleteExpense(BuildContext context, int index, Expense expense,
       ExpenseProvider expenseProvider) async {
     int expenseLength = expenseProvider.expenses.length;
-    debugPrint("$expenseLength");
 
     expenseProvider.deleteExpense(expense.id);
 
@@ -231,29 +233,28 @@ class ExpenseListDynamic extends StatelessWidget {
 
   completeExpenseDeletion(Expense expense, int index, int expenseLength,
       ExpenseProvider expenseProvider, BuildContext context) async {
-    debugPrint("Expense deleted");
+    _logger.d("Expense deleted");
     _deleteExpenseFromDatabase(expense).then((value) {
       if (value == 0) {
         if (index + 1 == expenseLength) {
-          debugPrint("adding at end $index");
+          _logger.d("adding at end $index");
           expenseProvider.addExpense(expense);
         } else {
-          debugPrint("adding at $index");
+          _logger.d("adding at $index");
           expenseProvider.insertExpense(index, expense);
         }
         SnackBarService.showErrorSnackBarWithContext(context, "Delete Failed");
       }
     });
-
   }
 
   undoExpenseDeletion(int index, int expenseLength,
       ExpenseProvider expenseProvider, Expense expense, BuildContext context) {
     if (index + 1 == expenseLength) {
-      debugPrint("adding at end $index");
+      _logger.d("adding at end $index");
       expenseProvider.addExpense(expense);
     } else {
-      debugPrint("adding at $index");
+      _logger.d("adding at $index");
       expenseProvider.insertExpense(index, expense);
     }
     SnackBarService.showSuccessSnackBarWithContext(
@@ -263,7 +264,7 @@ class ExpenseListDynamic extends StatelessWidget {
   void _editItem(BuildContext context, int index, Expense expense,
       ExpenseProvider expenseProvider) async {
     int expenseLength = expenseProvider.expenses.length;
-    debugPrint("$expense");
+    _logger.d("$expense");
 
     expenseProvider.deleteExpense(expense.id);
 
@@ -275,10 +276,10 @@ class ExpenseListDynamic extends StatelessWidget {
       ),
     );
     if (index + 1 == expenseLength) {
-      debugPrint("adding at end $index");
+      _logger.d("adding at end $index");
       expenseProvider.addExpense(expense);
     } else {
-      debugPrint("adding at $index");
+      _logger.d("adding at $index");
       expenseProvider.insertExpense(index, expense);
     }
     if (result) expenseProvider.refreshExpenses();
@@ -286,7 +287,7 @@ class ExpenseListDynamic extends StatelessWidget {
 
   void _editExpense(BuildContext context, Expense expense,
       ExpenseProvider expenseProvider) async {
-    debugPrint("editing");
+    _logger.d("editing");
     Navigator.push(
       context,
       MaterialPageRoute(
