@@ -1,41 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../forms/category_form.dart';
-import '../../models/expense_category.dart';
-import '../../providers/category_provider.dart';
-import '../../service/category_service.dart';
+import '../../forms/tag_form.dart';
+import '../../models/tag.dart';
+import '../../providers/tag_provider.dart';
+import '../../service/tag_service.dart';
 
-class CategoryList extends StatelessWidget {
-  const CategoryList({Key? key}) : super(key: key);
+class TagList extends StatelessWidget {
+  const TagList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CategoryProvider>(
-        builder: (context, categoryProvider, child) => Scaffold(
-              body: RefreshIndicator(
-                onRefresh: () => categoryProvider.refreshCategories(),
-                color: Colors.blue.shade500,
-                child: Column(
-                  children: [
-                    getCategoryForm(categoryProvider.categories),
-                    Expanded(
-                        child: ListView.builder(
-                      itemCount: categoryProvider.categories.length,
+    return Consumer<TagProvider>(
+        builder: (context, tagProvider, child) => Scaffold(
+          body: RefreshIndicator(
+            onRefresh: () => tagProvider.refreshTags(),
+            color: Colors.blue.shade500,
+            child: Column(
+              children: [
+                getTagForm(tagProvider.tags),
+                Expanded(
+                    child: ListView.builder(
+                      itemCount: tagProvider.tags.length,
                       itemBuilder: (context, index) {
-                        final category = categoryProvider.categories[index];
-                        return categoryProvider.categories.isEmpty
-                            ? getNoCategoryView()
-                            : getCategoryTile(context, category);
+                        final tag = tagProvider.tags[index];
+                        return tagProvider.tags.isEmpty
+                            ? getNoTagView()
+                            : getTagTile(context, tag);
                       },
                     ))
-                  ],
-                ),
-              ),
-            ));
+              ],
+            ),
+          ),
+        ));
   }
 
-  Padding getNoCategoryView() {
+  Padding getNoTagView() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 100),
       child: Center(
@@ -54,7 +54,7 @@ class CategoryList extends StatelessWidget {
             ),
             SizedBox(width: 8),
             Text(
-              'icon to add a Category',
+              'icon to add a Tag',
               style: TextStyle(color: Colors.grey),
             ),
           ],
@@ -63,7 +63,7 @@ class CategoryList extends StatelessWidget {
     );
   }
 
-  Container getCategoryTile(BuildContext context, ExpenseCategory category) {
+  Container getTagTile(BuildContext context, Tag tag) {
     return Container(
         decoration: BoxDecoration(
           color: Colors.grey.shade900,
@@ -74,7 +74,7 @@ class CategoryList extends StatelessWidget {
           // tileColor: Colors.grey.shade900,
           dense: true,
           title: Text(
-            category.name,
+            tag.name,
             textScaleFactor: 1,
           ),
           trailing: Row(
@@ -86,37 +86,37 @@ class CategoryList extends StatelessWidget {
               // ),
               IconButton(
                 icon: Icon(Icons.delete, color: Colors.red.shade300),
-                onPressed: () => _deleteCategory(context, category),
+                onPressed: () => _deleteTag(context, tag),
               ),
             ],
           ),
         ));
   }
 
-  _deleteCategory(BuildContext context, ExpenseCategory category) async {
-    CategoryService categoryService = await CategoryService.create();
-    categoryService.deleteCategory(category.id).then((value) {
+  _deleteTag(BuildContext context, Tag tag) async {
+    TagService tagService = await TagService.create();
+    tagService.deleteTag(tag.id).then((value) {
       if (value > 0) {
-        _refreshCategories(context);
+        _refreshTags(context);
       }
     });
   }
 
-  _refreshCategories(BuildContext context) {
-    final categoryProvider =
-        Provider.of<CategoryProvider>(context, listen: false);
-    categoryProvider.refreshCategories();
+  _refreshTags(BuildContext context) {
+    final tagProvider =
+    Provider.of<TagProvider>(context, listen: false);
+    tagProvider.refreshTags();
   }
 
-  Container getCategoryForm(List<ExpenseCategory> categories) {
+  Container getTagForm(List<Tag> tags) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey.shade900,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       margin: const EdgeInsets.only(top: 5, bottom: 2.5),
-      child: CategoryForm(
-        categories: categories,
+      child: TagForm(
+        tags: tags,
       ),
     );
   }

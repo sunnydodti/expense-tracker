@@ -12,6 +12,7 @@ import '../../service/expense_service.dart';
 import '../../service/export_service.dart';
 import '../../service/import_service.dart';
 import '../notifications/snackbar_service.dart';
+import '../screens/tag_screen.dart';
 
 class HomeDrawer extends StatefulWidget {
   const HomeDrawer({super.key});
@@ -90,11 +91,7 @@ class HomeDrawerState extends State<HomeDrawer> {
             ),
             ListTile(
               title: const Text('Tags'),
-              onTap: () {
-                Navigator.pop(context);
-                SnackBarService.showSnackBarWithContext(
-                    context, ResponseConstants.upcoming.getRandomMessage);
-              },
+              onTap: () => _navigateToTagScreen(context),
             ),
             if (_isDeleteDialogVisible) _buildDeleteConfirmationDialog(context),
             if (_isImportDialogVisible) _buildImportDialog(context),
@@ -109,6 +106,15 @@ class HomeDrawerState extends State<HomeDrawer> {
       context,
       MaterialPageRoute(
         builder: (context) => const CategoryScreen(),
+      ),
+    ).then((value) => Navigator.pop(context));
+  }
+  
+  _navigateToTagScreen(BuildContext context) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const TagScreen(),
       ),
     ).then((value) => Navigator.pop(context));
   }

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'providers/category_provider.dart';
 import 'providers/expense_provider.dart';
+import 'providers/tag_provider.dart';
 import 'ui/screens/home_screen.dart';
 
 Future<void> main() async {
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => ExpenseProvider()),
         ChangeNotifierProvider(create: (context) => CategoryProvider()),
+        ChangeNotifierProvider(create: (context) => TagProvider()),
       ],
       child: MaterialApp(
         theme: ThemeData(

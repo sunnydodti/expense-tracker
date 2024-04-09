@@ -126,7 +126,7 @@ class ExpenseService {
     if (sortBy == DBConstants.expense.date) {
       sortedByDate.sort((a, b) {
         final compareValue = a.date.compareTo(b.date);
-        return compareValue! * (ascending ? 1 : -1);
+        return compareValue * (ascending ? 1 : -1);
       });
     }
 

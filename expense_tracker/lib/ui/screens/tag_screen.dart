@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/category_provider.dart';
-import '../widgets/category_list.dart';
+import '../../providers/tag_provider.dart';
+import '../widgets/tag_list.dart';
 
-class CategoryScreen extends StatelessWidget {
-  const CategoryScreen({super.key});
+class TagScreen extends StatelessWidget {
+  const TagScreen({super.key});
 
-  final String title = "Categories";
+  final String title = "Tags";
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<void>(
-      future: _refreshCategories(context),
+      future: _refreshTags(context),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
@@ -32,7 +32,7 @@ class CategoryScreen extends StatelessWidget {
             body: Column(
               children: const [
                 Expanded(
-                  child: CategoryList(),
+                  child: TagList(),
                 )
               ],
             ),
@@ -42,9 +42,9 @@ class CategoryScreen extends StatelessWidget {
     );
   }
 
-  Future<void> _refreshCategories(BuildContext context) async {
-    final provider = Provider.of<CategoryProvider>(context, listen: false);
-    provider.refreshCategories();
+  Future<void> _refreshTags(BuildContext context) async {
+    final provider = Provider.of<TagProvider>(context, listen: false);
+    provider.refreshTags();
   }
 
   navigateBack(BuildContext context, bool result) =>

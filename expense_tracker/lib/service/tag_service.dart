@@ -19,7 +19,8 @@ class TagService {
   Future<List<Tag>> getTags() async {
     try {
       final List<Map<String, dynamic>> tags = await _tagHelper.getTags();
-      return tags.map((tagMap) => Tag.fromMap(tagMap)).toList();
+      List<Tag> tgs = tags.map((tagMap) => Tag.fromMap(tagMap)).toList();
+      return tgs;
     } catch (e) {
       debugPrint("Error getting tags: $e");
       return [];
