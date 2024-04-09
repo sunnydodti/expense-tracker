@@ -29,6 +29,15 @@ class TagService {
     }
   }
 
+  Future<List<Map<String, dynamic>>> getTagMaps() async {
+    try {
+      return await _tagHelper.getTags();
+    } on Exception catch (e, stackTrace) {
+      _logger.e("Error getting tags: $e - \n$stackTrace");
+      return [];
+    }
+  }
+
   Future<Tag?> getTagByName(String tagName) async {
     try {
       final List<Map<String, dynamic>> tag =

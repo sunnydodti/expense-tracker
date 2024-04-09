@@ -31,6 +31,15 @@ class CategoryService {
     }
   }
 
+  Future<List<Map<String, dynamic>>> getCategoryMaps() async {
+    try {
+      return await _categoryHelper.getCategories();
+    } on Exception catch (e, stackTrace) {
+      _logger.e("Error getting categories: $e - \n$stackTrace");
+      return [];
+    }
+  }
+
   Future<ExpenseCategory?> getCategoryByName(String categoryName) async {
     try {
       final List<Map<String, dynamic>> category =

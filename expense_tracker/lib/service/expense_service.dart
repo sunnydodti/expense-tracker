@@ -41,7 +41,7 @@ class ExpenseService {
     }
   }
 
-  Future<List<Expense>> fetchExpenses() async {
+  Future<List<Expense>> getExpenses() async {
     List<Map<String, dynamic>> expenseMapList =
         await _expenseHelper.getExpenses();
     return expenseMapList
@@ -49,7 +49,7 @@ class ExpenseService {
         .toList();
   }
 
-  Future<List<Map<String, dynamic>>> fetchExpenseMaps() async {
+  Future<List<Map<String, dynamic>>> getExpenseMaps() async {
     try {
       return await _expenseHelper.getExpenses();
     } on Exception catch (e, stackTrace) {

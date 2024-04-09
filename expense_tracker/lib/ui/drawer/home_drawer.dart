@@ -217,7 +217,7 @@ class HomeDrawerState extends State<HomeDrawer> {
   void _exportExpenses(BuildContext context) async {
     Navigator.pop(context);
     ExportService exportService = ExportService();
-    exportService.exportAllExpensesToJson().then((ExportResult result) => {
+    exportService.exportAllDataToJson().then((ExportResult result) => {
           if (result.result)
             SnackBarService.showSuccessSnackBarWithContext(
                 context, "${result.message} \npath:${result.outputPath}",

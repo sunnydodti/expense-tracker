@@ -19,6 +19,7 @@ dependencies:
   provider:
   file_picker:
   logger:
+  archive:
 
 dev_dependencies:
   flutter_test:

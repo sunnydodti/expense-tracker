@@ -135,6 +135,6 @@ class ExpenseProvider extends ChangeNotifier {
   /// fetch updated expenses from db
   Future<List<Expense>> _fetchExpenses() async {
     ExpenseService expenseService = await _expenseService;
-    return await expenseService.fetchExpenses();
+    return await expenseService.getExpenses();
   }
 }
