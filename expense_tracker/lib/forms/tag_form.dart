@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 import '../models/tag.dart';
@@ -16,6 +17,8 @@ class TagForm extends StatefulWidget {
 
 class _TagFormState extends State<TagForm> {
   final _formKey = GlobalKey<FormState>();
+  static final Logger _logger = Logger(
+      printer: SimplePrinter(), level: Level.info);
   final _tagController = TextEditingController();
 
   @override
@@ -54,7 +57,7 @@ class _TagFormState extends State<TagForm> {
           validator: _validateNewTag,
           onSaved: submitTag,
           onChanged: (value) {
-            _tagController.text = value;
+            _logger.d("tag: $value");
           },
         ),
       ),

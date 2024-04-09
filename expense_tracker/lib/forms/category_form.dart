@@ -1,6 +1,7 @@
 import 'package:expense_tracker/models/expense_category.dart';
 import 'package:expense_tracker/service/category_service.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/category_provider.dart';
@@ -16,6 +17,8 @@ class CategoryForm extends StatefulWidget {
 
 class _CategoryFormState extends State<CategoryForm> {
   final _formKey = GlobalKey<FormState>();
+  static final Logger _logger =
+      Logger(printer: SimplePrinter(), level: Level.info);
   final _categoryController = TextEditingController();
 
   @override
@@ -54,7 +57,7 @@ class _CategoryFormState extends State<CategoryForm> {
           validator: _validateNewCategory,
           onSaved: submitCategory,
           onChanged: (value) {
-            _categoryController.text = value;
+            _logger.d("tag: $value");
           },
         ),
       ),
