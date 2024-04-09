@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
+import 'package:share/share.dart';
 
 import '../../data/constants/file_name_constants.dart';
 import '../../models/import_result.dart';
@@ -23,8 +24,7 @@ class HomeDrawer extends StatefulWidget {
 }
 
 class HomeDrawerState extends State<HomeDrawer> {
-  final Logger _logger =
-      Logger(printer: SimplePrinter(), level: Level.info);
+  final Logger _logger = Logger(printer: SimplePrinter(), level: Level.info);
 
   bool _isDeleteDialogVisible = false;
   bool _isImportDialogVisible = false;
@@ -209,8 +209,10 @@ class HomeDrawerState extends State<HomeDrawer> {
                       duration: 2)
                 }
               else
-                SnackBarService.showErrorSnackBarWithContext(
-                    context, "not imported"),
+                {
+                  SnackBarService.showErrorSnackBarWithContext(
+                      context, "not imported"),
+                },
             });
   }
 
@@ -220,12 +222,51 @@ class HomeDrawerState extends State<HomeDrawer> {
     exportService.exportAllDataToJson().then((ExportResult result) => {
           if (result.result)
             SnackBarService.showSuccessSnackBarWithContext(
-                context, "${result.message} \npath:${result.outputPath}",
+                context, "${result.message}\nPath: ${result.outputPath}",
                 duration: 5)
           else
             SnackBarService.showErrorSnackBarWithContext(
-                context, result.message)
+                context, result.message),
+          _showSaveDialog(result.path!)
         });
+  }
+
+  Future<int> _showSaveDialog(String filePath) async {
+    int response = 0;
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Export Complete, Save?'),
+        content: const Text(
+            'All data is wiped if you uninstall!\n\nDo you want to save file to a different location?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              response = -1;
+              Navigator.pop(context);
+            },
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
+              response = 1;
+              Navigator.pop(context);
+              await Share.shareFiles([filePath]);
+            },
+            child: const Text('Save'),
+          ),
+          // TextButton(
+          //   onPressed: () async {
+          //     Navigator.pop(context);
+          //     // Show a message or open the downloaded file (optional)
+          //     print('ZIP file saved to: $filePath');
+          //   },
+          //   child: const Text('View'),
+          // ),
+        ],
+      ),
+    );
+    return response;
   }
 
   Text _showSelectedFileName() {
