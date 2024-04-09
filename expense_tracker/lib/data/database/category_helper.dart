@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../models/expense_category.dart';
@@ -6,6 +6,8 @@ import '../constants/db_constants.dart';
 
 class CategoryHelper {
   final Database _database;
+  static final Logger _logger =
+      Logger(printer: SimplePrinter(), level: Level.info);
 
   CategoryHelper(this._database);
 
@@ -26,7 +28,7 @@ class CategoryHelper {
         """SELECT name FROM sqlite_master WHERE type = 'table' AND name = '${DBConstants.category.table}'""");
 
     if (result.isEmpty) {
-      debugPrint("creating table ${DBConstants.category.table}");
+      _logger.i("creating table ${DBConstants.category.table}");
       await database.execute('''CREATE TABLE ${DBConstants.category.table} (
         ${DBConstants.category.id} INTEGER PRIMARY KEY AUTOINCREMENT, 
         ${DBConstants.category.name} TEXT,
@@ -35,7 +37,7 @@ class CategoryHelper {
         )
         ''');
 
-      debugPrint("creating trigger ${DBConstants.category.triggerModifiedAt}");
+      _logger.i("creating trigger ${DBConstants.category.triggerModifiedAt}");
       await database.execute('''
         CREATE TRIGGER ${DBConstants.category.triggerModifiedAt}
         AFTER UPDATE ON ${DBConstants.category.table}
@@ -54,20 +56,20 @@ class CategoryHelper {
 
     try {
       if (result.isNotEmpty) {
-        debugPrint("populating default ${DBConstants.category.table}");
+        _logger.i("populating default ${DBConstants.category.table}");
         for (String category in defaultCategories) {
           await database.execute(
               '''insert into ${DBConstants.category.table} (${DBConstants.category.name}) values ('$category')''');
         }
       }
-    } on Exception catch (e) {
-      debugPrint("Error at populating default categories $e");
+    } on Exception catch (e, stackTrace) {
+      _logger.e("Error at populating default categories $e - $stackTrace");
     }
   }
 
   Future<int> addCategory(Map<String, dynamic> categoryMap) async {
-    debugPrint("adding category ${categoryMap[DBConstants.category.name]}");
-    debugPrint(categoryMap.toString());
+    _logger.i("adding category ${categoryMap[DBConstants.category.name]}");
+    _logger.i(categoryMap.toString());
     Database database = getDatabase;
     return await database.insert(
       DBConstants.category.table,
@@ -76,14 +78,14 @@ class CategoryHelper {
   }
 
   Future<List<Map<String, dynamic>>> getCategories() async {
-    debugPrint("getting categories");
+    _logger.i("getting categories");
     Database database = getDatabase;
     return await database.query(DBConstants.category.table);
   }
 
   Future<List<Map<String, dynamic>>> getCategoryByName(
       String categoryName) async {
-    debugPrint("getting category $categoryName}");
+    _logger.i("getting category $categoryName}");
     Database database = getDatabase;
     return await database.query(
       DBConstants.category.table,
@@ -93,8 +95,8 @@ class CategoryHelper {
   }
 
   Future<int> updateCategory(CategoryFormModel category) async {
-    debugPrint("updating tag ${category.id} - ${category.name}");
-    debugPrint(category.toMap().toString());
+    _logger.i("updating tag ${category.id} - ${category.name}");
+    _logger.i(category.toMap().toString());
     Database database = getDatabase;
     return database.update(
       DBConstants.category.table,
@@ -105,7 +107,7 @@ class CategoryHelper {
   }
 
   Future<int> deleteCategory(int id) async {
-    debugPrint("deleting ${DBConstants.category.table} - $id");
+    _logger.i("deleting ${DBConstants.category.table} - $id");
     Database database = getDatabase;
     return await database.delete(
       DBConstants.category.table,
@@ -115,13 +117,13 @@ class CategoryHelper {
   }
 
   Future<int> deleteAllCategories() async {
-    debugPrint("deleting ${DBConstants.category.table}");
+    _logger.i("deleting ${DBConstants.category.table}");
     Database database = getDatabase;
     return await database.delete(DBConstants.category.table);
   }
 
   Future<int> getCategoryCount() async {
-    debugPrint("getting ${DBConstants.category.table} count");
+    _logger.i("getting ${DBConstants.category.table} count");
     Database database = getDatabase;
     final count = Sqflite.firstIntValue(await database.rawQuery(
       'SELECT COUNT(*) FROM ${DBConstants.category.table}',

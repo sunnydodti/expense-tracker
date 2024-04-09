@@ -24,7 +24,6 @@ class HomePage extends StatelessWidget {
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
-          // Once the future is completed, build the UI
           return MaterialApp(
             theme: ThemeData(colorScheme: const ColorScheme.dark()),
             home: Scaffold(

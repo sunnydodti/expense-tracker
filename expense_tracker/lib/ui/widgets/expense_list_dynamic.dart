@@ -232,17 +232,19 @@ class ExpenseListDynamic extends StatelessWidget {
   completeExpenseDeletion(Expense expense, int index, int expenseLength,
       ExpenseProvider expenseProvider, BuildContext context) async {
     debugPrint("Expense deleted");
-    int id = await _deleteExpenseFromDatabase(expense);
-    if (id == 0) {
-      if (index + 1 == expenseLength) {
-        debugPrint("adding at end $index");
-        expenseProvider.addExpense(expense);
-      } else {
-        debugPrint("adding at $index");
-        expenseProvider.insertExpense(index, expense);
+    _deleteExpenseFromDatabase(expense).then((value) {
+      if (value == 0) {
+        if (index + 1 == expenseLength) {
+          debugPrint("adding at end $index");
+          expenseProvider.addExpense(expense);
+        } else {
+          debugPrint("adding at $index");
+          expenseProvider.insertExpense(index, expense);
+        }
+        SnackBarService.showErrorSnackBarWithContext(context, "Delete Failed");
       }
-      SnackBarService.showErrorSnackBarWithContext(context, "Delete Failed");
-    }
+    });
+
   }
 
   undoExpenseDeletion(int index, int expenseLength,

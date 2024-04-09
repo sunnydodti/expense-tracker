@@ -1,143 +1,52 @@
 import 'package:expense_tracker/data/constants/db_constants.dart';
 
 class Expense {
-  int _id; // required
-  String _title; // required
-  String _currency; // required
-  double _amount; // required
-  String _transactionType; // required
-  DateTime _date; // required
-  String _category; // required
-  // List<String>? _tags;
-  String? _tags;
-  String? _note;
+  int id;
+  String title;
+  String currency;
+  double amount;
+  String transactionType;
+  DateTime date;
+  String category;
+  String? tags;
+  String? note;
 
-  // bool? _containsNestedExpenses; // required
-  List<Expense>? _expenses;
-  DateTime _createdAt; // New field
-  DateTime _modifiedAt; // New field
+  List<Expense>? expenses;
+  DateTime createdAt;
+  DateTime modifiedAt;
 
   Expense(
-      this._id,
-      this._title,
-      this._currency,
-      this._amount,
-      this._transactionType,
-      this._date,
-      this._category,
-      this._createdAt,
-      this._modifiedAt,
-      // [this._tags, this._note, this._containsNestedExpenses, this._expenses]
-      [this._tags,
-      this._note,
-      this._expenses]);
-
-  // Getters
-  int get id => _id;
-
-  String get title => _title;
-
-  String get currency => _currency;
-
-  double get amount => _amount;
-
-  String get transactionType => _transactionType;
-
-  DateTime get date => _date;
-
-  String get category => _category;
-
-  // List<String>? get tags => _tags;
-  String? get tags => _tags;
-
-  String? get note => _note;
-
-  // bool? get containsNestedExpenses => _containsNestedExpenses;
-  List<Expense>? get expenses => _expenses;
-
-  DateTime get createdAt => _createdAt;
-
-  DateTime get modifiedAt => _modifiedAt;
-
-  //Setters
-  set id(int id) {
-    _id = id;
-  }
-
-  set title(String title) {
-    _title = title;
-  }
-
-  set currency(String currency) {
-    _currency = currency;
-  }
-
-  set amount(double amount) {
-    if (amount < 0) {
-      throw ArgumentError('Amount must be non-negative');
-    }
-    _amount = amount;
-  }
-
-  set transactionType(String transactionType) {
-    _transactionType = transactionType;
-  }
-
-  set date(DateTime date) {
-    _date = date;
-  }
-
-  set category(String category) {
-    _category = category;
-  }
-
-  // set tags(List<String>? tags) {
-  set tags(String? tags) {
-    _tags = tags;
-  }
-
-  set tag(String? tag) {
-    _tags = tag;
-  }
-
-  set note(String? note) {
-    _note = note;
-  }
-
-  // set containsNestedExpenses(bool? containsNestedExpenses) {
-  //   _containsNestedExpenses = containsNestedExpenses;
-  // }
-
-  set expenses(List<Expense>? expenses) {
-    _expenses = expenses;
-  }
-
-  set createdAt(DateTime createdAt) {
-    _createdAt = createdAt;
-  }
-
-  set modifiedAt(DateTime modifiedAt) {
-    _modifiedAt = modifiedAt;
-  }
+      this.id,
+      this.title,
+      this.currency,
+      this.amount,
+      this.transactionType,
+      this.date,
+      this.category,
+      this.createdAt,
+      this.modifiedAt,
+      [this.tags,
+      this.note,
+      this.expenses]);
 
   // Methods
   //  // Expense Object to map
   // Getter for the Map representation
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = <String, dynamic>{};
-    map[DBConstants.expense.id] = _id;
-    map[DBConstants.expense.title] = _title;
-    map[DBConstants.expense.currency] = _currency;
-    map[DBConstants.expense.amount] = _amount;
-    map[DBConstants.expense.transactionType] = _transactionType;
-    map[DBConstants.expense.date] = _date.toIso8601String();
-    map[DBConstants.expense.category] = _category;
-    map[DBConstants.expense.tags] = _tags;
-    map[DBConstants.expense.note] = _note;
+    map[DBConstants.expense.id] = id;
+    map[DBConstants.expense.title] = title;
+    map[DBConstants.expense.currency] = currency;
+    map[DBConstants.expense.amount] = amount;
+    map[DBConstants.expense.transactionType] = transactionType;
+    map[DBConstants.expense.date] = date.toIso8601String();
+    map[DBConstants.expense.category] = category;
+    map[DBConstants.expense.tags] = tags;
+    map[DBConstants.expense.note] = note;
     map[DBConstants.expense.expenses] =
-        _expenses?.map((expense) => expense.toMap()).toList();
-    map[DBConstants.expense.createdAt] = _createdAt;
-    map[DBConstants.expense.modifiedAt] = _modifiedAt;
+        expenses?.map((expense) => expense.toMap()).toList();
+    map[DBConstants.expense.createdAt] = createdAt;
+    map[DBConstants.expense.modifiedAt] = modifiedAt;
     return map;
   }
 
@@ -147,7 +56,6 @@ class Expense {
         : expenseMapList
             .map((expenseMap) => Expense.fromMap(expenseMap))
             .toList();
-    // return <Expense>[];
   }
 
   //  // map to Expense Object
@@ -197,8 +105,6 @@ class ExpenseFormModel {
   ExpenseFormModel(this.title, this.currency, this.amount, this.transactionType,
       this.date, this.category, this.containsNestedExpenses,
       [this.tags, this.note, this.expenses]);
-
-  // Expense.empty();
 
   ExpenseFormModel.withId(
       this.id,

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../models/tag.dart';
@@ -6,6 +6,8 @@ import '../constants/db_constants.dart';
 
 class TagHelper {
   final Database _database;
+  static final Logger _logger =
+      Logger(printer: SimplePrinter(), level: Level.info);
 
   TagHelper(this._database);
 
@@ -23,7 +25,7 @@ class TagHelper {
     var result = await database.rawQuery(
         """SELECT name FROM sqlite_master WHERE type = 'table' AND name = '${DBConstants.tag.table}'""");
     if (result.isEmpty) {
-      debugPrint("creating table ${DBConstants.tag.table}");
+      _logger.i("creating table ${DBConstants.tag.table}");
       await database.execute('''CREATE TABLE ${DBConstants.tag.table} (
         ${DBConstants.tag.id} INTEGER PRIMARY KEY AUTOINCREMENT, 
         ${DBConstants.tag.name} TEXT,
@@ -32,7 +34,7 @@ class TagHelper {
         )
         ''');
 
-      debugPrint("creating trigger ${DBConstants.tag.triggerModifiedAt}");
+      _logger.i("creating trigger ${DBConstants.tag.triggerModifiedAt}");
       await database.execute('''
         CREATE TRIGGER ${DBConstants.tag.triggerModifiedAt}
         AFTER UPDATE ON ${DBConstants.tag.table}
@@ -50,7 +52,7 @@ class TagHelper {
         '''SELECT name FROM sqlite_master WHERE type = 'table' AND name = '${DBConstants.tag.table}' ''');
 
     try {
-      debugPrint("populating default ${DBConstants.tag.table}");
+      _logger.i("populating default ${DBConstants.tag.table}");
       if (result.isNotEmpty) {
         for (String category in defaultTags) {
           await database.execute(
@@ -58,13 +60,13 @@ class TagHelper {
         }
       }
     } on Exception catch (e) {
-      debugPrint("Error at populating default tags $e");
+      _logger.e("Error at populating default tags $e");
     }
   }
 
   Future<int> addTag(Map<String, dynamic> tagMap) async {
-    debugPrint("adding tag ${tagMap[DBConstants.tag.name]}");
-    debugPrint(tagMap.toString());
+    _logger.i("adding tag ${tagMap[DBConstants.tag.name]}");
+    _logger.i(tagMap.toString());
     Database database = getDatabase;
     return await database.insert(
       DBConstants.tag.table,
@@ -73,13 +75,13 @@ class TagHelper {
   }
 
   Future<List<Map<String, dynamic>>> getTags() async {
-    debugPrint("getting tags");
+    _logger.i("getting tags");
     Database database = getDatabase;
     return await database.query(DBConstants.tag.table);
   }
 
   Future<List<Map<String, dynamic>>> getTagByName(String tagName) async {
-    debugPrint("getting tag $tagName");
+    _logger.i("getting tag $tagName");
     Database database = getDatabase;
     return await database.query(
       DBConstants.tag.table,
@@ -89,8 +91,8 @@ class TagHelper {
   }
 
   Future<int> updateTag(TagFormModel tag) async {
-    debugPrint("updating tag ${tag.id} - ${tag.name}");
-    debugPrint(tag.toMap().toString());
+    _logger.i("updating tag ${tag.id} - ${tag.name}");
+    _logger.i(tag.toMap().toString());
     Database database = getDatabase;
     return database.update(
       DBConstants.tag.table,
@@ -101,7 +103,7 @@ class TagHelper {
   }
 
   Future<int> deleteTag(int id) async {
-    debugPrint("deleting ${DBConstants.tag.table} - $id");
+    _logger.i("deleting ${DBConstants.tag.table} - $id");
     Database database = getDatabase;
     return await database.delete(
       DBConstants.tag.table,
@@ -111,13 +113,13 @@ class TagHelper {
   }
 
   Future<int> deleteAllTags() async {
-    debugPrint("deleting ${DBConstants.tag.table}");
+    _logger.i("deleting ${DBConstants.tag.table}");
     Database database = getDatabase;
     return await database.delete(DBConstants.tag.table);
   }
 
   Future<int> getTagCount() async {
-    debugPrint("getting ${DBConstants.tag.table} count");
+    _logger.i("getting ${DBConstants.tag.table} count");
     Database database = getDatabase;
     final count = Sqflite.firstIntValue(await database.rawQuery(
       'SELECT COUNT(*) FROM ${DBConstants.tag.table}',

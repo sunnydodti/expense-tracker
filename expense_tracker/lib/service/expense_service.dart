@@ -1,5 +1,6 @@
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 import '../data/constants/db_constants.dart';
 import '../data/database/database_helper.dart';
@@ -7,16 +8,17 @@ import '../data/database/expense_helper.dart';
 import '../models/expense.dart';
 
 class ExpenseService {
-  late final DatabaseHelper _databaseHelper;
   late final ExpenseHelper _expenseHelper;
+  static final Logger _logger =
+      Logger(printer: SimplePrinter(), level: Level.info);
 
-  ExpenseService._(this._databaseHelper, this._expenseHelper);
+  ExpenseService._(this._expenseHelper);
 
   static Future<ExpenseService> create() async {
     final databaseHelper = DatabaseHelper();
     await databaseHelper.initializeDatabase();
     final expenseHelper = await databaseHelper.expenseHelper;
-    return ExpenseService._(databaseHelper, expenseHelper);
+    return ExpenseService._(expenseHelper);
   }
 
   Future<bool> addExpense(ExpenseFormModel expense) async {
@@ -24,7 +26,7 @@ class ExpenseService {
       int id = await _expenseHelper.addExpense(expense.toMap());
       return id > 0 ? true : false;
     } on Exception catch (e) {
-      debugPrint("Error adding expense (${expense.title}): $e");
+      _logger.e("Error adding expense (${expense.title}): $e");
       return false;
     }
   }
@@ -34,7 +36,7 @@ class ExpenseService {
       int result = await _expenseHelper.updateExpense(expense);
       return result > 0 ? true : false;
     } on Exception catch (e) {
-      debugPrint("Error updating expense (${expense.title}): $e");
+      _logger.e("Error updating expense (${expense.title}): $e");
       return false;
     }
   }
@@ -51,7 +53,7 @@ class ExpenseService {
     try {
       return await _expenseHelper.getExpenses();
     } on Exception catch (e) {
-      debugPrint("Error getting expenses: $e");
+      _logger.e("Error getting expenses: $e");
       return [];
     }
   }
@@ -60,7 +62,7 @@ class ExpenseService {
     try {
       return _expenseHelper.deleteAllExpenses();
     } on Exception catch (e) {
-      debugPrint("Error deleting expenses: $e");
+      _logger.e("Error deleting expenses: $e");
       return -1;
     }
   }
@@ -76,7 +78,7 @@ class ExpenseService {
         expenseMapList,
       );
     } on Exception catch (e) {
-      debugPrint("Error populating expense: $e");
+      _logger.e("Error populating expense: $e");
     }
   }
 
@@ -108,7 +110,7 @@ class ExpenseService {
     try {
       if (await _expenseHelper.addExpense(expense) > 0) return true;
     } on Exception catch (e) {
-      debugPrint(
+      _logger.e(
           "Error importing expense (${expense[DBConstants.expense.title]}): $e");
     }
     return false;

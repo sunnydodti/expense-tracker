@@ -18,6 +18,7 @@ dependencies:
   faker:
   provider:
   file_picker:
+  logger:
 
 dev_dependencies:
   flutter_test:
