@@ -1,16 +1,17 @@
-import 'package:expense_tracker/models/expense_category.dart';
-import 'package:expense_tracker/service/category_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
-import '../builder/form_builder.dart';
+import '../data/constants/form_constants.dart';
 import '../models/enums/form_modes.dart';
 import '../models/expense.dart';
+import '../models/expense_category.dart';
 import '../models/tag.dart';
+import '../service/category_service.dart';
 import '../service/expense_service.dart';
 import '../service/tag_service.dart';
+import '../ui/widgets/form_widgets.dart';
 
 class ExpenseForm extends StatefulWidget {
   final FormMode formMode;
@@ -101,7 +102,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
     amountPrefixController.text = _currencies[_defaultCurrency]!;
     amountController.text = "";
     transactionTypeController.text =
-        FromBuilder.getTransactionTypesList().first;
+        FormConstants.expense.transactionTypes.first;
     dateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
     notesController.text = '';
 
@@ -126,7 +127,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
   @override
   void initState() {
     super.initState();
-    _currencies = FromBuilder.getCurrenciesListMap();
+    _currencies = FormConstants.expense.currencies;
     _defaultCurrency = _currencies.keys.first;
 
     _highlightColor = Colors.green.shade300;
@@ -146,75 +147,72 @@ class _ExpenseFormState extends State<ExpenseForm> {
     final ThemeData theme = Theme.of(context);
 
     return Material(
-      child: Theme(
-        data: theme.copyWith(
-            textTheme: Theme.of(context).textTheme.apply(
-                  fontSizeFactor: .9,
-                ),
-            inputDecorationTheme: InputDecorationTheme(
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
-              focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                color: _highlightColor,
-              )),
-              prefixIconColor: _highlightColor,
-              suffixIconColor: _highlightColor,
-              labelStyle: TextStyle(
-                color: _highlightColor,
+        child: Theme(
+      data: theme.copyWith(
+          textTheme: Theme.of(context).textTheme.apply(
+                fontSizeFactor: .9,
               ),
+          inputDecorationTheme: InputDecorationTheme(
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
+            focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+              color: _highlightColor,
             )),
-        child: _getExpenseFormFields(context),
-      ),
-    );
+            prefixIconColor: _highlightColor,
+            suffixIconColor: _highlightColor,
+            labelStyle: TextStyle(
+              color: _highlightColor,
+            ),
+          )),
+      child: _getExpenseFormFields(context),
+    ));
   }
 
   Container _getExpenseFormFields(BuildContext context) {
     return Container(
-      color: Colors.grey.shade900,
-      child: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            Row(
-              children: [getTitleField()],
-            ),
-            Row(
-              children: [
-                getCurrencyField(),
-                getAmountField(),
-              ],
-            ),
-            Row(
-              children: [
-                getTransactionTypeField(),
-                getDateField(context),
-              ],
-            ),
-            Row(
-              children: [
-                getCategoryField(),
-                getTagsField(),
-              ],
-            ),
-            Row(
-              children: [getNotesField()],
-            ),
-            getSubmitButton(),
-          ],
-        ),
-      ),
-    );
+        color: Colors.grey.shade900,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Row(
+                children: [getTitleField()],
+              ),
+              Row(
+                children: [
+                  getCurrencyField(),
+                  getAmountField(),
+                ],
+              ),
+              Row(
+                children: [
+                  getTransactionTypeField(),
+                  getDateField(context),
+                ],
+              ),
+              Row(
+                children: [
+                  getCategoryField(),
+                  getTagsField(),
+                ],
+              ),
+              Row(
+                children: [getNotesField()],
+              ),
+              getSubmitButton(),
+            ],
+          ),
+        ));
   }
 
   ElevatedButton getSubmitButton() {
     return ElevatedButton(
-      onPressed: _submitExpense,
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(_highlightColor),
-      ),
-      child: Text((widget.formMode == FormMode.add) ? 'Submit' : 'Edit'),
-    );
+        onPressed: _submitExpense,
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(_highlightColor),
+        ),
+        child: Text((widget.formMode == FormMode.add) ? 'Submit' : 'Edit'));
   }
 
   // ---------------------------------{ title --------------------------------- //
@@ -293,7 +291,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
         child: DropdownButtonFormField<Tag>(
           isExpanded: true,
           value: _selectedTag,
-          items: FromBuilder.getTagsDropdownItemsV2(_tags),
+          items: FormWidgets.getDropdownItems(_tags, (tag) => tag.name),
           decoration: const InputDecoration(
             border: OutlineInputBorder(),
             labelText: 'Tags',
@@ -317,7 +315,8 @@ class _ExpenseFormState extends State<ExpenseForm> {
           child: DropdownButtonFormField<ExpenseCategory>(
             isExpanded: true,
             value: _selectedCategory,
-            items: FromBuilder.getCategoryDropdownItemsV2(_categories),
+            items: FormWidgets.getDropdownItems(
+                _categories, (category) => category.name),
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Category',
@@ -397,7 +396,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
           child: DropdownButtonFormField(
             isExpanded: true,
             value: transactionTypeController.text,
-            items: FromBuilder.getTransactionTypeDropdownItems(),
+            items: FormWidgets.getTransactionTypeDropdownItems(),
             decoration: InputDecoration(
               prefixIcon:
                   Icon(Icons.monetization_on_outlined, size: _getIconSize()),
@@ -458,7 +457,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
           child: DropdownButtonFormField(
             isExpanded: true,
             value: currencyController.text,
-            items: FromBuilder.getCurrencyDropdownItems(),
+            items: FormWidgets.getCurrencyDropdownItems(),
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Currency',

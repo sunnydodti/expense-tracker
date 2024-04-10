@@ -31,15 +31,11 @@ class DatabaseHelper {
     final Directory directory = await getApplicationDocumentsDirectory();
     final String path = '${directory.path}/${DBConstants.databaseName}.db';
 
-    return openDatabase(
-      path,
-      version: 1,
-      onCreate: createDatabase,
-      onOpen: (db) {
-        _logger.i(path);
-        _logger.i("Database is open");
-      },
-    );
+    return openDatabase(path, version: 1, onCreate: createDatabase,
+        onOpen: (db) {
+      _logger.i(path);
+      _logger.i("Database is open");
+    });
   }
 
   void createDatabase(Database database, int newVersion) async {

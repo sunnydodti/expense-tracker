@@ -9,6 +9,14 @@ class CategoryScreen extends StatelessWidget {
 
   final String title = "Categories";
 
+  Future<void> _refreshCategories(BuildContext context) async {
+    final provider = Provider.of<CategoryProvider>(context, listen: false);
+    provider.refreshCategories();
+  }
+
+  navigateBack(BuildContext context, bool result) =>
+      Navigator.pop(context, result);
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<void>(
@@ -41,12 +49,4 @@ class CategoryScreen extends StatelessWidget {
       },
     );
   }
-
-  Future<void> _refreshCategories(BuildContext context) async {
-    final provider = Provider.of<CategoryProvider>(context, listen: false);
-    provider.refreshCategories();
-  }
-
-  navigateBack(BuildContext context, bool result) =>
-      Navigator.pop(context, result);
 }

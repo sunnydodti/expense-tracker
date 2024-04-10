@@ -21,5 +21,4 @@ class UpcomingFeature {
     final random = Random();
     return _messages[random.nextInt(_messages.length)];
   }
-
 }

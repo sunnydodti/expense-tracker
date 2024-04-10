@@ -27,22 +27,20 @@ class ExpenseListDynamic extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       getSummaryTile(expenseProvider),
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: expenseProvider.expenses.isEmpty
-                              ? 1
-                              : expenseProvider.expenses.length,
-                          itemBuilder: (context, index) {
-                            return expenseProvider.expenses.isEmpty
-                                ? getNoExpensesView()
-                                : getDismissibleExpenseTile(
-                                    context,
-                                    index,
-                                    expenseProvider.expenses[index],
-                                    expenseProvider);
-                          },
-                        ),
-                      )
+                      expenseProvider.expenses.isEmpty
+                          ? getNoExpensesView()
+                          : Expanded(
+                              child: ListView.builder(
+                                itemCount: expenseProvider.expenses.length,
+                                itemBuilder: (context, index) {
+                                  return getDismissibleExpenseTile(
+                                      context,
+                                      index,
+                                      expenseProvider.expenses[index],
+                                      expenseProvider);
+                                },
+                              ),
+                            )
                     ],
                   )),
             ));
@@ -205,15 +203,14 @@ class ExpenseListDynamic extends StatelessWidget {
   Container getExpenseListTile(
       BuildContext context, Expense expense, ExpenseProvider expenseProvider) {
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey.shade900,
-        // borderRadius: BorderRadius.circular(10),
-      ),
-      margin: const EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
-      child: InkWell(
-          onTap: () => _editExpense(context, expense, expenseProvider),
-          child: ExpenseTileWidgets.expenseTile(expense)),
-    );
+        decoration: BoxDecoration(
+          color: Colors.grey.shade900,
+          // borderRadius: BorderRadius.circular(10),
+        ),
+        margin: const EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
+        child: InkWell(
+            onTap: () => _editExpense(context, expense, expenseProvider),
+            child: ExpenseTileWidgets.expenseTile(expense)));
   }
 
   void _deleteExpense(BuildContext context, int index, Expense expense,

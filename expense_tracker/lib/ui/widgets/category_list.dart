@@ -20,15 +20,16 @@ class CategoryList extends StatelessWidget {
                   children: [
                     getCategoryForm(categoryProvider.categories),
                     Expanded(
-                        child: ListView.builder(
-                      itemCount: categoryProvider.categories.length,
-                      itemBuilder: (context, index) {
-                        final category = categoryProvider.categories[index];
-                        return categoryProvider.categories.isEmpty
+                        child: categoryProvider.categories.isEmpty
                             ? getNoCategoryView()
-                            : getCategoryTile(context, category);
-                      },
-                    ))
+                            : ListView.builder(
+                                itemCount: categoryProvider.categories.length,
+                                itemBuilder: (context, index) {
+                                  final category =
+                                      categoryProvider.categories[index];
+                                  return getCategoryTile(context, category);
+                                },
+                              ))
                   ],
                 ),
               ),
@@ -110,14 +111,11 @@ class CategoryList extends StatelessWidget {
 
   Container getCategoryForm(List<ExpenseCategory> categories) {
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey.shade900,
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-      margin: const EdgeInsets.only(top: 5, bottom: 2.5),
-      child: CategoryForm(
-        categories: categories,
-      ),
-    );
+        decoration: BoxDecoration(
+          color: Colors.grey.shade900,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
+        margin: const EdgeInsets.only(top: 5, bottom: 2.5),
+        child: CategoryForm(categories: categories));
   }
 }

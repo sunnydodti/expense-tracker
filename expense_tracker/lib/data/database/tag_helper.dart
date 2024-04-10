@@ -68,10 +68,7 @@ class TagHelper {
     _logger.i("adding tag ${tagMap[DBConstants.tag.name]}");
     _logger.i(tagMap.toString());
     Database database = getDatabase;
-    return await database.insert(
-      DBConstants.tag.table,
-      tagMap,
-    );
+    return await database.insert(DBConstants.tag.table, tagMap);
   }
 
   Future<List<Map<String, dynamic>>> getTags() async {
@@ -83,43 +80,30 @@ class TagHelper {
   Future<List<Map<String, dynamic>>> getTagByName(String tagName) async {
     _logger.i("getting tag $tagName");
     Database database = getDatabase;
-    return await database.query(
-      DBConstants.tag.table,
-      where: '${DBConstants.tag.name} = ?',
-      whereArgs: [tagName],
-    );
+    return await database.query(DBConstants.tag.table,
+        where: '${DBConstants.tag.name} = ?', whereArgs: [tagName]);
   }
 
   Future<int> updateTag(TagFormModel tag) async {
     _logger.i("updating tag ${tag.id} - ${tag.name}");
     _logger.i(tag.toMap().toString());
     Database database = getDatabase;
-    return database.update(
-      DBConstants.tag.table,
-      tag.toMap(),
-      where: '${DBConstants.tag.id} = ?',
-      whereArgs: [tag.id],
-    );
+    return database.update(DBConstants.tag.table, tag.toMap(),
+        where: '${DBConstants.tag.id} = ?', whereArgs: [tag.id]);
   }
 
   Future<int> deleteTag(int id) async {
     _logger.i("deleting ${DBConstants.tag.table} - $id");
     Database database = getDatabase;
-    return await database.delete(
-      DBConstants.tag.table,
-      where: '${DBConstants.tag.id} = ?',
-      whereArgs: [id],
-    );
+    return await database.delete(DBConstants.tag.table,
+        where: '${DBConstants.tag.id} = ?', whereArgs: [id]);
   }
 
   Future<int> deleteTagByName(String tagName) async {
     _logger.i("deleting ${DBConstants.tag.table} - $tagName");
     Database database = getDatabase;
-    return await database.delete(
-      DBConstants.tag.table,
-      where: '${DBConstants.tag.name} = ?',
-      whereArgs: [tagName],
-    );
+    return await database.delete(DBConstants.tag.table,
+        where: '${DBConstants.tag.name} = ?', whereArgs: [tagName]);
   }
 
   Future<int> deleteAllTags() async {
@@ -131,9 +115,8 @@ class TagHelper {
   Future<int> getTagsCount() async {
     _logger.i("getting ${DBConstants.tag.table} count");
     Database database = getDatabase;
-    final count = Sqflite.firstIntValue(await database.rawQuery(
-      'SELECT COUNT(*) as count FROM ${DBConstants.tag.table}',
-    ));
+    final count = Sqflite.firstIntValue(await database
+        .rawQuery('SELECT COUNT(*) as count FROM ${DBConstants.tag.table}'));
     return count ?? 0;
   }
 
@@ -141,7 +124,6 @@ class TagHelper {
     _logger.i("checking if tag exists $tagName");
     Database database = getDatabase;
     return database.rawQuery(
-        """SELECT COUNT(*) as count FROM ${DBConstants.tag.table} where ${DBConstants.tag.name} = '$tagName'"""
-    );
+        """SELECT COUNT(*) as count FROM ${DBConstants.tag.table} where ${DBConstants.tag.name} = '$tagName'""");
   }
 }

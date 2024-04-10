@@ -17,8 +17,8 @@ class TagForm extends StatefulWidget {
 
 class _TagFormState extends State<TagForm> {
   final _formKey = GlobalKey<FormState>();
-  static final Logger _logger = Logger(
-      printer: SimplePrinter(), level: Level.info);
+  static final Logger _logger =
+      Logger(printer: SimplePrinter(), level: Level.info);
   final _tagController = TextEditingController();
 
   @override
@@ -47,12 +47,12 @@ class _TagFormState extends State<TagForm> {
               ),
               focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Colors.green.shade500,
-                  )),
+                color: Colors.green.shade500,
+              )),
               enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                    color: Colors.green.shade300,
-                  )),
+                color: Colors.green.shade300,
+              )),
               label: const Text("New Tag")),
           validator: _validateNewTag,
           onSaved: submitTag,
@@ -74,8 +74,7 @@ class _TagFormState extends State<TagForm> {
 
   void submitTag(newValue) async {
     if (_formKey.currentState?.validate() ?? false) {
-      TagFormModel tag =
-      TagFormModel(name: _tagController.text);
+      TagFormModel tag = TagFormModel(name: _tagController.text);
       _addTag(tag).then((value) {
         if (value > 0) {
           _tagController.clear();
@@ -91,8 +90,7 @@ class _TagFormState extends State<TagForm> {
   }
 
   void _refreshTags() {
-    final tagProvider =
-    Provider.of<TagProvider>(context, listen: false);
+    final tagProvider = Provider.of<TagProvider>(context, listen: false);
     tagProvider.refreshTags();
   }
 

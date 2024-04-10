@@ -23,9 +23,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => TagProvider()),
       ],
       child: MaterialApp(
-        theme: ThemeData(
-          colorScheme: const ColorScheme.dark()
-        ),
+        theme: ThemeData(colorScheme: const ColorScheme.dark()),
         home: const HomePage(),
       ),
     );

@@ -1,6 +1,3 @@
-import 'package:expense_tracker/data/constants/response_constants.dart';
-import 'package:expense_tracker/models/export_result.dart';
-import 'package:expense_tracker/ui/screens/category_screen.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
@@ -8,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 
 import '../../data/constants/file_name_constants.dart';
+import '../../data/constants/response_constants.dart';
+import '../../models/export_result.dart';
 import '../../models/import_result.dart';
 import '../../providers/expense_provider.dart';
 import '../../service/category_service.dart';
@@ -16,6 +15,7 @@ import '../../service/export_service.dart';
 import '../../service/import_service.dart';
 import '../../service/tag_service.dart';
 import '../notifications/snackbar_service.dart';
+import '../screens/category_screen.dart';
 import '../screens/tag_screen.dart';
 
 class HomeDrawer extends StatefulWidget {
@@ -202,8 +202,10 @@ class HomeDrawerState extends State<HomeDrawer> {
       Navigator.pop(context);
       if (result.result) {
         _refreshExpenses();
-        String message =
-            "Import complete""\nExpenses:    ${result.expense.successCount}/${result.expense.total}""\nCategories:  ${result.category.successCount}/${result.category.total}""\nTags:             ${result.tag.successCount}/${result.tag.total}\n";
+        String message = "Import complete"
+            "\nExpenses:    ${result.expense.successCount}/${result.expense.total}"
+            "\nCategories:  ${result.category.successCount}/${result.category.total}"
+            "\nTags:             ${result.tag.successCount}/${result.tag.total}\n";
         SnackBarService.showSuccessSnackBarWithContext(context, message,
             duration: 5);
       } else {

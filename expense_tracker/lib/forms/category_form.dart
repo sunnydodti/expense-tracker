@@ -1,10 +1,10 @@
-import 'package:expense_tracker/models/expense_category.dart';
-import 'package:expense_tracker/service/category_service.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
+import '../models/expense_category.dart';
 import '../providers/category_provider.dart';
+import '../service/category_service.dart';
 
 class CategoryForm extends StatefulWidget {
   final List<ExpenseCategory> categories;
@@ -17,8 +17,10 @@ class CategoryForm extends StatefulWidget {
 
 class _CategoryFormState extends State<CategoryForm> {
   final _formKey = GlobalKey<FormState>();
+
   static final Logger _logger =
       Logger(printer: SimplePrinter(), level: Level.info);
+
   final _categoryController = TextEditingController();
 
   @override
@@ -35,41 +37,39 @@ class _CategoryFormState extends State<CategoryForm> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      dense: true, // Compact spacing
-      title: Form(
-        key: _formKey,
-        child: TextFormField(
-          controller: _categoryController,
-          decoration: InputDecoration(
-              hintText: "Add Category Name",
-              labelStyle: TextStyle(
-                color: Colors.green.shade300,
-              ),
-              focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                color: Colors.green.shade500,
-              )),
-              enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                color: Colors.green.shade300,
-              )),
-              label: const Text("New Category")),
-          validator: _validateNewCategory,
-          onSaved: submitCategory,
-          onChanged: (value) {
-            _logger.i("tag: $value");
-          },
+        title: Form(
+          key: _formKey,
+          child: TextFormField(
+            controller: _categoryController,
+            decoration: InputDecoration(
+                hintText: "Add Category Name",
+                labelStyle: TextStyle(
+                  color: Colors.green.shade300,
+                ),
+                focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                  color: Colors.green.shade500,
+                )),
+                enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                  color: Colors.green.shade300,
+                )),
+                label: const Text("New Category", textScaleFactor: .9)),
+            validator: _validateNewCategory,
+            onSaved: submitCategory,
+            onChanged: (value) {
+              _logger.i("tag: $value");
+            },
+          ),
         ),
-      ),
-      trailing: IconButton(
-        icon: const Icon(Icons.add, color: Colors.green),
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            _formKey.currentState!.save();
-          }
-        },
-      ),
-    );
+        trailing: IconButton(
+          icon: const Icon(Icons.add, color: Colors.green),
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              _formKey.currentState!.save();
+            }
+          },
+        ));
   }
 
   void submitCategory(newValue) async {
@@ -101,7 +101,7 @@ class _CategoryFormState extends State<CategoryForm> {
       return 'Please enter a category name.';
     }
     if (isDuplicateCategory()) return "Category must be unique";
-    return null; // Valid input returns null
+    return null;
   }
 
   bool isDuplicateCategory() {

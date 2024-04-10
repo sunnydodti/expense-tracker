@@ -56,20 +56,14 @@ class ExpenseHelper {
     _logger.i("adding expense ${expenseMap[DBConstants.expense.title]}");
     _logger.i(expenseMap.toString());
     Database database = getDatabase;
-    return await database.insert(
-      DBConstants.expense.table,
-      expenseMap,
-    );
+    return await database.insert(DBConstants.expense.table, expenseMap);
   }
 
   Future<List<Map<String, dynamic>>> getExpense(int id) async {
     _logger.i("getting expense $id}");
     Database database = getDatabase;
-    return await database.query(
-      DBConstants.expense.table,
-      where: '${DBConstants.expense.id} = ?',
-      whereArgs: [id],
-    );
+    return await database.query(DBConstants.expense.table,
+        where: '${DBConstants.expense.id} = ?', whereArgs: [id]);
   }
 
   // READ
@@ -84,12 +78,8 @@ class ExpenseHelper {
     _logger.i("updating expense ${expense.id} - ${expense.title}");
     _logger.i(expense.toMap().toString());
     Database database = getDatabase;
-    return database.update(
-      DBConstants.expense.table,
-      expense.toMap(),
-      where: '${DBConstants.expense.id} = ?',
-      whereArgs: [expense.id],
-    );
+    return database.update(DBConstants.expense.table, expense.toMap(),
+        where: '${DBConstants.expense.id} = ?', whereArgs: [expense.id]);
   }
 
   Future<int> updateExpenseV2(Map<String, dynamic> expenseMap) async {
@@ -111,11 +101,8 @@ class ExpenseHelper {
   Future<int> deleteExpense(int id) async {
     _logger.i("deleting ${DBConstants.expense.table} - $id");
     Database database = getDatabase;
-    return await database.delete(
-      DBConstants.expense.table,
-      where: '${DBConstants.expense.id} = ?',
-      whereArgs: [id],
-    );
+    return await database.delete(DBConstants.expense.table,
+        where: '${DBConstants.expense.id} = ?', whereArgs: [id]);
   }
 
   // DELETE ALL
@@ -129,9 +116,8 @@ class ExpenseHelper {
   Future<int> getExpenseCount() async {
     _logger.i("getting ${DBConstants.expense.table} count");
     Database database = getDatabase;
-    final count = Sqflite.firstIntValue(await database.rawQuery(
-      'SELECT COUNT(*) FROM ${DBConstants.expense.table}',
-    ));
+    final count = Sqflite.firstIntValue(await database
+        .rawQuery('SELECT COUNT(*) FROM ${DBConstants.expense.table}'));
     return count ?? 0;
   }
 

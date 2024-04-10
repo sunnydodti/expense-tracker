@@ -134,12 +134,10 @@ class ExpenseService {
     try {
       Expense expenseI = Expense.fromMap(expense);
       if (await isDuplicateExpense(expenseI)) {
-        _logger.i(
-            "found duplicate expense: ${expenseI.title}");
+        _logger.i("found duplicate expense: ${expenseI.title}");
         if (safeImport) return false;
         _logger.i("safeImport: $safeImport - discarding existing expense");
-        await _expenseHelper
-            .deleteExpense(expenseI.id);
+        await _expenseHelper.deleteExpense(expenseI.id);
       }
       if (await _expenseHelper.addExpense(expense) > 0) {
         _logger.i("imported expense ${expenseI.title}");

@@ -1,11 +1,11 @@
-import 'package:expense_tracker/models/enums/form_modes.dart';
-import 'package:expense_tracker/ui/drawer/home_drawer.dart';
-import 'package:expense_tracker/ui/widgets/expense_list_dynamic.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/enums/form_modes.dart';
 import '../../providers/expense_provider.dart';
 import '../../service/expense_service.dart';
+import '../drawer/home_drawer.dart';
+import '../widgets/expense_list_dynamic.dart';
 import 'expense_screen.dart';
 
 class HomePage extends StatelessWidget {

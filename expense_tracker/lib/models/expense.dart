@@ -1,4 +1,4 @@
-import 'package:expense_tracker/data/constants/db_constants.dart';
+import '../data/constants/db_constants.dart';
 
 class Expense {
   int id;
@@ -15,19 +15,9 @@ class Expense {
   DateTime createdAt;
   DateTime modifiedAt;
 
-  Expense(
-      this.id,
-      this.title,
-      this.currency,
-      this.amount,
-      this.transactionType,
-      this.date,
-      this.category,
-      this.createdAt,
-      this.modifiedAt,
-      [this.tags,
-      this.note,
-      this.expenses]);
+  Expense(this.id, this.title, this.currency, this.amount, this.transactionType,
+      this.date, this.category, this.createdAt, this.modifiedAt,
+      [this.tags, this.note, this.expenses]);
 
   // Methods
   //  // Expense Object to map
@@ -61,16 +51,15 @@ class Expense {
   //  // map to Expense Object
   static Expense fromMap(Map<String, dynamic> map) {
     Expense expense = Expense(
-      map[DBConstants.expense.id],
-      map[DBConstants.expense.title],
-      map[DBConstants.expense.currency],
-      map[DBConstants.expense.amount],
-      map[DBConstants.expense.transactionType],
-      DateTime.parse(map[DBConstants.expense.date]),
-      map[DBConstants.expense.category],
-      DateTime.parse(map[DBConstants.expense.createdAt]),
-      DateTime.parse(map[DBConstants.expense.modifiedAt])
-    );
+        map[DBConstants.expense.id],
+        map[DBConstants.expense.title],
+        map[DBConstants.expense.currency],
+        map[DBConstants.expense.amount],
+        map[DBConstants.expense.transactionType],
+        DateTime.parse(map[DBConstants.expense.date]),
+        map[DBConstants.expense.category],
+        DateTime.parse(map[DBConstants.expense.createdAt]),
+        DateTime.parse(map[DBConstants.expense.modifiedAt]));
 
     expense.id = map[DBConstants.expense.id];
     expense.tags = map[DBConstants.expense.tags];

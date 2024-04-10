@@ -1,4 +1,4 @@
-import 'package:expense_tracker/data/constants/db_constants.dart';
+import '../data/constants/db_constants.dart';
 
 class Tag {
   final int id;

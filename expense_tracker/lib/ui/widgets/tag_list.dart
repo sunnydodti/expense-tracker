@@ -13,26 +13,26 @@ class TagList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<TagProvider>(
         builder: (context, tagProvider, child) => Scaffold(
-          body: RefreshIndicator(
-            onRefresh: () => tagProvider.refreshTags(),
-            color: Colors.blue.shade500,
-            child: Column(
-              children: [
-                getTagForm(tagProvider.tags),
-                Expanded(
-                    child: ListView.builder(
-                      itemCount: tagProvider.tags.length,
-                      itemBuilder: (context, index) {
-                        final tag = tagProvider.tags[index];
-                        return tagProvider.tags.isEmpty
+              body: RefreshIndicator(
+                onRefresh: () => tagProvider.refreshTags(),
+                color: Colors.blue.shade500,
+                child: Column(
+                  children: [
+                    getTagForm(tagProvider.tags),
+                    Expanded(
+                        child: tagProvider.tags.isEmpty
                             ? getNoTagView()
-                            : getTagTile(context, tag);
-                      },
-                    ))
-              ],
-            ),
-          ),
-        ));
+                            : ListView.builder(
+                                itemCount: tagProvider.tags.length,
+                                itemBuilder: (context, index) {
+                                  final tag = tagProvider.tags[index];
+                                  return getTagTile(context, tag);
+                                },
+                              ))
+                  ],
+                ),
+              ),
+            ));
   }
 
   Padding getNoTagView() {
@@ -103,21 +103,17 @@ class TagList extends StatelessWidget {
   }
 
   _refreshTags(BuildContext context) {
-    final tagProvider =
-    Provider.of<TagProvider>(context, listen: false);
+    final tagProvider = Provider.of<TagProvider>(context, listen: false);
     tagProvider.refreshTags();
   }
 
   Container getTagForm(List<Tag> tags) {
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey.shade900,
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-      margin: const EdgeInsets.only(top: 5, bottom: 2.5),
-      child: TagForm(
-        tags: tags,
-      ),
-    );
+        decoration: BoxDecoration(
+          color: Colors.grey.shade900,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+        margin: const EdgeInsets.only(top: 5, bottom: 2.5),
+        child: TagForm(tags: tags));
   }
 }

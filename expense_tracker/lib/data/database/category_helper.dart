@@ -71,10 +71,7 @@ class CategoryHelper {
     _logger.i("adding category ${categoryMap[DBConstants.category.name]}");
     _logger.i(categoryMap.toString());
     Database database = getDatabase;
-    return await database.insert(
-      DBConstants.category.table,
-      categoryMap,
-    );
+    return await database.insert(DBConstants.category.table, categoryMap);
   }
 
   Future<List<Map<String, dynamic>>> getCategories() async {
@@ -87,43 +84,30 @@ class CategoryHelper {
       String categoryName) async {
     _logger.i("getting category $categoryName}");
     Database database = getDatabase;
-    return await database.query(
-      DBConstants.category.table,
-      where: '${DBConstants.category.name} = ?',
-      whereArgs: [categoryName],
-    );
+    return await database.query(DBConstants.category.table,
+        where: '${DBConstants.category.name} = ?', whereArgs: [categoryName]);
   }
 
   Future<int> updateCategory(CategoryFormModel category) async {
     _logger.i("updating category ${category.id} - ${category.name}");
     _logger.i(category.toMap().toString());
     Database database = getDatabase;
-    return database.update(
-      DBConstants.category.table,
-      category.toMap(),
-      where: '${DBConstants.category.id} = ?',
-      whereArgs: [category.id],
-    );
+    return database.update(DBConstants.category.table, category.toMap(),
+        where: '${DBConstants.category.id} = ?', whereArgs: [category.id]);
   }
 
   Future<int> deleteCategory(int id) async {
     _logger.i("deleting ${DBConstants.category.table} - $id");
     Database database = getDatabase;
-    return await database.delete(
-      DBConstants.category.table,
-      where: '${DBConstants.category.id} = ?',
-      whereArgs: [id],
-    );
+    return await database.delete(DBConstants.category.table,
+        where: '${DBConstants.category.id} = ?', whereArgs: [id]);
   }
 
   Future<int> deleteCategoryByName(String categoryName) async {
     _logger.i("deleting ${DBConstants.category.table} - $categoryName");
     Database database = getDatabase;
-    return await database.delete(
-      DBConstants.category.table,
-      where: '${DBConstants.category.name} = ?',
-      whereArgs: [categoryName],
-    );
+    return await database.delete(DBConstants.category.table,
+        where: '${DBConstants.category.name} = ?', whereArgs: [categoryName]);
   }
 
   Future<int> deleteAllCategories() async {
@@ -135,9 +119,8 @@ class CategoryHelper {
   Future<int> getCategoryCount() async {
     _logger.i("getting ${DBConstants.category.table} count");
     Database database = getDatabase;
-    final count = Sqflite.firstIntValue(await database.rawQuery(
-      'SELECT COUNT(*) FROM ${DBConstants.category.table}',
-    ));
+    final count = Sqflite.firstIntValue(await database
+        .rawQuery('SELECT COUNT(*) FROM ${DBConstants.category.table}'));
     return count ?? 0;
   }
 

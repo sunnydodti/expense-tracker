@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../builder/form_builder.dart';
+import '../../data/constants/form_constants.dart';
 import '../../models/enums/transaction_type.dart';
 import '../../models/expense.dart';
 
 class ExpenseTileWidgets {
-
   static Container expenseTile(Expense expense) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
       child: Column(
-        children:[
+        children: [
           Row(
             children: [
               titleWidget(expense),
@@ -21,9 +20,7 @@ class ExpenseTileWidgets {
           ),
           const SizedBox(height: 5.0),
           Row(
-            children: [
-              tagsWidget(expense)
-            ],
+            children: [tagsWidget(expense)],
           ),
           const SizedBox(height: 5.0),
           Row(
@@ -74,25 +71,23 @@ class ExpenseTileWidgets {
   static Expanded categoryWidget(Expense expense) {
     return Expanded(
       child: Align(
-        alignment: Alignment.topLeft,
-        child: Padding(
-          padding: const EdgeInsets.only(right: 0.0),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  '${expense.category} ',
-                  textScaleFactor: getTextScaleFactor(),
-                  // style: const TextStyle(
-                  //   fontSize: 16.0,
-                  // ),
-                ),
-                const Icon(Icons.category_outlined,
-                  size: 16.0,)
-              ]
-          ),
-        )
-      ),
+          alignment: Alignment.topLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 0.0),
+            child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+              Text(
+                '${expense.category} ',
+                textScaleFactor: getTextScaleFactor(),
+                // style: const TextStyle(
+                //   fontSize: 16.0,
+                // ),
+              ),
+              const Icon(
+                Icons.category_outlined,
+                size: 16.0,
+              )
+            ]),
+          )),
     );
   }
 
@@ -101,29 +96,26 @@ class ExpenseTileWidgets {
     expense.note == null
         ? tags = const Text("")
         : tags = Text(
-      expense.tags!,
-      style: const TextStyle(fontSize: 10.0),
-    );
-    return Container(
-        child: tags
-    );
+            expense.tags!,
+            style: const TextStyle(fontSize: 10.0),
+          );
+    return Container(child: tags);
   }
 
   static Expanded noteWidget(Expense expense) {
     Text note;
     (expense.note == null || expense.note == "")
         ? note = const Text(
-          "Add Notes",
-          style: TextStyle(
-              // fontSize: 13.5,
-              color: Colors.grey
-          ),
-        )
+            "Add Notes",
+            style: TextStyle(
+                // fontSize: 13.5,
+                color: Colors.grey),
+          )
         : note = Text(
             '${expense.note}',
             textScaleFactor: 0.9,
             // style: const TextStyle(fontSize: 13.5),
-        );
+          );
     return Expanded(
       flex: 2,
       child: Align(
@@ -141,8 +133,7 @@ class ExpenseTileWidgets {
                 child: note,
               ),
             ),
-          )
-      ),
+          )),
     );
   }
 
@@ -159,33 +150,34 @@ class ExpenseTileWidgets {
   static Align _getAmount(Expense expense) {
     String transactionType = expense.transactionType;
     return Align(
-      alignment: Alignment.topLeft,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 40.0),
-        child: Text(
-          _getAmountText(expense),
-          textScaleFactor: 1.2,
-          style: TextStyle(
-            // fontSize: 16.0,
-            color: _getAmountColor(transactionType),
+        alignment: Alignment.topLeft,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 40.0),
+          child: Text(
+            _getAmountText(expense),
+            textScaleFactor: 1.2,
+            style: TextStyle(
+              // fontSize: 16.0,
+              color: _getAmountColor(transactionType),
+            ),
           ),
-        ),
-      )
-    );
+        ));
   }
 
   static String _getAmountText(Expense expense) {
-    String amountText = "${FromBuilder.getCurrenciesListMap()[expense.currency]}"
+    String amountText = "${FormConstants.expense.currencies[expense.currency]}"
         "${expense.amount.round()}";
     amountText = (expense.transactionType == TransactionType.expense.name)
-      ? "- $amountText"
-      : "+ $amountText";
+        ? "- $amountText"
+        : "+ $amountText";
     return amountText;
   }
 
-  static Color _getAmountColor(String transactionType){
-      if (transactionType == TransactionType.expense.name) return Colors.red.shade300;
-      if (transactionType == TransactionType.income.name) return Colors.green.shade300;
-      return Colors.white;
-    }
+  static Color _getAmountColor(String transactionType) {
+    if (transactionType == TransactionType.expense.name)
+      return Colors.red.shade300;
+    if (transactionType == TransactionType.income.name)
+      return Colors.green.shade300;
+    return Colors.white;
   }
+}
