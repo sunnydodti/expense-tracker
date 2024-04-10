@@ -30,6 +30,17 @@ class ExpenseService {
     }
   }
 
+  Future<Expense?> getExpense(int id) async {
+    try {
+      final List<Map<String, dynamic>> expenses =
+          await _expenseHelper.getExpense(id);
+      return Expense.fromMap(expenses.first);
+    } catch (e, stackTrace) {
+      _logger.e("Error getting expense ($id) - $e - \n$stackTrace");
+      return null;
+    }
+  }
+
   Future<bool> updateExpense(ExpenseFormModel expense) async {
     try {
       int result = await _expenseHelper.updateExpense(expense);
@@ -116,6 +127,31 @@ class ExpenseService {
     return false;
   }
 
+  Future<bool> importExpenseV2(Map<String, dynamic> expense,
+      {safeImport = true}) async {
+    _logger.i(
+        "importing expense ${expense[DBConstants.expense.id]} - ${expense[DBConstants.expense.title]}");
+    try {
+      Expense expenseI = Expense.fromMap(expense);
+      if (await isDuplicateExpense(expenseI)) {
+        _logger.i(
+            "found duplicate expense: ${expenseI.title}");
+        if (safeImport) return false;
+        _logger.i("safeImport: $safeImport - discarding existing expense");
+        await _expenseHelper
+            .deleteExpense(expenseI.id);
+      }
+      if (await _expenseHelper.addExpense(expense) > 0) {
+        _logger.i("imported expense ${expenseI.title}");
+        return true;
+      }
+    } on Exception catch (e, stackTrace) {
+      _logger.e(
+          "Error importing expense (${expense[DBConstants.expense.title]}): $e - \n$stackTrace");
+    }
+    return false;
+  }
+
   /// sorting and filtering
   List<Expense> sortAndFilter<T>(List<Expense> data,
       {String sortBy = "date", bool ascending = false}) {
@@ -139,5 +175,13 @@ class ExpenseService {
       });
     }
     return sortedByDate;
+  }
+
+  Future<bool> isDuplicateExpense(Expense expense) async {
+    Expense? existingExpense = await getExpense(expense.id);
+    if (existingExpense == null) return false;
+    if (existingExpense.title == expense.title &&
+        existingExpense.amount == expense.amount) return true;
+    return false;
   }
 }

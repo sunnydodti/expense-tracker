@@ -62,6 +62,16 @@ class ExpenseHelper {
     );
   }
 
+  Future<List<Map<String, dynamic>>> getExpense(int id) async {
+    _logger.i("getting expense $id}");
+    Database database = getDatabase;
+    return await database.query(
+      DBConstants.expense.table,
+      where: '${DBConstants.expense.id} = ?',
+      whereArgs: [id],
+    );
+  }
+
   // READ
   Future<List<Map<String, dynamic>>> getExpenses() async {
     _logger.i("getting expenses");

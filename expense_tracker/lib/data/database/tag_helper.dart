@@ -112,18 +112,36 @@ class TagHelper {
     );
   }
 
+  Future<int> deleteTagByName(String tagName) async {
+    _logger.i("deleting ${DBConstants.tag.table} - $tagName");
+    Database database = getDatabase;
+    return await database.delete(
+      DBConstants.tag.table,
+      where: '${DBConstants.tag.name} = ?',
+      whereArgs: [tagName],
+    );
+  }
+
   Future<int> deleteAllTags() async {
     _logger.i("deleting ${DBConstants.tag.table}");
     Database database = getDatabase;
     return await database.delete(DBConstants.tag.table);
   }
 
-  Future<int> getTagCount() async {
+  Future<int> getTagsCount() async {
     _logger.i("getting ${DBConstants.tag.table} count");
     Database database = getDatabase;
     final count = Sqflite.firstIntValue(await database.rawQuery(
-      'SELECT COUNT(*) FROM ${DBConstants.tag.table}',
+      'SELECT COUNT(*) as count FROM ${DBConstants.tag.table}',
     ));
     return count ?? 0;
+  }
+
+  Future<List<Map<String, dynamic>>> getTagCountByName(String tagName) async {
+    _logger.i("checking if tag exists $tagName");
+    Database database = getDatabase;
+    return database.rawQuery(
+        """SELECT COUNT(*) as count FROM ${DBConstants.tag.table} where ${DBConstants.tag.name} = '$tagName'"""
+    );
   }
 }

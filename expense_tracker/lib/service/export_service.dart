@@ -2,9 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:archive/archive.dart';
-import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
-import 'package:path_provider/path_provider.dart';
 
 import '../data/constants/file_name_constants.dart';
 import '../models/export_result.dart';
@@ -74,12 +72,12 @@ class ExportService {
       tagsJSON.writeAsStringSync(getFormattedJSONString(tags));
 
       Archive archive = Archive();
-      archive.addFile(ArchiveFile(
-          FileConstants.export.expenses, expensesJSON.lengthSync(), expensesJSON.readAsBytesSync()));
+      archive.addFile(ArchiveFile(FileConstants.export.expenses,
+          expensesJSON.lengthSync(), expensesJSON.readAsBytesSync()));
       archive.addFile(ArchiveFile(FileConstants.export.categories,
           categoriesJSON.lengthSync(), categoriesJSON.readAsBytesSync()));
-      archive.addFile(
-          ArchiveFile(FileConstants.export.tags, tagsJSON.lengthSync(), tagsJSON.readAsBytesSync()));
+      archive.addFile(ArchiveFile(FileConstants.export.tags,
+          tagsJSON.lengthSync(), tagsJSON.readAsBytesSync()));
 
       final zipEncoder = ZipEncoder();
       List<int>? encodedZip = zipEncoder.encode(archive);
@@ -115,6 +113,6 @@ class ExportService {
   }
 
   Future<String> getExportPath() async {
-    return (await getExternalStorageDirectory())!.path;
+    return FileConstants.export.filePath();
   }
 }

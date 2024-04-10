@@ -1,16 +1,22 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:expense_tracker/data/constants/db_constants.dart';
-import 'package:expense_tracker/models/import_result.dart';
+import 'package:archive/archive.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:logger/logger.dart';
 
+import '../data/constants/db_constants.dart';
 import '../data/constants/file_name_constants.dart';
+import '../models/import_result.dart';
+import 'category_service.dart';
 import 'expense_service.dart';
+import 'tag_service.dart';
 
 class ImportService {
   late final Future<ExpenseService> _expenseService;
+  late final Future<CategoryService> _categoryService;
+  late final Future<TagService> _tagService;
+
   static final Logger _logger =
       Logger(printer: SimplePrinter(), level: Level.info);
 
@@ -20,15 +26,15 @@ class ImportService {
 
   Future<void> _init() async {
     _expenseService = ExpenseService.create();
+    _categoryService = CategoryService.create();
+    _tagService = TagService.create();
   }
 
   static Future<PlatformFile?> getJsonFileFromUser() async {
     _logger.i('importing');
 
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['json'],
-        initialDirectory: await FileConstants.exportFilePath());
+    FilePickerResult? result = await FilePicker.platform
+        .pickFiles(type: FileType.custom, allowedExtensions: ['json', 'zip']);
 
     if (result != null) {
       PlatformFile file = result.files.first;
@@ -39,36 +45,43 @@ class ImportService {
 
   Future<ImportResult> importFile(String filepath, Function callback) async {
     _logger.i("importing file ${filepath.split("/").last}");
+    _logger.i("filepath:  $filepath");
     ImportResult result = ImportResult();
-    int totalExpenses = 0;
-    int successCount = 0;
     try {
       File file = File(filepath);
       if (!await file.exists()) {
-        result.message = "File does not exist";
+        _logger.i("File not found");
+        result.message = "File not found";
         return result;
       }
+      final fileBytes = file.readAsBytesSync();
+      final archive = ZipDecoder().decodeBytes(fileBytes);
 
-      String contents = await file.readAsString();
-      dynamic jsonData = jsonDecode(contents);
+      for (ArchiveFile file in archive.files) {
+        _logger.i('File: ${file.name}');
+        if (isJsonFile(file)) {
+          _logger.i("\tis json");
+          String jsonString = utf8.decode(file.content as List<int>);
+          dynamic jsonData = jsonDecode(jsonString);
+          if (jsonData is! List<dynamic>) {
+            _logger.d("\tInvalid JSON format");
+            // result.message = "${file.name}: Invalid JSON format";
+            continue;
+          }
 
-      if (jsonData is! List<dynamic>) {
-        result.message = "Invalid JSON format";
-        return result;
-      }
-      totalExpenses = jsonData.length;
-      for (Map<String, dynamic> expense in jsonData) {
-        // await Future.delayed(const Duration(seconds: 1));
-        _logger.i("inserting ${expense[DBConstants.expense.id]}");
-        ExpenseService service = await _expenseService;
-        service.importExpense(expense).then((bool isInserted) => {
-              if (isInserted)
-                {
-                  // callback(),
-                  _logger.i("inserted ${expense[DBConstants.expense.id]}"),
-                  successCount++,
-                }
-            });
+          if (file.name == FileConstants.export.expenses) {
+            _logger.i("importing ${DBConstants.expense.table}");
+            result = await importExpenses(jsonData, result);
+          }
+          if (file.name == FileConstants.export.categories) {
+            _logger.i("importing ${DBConstants.category.table}");
+            result = await importCategories(jsonData, result);
+          }
+          if (file.name == FileConstants.export.tags) {
+            _logger.i("importing ${DBConstants.tag.table}");
+            result = await importTags(jsonData, result);
+          }
+        }
       }
     } catch (e, stackTrace) {
       _logger.e('Error importing JSON file: $e - \n$stackTrace');
@@ -76,8 +89,68 @@ class ImportService {
       return result;
     }
     result.result = true;
-    result.totalExpenses = totalExpenses;
-    result.successCount = successCount;
+    return result;
+  }
+
+  Future<bool> isValidJson(ArchiveFile file) async {
+    final content = await file.content;
+    try {
+      jsonDecode(utf8.decode(content));
+      return true;
+    } on FormatException catch (e) {
+      return false;
+    }
+  }
+
+  bool isJsonFile(ArchiveFile file) {
+    return file.name.toLowerCase().endsWith('.json');
+  }
+
+  dynamic importExpenses(List<dynamic> jsonData, ImportResult result) async {
+    int totalExpenses = jsonData.length;
+    int successCount = 0;
+
+    ExpenseService service = await _expenseService;
+
+    for (Map<String, dynamic> expense in jsonData) {
+      bool isInserted = await service.importExpense(expense);
+      if (isInserted) successCount++;
+    }
+
+    result.expense.total = totalExpenses;
+    result.expense.successCount = successCount;
+    return result;
+  }
+
+  dynamic importCategories(List<dynamic> jsonData, ImportResult result) async {
+    int totalCategories = jsonData.length;
+    int successCount = 0;
+
+    CategoryService service = await _categoryService;
+
+    for (Map<String, dynamic> category in jsonData) {
+      bool isInserted = await service.importCategory(category);
+      if (isInserted) successCount++;
+    }
+
+    result.category.total = totalCategories;
+    result.category.successCount = successCount;
+    return result;
+  }
+
+  dynamic importTags(List<dynamic> jsonData, ImportResult result) async {
+    int totalTags = jsonData.length;
+    int successCount = 0;
+
+    TagService service = await _tagService;
+
+    for (Map<String, dynamic> tag in jsonData) {
+      bool isInserted = await service.importTag(tag);
+      if (isInserted) successCount++;
+    }
+
+    result.tag.total = totalTags;
+    result.tag.successCount = successCount;
     return result;
   }
 }

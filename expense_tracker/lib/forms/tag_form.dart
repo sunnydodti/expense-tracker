@@ -57,7 +57,7 @@ class _TagFormState extends State<TagForm> {
           validator: _validateNewTag,
           onSaved: submitTag,
           onChanged: (value) {
-            _logger.d("tag: $value");
+            _logger.i("tag: $value");
           },
         ),
       ),

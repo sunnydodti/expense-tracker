@@ -233,14 +233,14 @@ class ExpenseListDynamic extends StatelessWidget {
 
   completeExpenseDeletion(Expense expense, int index, int expenseLength,
       ExpenseProvider expenseProvider, BuildContext context) async {
-    _logger.d("Expense deleted");
+    _logger.i("Expense deleted");
     _deleteExpenseFromDatabase(expense).then((value) {
       if (value == 0) {
         if (index + 1 == expenseLength) {
-          _logger.d("adding at end $index");
+          _logger.i("adding at end $index");
           expenseProvider.addExpense(expense);
         } else {
-          _logger.d("adding at $index");
+          _logger.i("adding at $index");
           expenseProvider.insertExpense(index, expense);
         }
         SnackBarService.showErrorSnackBarWithContext(context, "Delete Failed");
@@ -251,10 +251,10 @@ class ExpenseListDynamic extends StatelessWidget {
   undoExpenseDeletion(int index, int expenseLength,
       ExpenseProvider expenseProvider, Expense expense, BuildContext context) {
     if (index + 1 == expenseLength) {
-      _logger.d("adding at end $index");
+      _logger.i("adding at end $index");
       expenseProvider.addExpense(expense);
     } else {
-      _logger.d("adding at $index");
+      _logger.i("adding at $index");
       expenseProvider.insertExpense(index, expense);
     }
     SnackBarService.showSuccessSnackBarWithContext(
@@ -264,7 +264,7 @@ class ExpenseListDynamic extends StatelessWidget {
   void _editItem(BuildContext context, int index, Expense expense,
       ExpenseProvider expenseProvider) async {
     int expenseLength = expenseProvider.expenses.length;
-    _logger.d("$expense");
+    _logger.i("$expense");
 
     expenseProvider.deleteExpense(expense.id);
 
@@ -276,10 +276,10 @@ class ExpenseListDynamic extends StatelessWidget {
       ),
     );
     if (index + 1 == expenseLength) {
-      _logger.d("adding at end $index");
+      _logger.i("adding at end $index");
       expenseProvider.addExpense(expense);
     } else {
-      _logger.d("adding at $index");
+      _logger.i("adding at $index");
       expenseProvider.insertExpense(index, expense);
     }
     if (result) expenseProvider.refreshExpenses();
@@ -287,7 +287,7 @@ class ExpenseListDynamic extends StatelessWidget {
 
   void _editExpense(BuildContext context, Expense expense,
       ExpenseProvider expenseProvider) async {
-    _logger.d("editing");
+    _logger.i("editing");
     Navigator.push(
       context,
       MaterialPageRoute(

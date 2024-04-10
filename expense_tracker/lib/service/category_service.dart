@@ -1,5 +1,7 @@
 import 'package:logger/logger.dart';
+import 'package:sqflite/sqflite.dart';
 
+import '../data/constants/db_constants.dart';
 import '../data/database/category_helper.dart';
 import '../data/database/database_helper.dart';
 import '../models/expense_category.dart';
@@ -82,6 +84,16 @@ class CategoryService {
     }
   }
 
+  Future<int> deleteAllCategories() async {
+    try {
+      final result = await _categoryHelper.deleteAllCategories();
+      return result;
+    } catch (e, stackTrace) {
+      _logger.e("Error deleting categories - $e - \n$stackTrace");
+      return -1;
+    }
+  }
+
   ExpenseCategory? getMatchingCategory(
       String name, List<ExpenseCategory> categories) {
     try {
@@ -93,5 +105,43 @@ class CategoryService {
       _logger.e("Error getting category ($name) - $e - \n$stackTrace");
       return null;
     }
+  }
+
+  Future<bool> importCategory(Map<String, dynamic> category,
+      {safeImport = true}) async {
+    _logger.i(
+        "importing category ${category[DBConstants.category.id]} - ${category[DBConstants.category.name]}");
+    try {
+      if (await isDuplicateCategory(category[DBConstants.category.name])) {
+        _logger.i(
+            "found duplicate category: ${category[DBConstants.category.name]}");
+        if (safeImport) return false;
+        _logger.i("safeImport: $safeImport - discarding existing category");
+        await _categoryHelper
+            .deleteCategoryByName(category[DBConstants.category.name]);
+      }
+      if (await _categoryHelper.addCategory(category) > 0) {
+        _logger.i("imported category ${category[DBConstants.category.name]}");
+        return true;
+      }
+    } on Exception catch (e, stackTrace) {
+      _logger.e(
+          "Error importing category (${category[DBConstants.category.name]}): $e - \n$stackTrace");
+    }
+    return false;
+  }
+
+  Future<bool> isDuplicateCategory(String categoryName) async {
+    int count = await getCategoryCount(categoryName);
+    if (count > 0) return true;
+    return false;
+  }
+
+  Future<int> getCategoryCount(String categoryName) async {
+    final List<Map<String, dynamic>> result =
+        await _categoryHelper.getCategoryCountByName(categoryName);
+    int? count = Sqflite.firstIntValue(result);
+    if (count == null) return 0;
+    return count;
   }
 }

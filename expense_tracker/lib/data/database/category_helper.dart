@@ -95,7 +95,7 @@ class CategoryHelper {
   }
 
   Future<int> updateCategory(CategoryFormModel category) async {
-    _logger.i("updating tag ${category.id} - ${category.name}");
+    _logger.i("updating category ${category.id} - ${category.name}");
     _logger.i(category.toMap().toString());
     Database database = getDatabase;
     return database.update(
@@ -116,6 +116,16 @@ class CategoryHelper {
     );
   }
 
+  Future<int> deleteCategoryByName(String categoryName) async {
+    _logger.i("deleting ${DBConstants.category.table} - $categoryName");
+    Database database = getDatabase;
+    return await database.delete(
+      DBConstants.category.table,
+      where: '${DBConstants.category.name} = ?',
+      whereArgs: [categoryName],
+    );
+  }
+
   Future<int> deleteAllCategories() async {
     _logger.i("deleting ${DBConstants.category.table}");
     Database database = getDatabase;
@@ -129,5 +139,13 @@ class CategoryHelper {
       'SELECT COUNT(*) FROM ${DBConstants.category.table}',
     ));
     return count ?? 0;
+  }
+
+  Future<List<Map<String, dynamic>>> getCategoryCountByName(
+      String categoryName) async {
+    _logger.i("checking if category exists $categoryName");
+    Database database = getDatabase;
+    return database.rawQuery(
+        """SELECT COUNT(*) as count FROM ${DBConstants.category.table} where ${DBConstants.category.name} = '$categoryName'""");
   }
 }

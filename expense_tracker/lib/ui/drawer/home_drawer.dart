@@ -10,9 +10,11 @@ import 'package:share/share.dart';
 import '../../data/constants/file_name_constants.dart';
 import '../../models/import_result.dart';
 import '../../providers/expense_provider.dart';
+import '../../service/category_service.dart';
 import '../../service/expense_service.dart';
 import '../../service/export_service.dart';
 import '../../service/import_service.dart';
+import '../../service/tag_service.dart';
 import '../notifications/snackbar_service.dart';
 import '../screens/tag_screen.dart';
 
@@ -32,7 +34,7 @@ class HomeDrawerState extends State<HomeDrawer> {
   String _exportFilePath = '';
   String _selectedFileName = 'ok';
   String _selectedFilePath =
-      '/data/user/0/com.sunnydodti.expense_tracker/cache/file_picker/expense_tracker_2024-04-06 16:50:39.513101.json';
+      '/data/user/0/com.sunnydodti.expense_tracker/cache/file_picker/expense_tracker_2024-04-10 174015.860830_v2.zip';
 
   @override
   void initState() {
@@ -41,7 +43,7 @@ class HomeDrawerState extends State<HomeDrawer> {
   }
 
   Future<void> _getExportFilePath() async {
-    final filePath = await FileConstants.exportFilePath();
+    final filePath = await FileConstants.export.filePath();
     setState(() {
       _exportFilePath = filePath;
     });
@@ -199,21 +201,18 @@ class HomeDrawerState extends State<HomeDrawer> {
     ImportService importService = ImportService();
     importService
         .importFile(_selectedFilePath, _refreshExpenses)
-        .then((ImportResult result) => {
-              _logger.d(result.toString()),
-              if (result.result)
-                {
-                  _refreshExpenses(),
-                  SnackBarService.showSuccessSnackBarWithContext(context,
-                      "imported ${result.successCount}/${result.totalExpenses}",
-                      duration: 2)
-                }
-              else
-                {
-                  SnackBarService.showErrorSnackBarWithContext(
-                      context, "not imported"),
-                },
-            });
+        .then((ImportResult result) {
+      _logger.i(result.toString());
+      if (result.result) {
+        _refreshExpenses();
+        String message =
+            "Successfully imported\nExpenses: ${result.expense.successCount}/${result.expense.total}\nCategories: ${result.category.successCount}/${result.category.total}\nTags: ${result.tag.successCount}/${result.tag.total}\n";
+        SnackBarService.showSuccessSnackBarWithContext(context, message,
+            duration: 2);
+      } else {
+        SnackBarService.showErrorSnackBarWithContext(context, result.message);
+      }
+    });
   }
 
   void _exportExpenses(BuildContext context) async {
@@ -231,8 +230,7 @@ class HomeDrawerState extends State<HomeDrawer> {
         });
   }
 
-  Future<int> _showSaveDialog(String filePath) async {
-    int response = 0;
+  Future<void> _showSaveDialog(String filePath) async {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -241,15 +239,11 @@ class HomeDrawerState extends State<HomeDrawer> {
             'All data is wiped if you uninstall!\n\nDo you want to save file to a different location?'),
         actions: [
           TextButton(
-            onPressed: () {
-              response = -1;
-              Navigator.pop(context);
-            },
+            onPressed: () => Navigator.pop(context),
             child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () async {
-              response = 1;
               Navigator.pop(context);
               await Share.shareFiles([filePath]);
             },
@@ -266,7 +260,6 @@ class HomeDrawerState extends State<HomeDrawer> {
         ],
       ),
     );
-    return response;
   }
 
   Text _showSelectedFileName() {
@@ -275,7 +268,6 @@ class HomeDrawerState extends State<HomeDrawer> {
   }
 
   Future<void> _selectFile() async {
-    // Open file picker to select a file
     PlatformFile? file = await ImportService.getJsonFileFromUser();
     if (file != null) {
       setState(() {
@@ -305,7 +297,12 @@ class HomeDrawerState extends State<HomeDrawer> {
 
   Future<int> _deleteFromDatabase(BuildContext context) async {
     ExpenseService expenseService = await ExpenseService.create();
-    int result = await expenseService.deleteAllExpenses();
+    CategoryService categoryService = await CategoryService.create();
+    TagService tagService = await TagService.create();
+    int result = 0;
+    result += await expenseService.deleteAllExpenses();
+    result += await categoryService.deleteAllCategories();
+    result += await tagService.deleteAllTags();
     if (result > 0) {
       _refreshExpenses();
     }
