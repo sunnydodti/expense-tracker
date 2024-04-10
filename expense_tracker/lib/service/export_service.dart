@@ -89,6 +89,7 @@ class ExportService {
 
       String zipFileName = FileConstants.export.zip
           .replaceFirst("{0}", DateTime.now().toString());
+      _logger.i("exporting all data to ${await getExportPath()}/$zipFileName}");
       File zipFile = await File("${await getExportPath()}/$zipFileName")
           .writeAsBytes(encodedZip);
 

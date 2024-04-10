@@ -32,9 +32,9 @@ class HomeDrawerState extends State<HomeDrawer> {
   bool _isImportDialogVisible = false;
 
   String _exportFilePath = '';
-  String _selectedFileName = 'ok';
+  String _selectedFileName = 'Please select a file';
   String _selectedFilePath =
-      '/data/user/0/com.sunnydodti.expense_tracker/cache/file_picker/expense_tracker_2024-04-10 174015.860830_v2.zip';
+      '/data/user/0/com.sunnydodti.expense_tracker/cache/file_picker/expense_tracker_export.zip';
 
   @override
   void initState() {
@@ -113,7 +113,7 @@ class HomeDrawerState extends State<HomeDrawer> {
       MaterialPageRoute(
         builder: (context) => const CategoryScreen(),
       ),
-    ).then((value) => Navigator.pop(context));
+    );
   }
 
   _navigateToTagScreen(BuildContext context) async {
@@ -122,19 +122,18 @@ class HomeDrawerState extends State<HomeDrawer> {
       MaterialPageRoute(
         builder: (context) => const TagScreen(),
       ),
-    ).then((value) => Navigator.pop(context));
+    );
   }
 
   Widget _buildDeleteConfirmationDialog(BuildContext context) {
     return AlertDialog(
       title: const Text("Confirmation"),
-      content: const Text("Are you sure you want to delete?"),
+      content: const Text(
+          "Are you sure you want to delete all data? \n\nNote: Consider Export before proceding"),
       actions: <Widget>[
         TextButton(
           child: const Text("Cancel"),
           onPressed: () {
-            Navigator.pop(context);
-            SnackBarService.showSnackBarWithContext(context, "Not Deleted");
             setState(() {
               _isDeleteDialogVisible = false;
             });
@@ -172,8 +171,6 @@ class HomeDrawerState extends State<HomeDrawer> {
         TextButton(
           child: const Text("Cancel"),
           onPressed: () {
-            Navigator.pop(context);
-            SnackBarService.showSnackBarWithContext(context, "Import Canceled");
             setState(() {
               _isImportDialogVisible = false;
             });
@@ -183,7 +180,6 @@ class HomeDrawerState extends State<HomeDrawer> {
           child: const Text("Import"),
           onPressed: () {
             if (_selectedFileName != '') {
-              Navigator.pop(context);
               _importExpenses();
             }
           },
@@ -203,12 +199,13 @@ class HomeDrawerState extends State<HomeDrawer> {
         .importFile(_selectedFilePath, _refreshExpenses)
         .then((ImportResult result) {
       _logger.i(result.toString());
+      Navigator.pop(context);
       if (result.result) {
         _refreshExpenses();
         String message =
-            "Successfully imported\nExpenses: ${result.expense.successCount}/${result.expense.total}\nCategories: ${result.category.successCount}/${result.category.total}\nTags: ${result.tag.successCount}/${result.tag.total}\n";
+            "Import complete""\nExpenses:    ${result.expense.successCount}/${result.expense.total}""\nCategories:  ${result.category.successCount}/${result.category.total}""\nTags:             ${result.tag.successCount}/${result.tag.total}\n";
         SnackBarService.showSuccessSnackBarWithContext(context, message,
-            duration: 2);
+            duration: 5);
       } else {
         SnackBarService.showErrorSnackBarWithContext(context, result.message);
       }
@@ -216,18 +213,19 @@ class HomeDrawerState extends State<HomeDrawer> {
   }
 
   void _exportExpenses(BuildContext context) async {
-    Navigator.pop(context);
     ExportService exportService = ExportService();
-    exportService.exportAllDataToJson().then((ExportResult result) => {
-          if (result.result)
-            SnackBarService.showSuccessSnackBarWithContext(
-                context, "${result.message}\nPath: ${result.outputPath}",
-                duration: 5)
-          else
-            SnackBarService.showErrorSnackBarWithContext(
-                context, result.message),
-          _showSaveDialog(result.path!)
-        });
+    ExportResult result = await exportService.exportAllDataToJson();
+    if (mounted) {
+      if (result.result) {
+        SnackBarService.showSuccessSnackBarWithContext(
+            context, "${result.message}\nPath: ${result.outputPath}",
+            duration: 5);
+      } else {
+        SnackBarService.showErrorSnackBarWithContext(context, result.message);
+      }
+      Navigator.pop(context);
+      _showSaveDialog(result.path!);
+    }
   }
 
   Future<void> _showSaveDialog(String filePath) async {
