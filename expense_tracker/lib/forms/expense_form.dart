@@ -502,17 +502,17 @@ class _ExpenseFormState extends State<ExpenseForm> {
       _logger.i('notes: ${notesController.text}');
 
       ExpenseFormModel expense = ExpenseFormModel(
-        titleController.text,
-        currencyController.text,
-        double.parse(amountController.text),
-        transactionTypeController.text,
-        DateTime.parse(dateController.text),
+        titleController.text.trim(),
+        currencyController.text.trim(),
+        double.parse(amountController.text.trim()),
+        transactionTypeController.text.trim(),
+        DateTime.parse(dateController.text.trim()),
         _selectedCategory!.name,
         false,
       );
 
       expense.tags = _selectedTag!.name;
-      expense.note = notesController.text;
+      expense.note = notesController.text.trim();
 
       if (widget.formMode == FormMode.edit) {
         expense.id = widget.expense!.id;

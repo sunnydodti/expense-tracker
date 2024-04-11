@@ -75,7 +75,7 @@ class _CategoryFormState extends State<CategoryForm> {
   void submitCategory(newValue) async {
     if (_formKey.currentState?.validate() ?? false) {
       CategoryFormModel category =
-          CategoryFormModel(name: _categoryController.text);
+          CategoryFormModel(name: _categoryController.text.trim());
       _addCategory(category).then((value) {
         if (value > 0) {
           _categoryController.clear();

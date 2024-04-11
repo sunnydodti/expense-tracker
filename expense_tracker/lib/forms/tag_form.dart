@@ -74,7 +74,7 @@ class _TagFormState extends State<TagForm> {
 
   void submitTag(newValue) async {
     if (_formKey.currentState?.validate() ?? false) {
-      TagFormModel tag = TagFormModel(name: _tagController.text);
+      TagFormModel tag = TagFormModel(name: _tagController.text.trim());
       _addTag(tag).then((value) {
         if (value > 0) {
           _tagController.clear();
