@@ -16,6 +16,7 @@ import '../../service/path_service.dart';
 import '../../service/tag_service.dart';
 import '../notifications/snackbar_service.dart';
 import '../screens/category_screen.dart';
+import '../screens/settings_screen.dart';
 import '../screens/tag_screen.dart';
 
 class HomeDrawer extends StatefulWidget {
@@ -85,11 +86,7 @@ class HomeDrawerState extends State<HomeDrawer> {
             ),
             ListTile(
               title: const Text('Settings'),
-              onTap: () {
-                Navigator.pop(context);
-                SnackBarService.showSnackBarWithContext(
-                    context, ResponseConstants.upcoming.getRandomMessage);
-              },
+              onTap: () => _navigateToSettingsScreen(context),
             ),
             ListTile(
               title: const Text('Categories'),
@@ -103,6 +100,15 @@ class HomeDrawerState extends State<HomeDrawer> {
             if (_isImportDialogVisible) _buildImportDialog(context),
           ],
         ),
+      ),
+    );
+  }
+
+  void _navigateToSettingsScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const SettingsScreen(),
       ),
     );
   }
