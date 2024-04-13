@@ -21,6 +21,7 @@ dependencies:
   logger:
   archive:
   share:
+  permission_handler:
 
 dev_dependencies:
   flutter_test:

@@ -4,7 +4,6 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 
-import '../../data/constants/file_name_constants.dart';
 import '../../data/constants/response_constants.dart';
 import '../../models/export_result.dart';
 import '../../models/import_result.dart';
@@ -13,6 +12,7 @@ import '../../service/category_service.dart';
 import '../../service/expense_service.dart';
 import '../../service/export_service.dart';
 import '../../service/import_service.dart';
+import '../../service/path_service.dart';
 import '../../service/tag_service.dart';
 import '../notifications/snackbar_service.dart';
 import '../screens/category_screen.dart';
@@ -43,7 +43,7 @@ class HomeDrawerState extends State<HomeDrawer> {
   }
 
   Future<void> _getExportFilePath() async {
-    final filePath = await FileConstants.export.filePath();
+    final filePath = await PathService.fileExportPath;
     setState(() {
       _exportFilePath = filePath;
     });
@@ -226,7 +226,7 @@ class HomeDrawerState extends State<HomeDrawer> {
         SnackBarService.showErrorSnackBarWithContext(context, result.message);
       }
       Navigator.pop(context);
-      _showSaveDialog(result.path!);
+      if (result.result) _showSaveDialog(result.path!);
     }
   }
 

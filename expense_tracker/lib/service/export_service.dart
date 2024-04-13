@@ -8,6 +8,8 @@ import '../data/constants/file_name_constants.dart';
 import '../models/export_result.dart';
 import 'category_service.dart';
 import 'expense_service.dart';
+import 'path_service.dart';
+import 'permission_service.dart';
 import 'tag_service.dart';
 
 class ExportService {
@@ -38,46 +40,17 @@ class ExportService {
     ExportResult result = ExportResult();
 
     File expensesJSON =
-        File("${await getExportPath()}/${FileConstants.export.expenses}");
+        File("${await tempJSONPath}/${FileConstants.export.expenses}");
     File categoriesJSON =
-        File("${await getExportPath()}/${FileConstants.export.categories}");
+        File("${await tempJSONPath}/${FileConstants.export.categories}");
     File tagsJSON =
-        File("${await getExportPath()}/${FileConstants.export.tags}");
+        File("${await tempJSONPath}/${FileConstants.export.tags}");
 
     try {
-      ExpenseService expenseService = await _expenseService;
-      CategoryService categoryService = await _categoryService;
-      TagService tagService = await _tagService;
+      await _saveJSONFiles(expensesJSON, categoriesJSON, tagsJSON,);
 
-      List<Map<String, dynamic>> expenses =
-          await expenseService.getExpenseMaps();
-      List<Map<String, dynamic>> categories =
-          await categoryService.getCategoryMaps();
-      List<Map<String, dynamic>> tags = await tagService.getTagMaps();
-
-      File expensesJSON =
-          File("${await getExportPath()}/${FileConstants.export.expenses}");
-      File categoriesJSON =
-          File("${await getExportPath()}/${FileConstants.export.categories}");
-      File tagsJSON =
-          File("${await getExportPath()}/${FileConstants.export.tags}");
-
-      _logger.i("exporting expenses to ${expensesJSON.path}");
-      expensesJSON.writeAsStringSync(getFormattedJSONString(expenses));
-
-      _logger.i("exporting categories to ${categoriesJSON.path}");
-      categoriesJSON.writeAsStringSync(getFormattedJSONString(categories));
-
-      _logger.i("exporting tags to ${tagsJSON.path}");
-      tagsJSON.writeAsStringSync(getFormattedJSONString(tags));
-
-      Archive archive = Archive();
-      archive.addFile(ArchiveFile(FileConstants.export.expenses,
-          expensesJSON.lengthSync(), expensesJSON.readAsBytesSync()));
-      archive.addFile(ArchiveFile(FileConstants.export.categories,
-          categoriesJSON.lengthSync(), categoriesJSON.readAsBytesSync()));
-      archive.addFile(ArchiveFile(FileConstants.export.tags,
-          tagsJSON.lengthSync(), tagsJSON.readAsBytesSync()));
+      Archive archive =
+          _getExportArchive(expensesJSON, categoriesJSON, tagsJSON);
 
       final zipEncoder = ZipEncoder();
       List<int>? encodedZip = zipEncoder.encode(archive);
@@ -89,8 +62,10 @@ class ExportService {
 
       String zipFileName = FileConstants.export.zip
           .replaceFirst("{0}", DateTime.now().toString());
-      _logger.i("exporting all data to ${await getExportPath()}/$zipFileName}");
-      File zipFile = await File("${await getExportPath()}/$zipFileName")
+
+      String zipExportPath = await exportPath;
+      _logger.i("exporting all data to $zipExportPath/$zipFileName}");
+      File zipFile = await File("$zipExportPath/$zipFileName")
           .writeAsBytes(encodedZip);
 
       result.result = true;
@@ -108,12 +83,57 @@ class ExportService {
     return result;
   }
 
+  Future<void> _saveJSONFiles(File expensesJSON, File categoriesJSON, File tagsJSON) async {
+    ExpenseService expenseService = await _expenseService;
+    CategoryService categoryService = await _categoryService;
+    TagService tagService = await _tagService;
+
+    try {
+      bool status = await PermissionService.requestStoragePermission();
+      if (await PermissionService.isStoragePermission){
+        if (status){
+          _logger.i("exporting expenses to ${expensesJSON.path}");
+          expensesJSON.writeAsStringSync(
+              getFormattedJSONString(await expenseService.getExpenseMaps()));
+
+          _logger.i("exporting categories to ${categoriesJSON.path}");
+          categoriesJSON.writeAsStringSync(
+              getFormattedJSONString(await categoryService.getCategoryMaps()));
+
+          _logger.i("exporting tags to ${tagsJSON.path}");
+          tagsJSON.writeAsStringSync(
+              getFormattedJSONString(await tagService.getTagMaps()));
+        }
+        else {
+          throw Exception("storage permission denied");
+        }
+      }
+    } on Exception catch (e) {
+      _logger.i("unable to save json files $e");
+      rethrow;
+    }
+  }
+
+  Archive _getExportArchive(
+      File expensesJSON, File categoriesJSON, File tagsJSON) {
+    Archive archive = Archive();
+
+    archive.addFile(ArchiveFile(FileConstants.export.expenses,
+        expensesJSON.lengthSync(), expensesJSON.readAsBytesSync()));
+    archive.addFile(ArchiveFile(FileConstants.export.categories,
+        categoriesJSON.lengthSync(), categoriesJSON.readAsBytesSync()));
+    archive.addFile(ArchiveFile(FileConstants.export.tags,
+        tagsJSON.lengthSync(), tagsJSON.readAsBytesSync()));
+
+    return archive;
+  }
+
   String getFormattedJSONString(jsonObject) {
     var encoder = const JsonEncoder.withIndent("    ");
     return encoder.convert(jsonObject);
   }
 
-  Future<String> getExportPath() async {
-    return FileConstants.export.filePath();
-  }
+  Future<String> get exportPath async => await PathService.fileExportPath;
+  Future<String> get tempPath async => await PathService.tempPath;
+  Future<String> get tempJSONPath async => await PathService.tempFolderPath(FileConstants.cache.json);
 }
