@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
@@ -10,6 +12,7 @@ import '../../providers/expense_provider.dart';
 import '../../service/export_service.dart';
 import '../../service/import_service.dart';
 import '../notifications/snackbar_service.dart';
+import '../widgets/expandable_list_tile.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -69,6 +72,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         title: const Text('Export'),
                         onTap: () => _exportExpenses(context),
                       ),
+                      ExpandableListTile(
+                        title: 'Save Options',
+                        content: _buildSaveDialogWidget(context, ""),
+                      ),
+                      const ExpandableListTile(title: 'test', content: Placeholder())
                     ],
                   ),
                 )
@@ -191,22 +199,80 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Navigator.pop(context);
               await Share.shareFiles([filePath]);
             },
+            child: const Text('Share'),
+          ),
+          TextButton(
+            onPressed: () async {
+              // Navigator.pop(context);
+              await saveToUserFolder(filePath);
+            },
             child: const Text('Save'),
           ),
-          // TextButton(
-          //   onPressed: () async {
-          //     Navigator.pop(context);
-          //     // Show a message or open the downloaded file (optional)
-          //     print('ZIP file saved to: $filePath');
-          //   },
-          //   child: const Text('View'),
-          // ),
         ],
       ),
     );
   }
 
+  Future<void> saveToUserFolder(String filePath) async {
+    int a = 0;
+    final folderPath = await pickFolder();
+    try {
+      if (folderPath != null) {
+        final file = File('$folderPath/myfile.txt');
+        final newFile = await file
+            .writeAsString('This is content saved to a picked folder');
+        _logger.i('ZIP file saved to: $filePath');
+      }
+    } catch (e, stackTrace) {
+      _logger.e("error saving: $e - \n$stackTrace");
+    }
+  }
 
+  Future<String?> pickFolder() async {
+    final result = await FilePicker.platform.getDirectoryPath();
+    if (result != null) {
+      return result;
+    } else {
+      // Handle selection cancellation
+      return null;
+    }
+  }
+
+  Widget _buildSaveDialogWidget(BuildContext context, String filePath) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Export Complete, Save?',
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          const SizedBox(height: 8.0),
+          Text(
+            'All data is wiped if you uninstall!\n\nDo you want to save file to a different location?',
+          ),
+          const SizedBox(height: 16.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  Navigator.pop(context);
+                  await Share.shareFiles([filePath]);
+                },
+                child: const Text('Save'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
   _refreshExpenses() {
     final expenseProvider =

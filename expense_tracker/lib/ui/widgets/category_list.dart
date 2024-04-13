@@ -5,7 +5,7 @@ import '../../forms/category_form.dart';
 import '../../models/expense_category.dart';
 import '../../providers/category_provider.dart';
 import '../../service/category_service.dart';
-import 'ListEmptyWidget.dart';
+import 'empty_list_widget.dart';
 
 class CategoryList extends StatelessWidget {
   const CategoryList({Key? key}) : super(key: key);
@@ -22,7 +22,7 @@ class CategoryList extends StatelessWidget {
                     getCategoryForm(categoryProvider.categories),
                     Expanded(
                         child: categoryProvider.categories.isEmpty
-                            ? const ListEmptyWidget(listName: 'Category')
+                            ? const EmptyListWidget(listName: 'Category')
                             : ListView.builder(
                                 itemCount: categoryProvider.categories.length,
                                 itemBuilder: (context, index) {

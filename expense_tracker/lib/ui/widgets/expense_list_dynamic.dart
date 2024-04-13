@@ -9,7 +9,7 @@ import '../../models/expense.dart';
 import '../../providers/expense_provider.dart';
 import '../notifications/snackbar_service.dart';
 import '../screens/expense_screen.dart';
-import 'ListEmptyWidget.dart';
+import 'empty_list_widget.dart';
 import 'expense_tile_widgets.dart';
 
 class ExpenseListDynamic extends StatelessWidget {
@@ -29,7 +29,7 @@ class ExpenseListDynamic extends StatelessWidget {
                     children: [
                       getSummaryTile(expenseProvider),
                       expenseProvider.expenses.isEmpty
-                          ? const ListEmptyWidget(listName: 'Expense')
+                          ? const EmptyListWidget(listName: 'Expense')
                           : Expanded(
                               child: ListView.builder(
                                 itemCount: expenseProvider.expenses.length,

@@ -5,7 +5,7 @@ import '../../forms/tag_form.dart';
 import '../../models/tag.dart';
 import '../../providers/tag_provider.dart';
 import '../../service/tag_service.dart';
-import 'ListEmptyWidget.dart';
+import 'empty_list_widget.dart';
 
 class TagList extends StatelessWidget {
   const TagList({Key? key}) : super(key: key);
@@ -22,7 +22,7 @@ class TagList extends StatelessWidget {
                     getTagForm(tagProvider.tags),
                     Expanded(
                         child: tagProvider.tags.isEmpty
-                            ? const ListEmptyWidget(listName: 'Tag')
+                            ? const EmptyListWidget(listName: 'Tag')
                             : ListView.builder(
                                 itemCount: tagProvider.tags.length,
                                 itemBuilder: (context, index) {

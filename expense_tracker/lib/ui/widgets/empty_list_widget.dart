@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-class ListEmptyWidget extends StatelessWidget {
+class EmptyListWidget extends StatelessWidget {
   final String listName;
-  const ListEmptyWidget({
+  const EmptyListWidget({
     super.key, required this.listName,
   });
 
