@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-import 'package:share/share.dart';
-
-import '../../models/export_result.dart';
 import '../../providers/expense_provider.dart';
 import '../../service/category_service.dart';
 import '../../service/expense_service.dart';
-import '../../service/export_service.dart';
 import '../../service/tag_service.dart';
 import '../notifications/snackbar_service.dart';
 import '../screens/category_screen.dart';
@@ -52,10 +48,6 @@ class HomeDrawerState extends State<HomeDrawer> {
                   _isDeleteDialogVisible = true;
                 });
               },
-            ),
-            ListTile(
-              title: const Text('Export'),
-              onTap: () => _exportExpenses(context),
             ),
             ListTile(
               title: const Text('Settings'),
@@ -116,54 +108,6 @@ class HomeDrawerState extends State<HomeDrawer> {
           },
         ),
       ],
-    );
-  }
-
-  void _exportExpenses(BuildContext context) async {
-    ExportService exportService = ExportService();
-    ExportResult result = await exportService.exportAllDataToJson();
-    if (mounted) {
-      if (result.result) {
-        SnackBarService.showSuccessSnackBarWithContext(
-            context, "${result.message}\nPath: ${result.outputPath}",
-            duration: 5);
-      } else {
-        SnackBarService.showErrorSnackBarWithContext(context, result.message);
-      }
-      Navigator.pop(context);
-      if (result.result) _showSaveDialog(result.path!);
-    }
-  }
-
-  Future<void> _showSaveDialog(String filePath) async {
-    await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Export Complete, Save?'),
-        content: const Text(
-            'All data is wiped if you uninstall!\n\nDo you want to save file to a different location?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              await Share.shareFiles([filePath]);
-            },
-            child: const Text('Save'),
-          ),
-          // TextButton(
-          //   onPressed: () async {
-          //     Navigator.pop(context);
-          //     // Show a message or open the downloaded file (optional)
-          //     print('ZIP file saved to: $filePath');
-          //   },
-          //   child: const Text('View'),
-          // ),
-        ],
-      ),
     );
   }
 
