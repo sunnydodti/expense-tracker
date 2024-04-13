@@ -5,6 +5,7 @@ import '../../forms/category_form.dart';
 import '../../models/expense_category.dart';
 import '../../providers/category_provider.dart';
 import '../../service/category_service.dart';
+import 'ListEmptyWidget.dart';
 
 class CategoryList extends StatelessWidget {
   const CategoryList({Key? key}) : super(key: key);
@@ -21,7 +22,7 @@ class CategoryList extends StatelessWidget {
                     getCategoryForm(categoryProvider.categories),
                     Expanded(
                         child: categoryProvider.categories.isEmpty
-                            ? getNoCategoryView()
+                            ? const ListEmptyWidget(listName: 'Category')
                             : ListView.builder(
                                 itemCount: categoryProvider.categories.length,
                                 itemBuilder: (context, index) {
@@ -34,34 +35,6 @@ class CategoryList extends StatelessWidget {
                 ),
               ),
             ));
-  }
-
-  Padding getNoCategoryView() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 100),
-      child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: const [
-            Text(
-              'Click',
-              style: TextStyle(color: Colors.grey),
-            ),
-            SizedBox(width: 8),
-            Icon(
-              Icons.add,
-              color: Colors.grey,
-            ),
-            SizedBox(width: 8),
-            Text(
-              'icon to add a Category',
-              style: TextStyle(color: Colors.grey),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   Container getCategoryTile(BuildContext context, ExpenseCategory category) {

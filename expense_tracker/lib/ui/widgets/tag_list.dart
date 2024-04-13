@@ -5,6 +5,7 @@ import '../../forms/tag_form.dart';
 import '../../models/tag.dart';
 import '../../providers/tag_provider.dart';
 import '../../service/tag_service.dart';
+import 'ListEmptyWidget.dart';
 
 class TagList extends StatelessWidget {
   const TagList({Key? key}) : super(key: key);
@@ -21,7 +22,7 @@ class TagList extends StatelessWidget {
                     getTagForm(tagProvider.tags),
                     Expanded(
                         child: tagProvider.tags.isEmpty
-                            ? getNoTagView()
+                            ? const ListEmptyWidget(listName: 'Tag')
                             : ListView.builder(
                                 itemCount: tagProvider.tags.length,
                                 itemBuilder: (context, index) {
@@ -33,34 +34,6 @@ class TagList extends StatelessWidget {
                 ),
               ),
             ));
-  }
-
-  Padding getNoTagView() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 100),
-      child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: const [
-            Text(
-              'Click',
-              style: TextStyle(color: Colors.grey),
-            ),
-            SizedBox(width: 8),
-            Icon(
-              Icons.add,
-              color: Colors.grey,
-            ),
-            SizedBox(width: 8),
-            Text(
-              'icon to add a Tag',
-              style: TextStyle(color: Colors.grey),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   Container getTagTile(BuildContext context, Tag tag) {

@@ -9,6 +9,7 @@ import '../../models/expense.dart';
 import '../../providers/expense_provider.dart';
 import '../notifications/snackbar_service.dart';
 import '../screens/expense_screen.dart';
+import 'ListEmptyWidget.dart';
 import 'expense_tile_widgets.dart';
 
 class ExpenseListDynamic extends StatelessWidget {
@@ -28,7 +29,7 @@ class ExpenseListDynamic extends StatelessWidget {
                     children: [
                       getSummaryTile(expenseProvider),
                       expenseProvider.expenses.isEmpty
-                          ? getNoExpensesView()
+                          ? const ListEmptyWidget(listName: 'Expense')
                           : Expanded(
                               child: ListView.builder(
                                 itemCount: expenseProvider.expenses.length,
@@ -138,34 +139,6 @@ class ExpenseListDynamic extends StatelessWidget {
         fontWeight: FontWeight.bold,
         // fontSize: 12,
         color: Colors.white70,
-      ),
-    );
-  }
-
-  Padding getNoExpensesView() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 100),
-      child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: const [
-            Text(
-              'Click',
-              style: TextStyle(color: Colors.grey),
-            ),
-            SizedBox(width: 8),
-            Icon(
-              Icons.add,
-              color: Colors.grey,
-            ),
-            SizedBox(width: 8),
-            Text(
-              'icon to add an Expense',
-              style: TextStyle(color: Colors.grey),
-            ),
-          ],
-        ),
       ),
     );
   }
