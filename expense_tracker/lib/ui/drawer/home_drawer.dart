@@ -51,16 +51,16 @@ class HomeDrawerState extends State<HomeDrawer> {
               },
             ),
             ListTile(
-              title: const Text('Settings'),
-              onTap: () => _navigateToSettingsScreen(context),
-            ),
-            ListTile(
               title: const Text('Categories'),
               onTap: () => _navigateToCategoryScreen(context),
             ),
             ListTile(
               title: const Text('Tags'),
               onTap: () => _navigateToTagScreen(context),
+            ),
+            ListTile(
+              title: const Text('Settings'),
+              onTap: () => _navigateToSettingsScreen(context),
             ),
             if (_isDeleteDialogVisible) _buildDeleteConfirmationDialog(context),
           ],
