@@ -11,6 +11,13 @@ class PathService {
   static Future<String> get fileExportPath async =>
       await _getAppStoragePath(folderName: "export");
 
+  /// returns the path to the export folder)
+  static Future<String> fileExportPathForView() async {
+      String path = await _getAppStoragePath(folderName: "export");
+      if (Platform.isAndroid) return path.replaceFirst("/storage/emulated/0/", "");
+      return path;
+  }
+
   /// getter for temporary storage location
   static Future<String> get tempPath async => await _getAppCachePath();
 

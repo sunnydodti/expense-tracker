@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:archive/archive.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
 import '../data/constants/file_name_constants.dart';
@@ -35,7 +37,7 @@ class ExportService {
     file.writeAsStringSync(jsonEncode(data));
   }
 
-  Future<ExportResult> exportAllDataToJson() async {
+  Future<ExportResult> exportAllDataToJson({String userPath = "", String fileName = ""}) async {
     _logger.i("Export: Begin");
     ExportResult result = ExportResult();
 
@@ -57,14 +59,22 @@ class ExportService {
 
       if (encodedZip == null) {
         _logger.i("Export: zip is null");
+        result.message = "unable to zip files";
         return result;
       }
 
-      String zipFileName = FileConstants.export.zip
-          .replaceFirst("{0}", DateTime.now().toString());
+      String zipFileName = fileName;
+      if (zipFileName == "" || zipFileName.isEmpty) {
+        zipFileName = FileConstants.export.zip
+            .replaceFirst("{0}", DateFormat('yyyy-MM-dd_HH-mm-ss').format(DateTime.now()));
+      }
 
-      String zipExportPath = await exportPath;
-      _logger.i("exporting all data to $zipExportPath/$zipFileName}");
+      String zipExportPath = userPath;
+      if (zipExportPath == "" || zipExportPath.isEmpty) {
+        zipExportPath = await exportPath;
+      }
+
+      _logger.i("exporting all data to $zipExportPath/$zipFileName");
       File zipFile = await File("$zipExportPath/$zipFileName")
           .writeAsBytes(encodedZip);
 
@@ -136,4 +146,24 @@ class ExportService {
   Future<String> get exportPath async => await PathService.fileExportPath;
   Future<String> get tempPath async => await PathService.tempPath;
   Future<String> get tempJSONPath async => await PathService.tempFolderPath(FileConstants.cache.json);
+
+  static Future<String> getPathFromUserFolder() async {
+    String folderPath = '';
+    try {
+      folderPath = await _pickFolder();
+    } catch (e, stackTrace) {
+      _logger.e("error at getPathFromUserFolder(): $e - \n$stackTrace");
+    }
+    return folderPath;
+  }
+
+  static Future<String> _pickFolder() async {
+    final result = await FilePicker.platform.getDirectoryPath();
+    if (result != null) {
+      return result;
+    } else {
+      // Handle selection cancellation
+      return '';
+    }
+  }
 }

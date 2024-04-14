@@ -6,6 +6,7 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 
+import '../../forms/export_form.dart';
 import '../../models/export_result.dart';
 import '../../models/import_result.dart';
 import '../../providers/expense_provider.dart';
@@ -72,11 +73,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         title: const Text('Export'),
                         onTap: () => _exportExpenses(context),
                       ),
-                      ExpandableListTile(
-                        title: 'Save Options',
-                        content: _buildSaveDialogWidget(context, ""),
-                      ),
-                      const ExpandableListTile(title: 'test', content: Placeholder())
+                      // ExpandableListTile(
+                      //   title: 'Export New',
+                      //   content: _buildSaveDialogWidget(context, ""),
+                      // ),
+                      const ExpandableListTile(title: 'Export New', content: ExportForm())
                     ],
                   ),
                 )
