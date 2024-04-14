@@ -43,7 +43,7 @@ class ImportService {
     return null;
   }
 
-  Future<ImportResult> importFile(String filepath, Function callback) async {
+  Future<ImportResult> importFile(String filepath) async {
     _logger.i("importing file ${filepath.split("/").last}");
     _logger.i("filepath:  $filepath");
     ImportResult result = ImportResult();

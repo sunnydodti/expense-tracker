@@ -246,7 +246,7 @@ class _ExportFormState extends State<ExportForm> {
       validator: (value) => validateTextField(value, "enter FileName"),
       keyboardType: TextInputType.text,
       onChanged: (value) {
-        _logger.i('title: $value');
+        _logger.i('file name: $value');
       },
     );
   }

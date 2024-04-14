@@ -1,9 +1,11 @@
+import 'package:expense_tracker/service/path_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 import '../../forms/export_form.dart';
+import '../../forms/import_form.dart';
 import '../../models/import_result.dart';
 import '../../providers/expense_provider.dart';
 import '../../service/import_service.dart';
@@ -23,9 +25,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final Logger _logger = Logger(printer: SimplePrinter(), level: Level.info);
   String exportFilePath = '';
 
-  String _selectedFileName = 'Please select a file';
+  String _selectedFileName = '';
   String _selectedFilePath =
       '/data/user/0/com.sunnydodti.expense_tracker/cache/file_picker/expense_tracker_export.zip';
+
+  @override
+  void initState() {
+    super.initState();
+    _getDefaults();
+  }
+  void _getDefaults() async {
+    String defaultExportPath = await PathService.fileExportPathForView();
+    setState(() {
+      exportFilePath = defaultExportPath;
+      _selectedFileName = 'Please select a file';
+    });
+  }
 
   Future<void> _refreshSettings(BuildContext context) async {
     // final provider = Provider.of<CategoryProvider>(context, listen: false);
@@ -65,7 +80,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         onTap: () => _showImportDialog(context),
                       ),
                       const ExpandableListTile(
-                          title: 'Export', content: ExportForm())
+                          title: 'Export', content: ExportForm()),
+                      const ExpandableListTile(
+                          title: 'Import New', content: ImportForm())
                     ],
                   ),
                 )
@@ -130,8 +147,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Text _showSelectedFileName() {
-    if (_selectedFileName != "") return Text(_selectedFileName);
-    return const Text("");
+    return Text(_selectedFileName);
   }
 
   void _importExpenses() async {
@@ -139,7 +155,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         duration: 1);
     ImportService importService = ImportService();
     importService
-        .importFile(_selectedFilePath, _refreshExpenses)
+        .importFile(_selectedFilePath)
         .then((ImportResult result) {
       _logger.i(result.toString());
       if (result.result) {

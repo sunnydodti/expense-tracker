@@ -3,6 +3,7 @@ import 'dart:math';
 class ResponseConstants {
   static UpcomingFeature upcoming = UpcomingFeature();
   static ExportResponse export = ExportResponse();
+  static ImportResponse import = ImportResponse();
 }
 
 class UpcomingFeature {
@@ -25,8 +26,6 @@ class UpcomingFeature {
 }
 
 class ExportResponse {
-  final String a = '';
-
   final String storagePermissionDenied =
       "No Permission: allow media storage permission in settings to continue";
   final String externalStoragePermissionDenied =
@@ -35,4 +34,15 @@ class ExportResponse {
   final String unableToZip = "Unable to zip files";
 
   final String exportSuccessful = "Successfully Exported";
+}
+
+class ImportResponse {
+  final String storagePermissionDenied =
+      "No Permission: allow media storage permission in settings to continue";
+  final String externalStoragePermissionDenied =
+      "No Permission: allow All Files permission in settings or use default storage";
+  final String fileNotFound = "file not found";
+  final String unableToImport = "Unable to Import file";
+
+  final String importSuccessful = "Successfully Imported";
 }
