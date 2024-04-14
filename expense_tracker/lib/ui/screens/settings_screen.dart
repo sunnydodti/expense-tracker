@@ -1,16 +1,11 @@
-import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-import 'package:share/share.dart';
 
 import '../../forms/export_form.dart';
-import '../../models/export_result.dart';
 import '../../models/import_result.dart';
 import '../../providers/expense_provider.dart';
-import '../../service/export_service.dart';
 import '../../service/import_service.dart';
 import '../notifications/snackbar_service.dart';
 import '../widgets/expandable_list_tile.dart';
@@ -69,16 +64,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         title: const Text('Import'),
                         onTap: () => _showImportDialog(context),
                       ),
-                      ListTile(
-                        title: const Text('Export'),
-                        onTap: () => _exportExpenses(context),
-                      ),
-                      // ExpandableListTile(
-                      //   title: 'Export New',
-                      //   content: _buildSaveDialogWidget(context, ""),
-                      // ),
                       const ExpandableListTile(
-                          title: 'Export New', content: ExportForm())
+                          title: 'Export', content: ExportForm())
                     ],
                   ),
                 )
@@ -167,113 +154,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         SnackBarService.showErrorSnackBarWithContext(context, result.message);
       }
     });
-  }
-
-  void _exportExpenses(BuildContext context) async {
-    ExportService exportService = ExportService();
-    ExportResult result = await exportService.exportAllDataToJson();
-    if (mounted) {
-      if (result.result) {
-        SnackBarService.showSuccessSnackBarWithContext(
-            context, "${result.message}\nPath: ${result.outputPath}",
-            duration: 5);
-      } else {
-        SnackBarService.showErrorSnackBarWithContext(context, result.message);
-      }
-      if (result.result) _showSaveDialog(result.path!);
-    }
-  }
-
-  Future<void> _showSaveDialog(String filePath) async {
-    await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Export Complete, Save?'),
-        content: const Text(
-            'All data is wiped if you uninstall!\n\nDo you want to save file to a different location?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              await Share.shareFiles([filePath]);
-            },
-            child: const Text('Share'),
-          ),
-          TextButton(
-            onPressed: () async {
-              // Navigator.pop(context);
-              await saveToUserFolder(filePath);
-            },
-            child: const Text('Save'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> saveToUserFolder(String filePath) async {
-    int a = 0;
-    final folderPath = await pickFolder();
-    try {
-      if (folderPath != null) {
-        final file = File('$folderPath/myfile.txt');
-        final newFile = await file
-            .writeAsString('This is content saved to a picked folder');
-        _logger.i('ZIP file saved to: $filePath');
-      }
-    } catch (e, stackTrace) {
-      _logger.e("error saving: $e - \n$stackTrace");
-    }
-  }
-
-  Future<String?> pickFolder() async {
-    final result = await FilePicker.platform.getDirectoryPath();
-    if (result != null) {
-      return result;
-    } else {
-      // Handle selection cancellation
-      return null;
-    }
-  }
-
-  Widget _buildSaveDialogWidget(BuildContext context, String filePath) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Export Complete, Save?',
-            style: Theme.of(context).textTheme.headline6,
-          ),
-          const SizedBox(height: 8.0),
-          Text(
-            'All data is wiped if you uninstall!\n\nDo you want to save file to a different location?',
-          ),
-          const SizedBox(height: 16.0),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () async {
-                  Navigator.pop(context);
-                  await Share.shareFiles([filePath]);
-                },
-                child: const Text('Save'),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
   }
 
   _refreshExpenses() {
