@@ -96,8 +96,7 @@ class _ImportFormState extends State<ImportForm> {
       if (!await PermissionService.requestStoragePermission()) {
         setState(() {
           isError = true;
-          isErrorMessage =
-              ResponseConstants.export.storagePermissionDenied;
+          isErrorMessage = ResponseConstants.export.storagePermissionDenied;
         });
       }
       return;
@@ -154,9 +153,6 @@ class _ImportFormState extends State<ImportForm> {
         isError = false;
         isErrorMessage = ResponseConstants.import.unableToImport;
       });
-
-
-
     } else {
       setState(() {
         isError = true;
@@ -182,9 +178,7 @@ class _ImportFormState extends State<ImportForm> {
     SnackBarService.showSnackBarWithContext(context, "imported started",
         duration: 1);
     ImportService importService = ImportService();
-    importService
-        .importFile(selectedFilePath)
-        .then((ImportResult result) {
+    importService.importFile(selectedFilePath).then((ImportResult result) {
       _logger.i(result.toString());
       if (result.result) {
         _refreshExpenses();
@@ -234,13 +228,14 @@ class _ImportFormState extends State<ImportForm> {
 
   String? validateTextField(var value, String errorMessage) {
     if (!isFileSelected) return "Select a file";
-    if (!File(selectedFilePath).existsSync()) return ResponseConstants.import.fileNotFound;
+    if (!File(selectedFilePath).existsSync())
+      return ResponseConstants.import.fileNotFound;
     return null; // Return null if the input is valid
   }
 
   _refreshExpenses() {
     final expenseProvider =
-    Provider.of<ExpenseProvider>(context, listen: false);
+        Provider.of<ExpenseProvider>(context, listen: false);
     expenseProvider.refreshExpenses();
   }
 }
