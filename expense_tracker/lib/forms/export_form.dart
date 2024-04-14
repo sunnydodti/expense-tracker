@@ -1,12 +1,15 @@
 import 'dart:io';
 
-import 'package:expense_tracker/service/permission_service.dart';
+import 'package:expense_tracker/data/constants/file_name_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:share/share.dart';
 
+import '../data/constants/response_constants.dart';
 import '../models/export_result.dart';
 import '../service/export_service.dart';
 import '../service/path_service.dart';
+import '../service/permission_service.dart';
 import '../ui/notifications/snackbar_service.dart';
 
 class ExportForm extends StatefulWidget {
@@ -30,7 +33,7 @@ class _ExportFormState extends State<ExportForm> {
   bool isError = false;
   String isErrorMessage = "";
 
-  // final _externalPathController = TextEditingController();
+  final fileNameController = TextEditingController();
 
   @override
   void initState() {
@@ -58,6 +61,7 @@ class _ExportFormState extends State<ExportForm> {
             const SizedBox(height: 20),
             if (isError) getErrorMessage(),
             if (isError) const SizedBox(height: 20),
+            getFileNameField(),
             getExportButton()
           ],
         ));
@@ -72,7 +76,14 @@ class _ExportFormState extends State<ExportForm> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        ElevatedButton(onPressed: () => submit(), child: const Text('Export'))
+        ElevatedButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                _formKey.currentState!.save();
+                submit();
+              }
+            },
+            child: const Text('Export'))
       ],
     );
   }
@@ -122,61 +133,64 @@ class _ExportFormState extends State<ExportForm> {
   }
 
   void submit() async {
-    if (_formKey.currentState?.validate() ?? false) {
-      String storagePath = _defaultStoragePath;
-      if (isExternalStoragePath) {
-        if (!Directory(_externalStoragePath).existsSync()) {
-          setState(() {
-            isError = true;
-            isErrorMessage = "Folder not found";
-          });
-          return;
-        }
-
-        if (!await PermissionService.isExternalStoragePermission) {
-          if (!await PermissionService.requestExternalPermission()) {
-            setState(() {
-              isError = true;
-              isErrorMessage =
-                  "No Permission: allow All Files permission in settings or use default storage";
-            });
-          }
-          return;
-        }
-        storagePath = _externalStoragePath;
-      } else {
-        if (!await PermissionService.isStoragePermission) {
-          if (!await PermissionService.requestStoragePermission()) {
-            setState(() {
-              isError = true;
-              isErrorMessage =
-              "No Permission: allow media storage permission in settings to continue";
-            });
-            return;
-          }
-        }
-        storagePath = '';
-      }
-
-      ExportResult result = await _exportAllData(storagePath);
-      if (!result.result) {
+    String storagePath = _defaultStoragePath;
+    if (isExternalStoragePath) {
+      if (!Directory(_externalStoragePath).existsSync()) {
         setState(() {
           isError = true;
-          isErrorMessage = result.message;
+          isErrorMessage = ResponseConstants.export.folderNotFound;
         });
         return;
       }
 
-      setState(() {
-        isError = false;
-      });
+      if (!await PermissionService.isExternalStoragePermission) {
+        if (!await PermissionService.requestExternalPermission()) {
+          setState(() {
+            isError = true;
+            isErrorMessage =
+                ResponseConstants.export.externalStoragePermissionDenied;
+          });
+        }
+        return;
+      }
+      storagePath = _externalStoragePath;
+    } else {
+      if (!await PermissionService.isStoragePermission) {
+        if (!await PermissionService.requestStoragePermission()) {
+          setState(() {
+            isError = true;
+            isErrorMessage = ResponseConstants.export.storagePermissionDenied;
+          });
+          return;
+        }
+      }
+      storagePath = '';
     }
+
+    String fileName = fileNameController.text;
+    if (fileName.isNotEmpty || fileName != "") {
+      if (!fileName.endsWith(FileConstants.export.extension)) {
+        fileName += FileConstants.export.extension;
+      }
+    }
+    ExportResult result = await _exportAllData(storagePath, fileName);
+    if (!result.result) {
+      setState(() {
+        isError = true;
+        isErrorMessage = result.message;
+      });
+      return;
+    }
+    fileNameController.clear();
+    setState(() {
+      isError = false;
+    });
   }
 
-  Future<ExportResult> _exportAllData(String filePath) async {
+  Future<ExportResult> _exportAllData(String filePath, String fileName) async {
     ExportService exportService = ExportService();
-    ExportResult result =
-        await exportService.exportAllDataToJson(userPath: filePath);
+    ExportResult result = await exportService.exportAllDataToJson(
+        userPath: filePath, fileName: fileName);
     if (mounted) {
       if (result.result) {
         SnackBarService.showSuccessSnackBarWithContext(
@@ -185,15 +199,62 @@ class _ExportFormState extends State<ExportForm> {
       } else {
         SnackBarService.showErrorSnackBarWithContext(context, result.message);
       }
-      // if (result.result) _showSaveDialog(result.path!);
+      if (result.result) _showShareDialog(result.path!);
     }
     return result;
   }
 
-  String? _validatePath(value) {
-    if (_defaultStoragePath.isEmpty) {
-      return 'Please enter a category name.';
-    }
-    return null;
+  Future<void> _showShareDialog(String filePath) async {
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Export Complete'),
+        content: const Text('Share exported file?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
+              await Share.shareFiles([filePath]);
+              if (mounted) Navigator.pop(context);
+            },
+            child: const Text('Share'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  getFileNameField() {
+    return TextFormField(
+      controller: fileNameController,
+      maxLines: 1,
+      maxLength: 30,
+      decoration: InputDecoration(
+        focusColor: Colors.green,
+        labelText: 'File Name',
+        hintText: "Enter name for exported file",
+        suffixIcon: IconButton(
+          onPressed: () {
+            fileNameController.clear();
+          },
+          icon: const Icon(Icons.clear, size: 20),
+        ),
+      ),
+      validator: (value) => validateTextField(value, "enter FileName"),
+      keyboardType: TextInputType.text,
+      onChanged: (value) {
+        _logger.i('title: $value');
+      },
+    );
+  }
+
+  String? validateTextField(var value, String errorMessage) {
+    if (fileNameController.text.isEmpty) return null;
+    if (fileNameController.text.length > 30) return 'max length is 30';
+    // Add additional validation logic if needed
+    return null; // Return null if the input is valid
   }
 }

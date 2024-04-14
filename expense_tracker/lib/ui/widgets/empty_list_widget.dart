@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 class EmptyListWidget extends StatelessWidget {
   final String listName;
+
   const EmptyListWidget({
-    super.key, required this.listName,
+    super.key,
+    required this.listName,
   });
 
   @override

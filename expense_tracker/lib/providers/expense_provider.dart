@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
 import '../data/constants/db_constants.dart';
-import '../models/expense.dart';
 import '../models/enums/transaction_type.dart';
+import '../models/expense.dart';
 import '../service/expense_service.dart';
 
 class ExpenseProvider extends ChangeNotifier {

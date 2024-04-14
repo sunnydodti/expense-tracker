@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:archive/archive.dart';
+import 'package:expense_tracker/data/constants/response_constants.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
@@ -37,7 +38,8 @@ class ExportService {
     file.writeAsStringSync(jsonEncode(data));
   }
 
-  Future<ExportResult> exportAllDataToJson({String userPath = "", String fileName = ""}) async {
+  Future<ExportResult> exportAllDataToJson(
+      {String userPath = "", String fileName = ""}) async {
     _logger.i("Export: Begin");
     ExportResult result = ExportResult();
 
@@ -45,11 +47,14 @@ class ExportService {
         File("${await tempJSONPath}/${FileConstants.export.expenses}");
     File categoriesJSON =
         File("${await tempJSONPath}/${FileConstants.export.categories}");
-    File tagsJSON =
-        File("${await tempJSONPath}/${FileConstants.export.tags}");
+    File tagsJSON = File("${await tempJSONPath}/${FileConstants.export.tags}");
 
     try {
-      await _saveJSONFiles(expensesJSON, categoriesJSON, tagsJSON,);
+      await _saveJSONFiles(
+        expensesJSON,
+        categoriesJSON,
+        tagsJSON,
+      );
 
       Archive archive =
           _getExportArchive(expensesJSON, categoriesJSON, tagsJSON);
@@ -59,14 +64,14 @@ class ExportService {
 
       if (encodedZip == null) {
         _logger.i("Export: zip is null");
-        result.message = "unable to zip files";
+        result.message = ResponseConstants.export.unableToZip;
         return result;
       }
 
       String zipFileName = fileName;
       if (zipFileName == "" || zipFileName.isEmpty) {
-        zipFileName = FileConstants.export.zip
-            .replaceFirst("{0}", DateFormat('yyyy-MM-dd_HH-mm-ss').format(DateTime.now()));
+        zipFileName = FileConstants.export.zip.replaceFirst(
+            "{0}", DateFormat('yyyy-MM-dd_HH-mm-ss').format(DateTime.now()));
       }
 
       String zipExportPath = userPath;
@@ -75,11 +80,11 @@ class ExportService {
       }
 
       _logger.i("exporting all data to $zipExportPath/$zipFileName");
-      File zipFile = await File("$zipExportPath/$zipFileName")
-          .writeAsBytes(encodedZip);
+      File zipFile =
+          await File("$zipExportPath/$zipFileName").writeAsBytes(encodedZip);
 
       result.result = true;
-      result.message = "Successfully Exported";
+      result.message = ResponseConstants.export.exportSuccessful;
       result.path = zipFile.path;
     } catch (e, stackTrace) {
       _logger.e('Error at exportAllDataToJson() $e - \n$stackTrace');
@@ -93,15 +98,16 @@ class ExportService {
     return result;
   }
 
-  Future<void> _saveJSONFiles(File expensesJSON, File categoriesJSON, File tagsJSON) async {
+  Future<void> _saveJSONFiles(
+      File expensesJSON, File categoriesJSON, File tagsJSON) async {
     ExpenseService expenseService = await _expenseService;
     CategoryService categoryService = await _categoryService;
     TagService tagService = await _tagService;
 
     try {
       bool status = await PermissionService.requestStoragePermission();
-      if (await PermissionService.isStoragePermission){
-        if (status){
+      if (await PermissionService.isStoragePermission) {
+        if (status) {
           _logger.i("exporting expenses to ${expensesJSON.path}");
           expensesJSON.writeAsStringSync(
               getFormattedJSONString(await expenseService.getExpenseMaps()));
@@ -113,8 +119,7 @@ class ExportService {
           _logger.i("exporting tags to ${tagsJSON.path}");
           tagsJSON.writeAsStringSync(
               getFormattedJSONString(await tagService.getTagMaps()));
-        }
-        else {
+        } else {
           throw Exception("storage permission denied");
         }
       }
@@ -144,8 +149,11 @@ class ExportService {
   }
 
   Future<String> get exportPath async => await PathService.fileExportPath;
+
   Future<String> get tempPath async => await PathService.tempPath;
-  Future<String> get tempJSONPath async => await PathService.tempFolderPath(FileConstants.cache.json);
+
+  Future<String> get tempJSONPath async =>
+      await PathService.tempFolderPath(FileConstants.cache.json);
 
   static Future<String> getPathFromUserFolder() async {
     String folderPath = '';
