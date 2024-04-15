@@ -228,8 +228,9 @@ class _ImportFormState extends State<ImportForm> {
 
   String? validateTextField(var value, String errorMessage) {
     if (!isFileSelected) return "Select a file";
-    if (!File(selectedFilePath).existsSync())
+    if (!File(selectedFilePath).existsSync()) {
       return ResponseConstants.import.fileNotFound;
+    }
     return null; // Return null if the input is valid
   }
 

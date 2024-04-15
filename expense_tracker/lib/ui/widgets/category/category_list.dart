@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../forms/category_form.dart';
-import '../../models/expense_category.dart';
-import '../../providers/category_provider.dart';
-import '../../service/category_service.dart';
-import 'empty_list_widget.dart';
+import '../../../forms/category_form.dart';
+import '../../../models/expense_category.dart';
+import '../../../providers/category_provider.dart';
+import '../../../service/category_service.dart';
+import '../empty_list_widget.dart';
+import 'category_tile.dart';
 
 class CategoryList extends StatelessWidget {
   const CategoryList({Key? key}) : super(key: key);
@@ -28,43 +29,16 @@ class CategoryList extends StatelessWidget {
                                 itemBuilder: (context, index) {
                                   final category =
                                       categoryProvider.categories[index];
-                                  return getCategoryTile(context, category);
+                                  return CategoryTile(
+                                      categoryName: category.name,
+                                      onDelete: () =>
+                                          _deleteCategory(context, category));
                                 },
                               ))
                   ],
                 ),
               ),
             ));
-  }
-
-  Container getCategoryTile(BuildContext context, ExpenseCategory category) {
-    return Container(
-        decoration: BoxDecoration(
-          color: Colors.grey.shade900,
-        ),
-        padding: const EdgeInsets.only(top: 5, bottom: 5, left: 10),
-        margin: const EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
-        child: ListTile(
-          // tileColor: Colors.grey.shade900,
-          dense: true,
-          title: Text(
-            category.name,
-            textScaleFactor: 1,
-          ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // IconButton(
-              //   icon: const Icon(Icons.edit),
-              //   onPressed: () => {},
-              // ),
-              IconButton(
-                icon: Icon(Icons.delete, color: Colors.red.shade300),
-                onPressed: () => _deleteCategory(context, category),
-              ),
-            ],
-          ),
-        ));
   }
 
   _deleteCategory(BuildContext context, ExpenseCategory category) async {

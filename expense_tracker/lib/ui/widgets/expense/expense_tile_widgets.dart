@@ -1,39 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../data/constants/form_constants.dart';
-import '../../models/enums/transaction_type.dart';
-import '../../models/expense.dart';
+import '../../../data/constants/form_constants.dart';
+import '../../../models/enums/transaction_type.dart';
+import '../../../models/expense.dart';
 
 class ExpenseTileWidgets {
-  static Container expenseTile(Expense expense) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              titleWidget(expense),
-              categoryWidget(expense),
-              getExpenseDate(expense)
-            ],
-          ),
-          const SizedBox(height: 5.0),
-          Row(
-            children: [tagsWidget(expense)],
-          ),
-          const SizedBox(height: 5.0),
-          Row(
-            children: [
-              noteWidget(expense),
-              amountWidget(expense),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
   static double getTextScaleFactor() => 1.1;
 
   static Expanded getExpenseDate(Expense expense) {
@@ -174,10 +146,12 @@ class ExpenseTileWidgets {
   }
 
   static Color _getAmountColor(String transactionType) {
-    if (transactionType == TransactionType.expense.name)
+    if (transactionType == TransactionType.expense.name) {
       return Colors.red.shade300;
-    if (transactionType == TransactionType.income.name)
+    }
+    if (transactionType == TransactionType.income.name) {
       return Colors.green.shade300;
+    }
     return Colors.white;
   }
 }

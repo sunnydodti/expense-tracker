@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/category_provider.dart';
-import '../widgets/category_list.dart';
+import '../widgets/category/category_list.dart';
 
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({super.key});

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/expense_provider.dart';
@@ -19,8 +18,6 @@ class HomeDrawer extends StatefulWidget {
 }
 
 class HomeDrawerState extends State<HomeDrawer> {
-  final Logger _logger = Logger(printer: SimplePrinter(), level: Level.info);
-
   bool _isDeleteDialogVisible = false;
 
   @override

@@ -5,7 +5,7 @@ import '../../models/enums/form_modes.dart';
 import '../../providers/expense_provider.dart';
 import '../../service/expense_service.dart';
 import '../drawer/home_drawer.dart';
-import '../widgets/expense_list_dynamic.dart';
+import '../widgets/expense/expense_list_dynamic.dart';
 import 'expense_screen.dart';
 
 class HomePage extends StatelessWidget {

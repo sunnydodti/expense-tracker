@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../forms/tag_form.dart';
-import '../../models/tag.dart';
-import '../../providers/tag_provider.dart';
-import '../../service/tag_service.dart';
-import 'empty_list_widget.dart';
+import '../../../forms/tag_form.dart';
+import '../../../models/tag.dart';
+import '../../../providers/tag_provider.dart';
+import '../../../service/tag_service.dart';
+import '../empty_list_widget.dart';
+import 'tag_tile.dart';
 
 class TagList extends StatelessWidget {
   const TagList({Key? key}) : super(key: key);
@@ -27,43 +28,15 @@ class TagList extends StatelessWidget {
                                 itemCount: tagProvider.tags.length,
                                 itemBuilder: (context, index) {
                                   final tag = tagProvider.tags[index];
-                                  return getTagTile(context, tag);
+                                  return TagTile(
+                                      tagName: tag.name,
+                                      onDelete: () => _deleteTag(context, tag));
                                 },
                               ))
                   ],
                 ),
               ),
             ));
-  }
-
-  Container getTagTile(BuildContext context, Tag tag) {
-    return Container(
-        decoration: BoxDecoration(
-          color: Colors.grey.shade900,
-        ),
-        padding: const EdgeInsets.only(top: 5, bottom: 5, left: 10),
-        margin: const EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
-        child: ListTile(
-          // tileColor: Colors.grey.shade900,
-          dense: true,
-          title: Text(
-            tag.name,
-            textScaleFactor: 1,
-          ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // IconButton(
-              //   icon: const Icon(Icons.edit),
-              //   onPressed: () => {},
-              // ),
-              IconButton(
-                icon: Icon(Icons.delete, color: Colors.red.shade300),
-                onPressed: () => _deleteTag(context, tag),
-              ),
-            ],
-          ),
-        ));
   }
 
   _deleteTag(BuildContext context, Tag tag) async {

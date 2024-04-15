@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 
 import '../../forms/export_form.dart';
 import '../../forms/import_form.dart';
@@ -15,8 +14,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  final Logger _logger = Logger(printer: SimplePrinter(), level: Level.info);
-
   @override
   void initState() {
     super.initState();

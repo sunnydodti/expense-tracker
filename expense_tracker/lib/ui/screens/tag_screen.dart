@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/tag_provider.dart';
-import '../widgets/tag_list.dart';
+import '../widgets/tag/tag_list.dart';
 
 class TagScreen extends StatelessWidget {
   const TagScreen({super.key});

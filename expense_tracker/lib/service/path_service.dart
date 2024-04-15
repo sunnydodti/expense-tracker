@@ -14,8 +14,9 @@ class PathService {
   /// returns the path to the export folder)
   static Future<String> fileExportPathForView() async {
     String path = await _getAppStoragePath(folderName: "export");
-    if (Platform.isAndroid)
+    if (Platform.isAndroid) {
       return path.replaceFirst("/storage/emulated/0/", "");
+    }
     return path;
   }
 
