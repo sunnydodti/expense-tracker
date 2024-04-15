@@ -150,31 +150,6 @@ class ExpenseService {
     return false;
   }
 
-  /// sorting and filtering
-  List<Expense> sortAndFilter<T>(List<Expense> data,
-      {String sortBy = "date", bool ascending = false}) {
-    // final filterFunction = (item) => item['price'] > 10; // Filter based on price
-
-    // final filteredData = data.where((item) => filterFunction(item)).toList();
-
-    final sortedByDate = data.toList();
-
-    if (sortBy == DBConstants.expense.date) {
-      sortedByDate.sort((a, b) {
-        final compareValue = a.date.compareTo(b.date);
-        return compareValue * (ascending ? 1 : -1);
-      });
-    }
-
-    if (sortBy == DBConstants.expense.modifiedAt) {
-      sortedByDate.sort((a, b) {
-        final compareValue = a.modifiedAt.compareTo(b.modifiedAt);
-        return compareValue * (ascending ? 1 : -1);
-      });
-    }
-    return sortedByDate;
-  }
-
   Future<bool> isDuplicateExpense(Expense expense) async {
     Expense? existingExpense = await getExpense(expense.id);
     if (existingExpense == null) return false;

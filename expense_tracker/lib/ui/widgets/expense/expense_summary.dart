@@ -16,7 +16,7 @@ class ExpenseSummary extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.grey.shade900,
       ),
-      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
       child: Column(
         children: [
           _buildSummaryContainer(
