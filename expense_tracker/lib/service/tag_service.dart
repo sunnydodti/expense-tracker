@@ -2,8 +2,8 @@ import 'package:logger/logger.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../data/constants/db_constants.dart';
-import '../data/database/database_helper.dart';
-import '../data/database/tag_helper.dart';
+import '../data/helpers/database/database_helper.dart';
+import '../data/helpers/database/tag_helper.dart';
 import '../models/tag.dart';
 
 class TagService {

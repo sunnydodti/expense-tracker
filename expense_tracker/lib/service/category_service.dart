@@ -2,8 +2,8 @@ import 'package:logger/logger.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../data/constants/db_constants.dart';
-import '../data/database/category_helper.dart';
-import '../data/database/database_helper.dart';
+import '../data/helpers/database/category_helper.dart';
+import '../data/helpers/database/database_helper.dart';
 import '../models/expense_category.dart';
 
 class CategoryService {

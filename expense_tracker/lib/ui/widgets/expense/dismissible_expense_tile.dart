@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
-import '../../../data/database/database_helper.dart';
-import '../../../data/database/expense_helper.dart';
+import '../../../data/helpers/database/database_helper.dart';
+import '../../../data/helpers/database/expense_helper.dart';
 import '../../../models/enums/form_modes.dart';
 import '../../../models/expense.dart';
 import '../../../providers/expense_provider.dart';

@@ -2,8 +2,8 @@ import 'package:faker/faker.dart';
 import 'package:logger/logger.dart';
 
 import '../data/constants/db_constants.dart';
-import '../data/database/database_helper.dart';
-import '../data/database/expense_helper.dart';
+import '../data/helpers/database/database_helper.dart';
+import '../data/helpers/database/expense_helper.dart';
 import '../models/expense.dart';
 
 class ExpenseService {
