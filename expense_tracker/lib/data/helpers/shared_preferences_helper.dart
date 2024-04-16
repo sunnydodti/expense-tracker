@@ -54,15 +54,15 @@ class SharedPreferencesHelper {
   }
 
   static Future<void> initializeSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool(SharedPreferencesConstants.IS_FIRST_TIME_KEY, true);
-    bool isFirstTime = prefs.getBool(SharedPreferencesConstants.IS_FIRST_TIME_KEY) ?? true;
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.clear();
+    bool isFirstTime = preferences.getBool(_getKey(SharedPreferencesConstants.IS_FIRST_TIME_KEY)) ?? true;
 
     if (isFirstTime) {
-      prefs.setBool(SharedPreferencesConstants.IS_FIRST_TIME_KEY, false);
+      preferences.setBool(_getKey(SharedPreferencesConstants.IS_FIRST_TIME_KEY), false);
 
-      prefs.setString(SharedPreferencesConstants.sort.SORT_CRITERIA_KEY, SortCriteria.modifiedDate.name);
-      prefs.setBool(SharedPreferencesConstants.sort.IS_ASCENDIND_SORT_KEY, false);
+      preferences.setString(_getKey(SharedPreferencesConstants.sort.SORT_CRITERIA_KEY), SortCriteria.modifiedDate.name);
+      preferences.setBool(_getKey(SharedPreferencesConstants.sort.IS_ASCENDIND_SORT_KEY), false);
     }
   }
 }

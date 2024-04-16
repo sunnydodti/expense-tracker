@@ -13,7 +13,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // await SharedPreferencesHelper.initializeSharedPreferences();
+  await SharedPreferencesHelper.initializeSharedPreferences();
 
   runApp(const MyApp());
 }
