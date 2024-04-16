@@ -1,17 +1,11 @@
 import 'package:expense_tracker/models/enums/sort_criteria.dart';
 import 'package:logger/logger.dart';
-import 'package:provider/provider.dart';
 
 import '../data/constants/shared_preferences_constants.dart';
 import '../data/helpers/shared_preferences_helper.dart';
-import '../main.dart';
 import '../models/expense.dart';
-import '../providers/sort_filter_provider.dart';
 
 class SortFilterService {
-  SortFilterProvider sortFilterProvider =
-      navigatorKey.currentContext!.read<SortFilterProvider>();
-
   static final Logger _logger =
       Logger(printer: SimplePrinter(), level: Level.info);
 
@@ -29,45 +23,49 @@ class SortFilterService {
       sortCriteria =
           SortCriteriaHelper.getSortCriteriaByName(storedSortCriteria!);
     } catch (e, stackTrace) {
-      _logger.e("error retrieving sort criteria from shared preferences");
+      _logger.e("error retrieving sort criteria from shared preferences at getSortCriteria(): $e - $stackTrace");
     }
     return sortCriteria;
   }
 
-  setSortCriteria(SortCriteria sortCriteria) async {
+  setSortCriteria(SortCriteria sortCriteria) {
     SharedPreferencesHelper.setString(
         SharedPreferencesConstants.sort.SORT_CRITERIA_KEY, sortCriteria.name);
   }
 
   /// sort and filter expenses
-  List<Expense> sortAndFilter<T>(List<Expense> expenses) {
+  Future<List<Expense>> sortAndFilter<T>(List<Expense> expenses) {
     final sortedByDate = sortExpenses(expenses);
     return sortedByDate;
   }
 
-  List<Expense> sortExpenses(List<Expense> expenses) {
-    List<Expense> sortedExpenses = expenses;
-    SortCriteria sortCriteria = sortFilterProvider.sortCriteria;
+  Future<List<Expense>> sortExpenses(List<Expense> expenses) async {
+    String? criteria = await SharedPreferencesHelper.getString(SharedPreferencesConstants.sort.SORT_CRITERIA_KEY);
+    if (criteria == null) {
+      return expenses;
+    }
+    SortCriteria sortCriteria = SortCriteriaHelper.getSortCriteriaByName(criteria);
+    bool isAscending = await SharedPreferencesHelper.getBool(SharedPreferencesConstants.sort.IS_ASCENDIND_SORT_KEY) ?? false;
     switch (sortCriteria) {
       case SortCriteria.createdDate:
-        sortedExpenses.sort((a, b) {
+        expenses.sort((a, b) {
           final compareValue = a.createdAt.compareTo(b.createdAt);
-          return compareValue * (sortFilterProvider.isAscendingSort ? 1 : -1);
+          return compareValue * (isAscending ? 1 : -1);
         });
         break;
       case SortCriteria.modifiedDate:
-        sortedExpenses.sort((a, b) {
+        expenses.sort((a, b) {
           final compareValue = a.modifiedAt.compareTo(b.modifiedAt);
-          return compareValue * (sortFilterProvider.isAscendingSort ? 1 : -1);
+          return compareValue * (isAscending ? 1 : -1);
         });
         break;
       case SortCriteria.expenseDate:
-        sortedExpenses.sort((a, b) {
+        expenses.sort((a, b) {
           final compareValue = a.date.compareTo(b.date);
-          return compareValue * (sortFilterProvider.isAscendingSort ? 1 : -1);
+          return compareValue * (isAscending ? 1 : -1);
         });
         break;
     }
-    return sortedExpenses;
+    return expenses;
   }
 }

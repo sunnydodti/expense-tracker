@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../data/constants/shared_preferences_constants.dart';
+import '../data/helpers/shared_preferences_helper.dart';
 import '../models/enums/sort_criteria.dart';
 
 class SortFilterProvider extends ChangeNotifier {
@@ -9,9 +11,9 @@ class SortFilterProvider extends ChangeNotifier {
 
   SortCriteria get sortCriteria => _sortCriteria;
 
-  // Future<SortCriteria> getSortCriteria() async {
-  //  return _defaultSortCriteria;
-  // }
+  SortCriteria getSortCriteria() {
+    return _defaultSortCriteria;
+  }
 
   setSortCriteria(SortCriteria sortCriteria) {
     _sortCriteria = sortCriteria;
@@ -29,9 +31,9 @@ class SortFilterProvider extends ChangeNotifier {
 
   toggleSort() {
     _isAscendingSort = !_isAscendingSort;
+    SharedPreferencesHelper.setBool(
+        SharedPreferencesConstants.sort.IS_ASCENDIND_SORT_KEY,
+        _isAscendingSort);
     notifyListeners();
-    // SharedPreferencesHelper.setBool(
-    //     SharedPreferencesConstants.sort.IS_ASCENDIND_SORT_KEY,
-    //     _isAscendingSort);
   }
 }

@@ -125,7 +125,7 @@ class ExpenseProvider extends ChangeNotifier {
     try {
       ExpenseService expenseService = await _expenseService;
       List<Expense> updatedExpenses = await _fetchExpenses();
-      _expenses = sortFilterService.sortAndFilter(updatedExpenses);
+      _expenses = await sortFilterService.sortAndFilter(updatedExpenses);
 
       if (notify) notifyListeners();
     } catch (e, stackTrace) {
