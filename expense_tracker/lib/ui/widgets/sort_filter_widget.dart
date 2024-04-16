@@ -75,22 +75,11 @@ class _SortFilterWidgetState extends State<SortFilterWidget> {
           .map<DropdownMenuItem<SortCriteria>>(
             (criteria) => DropdownMenuItem<SortCriteria>(
               value: criteria,
-              child: Text(_getSortCriteriaText(criteria)),
+              child: Text(SortCriteriaHelper.getSortCriteriaText(criteria)),
             ),
           )
           .toList(),
       underline: Container(),
     );
-  }
-
-  String _getSortCriteriaText(SortCriteria criteria) {
-    switch (criteria) {
-      case SortCriteria.modifiedDate:
-        return 'Modified';
-      case SortCriteria.createdDate:
-        return 'Created';
-      case SortCriteria.expenseDate:
-        return 'Date';
-    }
   }
 }

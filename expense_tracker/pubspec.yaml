@@ -8,10 +8,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons:
   intl:
-  currency_picker:
-  multiselect_formfield:
   sqflite:
   path:
   path_provider:
@@ -22,6 +19,8 @@ dependencies:
   archive:
   share:
   permission_handler:
+  shared_preferences: ^2.0.13
+
 
 dev_dependencies:
   flutter_test:

@@ -2,6 +2,8 @@ import 'package:expense_tracker/models/enums/sort_criteria.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
+import '../data/constants/shared_preferences_constants.dart';
+import '../data/helpers/shared_preferences_helper.dart';
 import '../main.dart';
 import '../models/expense.dart';
 import '../providers/sort_filter_provider.dart';
@@ -19,20 +21,34 @@ class SortFilterService {
     return SortFilterService._();
   }
 
-  /// sorting and filtering
+  Future<SortCriteria?> getSortCriteria() async {
+    SortCriteria? sortCriteria;
+    try {
+      String? storedSortCriteria = await SharedPreferencesHelper.getString(
+          SharedPreferencesConstants.sort.SORT_CRITERIA_KEY);
+      sortCriteria =
+          SortCriteriaHelper.getSortCriteriaByName(storedSortCriteria!);
+    } catch (e, stackTrace) {
+      _logger.e("error retrieving sort criteria from shared preferences");
+    }
+    return sortCriteria;
+  }
+
+  setSortCriteria(SortCriteria sortCriteria) async {
+    SharedPreferencesHelper.setString(
+        SharedPreferencesConstants.sort.SORT_CRITERIA_KEY, sortCriteria.name);
+  }
+
+  /// sort and filter expenses
   List<Expense> sortAndFilter<T>(List<Expense> expenses) {
-    // final filterFunction = (item) => item['price'] > 10; // Filter based on price
-
-    // final filteredData = expenses.where((item) => filterFunction(item)).toList();
-
     final sortedByDate = sortExpenses(expenses);
     return sortedByDate;
   }
 
   List<Expense> sortExpenses(List<Expense> expenses) {
     List<Expense> sortedExpenses = expenses;
-
-    switch (sortFilterProvider.sortCriteria) {
+    SortCriteria sortCriteria = sortFilterProvider.sortCriteria;
+    switch (sortCriteria) {
       case SortCriteria.createdDate:
         sortedExpenses.sort((a, b) {
           final compareValue = a.createdAt.compareTo(b.createdAt);

@@ -3,15 +3,18 @@ import 'package:flutter/material.dart';
 import '../models/enums/sort_criteria.dart';
 
 class SortFilterProvider extends ChangeNotifier {
-  // ExpenseProvider expenseProvider =
-  //     navigatorKey.currentContext!.read<ExpenseProvider>();
+  final SortCriteria _defaultSortCriteria = SortCriteria.modifiedDate;
 
   SortCriteria _sortCriteria = SortCriteria.modifiedDate;
 
   SortCriteria get sortCriteria => _sortCriteria;
 
-  setSortCriteria(SortCriteria value) {
-    _sortCriteria = value;
+  // Future<SortCriteria> getSortCriteria() async {
+  //  return _defaultSortCriteria;
+  // }
+
+  setSortCriteria(SortCriteria sortCriteria) {
+    _sortCriteria = sortCriteria;
     notifyListeners();
   }
 
@@ -27,5 +30,8 @@ class SortFilterProvider extends ChangeNotifier {
   toggleSort() {
     _isAscendingSort = !_isAscendingSort;
     notifyListeners();
+    // SharedPreferencesHelper.setBool(
+    //     SharedPreferencesConstants.sort.IS_ASCENDIND_SORT_KEY,
+    //     _isAscendingSort);
   }
 }

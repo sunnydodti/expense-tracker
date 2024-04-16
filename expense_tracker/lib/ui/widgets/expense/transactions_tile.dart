@@ -20,12 +20,15 @@ class TransactionsTile extends StatelessWidget {
     );
   }
 
-  Text _getTransactionsText() {
-    return const Text(
-      'Transactions',
-      style: TextStyle(
-        fontWeight: FontWeight.w400,
-        fontSize: 18,
+  Padding _getTransactionsText() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 15),
+      child: Text(
+        'Transactions',
+        style: TextStyle(
+          fontWeight: FontWeight.w400,
+          fontSize: 18,
+        ),
       ),
     );
   }
