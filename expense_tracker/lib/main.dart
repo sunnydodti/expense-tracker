@@ -1,10 +1,10 @@
-import 'package:expense_tracker/providers/sort_filter_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'data/helpers/shared_preferences_helper.dart';
 import 'providers/category_provider.dart';
 import 'providers/expense_provider.dart';
+import 'providers/sort_filter_provider.dart';
 import 'providers/tag_provider.dart';
 import 'ui/screens/home_screen.dart';
 

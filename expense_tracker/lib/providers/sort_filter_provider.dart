@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 
-import '../data/constants/shared_preferences_constants.dart';
-import '../data/helpers/shared_preferences_helper.dart';
 import '../models/enums/sort_criteria.dart';
+import '../service/sort_filter_service.dart';
 
 class SortFilterProvider extends ChangeNotifier {
+  final SortFilterService _sortFilterService = SortFilterService.create();
+
   final SortCriteria _defaultSortCriteria = SortCriteria.modifiedDate;
 
   SortCriteria _sortCriteria = SortCriteria.modifiedDate;
 
   SortCriteria get sortCriteria => _sortCriteria;
 
-  SortCriteria getSortCriteria() {
-    return _defaultSortCriteria;
-  }
-
   setSortCriteria(SortCriteria sortCriteria) {
     _sortCriteria = sortCriteria;
+    _sortFilterService.setPreferenceSortCriteria(sortCriteria);
     notifyListeners();
   }
 
@@ -31,9 +29,17 @@ class SortFilterProvider extends ChangeNotifier {
 
   toggleSort() {
     _isAscendingSort = !_isAscendingSort;
-    SharedPreferencesHelper.setBool(
-        SharedPreferencesConstants.sort.IS_ASCENDIND_SORT_KEY,
-        _isAscendingSort);
+    _sortFilterService.setPreferenceIsAscendingSort(isAscendingSort);
     notifyListeners();
+  }
+
+  refreshPreferences() async {
+    SortCriteria? sortCriteria =
+        await _sortFilterService.getPreferenceSortCriteria();
+    bool? isAscendingSort =
+        await _sortFilterService.getIsPreferenceIsAscendingSort();
+    _sortCriteria = sortCriteria ?? _sortCriteria;
+    _isAscendingSort = isAscendingSort ?? _isAscendingSort;
+    // notifyListeners();
   }
 }

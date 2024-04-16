@@ -15,6 +15,15 @@ class SortFilterWidget extends StatefulWidget {
 }
 
 class _SortFilterWidgetState extends State<SortFilterWidget> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      Provider.of<SortFilterProvider>(context, listen: false)
+          .refreshPreferences();
+    });
+  }
+
   _refreshExpenses() {
     final expenseProvider =
         Provider.of<ExpenseProvider>(context, listen: false);
@@ -24,13 +33,16 @@ class _SortFilterWidgetState extends State<SortFilterWidget> {
   @override
   Widget build(BuildContext context) {
     return Consumer<SortFilterProvider>(
-      builder: (context, sortFilterProvider, _) => Row(
-        children: [
-          getSortButton(sortFilterProvider),
-          getSortCriteriaDropdown(sortFilterProvider),
-          getFilterButton(),
-        ],
-      ),
+      builder: (context, sortFilterProvider, _) {
+        Future.delayed(const Duration(seconds: 3));
+        return Row(
+          children: [
+            getSortButton(sortFilterProvider),
+            getSortCriteriaDropdown(sortFilterProvider),
+            getFilterButton(),
+          ],
+        );
+      },
     );
   }
 

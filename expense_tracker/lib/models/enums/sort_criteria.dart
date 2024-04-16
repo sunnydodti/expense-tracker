@@ -1,7 +1,6 @@
 enum SortCriteria { modifiedDate, createdDate, expenseDate }
 
 class SortCriteriaHelper {
-
   static String getSortCriteriaText(SortCriteria criteria) {
     switch (criteria) {
       case SortCriteria.modifiedDate:
@@ -13,7 +12,7 @@ class SortCriteriaHelper {
     }
   }
 
-  static SortCriteria getSortCriteriaByName(String name){
+  static SortCriteria getSortCriteriaByName(String name) {
     return SortCriteria.values.byName(name);
   }
 }
