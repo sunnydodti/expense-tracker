@@ -27,12 +27,12 @@ class ExpenseSummary extends StatelessWidget {
             children: [
               Expanded(
                 child: _buildSummaryContainer(
-                    "Total Income", expenseProvider.getTotalBalance(),
+                    "Total Income", expenseProvider.getTotalIncome(),
                     top: 5, bottom: 10, left: 10, right: 5),
               ),
               Expanded(
                 child: _buildSummaryContainer(
-                    "Total Expense", expenseProvider.getTotalBalance(),
+                    "Total Expense", expenseProvider.getTotalExpenses() * -1,
                     top: 5, bottom: 10, left: 5, right: 10),
               ),
             ],
