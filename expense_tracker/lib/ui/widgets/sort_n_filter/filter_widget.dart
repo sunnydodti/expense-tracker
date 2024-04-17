@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 
+import '../../../models/expense_filters.dart';
+import '../../dialogs/filter_expenses_dialog.dart';
 import '../../dialogs/month_picker_dialog.dart';
 import '../../dialogs/year_picker_dialog.dart';
-
-enum FilterOption { monthly, yearly, all }
 
 class FilterWidget extends StatefulWidget {
   const FilterWidget({super.key});
@@ -14,10 +15,17 @@ class FilterWidget extends StatefulWidget {
 }
 
 class FilterWidgetState extends State<FilterWidget> {
+  static final Logger _logger =
+      Logger(printer: SimplePrinter(), level: Level.info);
+
   String _selectedMonth = '';
   String _selectedYear = '';
 
-  FilterOption _selectedFilter = FilterOption.monthly;
+  bool _filterByYear = false;
+  bool _filterByMonth = true;
+
+  final ExpenseFilters _expenseFilters =
+      ExpenseFilters(filterByYear: false, filterByMonth: false);
 
   @override
   void initState() {
@@ -62,29 +70,37 @@ class FilterWidgetState extends State<FilterWidget> {
     return Row(
       children: [
         _buildFilterButton(),
-        GestureDetector(
-          onTap: () => _showYearPicker(context),
-          onVerticalDragEnd: (details) {
-            if (details.primaryVelocity! < 0) {
-              _incrementYear();
-            } else {
-              _decrementYear();
-            }
-          },
-          child: _buildYearDropdown(),
-        ),
-        GestureDetector(
-          onTap: () => _showMonthPicker(context),
-          onHorizontalDragEnd: (details) {
-            if (details.primaryVelocity! < 0) {
-              _incrementMonth();
-            } else {
-              _decrementMonth();
-            }
-          },
-          child: _buildMonthDropdown(),
-        ),
+        if (_filterByYear) _buildYearDisplay(context),
+        if (_filterByMonth) _buildMonthDisplay(context),
       ],
+    );
+  }
+
+  GestureDetector _buildMonthDisplay(BuildContext context) {
+    return GestureDetector(
+      onTap: () => _showMonthPicker(context),
+      onHorizontalDragEnd: (details) {
+        if (details.primaryVelocity! < 0) {
+          _incrementMonth();
+        } else {
+          _decrementMonth();
+        }
+      },
+      child: _buildMonthDropdown(),
+    );
+  }
+
+  GestureDetector _buildYearDisplay(BuildContext context) {
+    return GestureDetector(
+      onTap: () => _showYearPicker(context),
+      onVerticalDragEnd: (details) {
+        if (details.primaryVelocity! < 0) {
+          _incrementYear();
+        } else {
+          _decrementYear();
+        }
+      },
+      child: _buildYearDropdown(),
     );
   }
 
@@ -110,14 +126,6 @@ class FilterWidgetState extends State<FilterWidget> {
     );
   }
 
-  IconButton _buildFilterButton() {
-    return IconButton(
-      icon: const Icon(Icons.filter_list),
-      onPressed: () {},
-      tooltip: "Filter",
-    );
-  }
-
   void _showMonthPicker(BuildContext context) async {
     final selectedMonth = await MonthPickerDialog.show(context);
     if (selectedMonth != null) {
@@ -134,5 +142,35 @@ class FilterWidgetState extends State<FilterWidget> {
         _selectedYear = selectedYear.toString();
       });
     }
+  }
+
+  IconButton _buildFilterButton() {
+    return IconButton(
+      icon: const Icon(Icons.filter_list),
+      onPressed: () => _showFilterDialog(),
+      tooltip: "Filter",
+    );
+  }
+
+  void _showFilterDialog() async {
+    final newFilters = await showDialog<ExpenseFilters>(
+      context: context,
+      builder: (context) => FilterExpensesDialog(
+        expenseFilters: _expenseFilters,
+      ),
+    );
+
+    if (newFilters != null) {
+      _setFilters(newFilters);
+    }
+  }
+
+  _setFilters(ExpenseFilters filters) {
+    _logger.i('Filter by Year: ${filters.filterByYear}');
+    _logger.i('Filter by Month: ${filters.filterByMonth}');
+    setState(() {
+      _filterByYear = filters.filterByYear;
+      _filterByMonth = filters.filterByMonth;
+    });
   }
 }
