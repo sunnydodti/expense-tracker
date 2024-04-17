@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../dialogs/month_picker_dialog.dart';
+import '../../dialogs/year_picker_dialog.dart';
+
 enum FilterOption { monthly, yearly, all }
 
 class FilterWidget extends StatefulWidget {
@@ -116,31 +119,7 @@ class FilterWidgetState extends State<FilterWidget> {
   }
 
   void _showMonthPicker(BuildContext context) async {
-    final selectedMonth = await showDialog<String>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Select Month'),
-          content: SizedBox(
-            height: 200.0,
-            width: 200.0,
-            child: ListView.builder(
-              itemCount: 12,
-              itemBuilder: (context, index) {
-                final fullMonth = DateFormat('MMMM').format(DateTime(2000, index + 1));
-                final shortMonth = DateFormat('MMM').format(DateTime(2000, index + 1));
-                return ListTile(
-                  title: Text(fullMonth),
-                  onTap: () {
-                    Navigator.pop(context, shortMonth);
-                  },
-                );
-              },
-            ),
-          ),
-        );
-      },
-    );
+    final selectedMonth = await MonthPickerDialog.show(context);
     if (selectedMonth != null) {
       setState(() {
         _selectedMonth = selectedMonth;
@@ -149,30 +128,7 @@ class FilterWidgetState extends State<FilterWidget> {
   }
 
   void _showYearPicker(BuildContext context) async {
-    final selectedYear = await showDialog<int>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Select Year'),
-          content: SizedBox(
-            height: 200.0,
-            width: 200.0,
-            child: ListView.builder(
-              itemCount: DateTime.now().year - 1999,
-              itemBuilder: (context, index) {
-                final year = DateTime.now().year - index;
-                return ListTile(
-                  title: Text(year.toString()),
-                  onTap: () {
-                    Navigator.pop(context, year);
-                  },
-                );
-              },
-            ),
-          ),
-        );
-      },
-    );
+    final selectedYear = await YearPickerDialog.show(context);
     if (selectedYear != null) {
       setState(() {
         _selectedYear = selectedYear.toString();

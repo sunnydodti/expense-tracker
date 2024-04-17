@@ -1,15 +1,15 @@
 import 'dart:io';
 
-import 'package:expense_tracker/data/constants/file_name_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:share/share.dart';
 
+import '../data/constants/file_name_constants.dart';
 import '../data/constants/response_constants.dart';
 import '../models/export_result.dart';
 import '../service/export_service.dart';
 import '../service/path_service.dart';
 import '../service/permission_service.dart';
+import '../ui/dialogs/share_file_dialog.dart';
 import '../ui/notifications/snackbar_service.dart';
 
 class ExportForm extends StatefulWidget {
@@ -205,25 +205,12 @@ class _ExportFormState extends State<ExportForm> {
   }
 
   Future<void> _showShareDialog(String filePath) async {
-    await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Export Complete'),
-        content: const Text('Share exported file?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () async {
-              await Share.shareFiles([filePath]);
-              if (mounted) Navigator.pop(context);
-            },
-            child: const Text('Share'),
-          ),
-        ],
-      ),
+    await ShareFileDialog.show(
+      context,
+      title: "Export Complete",
+      content: "Share exported file?",
+      filePath: filePath,
+      showFileName: true,
     );
   }
 
@@ -254,7 +241,6 @@ class _ExportFormState extends State<ExportForm> {
   String? validateTextField(var value, String errorMessage) {
     if (fileNameController.text.isEmpty) return null;
     if (fileNameController.text.length > 30) return 'max length is 30';
-    // Add additional validation logic if needed
-    return null; // Return null if the input is valid
+    return null;
   }
 }
