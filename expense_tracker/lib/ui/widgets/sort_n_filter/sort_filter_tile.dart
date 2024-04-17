@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../sort_filter_widget.dart';
+import 'filter_widget.dart';
+import 'sort_widget.dart';
 
-class TransactionsTile extends StatelessWidget {
-  const TransactionsTile({super.key});
+class SortFilterTile extends StatelessWidget {
+  const SortFilterTile({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,10 +13,13 @@ class TransactionsTile extends StatelessWidget {
         color: Colors.grey.shade900,
       ),
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      padding: const EdgeInsets.only(left: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [_getTransactionsText(), const SortFilterWidget()],
+        children: const [
+          // _getTransactionsText(),
+          FilterWidget(),
+          SortWidget()
+        ],
       ),
     );
   }

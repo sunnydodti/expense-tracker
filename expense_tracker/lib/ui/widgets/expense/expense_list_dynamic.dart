@@ -1,4 +1,4 @@
-import 'package:expense_tracker/ui/widgets/expense/transactions_tile.dart';
+import 'package:expense_tracker/ui/widgets/sort_n_filter/sort_filter_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,7 +21,7 @@ class ExpenseListDynamic extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               ExpenseSummary(expenseProvider: expenseProvider),
-              const TransactionsTile(),
+              const SortFilterTile(),
               expenseProvider.expenses.isEmpty
                   ? const EmptyListWidget(listName: 'Expense')
                   : Expanded(

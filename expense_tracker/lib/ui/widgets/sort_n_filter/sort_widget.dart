@@ -3,22 +3,22 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../models/enums/sort_criteria.dart';
-import '../../providers/expense_provider.dart';
-import '../../providers/sort_filter_provider.dart';
+import '../../../models/enums/sort_criteria.dart';
+import '../../../providers/expense_provider.dart';
+import '../../../providers/sort_filter_provider.dart';
 
-class SortFilterWidget extends StatefulWidget {
-  const SortFilterWidget({super.key});
+class SortWidget extends StatefulWidget {
+  const SortWidget({super.key});
 
   @override
-  State<SortFilterWidget> createState() => _SortFilterWidgetState();
+  State<SortWidget> createState() => _SortWidgetState();
 }
 
-class _SortFilterWidgetState extends State<SortFilterWidget> {
+class _SortWidgetState extends State<SortWidget> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<SortFilterProvider>(context, listen: false)
           .refreshPreferences();
     });
@@ -34,27 +34,17 @@ class _SortFilterWidgetState extends State<SortFilterWidget> {
   Widget build(BuildContext context) {
     return Consumer<SortFilterProvider>(
       builder: (context, sortFilterProvider, _) {
-        Future.delayed(const Duration(seconds: 3));
         return Row(
           children: [
-            getSortButton(sortFilterProvider),
-            getSortCriteriaDropdown(sortFilterProvider),
-            getFilterButton(),
+            _buildSortCriteriaDropdown(sortFilterProvider),
+            _buildSortButton(sortFilterProvider),
           ],
         );
       },
     );
   }
 
-  IconButton getFilterButton() {
-    return IconButton(
-      icon: const Icon(Icons.filter_list),
-      onPressed: () {},
-      tooltip: "Filter",
-    );
-  }
-
-  IconButton getSortButton(SortFilterProvider sortFilterProvider) {
+  IconButton _buildSortButton(SortFilterProvider sortFilterProvider) {
     return IconButton(
       icon: Transform(
           alignment: Alignment.center,
@@ -75,9 +65,10 @@ class _SortFilterWidgetState extends State<SortFilterWidget> {
     );
   }
 
-  DropdownButton<SortCriteria> getSortCriteriaDropdown(
+  DropdownButton<SortCriteria> _buildSortCriteriaDropdown(
       SortFilterProvider sortFilterProvider) {
     return DropdownButton<SortCriteria>(
+      // icon: SizedBox.shrink(),
       value: sortFilterProvider.sortCriteria,
       onChanged: (criteria) {
         sortFilterProvider.setSortCriteria(criteria!);
