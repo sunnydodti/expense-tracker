@@ -17,7 +17,7 @@ class MonthPickerDialog {
                 final fullMonth =
                     DateFormat('MMMM').format(DateTime(2000, index + 1));
                 final shortMonth =
-                    DateFormat('MMM').format(DateTime(2000, index + 1));
+                    DateFormat('MMMM').format(DateTime(2000, index + 1));
                 return ListTile(
                   title: Text(fullMonth),
                   onTap: () {

@@ -28,24 +28,24 @@ class FilterWidgetState extends State<FilterWidget> {
   void initState() {
     super.initState();
     final now = DateTime.now();
-    _selectedMonth = DateFormat('MMM').format(now);
+    _selectedMonth = DateFormat('MMMM').format(now);
     _selectedYear = DateFormat('yyyy').format(now);
   }
 
   void _decrementMonth() {
-    final currentMonthIndex = DateFormat('MMM').parse(_selectedMonth).month;
+    final currentMonthIndex = DateFormat('MMMM').parse(_selectedMonth).month;
     if (currentMonthIndex < 12) {
       final nextMonthIndex = currentMonthIndex + 1;
-      _selectedMonth = DateFormat('MMM').format(DateTime(2000, nextMonthIndex));
+      _selectedMonth = DateFormat('MMMM').format(DateTime(2000, nextMonthIndex));
     }
     setState(() {});
   }
 
   void _incrementMonth() {
-    final currentMonthIndex = DateFormat('MMM').parse(_selectedMonth).month;
+    final currentMonthIndex = DateFormat('MMMM').parse(_selectedMonth).month;
     if (currentMonthIndex > 1) {
       final prevMonthIndex = currentMonthIndex - 1;
-      _selectedMonth = DateFormat('MMM').format(DateTime(2000, prevMonthIndex));
+      _selectedMonth = DateFormat('MMMM').format(DateTime(2000, prevMonthIndex));
     }
     setState(() {});
   }

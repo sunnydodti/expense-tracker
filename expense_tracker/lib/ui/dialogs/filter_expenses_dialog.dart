@@ -85,7 +85,7 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
           for (int i = 1; i <= 12; i++)
             DropdownMenuItem(
               alignment: AlignmentDirectional.centerEnd,
-              value: DateFormat('MMM').format(DateTime(2000, i)),
+              value: DateFormat('MMMM').format(DateTime(2000, i)),
               child: Text(DateFormat('MMMM').format(DateTime(2000, i))),
             ),
         ],
