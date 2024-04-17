@@ -16,16 +16,13 @@ class FilterWidget extends StatefulWidget {
 
 class FilterWidgetState extends State<FilterWidget> {
   static final Logger _logger =
-      Logger(printer: SimplePrinter(), level: Level.info);
+  Logger(printer: SimplePrinter(), level: Level.info);
 
   String _selectedMonth = '';
   String _selectedYear = '';
 
   bool _filterByYear = false;
   bool _filterByMonth = true;
-
-  final ExpenseFilters _expenseFilters =
-      ExpenseFilters(filterByYear: false, filterByMonth: false);
 
   @override
   void initState() {
@@ -105,23 +102,21 @@ class FilterWidgetState extends State<FilterWidget> {
   }
 
   Widget _buildMonthDropdown() {
-    return SizedBox(
-      width: 100,
+    return Padding(
+      padding: const EdgeInsets.only(left: 10),
       child: Text(
         _selectedMonth,
         textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 16),
       ),
     );
   }
 
   Widget _buildYearDropdown() {
-    return SizedBox(
-      width: 60,
+    return Padding(
+      padding: const EdgeInsets.only(left: 10),
       child: Text(
         _selectedYear,
         textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 16),
       ),
     );
   }
@@ -156,7 +151,7 @@ class FilterWidgetState extends State<FilterWidget> {
     final newFilters = await showDialog<ExpenseFilters>(
       context: context,
       builder: (context) => FilterExpensesDialog(
-        expenseFilters: _expenseFilters,
+        expenseFilters: _getFilters(),
       ),
     );
 
@@ -166,11 +161,30 @@ class FilterWidgetState extends State<FilterWidget> {
   }
 
   _setFilters(ExpenseFilters filters) {
-    _logger.i('Filter by Year: ${filters.filterByYear}');
-    _logger.i('Filter by Month: ${filters.filterByMonth}');
+    _logger.i('filter by year: ${filters.filterByYear}');
+    _logger.i('filter by month: ${filters.filterByMonth}');
+
+    _logger.i('selected year: ${filters.selectedYear}');
+    _logger.i('selected month: ${filters.selectedMonth}');
+
     setState(() {
       _filterByYear = filters.filterByYear;
       _filterByMonth = filters.filterByMonth;
+
+      _selectedMonth = filters.selectedMonth;
+      _selectedYear = filters.selectedYear;
     });
+  }
+
+  _getFilters() {
+    ExpenseFilters filters = ExpenseFilters();
+
+    filters.filterByYear = _filterByYear;
+    filters.filterByMonth = _filterByMonth;
+
+    filters.selectedYear = _selectedYear;
+    filters.selectedMonth = _selectedMonth;
+
+    return filters;
   }
 }
