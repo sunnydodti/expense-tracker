@@ -8,7 +8,7 @@ class SortFilterProvider extends ChangeNotifier {
   final SortFilterService _sortFilterService = SortFilterService.create();
 
   // sort
-  final SortCriteria _defaultSortCriteria = SortCriteria.modifiedDate;
+  // final SortCriteria _defaultSortCriteria = SortCriteria.modifiedDate;
   SortCriteria _sortCriteria = SortCriteria.modifiedDate;
   SortCriteria get sortCriteria => _sortCriteria;
   setSortCriteria(SortCriteria sortCriteria) {

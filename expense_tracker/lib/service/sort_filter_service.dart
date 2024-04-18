@@ -1,3 +1,5 @@
+import 'package:expense_tracker/models/expense_filters.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
 import '../data/constants/shared_preferences_constants.dart';
@@ -143,9 +145,10 @@ class SortFilterService {
   //endregion
 
   /// sort and filter expenses
-  Future<List<Expense>> sortAndFilter<T>(List<Expense> expenses) {
-    final sortedByDate = sortExpenses(expenses);
-    return sortedByDate;
+  Future<List<Expense>> sortAndFilter<T>(List<Expense> expenses) async {
+    final filteredExpenses = await filterExpenses(expenses);
+    final sortedExpenses = await sortExpenses(filteredExpenses);
+    return sortedExpenses;
   }
 
   Future<List<Expense>> sortExpenses(List<Expense> expenses) async {
@@ -157,7 +160,7 @@ class SortFilterService {
     SortCriteria sortCriteria =
         SortCriteriaHelper.getSortCriteriaByName(criteria);
     bool isAscending = await SharedPreferencesHelper.getBool(
-            SharedPreferencesConstants.sort.IS_ASCENDIND_KEY) ??
+        SharedPreferencesConstants.sort.IS_ASCENDIND_KEY) ??
         false;
     switch (sortCriteria) {
       case SortCriteria.createdDate:
@@ -180,5 +183,51 @@ class SortFilterService {
         break;
     }
     return expenses;
+  }
+
+  Future<List<Expense>> filterExpenses(List<Expense> expenses) async {
+    ExpenseFilters filters = await getExpenseFilters();
+    if (!filters.isApplied) {
+      return expenses;
+    }
+
+    List<Expense> filteredExpenses = List.from(expenses);
+
+    // Filter by year
+    if (filters.filterByYear) {
+      final filterYear = filters.selectedYear;
+      filteredExpenses = filteredExpenses.where((expense) {
+        return DateFormat('yyyy').format(expense.date) == filterYear;
+      }).toList();
+    }
+
+    // Filter by month
+    if (filters.filterByMonth) {
+      final filterMonth = filters.selectedMonth;
+      filteredExpenses = filteredExpenses.where((expense) {
+        return DateFormat('MMMM').format(expense.date) == filterMonth;
+      }).toList();
+    }
+
+    return filteredExpenses;
+  }
+
+  Future<ExpenseFilters> getExpenseFilters() async {
+    ExpenseFilters expenseFilters = ExpenseFilters();
+
+    bool? isFilterApplied = await getPreferenceIsFilterApplied();
+    bool? isFilterByYear = await getPreferenceIsFilterByYear();
+    bool? isFilterByMonth = await getPreferenceIsFilterByMonth();
+    String? filterYear = await getPreferenceFilterYear();
+    String? filterMonth = await getPreferenceFilterMonth();
+
+    expenseFilters.isApplied = isFilterApplied ?? expenseFilters.isApplied;
+    expenseFilters.filterByYear = isFilterByYear ?? expenseFilters.filterByYear;
+    expenseFilters.filterByMonth =
+        isFilterByMonth ?? expenseFilters.filterByMonth;
+    expenseFilters.selectedYear = filterYear ?? expenseFilters.selectedYear;
+    expenseFilters.selectedMonth = filterMonth ?? expenseFilters.selectedMonth;
+
+    return expenseFilters;
   }
 }
