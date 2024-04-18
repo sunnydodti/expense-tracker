@@ -15,16 +15,7 @@ class SortWidget extends StatefulWidget {
 }
 
 class _SortWidgetState extends State<SortWidget> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<SortFilterProvider>(context, listen: false)
-          .refreshPreferences();
-    });
-  }
-
-  _refreshExpenses() {
+   _refreshExpenses() {
     final expenseProvider =
         Provider.of<ExpenseProvider>(context, listen: false);
     expenseProvider.refreshExpenses();
@@ -71,8 +62,7 @@ class _SortWidgetState extends State<SortWidget> {
       // icon: SizedBox.shrink(),
       value: sortFilterProvider.sortCriteria,
       onChanged: (criteria) {
-        sortFilterProvider.setSortCriteria(criteria!);
-        _refreshExpenses();
+        updateSortCriteria(sortFilterProvider, criteria);
       },
       items: SortCriteria.values
           .map<DropdownMenuItem<SortCriteria>>(
@@ -84,5 +74,12 @@ class _SortWidgetState extends State<SortWidget> {
           .toList(),
       underline: Container(),
     );
+  }
+
+  void updateSortCriteria(SortFilterProvider sortFilterProvider, SortCriteria? criteria) {
+     if (criteria! != sortFilterProvider.sortCriteria){
+       sortFilterProvider.setSortCriteria(criteria!);
+      _refreshExpenses();
+     }
   }
 }

@@ -21,15 +21,6 @@ class FilterWidgetState extends State<FilterWidget> {
   static final Logger _logger =
       Logger(printer: SimplePrinter(), level: Level.info);
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<SortFilterProvider>(context, listen: false)
-          .refreshPreferences();
-    });
-  }
-
   _refreshExpenses() {
     final expenseProvider =
         Provider.of<ExpenseProvider>(context, listen: false);
@@ -136,7 +127,7 @@ class FilterWidgetState extends State<FilterWidget> {
 
   void _showMonthPicker(SortFilterProvider sortFilterProvider) async {
     final selectedMonth = await MonthPickerDialog.show(context);
-    if (selectedMonth != null) {
+    if (selectedMonth != null && selectedMonth != sortFilterProvider.filterMonth) {
       sortFilterProvider.setFilterMonth(selectedMonth);
       _refreshExpenses();
     }
@@ -144,7 +135,7 @@ class FilterWidgetState extends State<FilterWidget> {
 
   void _showYearPicker(SortFilterProvider sortFilterProvider) async {
     final selectedYear = await YearPickerDialog.show(context);
-    if (selectedYear != null) {
+    if (selectedYear != null && selectedYear.toString() != sortFilterProvider.filterYear) {
       sortFilterProvider.setFilterYear(selectedYear.toString());
       _refreshExpenses();
     }
