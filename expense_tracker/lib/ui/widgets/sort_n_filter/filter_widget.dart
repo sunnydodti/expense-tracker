@@ -4,6 +4,7 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/expense_filters.dart';
+import '../../../providers/expense_provider.dart';
 import '../../../providers/sort_filter_provider.dart';
 import '../../dialogs/filter_expenses_dialog.dart';
 import '../../dialogs/month_picker_dialog.dart';
@@ -29,6 +30,12 @@ class FilterWidgetState extends State<FilterWidget> {
     });
   }
 
+  _refreshExpenses() {
+    final expenseProvider =
+        Provider.of<ExpenseProvider>(context, listen: false);
+    expenseProvider.refreshExpenses();
+  }
+
   void _decrementMonth(SortFilterProvider sortFilterProvider) {
     final currentMonthIndex =
         DateFormat('MMMM').parse(sortFilterProvider.filterMonth).month;
@@ -36,8 +43,8 @@ class FilterWidgetState extends State<FilterWidget> {
       final nextMonthIndex = currentMonthIndex + 1;
       sortFilterProvider.setFilterMonth(
           DateFormat('MMMM').format(DateTime(2000, nextMonthIndex)));
+      _refreshExpenses();
     }
-    setState(() {});
   }
 
   void _incrementMonth(SortFilterProvider sortFilterProvider) {
@@ -47,20 +54,20 @@ class FilterWidgetState extends State<FilterWidget> {
       final prevMonthIndex = currentMonthIndex - 1;
       sortFilterProvider.setFilterMonth(
           DateFormat('MMMM').format(DateTime(2000, prevMonthIndex)));
+      _refreshExpenses();
     }
-    setState(() {});
   }
 
   void _incrementYear(SortFilterProvider sortFilterProvider) {
     final currentYear = int.parse(sortFilterProvider.filterYear);
     sortFilterProvider.setFilterYear((currentYear + 1).toString());
-    setState(() {});
+    _refreshExpenses();
   }
 
   void _decrementYear(SortFilterProvider sortFilterProvider) {
     final currentYear = int.parse(sortFilterProvider.filterYear);
     sortFilterProvider.setFilterYear((currentYear - 1).toString());
-    setState(() {});
+    _refreshExpenses();
   }
 
   @override
@@ -131,6 +138,7 @@ class FilterWidgetState extends State<FilterWidget> {
     final selectedMonth = await MonthPickerDialog.show(context);
     if (selectedMonth != null) {
       sortFilterProvider.setFilterMonth(selectedMonth);
+      _refreshExpenses();
     }
   }
 
@@ -138,6 +146,7 @@ class FilterWidgetState extends State<FilterWidget> {
     final selectedYear = await YearPickerDialog.show(context);
     if (selectedYear != null) {
       sortFilterProvider.setFilterYear(selectedYear.toString());
+      _refreshExpenses();
     }
   }
 
@@ -176,6 +185,8 @@ class FilterWidgetState extends State<FilterWidget> {
 
     sortFilterProvider.setFilterMonth(filters.selectedMonth);
     sortFilterProvider.setFilterYear(filters.selectedYear);
+
+    _refreshExpenses();
   }
 
   _getFilters(SortFilterProvider sortFilterProvider) {
