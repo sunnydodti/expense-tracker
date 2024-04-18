@@ -63,7 +63,7 @@ class CategoryHelper {
         }
       }
     } on Exception catch (e, stackTrace) {
-      _logger.e("Error at populating default categories $e - $stackTrace");
+      _logger.e("Error at populating default categories $e - \n$stackTrace");
     }
   }
 

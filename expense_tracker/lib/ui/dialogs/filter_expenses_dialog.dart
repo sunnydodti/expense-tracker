@@ -56,6 +56,7 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
         ElevatedButton(
           onPressed: _canApplyFilter
               ? () {
+            _expenseFilters.isApplied = _canApplyFilter;
                   Navigator.pop(context, _expenseFilters);
                 }
               : null,

@@ -1,9 +1,18 @@
 class SharedPreferencesConstants {
   static String IS_FIRST_TIME_KEY = "is_first_time";
   static SortPreferencesConstants sort = SortPreferencesConstants();
+  static FilterPreferencesConstants filter = FilterPreferencesConstants();
 }
 
 class SortPreferencesConstants {
-  final String IS_ASCENDIND_SORT_KEY = "sort_is_ascending";
-  final String SORT_CRITERIA_KEY = "sort_criteria";
+  final String IS_ASCENDIND_KEY = "sort_is_ascending";
+  final String CRITERIA_KEY = "sort_criteria";
+}
+
+class FilterPreferencesConstants {
+  final String IS_APPLIED_KEY = "filter_is_applied";
+  final String IS_BY_YEAR_KEY = "filter_is_by_year";
+  final String IS_BY_MONTH_KEY = "filter_is_by_month";
+  final String YEAR_KEY = "filter_year";
+  final String MONTH_KEY = "filter_month";
 }

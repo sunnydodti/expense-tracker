@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../models/enums/sort_criteria.dart';
@@ -57,19 +58,32 @@ class SharedPreferencesHelper {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     // await preferences.clear();
     bool isFirstTime = preferences
-            .getBool(_getKey(SharedPreferencesConstants.IS_FIRST_TIME_KEY)) ??
+        .getBool(_getKey(SharedPreferencesConstants.IS_FIRST_TIME_KEY)) ??
         true;
 
     if (isFirstTime) {
       preferences.setBool(
           _getKey(SharedPreferencesConstants.IS_FIRST_TIME_KEY), false);
 
+      // sort preferences
       preferences.setString(
-          _getKey(SharedPreferencesConstants.sort.SORT_CRITERIA_KEY),
+          _getKey(SharedPreferencesConstants.sort.CRITERIA_KEY),
           SortCriteria.modifiedDate.name);
       preferences.setBool(
-          _getKey(SharedPreferencesConstants.sort.IS_ASCENDIND_SORT_KEY),
-          false);
+          _getKey(SharedPreferencesConstants.sort.IS_ASCENDIND_KEY), false);
+
+      // filter preferences
+      preferences.setBool(
+          _getKey(SharedPreferencesConstants.filter.IS_APPLIED_KEY), true);
+      preferences.setBool(
+          _getKey(SharedPreferencesConstants.filter.IS_BY_YEAR_KEY), false);
+      preferences.setBool(
+          _getKey(SharedPreferencesConstants.filter.IS_BY_MONTH_KEY), true);
+      preferences.setString(_getKey(SharedPreferencesConstants.filter.YEAR_KEY),
+          DateFormat('yyyy').format(DateTime.now()));
+      preferences.setString(
+          _getKey(SharedPreferencesConstants.filter.MONTH_KEY),
+          DateFormat('MMMM').format(DateTime.now()));
     }
   }
 }

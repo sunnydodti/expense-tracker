@@ -123,7 +123,7 @@ class ExpenseProvider extends ChangeNotifier {
   /// refresh expenses from db
   Future<void> refreshExpenses({bool notify = true}) async {
     try {
-      ExpenseService expenseService = await _expenseService;
+      await Future.delayed(const Duration(seconds: 1));
       List<Expense> updatedExpenses = await _fetchExpenses();
       _expenses = await sortFilterService.sortAndFilter(updatedExpenses);
 

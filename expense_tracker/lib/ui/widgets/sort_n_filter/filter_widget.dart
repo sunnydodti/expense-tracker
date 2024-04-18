@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
 
 import '../../../models/expense_filters.dart';
+import '../../../providers/sort_filter_provider.dart';
 import '../../dialogs/filter_expenses_dialog.dart';
 import '../../dialogs/month_picker_dialog.dart';
 import '../../dialogs/year_picker_dialog.dart';
@@ -16,174 +18,174 @@ class FilterWidget extends StatefulWidget {
 
 class FilterWidgetState extends State<FilterWidget> {
   static final Logger _logger =
-  Logger(printer: SimplePrinter(), level: Level.info);
-
-  String _selectedMonth = '';
-  String _selectedYear = '';
-
-  bool _filterByYear = false;
-  bool _filterByMonth = true;
+      Logger(printer: SimplePrinter(), level: Level.info);
 
   @override
   void initState() {
     super.initState();
-    final now = DateTime.now();
-    _selectedMonth = DateFormat('MMMM').format(now);
-    _selectedYear = DateFormat('yyyy').format(now);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<SortFilterProvider>(context, listen: false)
+          .refreshPreferences();
+    });
   }
 
-  void _decrementMonth() {
-    final currentMonthIndex = DateFormat('MMMM').parse(_selectedMonth).month;
+  void _decrementMonth(SortFilterProvider sortFilterProvider) {
+    final currentMonthIndex =
+        DateFormat('MMMM').parse(sortFilterProvider.filterMonth).month;
     if (currentMonthIndex < 12) {
       final nextMonthIndex = currentMonthIndex + 1;
-      _selectedMonth = DateFormat('MMMM').format(DateTime(2000, nextMonthIndex));
+      sortFilterProvider.setFilterMonth(
+          DateFormat('MMMM').format(DateTime(2000, nextMonthIndex)));
     }
     setState(() {});
   }
 
-  void _incrementMonth() {
-    final currentMonthIndex = DateFormat('MMMM').parse(_selectedMonth).month;
+  void _incrementMonth(SortFilterProvider sortFilterProvider) {
+    final currentMonthIndex =
+        DateFormat('MMMM').parse(sortFilterProvider.filterMonth).month;
     if (currentMonthIndex > 1) {
       final prevMonthIndex = currentMonthIndex - 1;
-      _selectedMonth = DateFormat('MMMM').format(DateTime(2000, prevMonthIndex));
+      sortFilterProvider.setFilterMonth(
+          DateFormat('MMMM').format(DateTime(2000, prevMonthIndex)));
     }
     setState(() {});
   }
 
-  void _incrementYear() {
-    final currentYear = int.parse(_selectedYear);
-    _selectedYear = (currentYear + 1).toString();
+  void _incrementYear(SortFilterProvider sortFilterProvider) {
+    final currentYear = int.parse(sortFilterProvider.filterYear);
+    sortFilterProvider.setFilterYear((currentYear + 1).toString());
     setState(() {});
   }
 
-  void _decrementYear() {
-    final currentYear = int.parse(_selectedYear);
-    _selectedYear = (currentYear - 1).toString();
+  void _decrementYear(SortFilterProvider sortFilterProvider) {
+    final currentYear = int.parse(sortFilterProvider.filterYear);
+    sortFilterProvider.setFilterYear((currentYear - 1).toString());
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        _buildFilterButton(),
-        if (_filterByYear) _buildYearDisplay(context),
-        if (_filterByMonth) _buildMonthDisplay(context),
-      ],
-    );
+    return Consumer<SortFilterProvider>(
+        builder: (context, sortFilterProvider, _) {
+      return Row(
+        children: [
+          _buildFilterButton(sortFilterProvider),
+          if (sortFilterProvider.isFilterByYear)
+            _buildYearDisplay(sortFilterProvider),
+          if (sortFilterProvider.isFilterByMonth)
+            _buildMonthDisplay(sortFilterProvider),
+        ],
+      );
+    });
   }
 
-  GestureDetector _buildMonthDisplay(BuildContext context) {
+  GestureDetector _buildMonthDisplay(SortFilterProvider sortFilterProvider) {
     return GestureDetector(
-      onTap: () => _showMonthPicker(context),
+      onTap: () => _showMonthPicker(sortFilterProvider),
       onHorizontalDragEnd: (details) {
         if (details.primaryVelocity! < 0) {
-          _incrementMonth();
+          _incrementMonth(sortFilterProvider);
         } else {
-          _decrementMonth();
+          _decrementMonth(sortFilterProvider);
         }
       },
-      child: _buildMonthDropdown(),
+      child: _buildMonthDropdown(sortFilterProvider),
     );
   }
 
-  GestureDetector _buildYearDisplay(BuildContext context) {
+  GestureDetector _buildYearDisplay(SortFilterProvider sortFilterProvider) {
     return GestureDetector(
-      onTap: () => _showYearPicker(context),
+      onTap: () => _showYearPicker(sortFilterProvider),
       onVerticalDragEnd: (details) {
         if (details.primaryVelocity! < 0) {
-          _incrementYear();
+          _incrementYear(sortFilterProvider);
         } else {
-          _decrementYear();
+          _decrementYear(sortFilterProvider);
         }
       },
-      child: _buildYearDropdown(),
+      child: _buildYearDropdown(sortFilterProvider),
     );
   }
 
-  Widget _buildMonthDropdown() {
+  Widget _buildMonthDropdown(SortFilterProvider sortFilterProvider) {
     return Padding(
       padding: const EdgeInsets.only(left: 10),
       child: Text(
-        _selectedMonth,
+        sortFilterProvider.filterMonth,
         textAlign: TextAlign.center,
       ),
     );
   }
 
-  Widget _buildYearDropdown() {
+  Widget _buildYearDropdown(SortFilterProvider sortFilterProvider) {
     return Padding(
       padding: const EdgeInsets.only(left: 10),
       child: Text(
-        _selectedYear,
+        sortFilterProvider.filterYear,
         textAlign: TextAlign.center,
       ),
     );
   }
 
-  void _showMonthPicker(BuildContext context) async {
+  void _showMonthPicker(SortFilterProvider sortFilterProvider) async {
     final selectedMonth = await MonthPickerDialog.show(context);
     if (selectedMonth != null) {
-      setState(() {
-        _selectedMonth = selectedMonth;
-      });
+      sortFilterProvider.setFilterMonth(selectedMonth);
     }
   }
 
-  void _showYearPicker(BuildContext context) async {
+  void _showYearPicker(SortFilterProvider sortFilterProvider) async {
     final selectedYear = await YearPickerDialog.show(context);
     if (selectedYear != null) {
-      setState(() {
-        _selectedYear = selectedYear.toString();
-      });
+      sortFilterProvider.setFilterYear(selectedYear.toString());
     }
   }
 
-  IconButton _buildFilterButton() {
+  IconButton _buildFilterButton(SortFilterProvider sortFilterProvider) {
     return IconButton(
       icon: const Icon(Icons.filter_list),
-      onPressed: () => _showFilterDialog(),
+      onPressed: () => _showFilterDialog(sortFilterProvider),
       tooltip: "Filter",
     );
   }
 
-  void _showFilterDialog() async {
+  void _showFilterDialog(SortFilterProvider sortFilterProvider) async {
     final newFilters = await showDialog<ExpenseFilters>(
       context: context,
       builder: (context) => FilterExpensesDialog(
-        expenseFilters: _getFilters(),
+        expenseFilters: _getFilters(sortFilterProvider),
       ),
     );
 
     if (newFilters != null) {
-      _setFilters(newFilters);
+      _setFilters(newFilters, sortFilterProvider);
     }
   }
 
-  _setFilters(ExpenseFilters filters) {
+  _setFilters(ExpenseFilters filters, SortFilterProvider sortFilterProvider) {
     _logger.i('filter by year: ${filters.filterByYear}');
     _logger.i('filter by month: ${filters.filterByMonth}');
 
     _logger.i('selected year: ${filters.selectedYear}');
     _logger.i('selected month: ${filters.selectedMonth}');
 
-    setState(() {
-      _filterByYear = filters.filterByYear;
-      _filterByMonth = filters.filterByMonth;
+    sortFilterProvider.setIsFilterApplied(filters.isApplied);
 
-      _selectedMonth = filters.selectedMonth;
-      _selectedYear = filters.selectedYear;
-    });
+    sortFilterProvider.setIsFilterByYear(filters.filterByYear);
+    sortFilterProvider.setIsFilterByMonth(filters.filterByMonth);
+
+    sortFilterProvider.setFilterMonth(filters.selectedMonth);
+    sortFilterProvider.setFilterYear(filters.selectedYear);
   }
 
-  _getFilters() {
+  _getFilters(SortFilterProvider sortFilterProvider) {
     ExpenseFilters filters = ExpenseFilters();
 
-    filters.filterByYear = _filterByYear;
-    filters.filterByMonth = _filterByMonth;
+    filters.filterByYear = sortFilterProvider.isFilterByYear;
+    filters.filterByMonth = sortFilterProvider.isFilterByMonth;
 
-    filters.selectedYear = _selectedYear;
-    filters.selectedMonth = _selectedMonth;
+    filters.selectedYear = sortFilterProvider.filterYear;
+    filters.selectedMonth = sortFilterProvider.filterMonth;
 
     return filters;
   }
