@@ -27,26 +27,30 @@ class FilterWidgetState extends State<FilterWidget> {
     expenseProvider.refreshExpenses();
   }
 
-  void _decrementMonth(SortFilterProvider sortFilterProvider) {
-    final currentMonthIndex =
-        DateFormat('MMMM').parse(sortFilterProvider.filterMonth).month;
-    if (currentMonthIndex < 12) {
-      final nextMonthIndex = currentMonthIndex + 1;
-      sortFilterProvider.setFilterMonth(
-          DateFormat('MMMM').format(DateTime(2000, nextMonthIndex)));
-      _refreshExpenses();
-    }
-  }
-
   void _incrementMonth(SortFilterProvider sortFilterProvider) {
     final currentMonthIndex =
         DateFormat('MMMM').parse(sortFilterProvider.filterMonth).month;
-    if (currentMonthIndex > 1) {
-      final prevMonthIndex = currentMonthIndex - 1;
+    if (currentMonthIndex < 12) {
       sortFilterProvider.setFilterMonth(
-          DateFormat('MMMM').format(DateTime(2000, prevMonthIndex)));
-      _refreshExpenses();
+          DateFormat('MMMM').format(DateTime(2000, currentMonthIndex + 1)));
+    } else {
+      sortFilterProvider.setFilterMonth(
+          DateFormat('MMMM').format(DateTime(2000, currentMonthIndex - 11)));
     }
+    _refreshExpenses();
+  }
+
+  void _decrementMonth(SortFilterProvider sortFilterProvider) {
+    final currentMonthIndex =
+        DateFormat('MMMM').parse(sortFilterProvider.filterMonth).month;
+    if (currentMonthIndex > 1) {
+      sortFilterProvider.setFilterMonth(
+          DateFormat('MMMM').format(DateTime(2000, currentMonthIndex - 1)));
+    } else {
+      sortFilterProvider.setFilterMonth(
+          DateFormat('MMMM').format(DateTime(2000, currentMonthIndex + 11)));
+    }
+    _refreshExpenses();
   }
 
   void _incrementYear(SortFilterProvider sortFilterProvider) {
@@ -82,9 +86,9 @@ class FilterWidgetState extends State<FilterWidget> {
       onTap: () => _showMonthPicker(sortFilterProvider),
       onHorizontalDragEnd: (details) {
         if (details.primaryVelocity! < 0) {
-          _incrementMonth(sortFilterProvider);
-        } else {
           _decrementMonth(sortFilterProvider);
+        } else {
+          _incrementMonth(sortFilterProvider);
         }
       },
       child: _buildMonthDropdown(sortFilterProvider),
