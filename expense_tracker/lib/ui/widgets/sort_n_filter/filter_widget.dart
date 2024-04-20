@@ -73,15 +73,15 @@ class FilterWidgetState extends State<FilterWidget> {
         children: [
           _buildFilterButton(sortFilterProvider),
           if (sortFilterProvider.isFilterByYear)
-            _buildYearDisplay(sortFilterProvider),
+            _buildYearGestureWidget(sortFilterProvider),
           if (sortFilterProvider.isFilterByMonth)
-            _buildMonthDisplay(sortFilterProvider),
+            _buildMonthGestureWidget(sortFilterProvider),
         ],
       );
     });
   }
 
-  GestureDetector _buildMonthDisplay(SortFilterProvider sortFilterProvider) {
+  GestureDetector _buildMonthGestureWidget(SortFilterProvider sortFilterProvider) {
     return GestureDetector(
       onTap: () => _showMonthPicker(sortFilterProvider),
       onHorizontalDragEnd: (details) {
@@ -91,11 +91,11 @@ class FilterWidgetState extends State<FilterWidget> {
           _incrementMonth(sortFilterProvider);
         }
       },
-      child: _buildMonthDropdown(sortFilterProvider),
+      child: _buildMonthText(sortFilterProvider),
     );
   }
 
-  GestureDetector _buildYearDisplay(SortFilterProvider sortFilterProvider) {
+  GestureDetector _buildYearGestureWidget(SortFilterProvider sortFilterProvider) {
     return GestureDetector(
       onTap: () => _showYearPicker(sortFilterProvider),
       onVerticalDragEnd: (details) {
@@ -105,11 +105,11 @@ class FilterWidgetState extends State<FilterWidget> {
           _decrementYear(sortFilterProvider);
         }
       },
-      child: _buildYearDropdown(sortFilterProvider),
+      child: _buildYearText(sortFilterProvider),
     );
   }
 
-  Widget _buildMonthDropdown(SortFilterProvider sortFilterProvider) {
+  Widget _buildMonthText(SortFilterProvider sortFilterProvider) {
     return Padding(
       padding: const EdgeInsets.only(left: 10),
       child: Text(
@@ -119,7 +119,7 @@ class FilterWidgetState extends State<FilterWidget> {
     );
   }
 
-  Widget _buildYearDropdown(SortFilterProvider sortFilterProvider) {
+  Widget _buildYearText(SortFilterProvider sortFilterProvider) {
     return Padding(
       padding: const EdgeInsets.only(left: 10),
       child: Text(

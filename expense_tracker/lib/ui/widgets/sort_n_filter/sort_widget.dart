@@ -68,7 +68,7 @@ class _SortWidgetState extends State<SortWidget> {
           .map<DropdownMenuItem<SortCriteria>>(
             (criteria) => DropdownMenuItem<SortCriteria>(
               value: criteria,
-              child: Text(SortCriteriaHelper.getSortCriteriaText(criteria)),
+              child: Text(textScaleFactor: .9, SortCriteriaHelper.getSortCriteriaText(criteria)),
             ),
           )
           .toList(),
