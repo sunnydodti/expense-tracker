@@ -72,7 +72,7 @@ class ExpenseSummary extends StatelessWidget {
   Text _getSummaryAmount(double amount) {
     String sign = amount > 0 ? '+' : (amount < 0 ? '-' : '');
     return Text(
-      '$sign ₹${amount.abs().round()}',
+      '$sign ₹ ${amount.abs().round()}',
       textScaleFactor: 1.1,
       style: TextStyle(
         fontWeight: FontWeight.bold,

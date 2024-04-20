@@ -131,7 +131,7 @@ class ExpenseTileWidgets {
   }
 
   static String _getAmountText(Expense expense) {
-    String amountText = "${FormConstants.expense.currencies[expense.currency]}"
+    String amountText = "${FormConstants.expense.currencies[expense.currency]} "
         "${expense.amount.round()}";
     amountText = (expense.transactionType == TransactionType.expense.name)
         ? "- $amountText"
