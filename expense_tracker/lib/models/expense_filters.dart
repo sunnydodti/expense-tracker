@@ -1,6 +1,8 @@
 import 'package:intl/intl.dart';
 
 class ExpenseFilters {
+  bool isChanged = false;
+
   bool isApplied = true;
   bool filterByYear = true;
   bool filterByMonth = true;

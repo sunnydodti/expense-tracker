@@ -17,14 +17,12 @@ class FilterExpensesDialog extends StatefulWidget {
 
 class FilterExpensesDialogState extends State<FilterExpensesDialog> {
   late ExpenseFilters _expenseFilters;
-  late bool _canApplyFilter;
 
   @override
   void initState() {
     super.initState();
     _expenseFilters = widget.expenseFilters;
-    _canApplyFilter =
-        _expenseFilters.filterByYear || _expenseFilters.filterByMonth;
+    _expenseFilters.isChanged = false;
   }
 
   @override
@@ -38,7 +36,6 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _buildYearCheckbox(),
-              const SizedBox(width: 10),
               if (_expenseFilters.filterByYear) _buildYearDropdown(),
             ],
           ),
@@ -46,23 +43,36 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _buildMonthCheckbox(),
-              const SizedBox(width: 10),
               if (_expenseFilters.filterByMonth) _buildMonthDropdown(),
             ],
           ),
         ],
       ),
       actions: <Widget>[
-        ElevatedButton(
-          onPressed: _canApplyFilter
-              ? () {
-            _expenseFilters.isApplied = _canApplyFilter;
-                  Navigator.pop(context, _expenseFilters);
-                }
-              : null,
-          child: const Text('Apply Filter'),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [_buildClearFiltersButton(), _buildApplyFiltersButton()],
         )
       ],
+    );
+  }
+
+  ElevatedButton _buildClearFiltersButton() {
+    return ElevatedButton(
+      onPressed: () {
+        _clearAllFilters();
+        Navigator.pop(context, _expenseFilters);
+      },
+      child: const Text('Clear Filter'),
+    );
+  }
+
+  ElevatedButton _buildApplyFiltersButton() {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.pop(context, _expenseFilters);
+      },
+      child: const Text('Apply Filter'),
     );
   }
 
@@ -81,6 +91,7 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
           setState(() {
             _expenseFilters.selectedMonth = newValue!;
           });
+          _expenseFilters.isChanged = true;
         },
         items: [
           for (int i = 1; i <= 12; i++)
@@ -109,6 +120,7 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
           setState(() {
             _expenseFilters.selectedYear = newValue!;
           });
+          _expenseFilters.isChanged = true;
         },
         items: [
           for (int year = 2000; year <= DateTime.now().year; year++)
@@ -139,8 +151,9 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
           setState(() {
             _expenseFilters.filterByMonth =
                 val ?? _expenseFilters.filterByMonth;
-            _updateCanApplyFilter();
           });
+          _expenseFilters.isChanged = true;
+          _updateIsFilterApplied();
         },
       ),
     );
@@ -162,15 +175,23 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
         onChanged: (val) {
           setState(() {
             _expenseFilters.filterByYear = val ?? _expenseFilters.filterByYear;
-            _updateCanApplyFilter();
           });
+          _expenseFilters.isChanged = true;
+          _updateIsFilterApplied();
         },
       ),
     );
   }
 
-  void _updateCanApplyFilter() {
-    _canApplyFilter =
+  void _updateIsFilterApplied() {
+    _expenseFilters.isApplied =
         _expenseFilters.filterByYear || _expenseFilters.filterByMonth;
+  }
+
+  void _clearAllFilters() {
+    if (_expenseFilters.isApplied) _expenseFilters.isChanged = true;
+    _expenseFilters.isApplied = false;
+    _expenseFilters.filterByYear = false;
+    _expenseFilters.filterByMonth = false;
   }
 }

@@ -161,12 +161,14 @@ class FilterWidgetState extends State<FilterWidget> {
       ),
     );
 
-    if (newFilters != null) {
+    if (newFilters != null && newFilters.isChanged) {
       _setFilters(newFilters, sortFilterProvider);
     }
   }
 
   _setFilters(ExpenseFilters filters, SortFilterProvider sortFilterProvider) {
+    _logger.i('is applied: ${filters.isApplied}');
+
     _logger.i('filter by year: ${filters.filterByYear}');
     _logger.i('filter by month: ${filters.filterByMonth}');
 
@@ -186,6 +188,8 @@ class FilterWidgetState extends State<FilterWidget> {
 
   _getFilters(SortFilterProvider sortFilterProvider) {
     ExpenseFilters filters = ExpenseFilters();
+
+    filters.isApplied = sortFilterProvider.isFilterApplied;
 
     filters.filterByYear = sortFilterProvider.isFilterByYear;
     filters.filterByMonth = sortFilterProvider.isFilterByMonth;
