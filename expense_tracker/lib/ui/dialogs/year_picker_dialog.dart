@@ -6,7 +6,15 @@ class YearPickerDialog {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Select Year'),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Select Year'),
+              IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.clear))
+            ],
+          ),
           content: SizedBox(
             height: 200.0,
             width: 200.0,

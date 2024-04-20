@@ -28,7 +28,7 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Expense Filters'),
+      title: buildDialogTitle(),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -57,11 +57,22 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
     );
   }
 
+  Row buildDialogTitle() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text('Expense Filters'),
+        const SizedBox(width: 70),
+        IconButton(onPressed: _closeFilterDialog, icon: const Icon(Icons.clear))
+      ],
+    );
+  }
+
   ElevatedButton _buildClearFiltersButton() {
     return ElevatedButton(
       onPressed: () {
         _clearAllFilters();
-        Navigator.pop(context, _expenseFilters);
+        _closeFilterDialog();
       },
       child: const Text('Clear Filter'),
     );
@@ -70,10 +81,14 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
   ElevatedButton _buildApplyFiltersButton() {
     return ElevatedButton(
       onPressed: () {
-        Navigator.pop(context, _expenseFilters);
+        _closeFilterDialog();
       },
       child: const Text('Apply Filter'),
     );
+  }
+
+  void _closeFilterDialog() {
+    Navigator.pop(context, _expenseFilters);
   }
 
   Expanded _buildMonthDropdown() {

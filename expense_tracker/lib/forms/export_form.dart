@@ -167,7 +167,7 @@ class _ExportFormState extends State<ExportForm> {
       storagePath = '';
     }
 
-    String fileName = fileNameController.text;
+    String fileName = fileNameController.text.trim();
     if (fileName.isNotEmpty || fileName != "") {
       if (!fileName.endsWith(FileConstants.export.extension)) {
         fileName += FileConstants.export.extension;
@@ -221,7 +221,7 @@ class _ExportFormState extends State<ExportForm> {
       maxLength: 30,
       decoration: InputDecoration(
         focusColor: Colors.green,
-        labelText: 'File Name',
+        labelText: 'File Name (optional)',
         hintText: "Enter name for exported file",
         suffixIcon: IconButton(
           onPressed: () {

@@ -12,7 +12,15 @@ class ShareFileDialog {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(title.toString()),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(title.toString()),
+            IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.clear))
+          ],
+        ),
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
