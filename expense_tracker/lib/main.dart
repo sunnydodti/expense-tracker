@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         key: navigatorKey,
         theme: ThemeData(colorScheme: const ColorScheme.dark()),
-        home: const HomePage(),
+        home: const HomeScreen(),
       ),
     );
   }

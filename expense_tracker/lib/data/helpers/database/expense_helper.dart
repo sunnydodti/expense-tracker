@@ -91,11 +91,11 @@ class ExpenseHelper {
     if (filters.isApplied) {
       whereClause += '1=1';
       if (filters.filterByYear) {
-        whereClause += ' AND strftime("%Y", ${DBConstants.expense.date}) = ?';
+        whereClause += ''' AND strftime('%Y', ${DBConstants.expense.date}) = ?''';
         whereArgs.add(filters.selectedYear);
       }
       if (filters.filterByMonth) {
-        whereClause += ' AND strftime("%m", ${DBConstants.expense.date}) = ?';
+        whereClause += ''' AND strftime('%m', ${DBConstants.expense.date}) = ?''';
         whereArgs.add(getMonthNumber(filters.selectedMonth));
       }
     }

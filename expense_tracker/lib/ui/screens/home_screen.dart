@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/constants/response_constants.dart';
+import '../../data/helpers/debug_helper.dart';
 import '../../models/enums/form_modes.dart';
 import '../../providers/expense_provider.dart';
 import '../../service/expense_service.dart';
+import '../dialogs/message_dialog.dart';
 import '../drawer/home_drawer.dart';
+import '../notifications/snackbar_service.dart';
 import '../widgets/expense/expense_list_dynamic.dart';
 import 'expense_screen.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   final String title = "Expense Tracker";
   static final Future<ExpenseService> _expenseService = ExpenseService.create();
@@ -33,15 +37,16 @@ class HomePage extends StatelessWidget {
                 title: Text(title, textScaleFactor: 0.9),
                 backgroundColor: Colors.black,
                 actions: [
-                  IconButton(
-                    icon: const Icon(Icons.add, size: 20),
-                    tooltip: "add random expense",
-                    onPressed: () => populateExpense(context),
-                  ),
+                  if (DebugHelper.isDebugMode)
+                    IconButton(
+                      icon: const Icon(Icons.add, size: 20),
+                      tooltip: "add random expense",
+                      onPressed: () => populateExpense(context),
+                    ),
                   IconButton(
                     icon: const Icon(Icons.person, size: 20),
                     tooltip: "Profile",
-                    onPressed: _handelProfile,
+                    onPressed: () => _handelProfile(context),
                   ),
                 ],
               ),
@@ -56,7 +61,17 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  void _handelProfile() => {};
+  void _handelProfile(BuildContext context) =>
+      {
+        showDialog(
+          context: context,
+          builder: (context) =>
+          const SimpleDialogWidget(
+            title: 'To be added',
+            message: 'Profile will be added soon',
+          ),
+        ),
+      };
 
   void populateExpense(BuildContext context) async {
     ExpenseService service = await _expenseService;
@@ -90,7 +105,7 @@ class HomePage extends StatelessWidget {
 
   Future<void> _refreshExpensesHome(BuildContext context) async {
     final expenseProvider =
-        Provider.of<ExpenseProvider>(context, listen: false);
+    Provider.of<ExpenseProvider>(context, listen: false);
     expenseProvider.refreshExpenses();
   }
 }
