@@ -12,7 +12,7 @@ class SortFilterProvider extends ChangeNotifier {
   SortCriteria _sortCriteria = SortCriteria.modifiedDate;
   bool _isAscendingSort = false;
   bool _isFilterApplied = true;
-  bool _isFilterByYear = false;
+  bool _isFilterByYear = true;
   bool _isFilterByMonth = true;
   String _filterYear = DateFormat('yyyy').format(DateTime.now());
   String _filterMonth = DateFormat('MMMM').format(DateTime.now());

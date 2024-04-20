@@ -44,6 +44,7 @@ class ExpenseTile extends StatelessWidget {
               ),
               const SizedBox(height: 5.0),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   ExpenseTileWidgets.noteWidget(expense),
                   ExpenseTileWidgets.amountWidget(expense),

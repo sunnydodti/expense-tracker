@@ -6,8 +6,7 @@ import '../../../models/enums/transaction_type.dart';
 import '../../../models/expense.dart';
 
 class ExpenseTileWidgets {
-  static double getTextScaleFactor() => 1.1;
-
+  static double getTextScaleFactor() => .9;
   static Expanded getExpenseDate(Expense expense) {
     return Expanded(
       child: Align(
@@ -50,9 +49,6 @@ class ExpenseTileWidgets {
               Text(
                 '${expense.category} ',
                 textScaleFactor: getTextScaleFactor(),
-                // style: const TextStyle(
-                //   fontSize: 16.0,
-                // ),
               ),
               const Icon(
                 Icons.category_outlined,
@@ -113,27 +109,25 @@ class ExpenseTileWidgets {
     return Expanded(
       flex: 1,
       child: Align(
-        alignment: Alignment.topRight,
+        alignment: Alignment.centerLeft,
         child: _getAmount(expense),
       ),
     );
   }
 
-  static Align _getAmount(Expense expense) {
+  static Padding _getAmount(Expense expense) {
     String transactionType = expense.transactionType;
-    return Align(
-        alignment: Alignment.topLeft,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 40.0),
-          child: Text(
-            _getAmountText(expense),
-            textScaleFactor: 1.2,
-            style: TextStyle(
-              // fontSize: 16.0,
-              color: _getAmountColor(transactionType),
-            ),
-          ),
-        ));
+    return Padding(
+      padding: const EdgeInsets.only(left: 20),
+      child: Text(
+        _getAmountText(expense),
+        textScaleFactor: 1.1,
+        style: TextStyle(
+          // fontSize: 16.0,
+          color: _getAmountColor(transactionType),
+        ),
+      ),
+    );
   }
 
   static String _getAmountText(Expense expense) {
