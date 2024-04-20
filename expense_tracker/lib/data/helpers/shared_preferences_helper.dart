@@ -76,7 +76,7 @@ class SharedPreferencesHelper {
       preferences.setBool(
           _getKey(SharedPreferencesConstants.filter.IS_APPLIED_KEY), true);
       preferences.setBool(
-          _getKey(SharedPreferencesConstants.filter.IS_BY_YEAR_KEY), false);
+          _getKey(SharedPreferencesConstants.filter.IS_BY_YEAR_KEY), true);
       preferences.setBool(
           _getKey(SharedPreferencesConstants.filter.IS_BY_MONTH_KEY), true);
       preferences.setString(_getKey(SharedPreferencesConstants.filter.YEAR_KEY),

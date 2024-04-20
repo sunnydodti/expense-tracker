@@ -7,17 +7,28 @@ import '../service/sort_filter_service.dart';
 class SortFilterProvider extends ChangeNotifier {
   final SortFilterService _sortFilterService = SortFilterService.create();
 
-  // sort
-  // final SortCriteria _defaultSortCriteria = SortCriteria.modifiedDate;
+  // region section 1: states
+
   SortCriteria _sortCriteria = SortCriteria.modifiedDate;
+  bool _isAscendingSort = false;
+  bool _isFilterApplied = true;
+  bool _isFilterByYear = false;
+  bool _isFilterByMonth = true;
+  String _filterYear = DateFormat('yyyy').format(DateTime.now());
+  String _filterMonth = DateFormat('MMMM').format(DateTime.now());
+
+  //endregion
+
+  // region section 2: sort
+
   SortCriteria get sortCriteria => _sortCriteria;
+
   setSortCriteria(SortCriteria sortCriteria) {
     _sortCriteria = sortCriteria;
     _sortFilterService.setPreferenceSortCriteria(sortCriteria);
     notifyListeners();
   }
 
-  bool _isAscendingSort = false;
   bool get isAscendingSort => _isAscendingSort;
 
   setIsAscendingSort(bool value) {
@@ -31,8 +42,9 @@ class SortFilterProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // filter
-  bool _isFilterApplied = true;
+  //endregion
+
+  // region section 3: filter
 
   bool get isFilterApplied => _isFilterApplied;
 
@@ -42,8 +54,6 @@ class SortFilterProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool _isFilterByYear = false;
-
   bool get isFilterByYear => _isFilterByYear;
 
   setIsFilterByYear(bool value) {
@@ -52,7 +62,11 @@ class SortFilterProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool _isFilterByMonth = true;
+  setFilterYear(String value) {
+    _filterYear = value;
+    _sortFilterService.setPreferenceFilterYear(value);
+    notifyListeners();
+  }
 
   bool get isFilterByMonth => _isFilterByMonth;
 
@@ -62,25 +76,19 @@ class SortFilterProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _filterYear = DateFormat('yyyy').format(DateTime.now());
-
   String get filterYear => _filterYear;
-
-  setFilterYear(String value) {
-    _filterYear = value;
-    _sortFilterService.setPreferenceFilterYear(value);
-    notifyListeners();
-  }
-
-  String _filterMonth = DateFormat('MMMM').format(DateTime.now());
-
-  String get filterMonth => _filterMonth;
 
   setFilterMonth(String value) {
     _filterMonth = value;
     _sortFilterService.setPreferenceFilterMonth(filterMonth);
     notifyListeners();
   }
+
+  String get filterMonth => _filterMonth;
+
+  //endregion
+
+  //region section 4: refresh
 
   refreshPreferences({bool notify = false}) async {
     // get sort preferences
@@ -110,4 +118,6 @@ class SortFilterProvider extends ChangeNotifier {
     _filterMonth = filterMonth ?? _filterMonth;
     if (notify) notifyListeners();
   }
+
+//endregion
 }
