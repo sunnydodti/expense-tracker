@@ -15,7 +15,7 @@ class SortWidget extends StatefulWidget {
 }
 
 class _SortWidgetState extends State<SortWidget> {
-   _refreshExpenses() {
+  _refreshExpenses() {
     final expenseProvider =
         Provider.of<ExpenseProvider>(context, listen: false);
     expenseProvider.refreshExpenses();
@@ -68,7 +68,9 @@ class _SortWidgetState extends State<SortWidget> {
           .map<DropdownMenuItem<SortCriteria>>(
             (criteria) => DropdownMenuItem<SortCriteria>(
               value: criteria,
-              child: Text(textScaleFactor: .9, SortCriteriaHelper.getSortCriteriaText(criteria)),
+              child: Text(
+                  textScaleFactor: .9,
+                  SortCriteriaHelper.getSortCriteriaText(criteria)),
             ),
           )
           .toList(),
@@ -76,10 +78,11 @@ class _SortWidgetState extends State<SortWidget> {
     );
   }
 
-  void updateSortCriteria(SortFilterProvider sortFilterProvider, SortCriteria? criteria) {
-     if (criteria! != sortFilterProvider.sortCriteria){
-       sortFilterProvider.setSortCriteria(criteria!);
+  void updateSortCriteria(
+      SortFilterProvider sortFilterProvider, SortCriteria? criteria) {
+    if (criteria! != sortFilterProvider.sortCriteria) {
+      sortFilterProvider.setSortCriteria(criteria!);
       _refreshExpenses();
-     }
+    }
   }
 }

@@ -81,7 +81,8 @@ class FilterWidgetState extends State<FilterWidget> {
     });
   }
 
-  GestureDetector _buildMonthGestureWidget(SortFilterProvider sortFilterProvider) {
+  GestureDetector _buildMonthGestureWidget(
+      SortFilterProvider sortFilterProvider) {
     return GestureDetector(
       onTap: () => _showMonthPicker(sortFilterProvider),
       onHorizontalDragEnd: (details) {
@@ -95,7 +96,8 @@ class FilterWidgetState extends State<FilterWidget> {
     );
   }
 
-  GestureDetector _buildYearGestureWidget(SortFilterProvider sortFilterProvider) {
+  GestureDetector _buildYearGestureWidget(
+      SortFilterProvider sortFilterProvider) {
     return GestureDetector(
       onTap: () => _showYearPicker(sortFilterProvider),
       onVerticalDragEnd: (details) {
@@ -131,7 +133,8 @@ class FilterWidgetState extends State<FilterWidget> {
 
   void _showMonthPicker(SortFilterProvider sortFilterProvider) async {
     final selectedMonth = await MonthPickerDialog.show(context);
-    if (selectedMonth != null && selectedMonth != sortFilterProvider.filterMonth) {
+    if (selectedMonth != null &&
+        selectedMonth != sortFilterProvider.filterMonth) {
       sortFilterProvider.setFilterMonth(selectedMonth);
       _refreshExpenses();
     }
@@ -139,7 +142,8 @@ class FilterWidgetState extends State<FilterWidget> {
 
   void _showYearPicker(SortFilterProvider sortFilterProvider) async {
     final selectedYear = await YearPickerDialog.show(context);
-    if (selectedYear != null && selectedYear.toString() != sortFilterProvider.filterYear) {
+    if (selectedYear != null &&
+        selectedYear.toString() != sortFilterProvider.filterYear) {
       sortFilterProvider.setFilterYear(selectedYear.toString());
       _refreshExpenses();
     }

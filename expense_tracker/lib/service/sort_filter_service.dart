@@ -160,7 +160,7 @@ class SortFilterService {
     SortCriteria sortCriteria =
         SortCriteriaHelper.getSortCriteriaByName(criteria);
     bool isAscending = await SharedPreferencesHelper.getBool(
-        SharedPreferencesConstants.sort.IS_ASCENDIND_KEY) ??
+            SharedPreferencesConstants.sort.IS_ASCENDIND_KEY) ??
         false;
     switch (sortCriteria) {
       case SortCriteria.createdDate:

@@ -5,11 +5,9 @@ import 'package:logger/logger.dart';
 import '../models/enums/transaction_type.dart';
 import '../models/expense.dart';
 import '../service/expense_service.dart';
-import '../service/sort_filter_service.dart';
 
 class ExpenseProvider extends ChangeNotifier {
   late final Future<ExpenseService> _expenseService;
-  late final SortFilterService sortFilterService = SortFilterService.create();
 
   static final Logger _logger =
       Logger(printer: SimplePrinter(), level: Level.info);
@@ -124,8 +122,7 @@ class ExpenseProvider extends ChangeNotifier {
   Future<void> refreshExpenses({bool notify = true}) async {
     try {
       await Future.delayed(const Duration(seconds: 1));
-      List<Expense> updatedExpenses = await _fetchExpenses();
-      _expenses = await sortFilterService.sortAndFilter(updatedExpenses);
+      _expenses = await _fetchExpenses();
 
       if (notify) notifyListeners();
     } catch (e, stackTrace) {
@@ -136,6 +133,7 @@ class ExpenseProvider extends ChangeNotifier {
   /// fetch updated expenses from db
   Future<List<Expense>> _fetchExpenses() async {
     ExpenseService expenseService = await _expenseService;
-    return await expenseService.getExpenses();
+    // return await expenseService.getExpenses();
+    return await expenseService.getSortedAndFilteredExpenses();
   }
 }

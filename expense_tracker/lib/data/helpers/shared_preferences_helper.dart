@@ -58,7 +58,7 @@ class SharedPreferencesHelper {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     // await preferences.clear();
     bool isFirstTime = preferences
-        .getBool(_getKey(SharedPreferencesConstants.IS_FIRST_TIME_KEY)) ??
+            .getBool(_getKey(SharedPreferencesConstants.IS_FIRST_TIME_KEY)) ??
         true;
 
     if (isFirstTime) {

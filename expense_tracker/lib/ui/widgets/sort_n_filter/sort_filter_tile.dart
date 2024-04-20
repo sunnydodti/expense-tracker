@@ -21,6 +21,7 @@ class _SortFilterTileState extends State<SortFilterTile> {
           .refreshPreferences();
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(

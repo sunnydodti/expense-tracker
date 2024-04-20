@@ -7,6 +7,7 @@ import '../../../models/expense.dart';
 
 class ExpenseTileWidgets {
   static double getTextScaleFactor() => .9;
+
   static Expanded getExpenseDate(Expense expense) {
     return Expanded(
       child: Align(

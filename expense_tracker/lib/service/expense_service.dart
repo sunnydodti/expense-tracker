@@ -4,12 +4,16 @@ import 'package:logger/logger.dart';
 import '../data/constants/db_constants.dart';
 import '../data/helpers/database/database_helper.dart';
 import '../data/helpers/database/expense_helper.dart';
+import '../models/enums/sort_criteria.dart';
 import '../models/expense.dart';
+import '../models/expense_filters.dart';
+import 'sort_filter_service.dart';
 
 class ExpenseService {
   late final ExpenseHelper _expenseHelper;
   static final Logger _logger =
       Logger(printer: SimplePrinter(), level: Level.info);
+  final SortFilterService sortFilterService = SortFilterService.create();
 
   ExpenseService._(this._expenseHelper);
 
@@ -58,6 +62,24 @@ class ExpenseService {
     return expenseMapList
         .map((expenseMap) => Expense.fromMap(expenseMap))
         .toList();
+  }
+
+  Future<List<Expense>> getSortedAndFilteredExpenses() async {
+    SortCriteria? sortCriteria =
+        await sortFilterService.getPreferenceSortCriteria();
+    bool? isAscendingSort =
+        await sortFilterService.getPreferenceIsAscendingSort();
+    ExpenseFilters expenseFilters = await sortFilterService.getExpenseFilters();
+
+    List<Map<String, dynamic>> expenseMapList =
+        await _expenseHelper.getSortedAndFilteredExpenses(
+            sortCriteria!, isAscendingSort!, expenseFilters);
+
+    List<Expense> expenses = expenseMapList
+        .map((expenseMap) => Expense.fromMap(expenseMap))
+        .toList();
+    // _expenses = await sortFilterService.sortAndFilter(updatedExpenses);
+    return expenses;
   }
 
   Future<List<Map<String, dynamic>>> getExpenseMaps() async {

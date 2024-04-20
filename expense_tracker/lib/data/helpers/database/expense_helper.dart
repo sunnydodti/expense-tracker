@@ -1,7 +1,10 @@
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../../../models/enums/sort_criteria.dart';
 import '../../../models/expense.dart';
+import '../../../models/expense_filters.dart';
 import '../../constants/db_constants.dart';
 
 class ExpenseHelper {
@@ -73,6 +76,43 @@ class ExpenseHelper {
     return await database.query(DBConstants.expense.table);
   }
 
+  Future<List<Map<String, dynamic>>> getSortedAndFilteredExpenses(
+    SortCriteria sortCriteria,
+    bool isAscendingSort,
+    ExpenseFilters filters,
+  ) async {
+    _logger.i("getting sorted and filtered expenses");
+    Database database = getDatabase;
+    String tableName = DBConstants.expense.table;
+
+    String whereClause = '';
+    List<dynamic> whereArgs = [];
+
+    if (filters.isApplied) {
+      whereClause += '1=1';
+      if (filters.filterByYear) {
+        whereClause += ' AND strftime("%Y", ${DBConstants.expense.date}) = ?';
+        whereArgs.add(filters.selectedYear);
+      }
+      if (filters.filterByMonth) {
+        whereClause += ' AND strftime("%m", ${DBConstants.expense.date}) = ?';
+        whereArgs.add(getMonthNumber(filters.selectedMonth));
+      }
+    }
+
+    String orderBy = '';
+    orderBy = getOrderByCriteria(sortCriteria, orderBy);
+
+    orderBy += isAscendingSort ? ' ASC' : ' DESC';
+
+    return await database.query(
+      tableName,
+      where: whereClause.isEmpty ? null : whereClause,
+      whereArgs: whereClause.isEmpty ? null : whereArgs,
+      orderBy: orderBy,
+    );
+  }
+
   // UPDATE
   Future<int> updateExpense(ExpenseFormModel expense) async {
     _logger.i("updating expense ${expense.id} - ${expense.title}");
@@ -131,5 +171,25 @@ class ExpenseHelper {
         expense,
       );
     }
+  }
+
+  String getOrderByCriteria(SortCriteria sortCriteria, String orderBy) {
+    switch (sortCriteria) {
+      case SortCriteria.createdDate:
+        orderBy = 'created_at';
+        break;
+      case SortCriteria.modifiedDate:
+        orderBy = 'modified_at';
+        break;
+      case SortCriteria.expenseDate:
+        orderBy = 'date';
+        break;
+    }
+    return orderBy;
+  }
+
+  String getMonthNumber(String monthName) {
+    DateTime date = DateFormat('MMMM').parse(monthName);
+    return DateFormat('MM').format(date);
   }
 }
