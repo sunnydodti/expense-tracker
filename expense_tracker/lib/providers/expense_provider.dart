@@ -121,7 +121,7 @@ class ExpenseProvider extends ChangeNotifier {
   /// refresh expenses from db
   Future<void> refreshExpenses({bool notify = true}) async {
     try {
-      await Future.delayed(const Duration(seconds: 1));
+      // await Future.delayed(const Duration(seconds: 1));
       _expenses = await _fetchExpenses();
 
       if (notify) notifyListeners();
