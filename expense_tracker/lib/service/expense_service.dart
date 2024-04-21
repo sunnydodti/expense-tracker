@@ -70,7 +70,12 @@ class ExpenseService {
     bool? isAscendingSort =
         await sortFilterService.getPreferenceIsAscendingSort();
     ExpenseFilters expenseFilters = await sortFilterService.getExpenseFilters();
-
+    _logger.i("isAscendingSort: $isAscendingSort");
+    _logger.i("sortCriteria: ${sortCriteria!.name}");
+    _logger.i("filters: ");
+    _logger.i("month: ${expenseFilters.selectedMonth} - ${expenseFilters.filterByMonth}");
+    _logger.i("year: ${expenseFilters.selectedYear} - ${expenseFilters.filterByYear}");
+    _logger.i("isApplied: ${expenseFilters.isApplied}");
     List<Map<String, dynamic>> expenseMapList =
         await _expenseHelper.getSortedAndFilteredExpenses(
             sortCriteria!, isAscendingSort!, expenseFilters);

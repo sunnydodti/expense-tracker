@@ -72,10 +72,12 @@ class FilterWidgetState extends State<FilterWidget> {
       return Row(
         children: [
           _buildFilterButton(sortFilterProvider),
-          if (sortFilterProvider.isFilterByYear)
-            _buildYearGestureWidget(sortFilterProvider),
+          _buildExpenseCount(),
+          if (sortFilterProvider.isFilterApplied) const Text("   in"),
           if (sortFilterProvider.isFilterByMonth)
             _buildMonthGestureWidget(sortFilterProvider),
+          if (sortFilterProvider.isFilterByYear)
+            _buildYearGestureWidget(sortFilterProvider),
         ],
       );
     });
@@ -203,4 +205,19 @@ class FilterWidgetState extends State<FilterWidget> {
 
     return filters;
   }
+
+  Consumer<ExpenseProvider> _buildExpenseCount() {
+    return Consumer<ExpenseProvider>(
+      builder: (context, provider, _) {
+        int count = provider.expenses.length;
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 15),
+          child: Text(
+            '$count',
+          ),
+        );
+      },
+    );
+  }
+
 }

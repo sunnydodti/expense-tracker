@@ -32,23 +32,9 @@ class _SortFilterTileState extends State<SortFilterTile> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: const [
-          // _getTransactionsText(),
           FilterWidget(),
           SortWidget()
         ],
-      ),
-    );
-  }
-
-  Padding _getTransactionsText() {
-    return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 15),
-      child: Text(
-        'Transactions',
-        style: TextStyle(
-          fontWeight: FontWeight.w400,
-          fontSize: 18,
-        ),
       ),
     );
   }

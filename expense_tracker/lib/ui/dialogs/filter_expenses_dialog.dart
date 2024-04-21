@@ -35,15 +35,15 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildYearCheckbox(),
-              if (_expenseFilters.filterByYear) _buildYearDropdown(),
+              _buildMonthCheckbox(),
+              if (_expenseFilters.filterByMonth) _buildMonthDropdown(),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildMonthCheckbox(),
-              if (_expenseFilters.filterByMonth) _buildMonthDropdown(),
+              _buildYearCheckbox(),
+              if (_expenseFilters.filterByYear) _buildYearDropdown(),
             ],
           ),
         ],
