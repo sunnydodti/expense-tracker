@@ -219,5 +219,4 @@ class FilterWidgetState extends State<FilterWidget> {
       },
     );
   }
-
 }

@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../data/constants/response_constants.dart';
 import '../../data/helpers/debug_helper.dart';
 import '../../models/enums/form_modes.dart';
 import '../../providers/expense_provider.dart';
 import '../../service/expense_service.dart';
 import '../dialogs/message_dialog.dart';
 import '../drawer/home_drawer.dart';
-import '../notifications/snackbar_service.dart';
 import '../widgets/expense/expense_list_dynamic.dart';
 import 'expense_screen.dart';
 
@@ -61,12 +59,10 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  void _handelProfile(BuildContext context) =>
-      {
+  void _handelProfile(BuildContext context) => {
         showDialog(
           context: context,
-          builder: (context) =>
-          const SimpleDialogWidget(
+          builder: (context) => const SimpleDialogWidget(
             title: 'To be added',
             message: 'Profile will be added soon',
           ),
@@ -105,7 +101,7 @@ class HomeScreen extends StatelessWidget {
 
   Future<void> _refreshExpensesHome(BuildContext context) async {
     final expenseProvider =
-    Provider.of<ExpenseProvider>(context, listen: false);
+        Provider.of<ExpenseProvider>(context, listen: false);
     expenseProvider.refreshExpenses();
   }
 }

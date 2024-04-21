@@ -31,10 +31,7 @@ class _SortFilterTileState extends State<SortFilterTile> {
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: const [
-          FilterWidget(),
-          SortWidget()
-        ],
+        children: const [FilterWidget(), SortWidget()],
       ),
     );
   }

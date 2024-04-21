@@ -1,3 +1,4 @@
+import 'package:expense_tracker/ui/dialogs/delete_all_tile.dart';
 import 'package:flutter/material.dart';
 
 import '../../forms/export_form.dart';
@@ -59,6 +60,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           title: 'Import', content: ImportForm()),
                       ExpandableListTile(
                           title: 'Export', content: ExportForm()),
+                      DeleteAllTile()
                     ],
                   ),
                 )

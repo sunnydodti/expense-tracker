@@ -4,7 +4,8 @@ class SimpleDialogWidget extends StatelessWidget {
   final String title;
   final String message;
 
-  const SimpleDialogWidget({Key? key, required this.title, required this.message})
+  const SimpleDialogWidget(
+      {Key? key, required this.title, required this.message})
       : super(key: key);
 
   @override

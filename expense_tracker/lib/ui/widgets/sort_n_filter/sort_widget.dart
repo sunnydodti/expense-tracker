@@ -81,7 +81,7 @@ class _SortWidgetState extends State<SortWidget> {
   void updateSortCriteria(
       SortFilterProvider sortFilterProvider, SortCriteria? criteria) {
     if (criteria! != sortFilterProvider.sortCriteria) {
-      sortFilterProvider.setSortCriteria(criteria!);
+      sortFilterProvider.setSortCriteria(criteria);
       _refreshExpenses();
     }
   }

@@ -38,7 +38,7 @@ class ExpenseListDynamic extends StatelessWidget {
                           },
                         ),
                       ),
-                if (expenseCount < 5 && expenseCount > 0)
+                if (expenseCount < 4 && expenseCount > 0)
                   const ExpenseSwipeInfoWidget(),
               ],
             ),
