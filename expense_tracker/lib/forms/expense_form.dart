@@ -180,22 +180,19 @@ class _ExpenseFormState extends State<ExpenseForm> {
                 children: [getTitleField()],
               ),
               Row(
-                children: [
-                  getCurrencyField(),
-                  getAmountField(),
-                ],
+                children: [getAmountField()],
               ),
               Row(
-                children: [
-                  getTransactionTypeField(),
-                  getDateField(context),
-                ],
+                children: [getTransactionTypeField()],
               ),
               Row(
-                children: [
-                  getCategoryField(),
-                  getTagsField(),
-                ],
+                children: [getDateField(context)],
+              ),
+              Row(
+                children: [getCategoryField()],
+              ),
+              Row(
+                children: [getTagsField()],
               ),
               Row(
                 children: [getNotesField()],
@@ -206,13 +203,16 @@ class _ExpenseFormState extends State<ExpenseForm> {
         ));
   }
 
-  ElevatedButton getSubmitButton() {
-    return ElevatedButton(
-        onPressed: _submitExpense,
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(_highlightColor),
-        ),
-        child: Text((widget.formMode == FormMode.add) ? 'Submit' : 'Edit'));
+  Container getSubmitButton() {
+    return Container(
+      padding: _fieldPadding(),
+      child: ElevatedButton(
+          onPressed: _submitExpense,
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(_highlightColor),
+          ),
+          child: Text((widget.formMode == FormMode.add) ? 'Submit' : 'Edit')),
+    );
   }
 
   // ---------------------------------{ title --------------------------------- //
@@ -225,13 +225,14 @@ class _ExpenseFormState extends State<ExpenseForm> {
             controller: titleController,
             maxLines: 1,
             decoration: InputDecoration(
-              border: _fieldBorder(),
               focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
                 color: _highlightColor,
               )),
               focusColor: _highlightColor,
+              prefixIcon: Icon(Icons.title_outlined, size: _getIconSize()),
               labelText: 'Title',
+              hintText: 'Add a Title',
               suffixIcon: IconButton(
                 onPressed: () {
                   titleController.clear();
@@ -239,7 +240,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
                 icon: Icon(Icons.clear, size: _getIconSize()),
               ),
             ),
-            validator: (value) => validateTextField(value, "enter Title"),
+            validator: (value) => validateTextField(value, 'enter Title'),
             keyboardType: TextInputType.text,
             onChanged: (value) {
               _logger.i('title: $value');
@@ -259,12 +260,10 @@ class _ExpenseFormState extends State<ExpenseForm> {
           child: TextFormField(
             controller: notesController,
             maxLines: 1,
-            // textInputAction: TextInputAction.newline,
-            // onEditingComplete: () {},
             decoration: InputDecoration(
-              border: _fieldBorder(),
               prefixIcon: Icon(Icons.edit, size: _getIconSize()),
               labelText: 'Notes',
+              hintText: "Add Notes",
               suffixIcon: IconButton(
                 onPressed: () {
                   notesController.clear();
@@ -292,8 +291,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
           isExpanded: true,
           value: _selectedTag,
           items: FormWidgets.getDropdownItems(_tags, (tag) => tag.name),
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            prefixIcon: Icon(Icons.label_outline, size: _getIconSize()),
+            // border: OutlineInputBorder(),
             labelText: 'Tags',
           ),
           validator: (value) => validateTag("select tags"),
@@ -317,8 +317,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
             value: _selectedCategory,
             items: FormWidgets.getDropdownItems(
                 _categories, (category) => category.name),
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
+            decoration: InputDecoration(
+              prefixIcon: Icon(Icons.edit, size: _getIconSize()),
+              // border: OutlineInputBorder(),
               labelText: 'Category',
             ),
             validator: (value) => validateCategory("select category"),
@@ -339,9 +340,10 @@ class _ExpenseFormState extends State<ExpenseForm> {
           child: TextFormField(
             controller: dateController,
             decoration: InputDecoration(
-              border: const OutlineInputBorder(),
+              // border: const OutlineInputBorder(),
               labelText: 'Date',
-              prefixIcon: Icon(Icons.calendar_today, size: _getIconSize()),
+              prefixIcon:
+                  Icon(Icons.calendar_today_outlined, size: _getIconSize()),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -395,12 +397,13 @@ class _ExpenseFormState extends State<ExpenseForm> {
           padding: _fieldPadding(),
           child: DropdownButtonFormField(
             isExpanded: true,
+            isDense: true,
             value: transactionTypeController.text,
             items: FormWidgets.getTransactionTypeDropdownItems(),
             decoration: InputDecoration(
               prefixIcon:
                   Icon(Icons.monetization_on_outlined, size: _getIconSize()),
-              border: const OutlineInputBorder(),
+              // border: const OutlineInputBorder(),
               labelText: 'Transaction Type',
             ),
             validator: (value) =>
@@ -423,9 +426,11 @@ class _ExpenseFormState extends State<ExpenseForm> {
         child: TextFormField(
           controller: amountController,
           decoration: InputDecoration(
-            border: _fieldBorder(),
-            prefixText: amountPrefixController.text,
+            // border: _fieldBorder(),
+            prefixIcon: Icon(Icons.attach_money_outlined, size: _getIconSize()),
+            prefixText: '${amountPrefixController.text} ',
             labelText: 'Amount',
+            hintText: 'Add Amount',
             suffixIcon: IconButton(
               onPressed: () {
                 amountController.clear();
@@ -433,7 +438,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
               icon: const Icon(Icons.clear),
             ),
           ),
-          validator: (value) => validateTextField(value, "enter amount"),
+          validator: (value) => validateTextField(value, 'enter amount'),
           keyboardType: const TextInputType.numberWithOptions(decimal: false),
           inputFormatters: [
             FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}$')),
@@ -484,7 +489,8 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
   // ---------------------------------{ methods --------------------------------- //
 
-  EdgeInsets _fieldPadding() => const EdgeInsets.all(6);
+  EdgeInsets _fieldPadding() =>
+      const EdgeInsets.only(top: 15, left: 20, right: 20);
 
   OutlineInputBorder _fieldBorder() => const OutlineInputBorder();
 
