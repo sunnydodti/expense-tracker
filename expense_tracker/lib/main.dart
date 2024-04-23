@@ -1,7 +1,7 @@
+import 'package:expense_tracker/service/shared_preferences_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'data/helpers/shared_preferences_helper.dart';
 import 'providers/category_provider.dart';
 import 'providers/expense_provider.dart';
 import 'providers/sort_filter_provider.dart';
@@ -13,7 +13,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await SharedPreferencesHelper.initializeSharedPreferences();
+  await SharedPreferencesService.initializeSharedPreferences();
 
   runApp(const MyApp());
 }

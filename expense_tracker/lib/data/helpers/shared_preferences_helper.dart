@@ -1,89 +1,58 @@
-import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../models/enums/sort_criteria.dart';
-import '../constants/shared_preferences_constants.dart';
 
 class SharedPreferencesHelper {
   static const String _preferencesKey = 'ExpenseTracker';
 
-  static Future<bool> setBool(String key, bool value) async {
+  Future<bool> setBool(String key, bool value) async {
     final preferences = await SharedPreferences.getInstance();
     return await preferences.setBool(_getKey(key), value);
   }
 
-  static Future<bool?> getBool(String key) async {
+  Future<bool?> getBool(String key) async {
     final preferences = await SharedPreferences.getInstance();
     return preferences.getBool(_getKey(key));
   }
 
-  static Future<String?> getString(String key) async {
+  Future<String?> getString(String key) async {
     final preferences = await SharedPreferences.getInstance();
     return preferences.getString(_getKey(key));
   }
 
-  static Future<void> setString(String key, String value) async {
+  Future<void> setString(String key, String value) async {
     final preferences = await SharedPreferences.getInstance();
     await preferences.setString(_getKey(key), value);
   }
 
-  static Future<int?> getInt(String key) async {
+  Future<int?> getInt(String key) async {
     final preferences = await SharedPreferences.getInstance();
     return preferences.getInt(_getKey(key));
   }
 
-  static Future<void> setInt(String key, int value) async {
+  Future<void> setInt(String key, int value) async {
     final preferences = await SharedPreferences.getInstance();
     await preferences.setInt(_getKey(key), value);
   }
 
-  static Future<double?> getDouble(String key) async {
+  Future<double?> getDouble(String key) async {
     final preferences = await SharedPreferences.getInstance();
     return preferences.getDouble(_getKey(key));
   }
 
-  static Future<void> setDouble(String key, double value) async {
+  Future<void> setDouble(String key, double value) async {
     final preferences = await SharedPreferences.getInstance();
     await preferences.setDouble(_getKey(key), value);
   }
-
-  static String _getKey(String key) => '$_preferencesKey.$key';
-
-  static Future<void> deleteSharedPreferences(String key) async {
+  
+  Future<void> deleteSharedPreferences(String key) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.remove(key);
+    await preferences.remove(_getKey(key));
   }
 
-  static Future<void> initializeSharedPreferences() async {
+  Future<void> clearSharedPreferences() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    // await preferences.clear();
-    bool isFirstTime = preferences
-            .getBool(_getKey(SharedPreferencesConstants.IS_FIRST_TIME_KEY)) ??
-        true;
-
-    if (isFirstTime) {
-      preferences.setBool(
-          _getKey(SharedPreferencesConstants.IS_FIRST_TIME_KEY), false);
-
-      // sort preferences
-      preferences.setString(
-          _getKey(SharedPreferencesConstants.sort.CRITERIA_KEY),
-          SortCriteria.modifiedDate.name);
-      preferences.setBool(
-          _getKey(SharedPreferencesConstants.sort.IS_ASCENDIND_KEY), false);
-
-      // filter preferences
-      preferences.setBool(
-          _getKey(SharedPreferencesConstants.filter.IS_APPLIED_KEY), true);
-      preferences.setBool(
-          _getKey(SharedPreferencesConstants.filter.IS_BY_YEAR_KEY), true);
-      preferences.setBool(
-          _getKey(SharedPreferencesConstants.filter.IS_BY_MONTH_KEY), true);
-      preferences.setString(_getKey(SharedPreferencesConstants.filter.YEAR_KEY),
-          DateFormat('yyyy').format(DateTime.now()));
-      preferences.setString(
-          _getKey(SharedPreferencesConstants.filter.MONTH_KEY),
-          DateFormat('MMMM').format(DateTime.now()));
-    }
+    await preferences.clear();
   }
+
+  String _getKey(String key) => '$_preferencesKey.$key';
+
 }

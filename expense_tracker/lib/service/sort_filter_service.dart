@@ -1,13 +1,13 @@
-import 'package:expense_tracker/models/expense_filters.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
 import '../data/constants/shared_preferences_constants.dart';
-import '../data/helpers/shared_preferences_helper.dart';
 import '../models/enums/sort_criteria.dart';
 import '../models/expense.dart';
+import '../models/expense_filters.dart';
+import 'shared_preferences_service.dart';
 
-class SortFilterService {
+class SortFilterService extends SharedPreferencesService {
   static final Logger _logger =
       Logger(printer: SimplePrinter(), level: Level.info);
 
@@ -19,20 +19,21 @@ class SortFilterService {
 
   //region Section 1: --------------------------------- sort preferences ---------------------------------
   setPreferenceIsAscendingSort(bool isAscendingSort) {
-    SharedPreferencesHelper.setBool(
+    SharedPreferencesService.setBoolPreference(
         SharedPreferencesConstants.sort.IS_ASCENDIND_KEY, isAscendingSort);
   }
 
   setPreferenceSortCriteria(SortCriteria sortCriteria) {
-    SharedPreferencesHelper.setString(
+    SharedPreferencesService.setStringPreference(
         SharedPreferencesConstants.sort.CRITERIA_KEY, sortCriteria.name);
   }
 
   Future<SortCriteria?> getPreferenceSortCriteria() async {
     SortCriteria? sortCriteria;
     try {
-      String? storedSortCriteria = await SharedPreferencesHelper.getString(
-          SharedPreferencesConstants.sort.CRITERIA_KEY);
+      String? storedSortCriteria =
+          await SharedPreferencesService.getStringPreference(
+              SharedPreferencesConstants.sort.CRITERIA_KEY);
       sortCriteria =
           SortCriteriaHelper.getSortCriteriaByName(storedSortCriteria!);
     } catch (e, stackTrace) {
@@ -45,7 +46,7 @@ class SortFilterService {
   Future<bool?> getPreferenceIsAscendingSort() async {
     bool? isAscendingSort;
     try {
-      isAscendingSort = await SharedPreferencesHelper.getBool(
+      isAscendingSort = await SharedPreferencesService.getBoolPreference(
           SharedPreferencesConstants.sort.IS_ASCENDIND_KEY);
     } catch (e, stackTrace) {
       _logger.e(
@@ -58,34 +59,34 @@ class SortFilterService {
 
   //region Section 1: --------------------------------- filter preferences ---------------------------------
   void setPreferenceIsFilterApplied(bool isFilterApplied) {
-    SharedPreferencesHelper.setBool(
+    SharedPreferencesService.setBoolPreference(
         SharedPreferencesConstants.filter.IS_APPLIED_KEY, isFilterApplied);
   }
 
   void setPreferenceIsFilterByYear(bool isFilterByYear) {
-    SharedPreferencesHelper.setBool(
+    SharedPreferencesService.setBoolPreference(
         SharedPreferencesConstants.filter.IS_BY_YEAR_KEY, isFilterByYear);
   }
 
   void setPreferenceIsFilterByMonth(bool isFilterByMonth) {
-    SharedPreferencesHelper.setBool(
+    SharedPreferencesService.setBoolPreference(
         SharedPreferencesConstants.filter.IS_BY_MONTH_KEY, isFilterByMonth);
   }
 
   void setPreferenceFilterYear(String filterYear) {
-    SharedPreferencesHelper.setString(
+    SharedPreferencesService.setStringPreference(
         SharedPreferencesConstants.filter.YEAR_KEY, filterYear);
   }
 
   void setPreferenceFilterMonth(String filterMonth) {
-    SharedPreferencesHelper.setString(
+    SharedPreferencesService.setStringPreference(
         SharedPreferencesConstants.filter.MONTH_KEY, filterMonth);
   }
 
   Future<bool?> getPreferenceIsFilterApplied() async {
     bool? isFilterApplied;
     try {
-      isFilterApplied = await SharedPreferencesHelper.getBool(
+      isFilterApplied = await SharedPreferencesService.getBoolPreference(
           SharedPreferencesConstants.filter.IS_APPLIED_KEY);
     } catch (e, stackTrace) {
       _logger.e(
@@ -97,7 +98,7 @@ class SortFilterService {
   Future<bool?> getPreferenceIsFilterByYear() async {
     bool? isFilterByYear;
     try {
-      isFilterByYear = await SharedPreferencesHelper.getBool(
+      isFilterByYear = await SharedPreferencesService.getBoolPreference(
           SharedPreferencesConstants.filter.IS_BY_YEAR_KEY);
     } catch (e, stackTrace) {
       _logger.e(
@@ -109,7 +110,7 @@ class SortFilterService {
   Future<bool?> getPreferenceIsFilterByMonth() async {
     bool? isFilterByMonth;
     try {
-      isFilterByMonth = await SharedPreferencesHelper.getBool(
+      isFilterByMonth = await SharedPreferencesService.getBoolPreference(
           SharedPreferencesConstants.filter.IS_BY_MONTH_KEY);
     } catch (e, stackTrace) {
       _logger.e(
@@ -121,7 +122,7 @@ class SortFilterService {
   Future<String?> getPreferenceFilterYear() async {
     String? filterYear;
     try {
-      filterYear = await SharedPreferencesHelper.getString(
+      filterYear = await SharedPreferencesService.getStringPreference(
           SharedPreferencesConstants.filter.YEAR_KEY);
     } catch (e, stackTrace) {
       _logger.e(
@@ -133,7 +134,7 @@ class SortFilterService {
   Future<String?> getPreferenceFilterMonth() async {
     String? filterMonth;
     try {
-      filterMonth = await SharedPreferencesHelper.getString(
+      filterMonth = await SharedPreferencesService.getStringPreference(
           SharedPreferencesConstants.filter.MONTH_KEY);
     } catch (e, stackTrace) {
       _logger.e(
@@ -152,14 +153,14 @@ class SortFilterService {
   }
 
   Future<List<Expense>> sortExpenses(List<Expense> expenses) async {
-    String? criteria = await SharedPreferencesHelper.getString(
+    String? criteria = await SharedPreferencesService.getStringPreference(
         SharedPreferencesConstants.sort.CRITERIA_KEY);
     if (criteria == null) {
       return expenses;
     }
     SortCriteria sortCriteria =
         SortCriteriaHelper.getSortCriteriaByName(criteria);
-    bool isAscending = await SharedPreferencesHelper.getBool(
+    bool isAscending = await SharedPreferencesService.getBoolPreference(
             SharedPreferencesConstants.sort.IS_ASCENDIND_KEY) ??
         false;
     switch (sortCriteria) {
