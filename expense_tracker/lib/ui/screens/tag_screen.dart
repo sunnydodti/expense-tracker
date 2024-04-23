@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/helpers/navigation_helper.dart';
 import '../../providers/tag_provider.dart';
 import '../widgets/tag/tag_list.dart';
 
@@ -23,7 +24,7 @@ class TagScreen extends StatelessWidget {
             appBar: AppBar(
               leading: SafeArea(
                   child: BackButton(
-                onPressed: () => navigateBack(context, false),
+                    onPressed: () => NavigationHelper.navigateBack(context),
               )),
               centerTitle: true,
               title: Text(title, textScaleFactor: 0.9),
@@ -46,7 +47,4 @@ class TagScreen extends StatelessWidget {
     final provider = Provider.of<TagProvider>(context, listen: false);
     provider.refreshTags();
   }
-
-  navigateBack(BuildContext context, bool result) =>
-      Navigator.pop(context, result);
 }

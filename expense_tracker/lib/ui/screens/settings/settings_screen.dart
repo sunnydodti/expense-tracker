@@ -1,9 +1,10 @@
-import 'package:expense_tracker/ui/dialogs/delete_all_tile.dart';
 import 'package:flutter/material.dart';
 
-import '../../forms/export_form.dart';
-import '../../forms/import_form.dart';
-import '../widgets/expandable_list_tile.dart';
+import '../../../data/helpers/navigation_helper.dart';
+import '../../../forms/export_form.dart';
+import '../../../forms/import_form.dart';
+import '../../dialogs/delete_all_tile.dart';
+import '../../widgets/expandable_list_tile.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -28,9 +29,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     // provider.refreshCategories();
   }
 
-  navigateBack(BuildContext context, bool result) =>
-      Navigator.pop(context, result);
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<void>(
@@ -45,7 +43,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             appBar: AppBar(
               leading: SafeArea(
                   child: BackButton(
-                onPressed: () => navigateBack(context, false),
+                    onPressed: () => NavigationHelper.navigateBack(context),
               )),
               centerTitle: true,
               title: Text(widget.title, textScaleFactor: 0.9),
@@ -55,12 +53,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 Expanded(
                   child: ListView(
-                    children: const [
-                      ExpandableListTile(
                           title: 'Import', content: ImportForm()),
-                      ExpandableListTile(
                           title: 'Export', content: ExportForm()),
-                      DeleteAllTile()
                     ],
                   ),
                 )

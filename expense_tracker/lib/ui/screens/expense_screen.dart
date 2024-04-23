@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../data/helpers/navigation_helper.dart';
 import '../../forms/expense_form.dart';
 import '../../models/enums/form_modes.dart';
 import '../../models/expense.dart';
@@ -14,13 +15,14 @@ class ExpensePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () => navigateBack(context, false),
+        onWillPop: () => NavigationHelper.navigateBackWithBool(context, false),
         child: Scaffold(
             // backgroundColor: Colors.grey.shade900,
             appBar: AppBar(
               leading: SafeArea(
                   child: BackButton(
-                onPressed: () => navigateBack(context, false),
+                onPressed: () =>
+                    NavigationHelper.navigateBackWithBool(context, false),
               )),
               centerTitle: true,
               title: Text("${formMode.name.replaceFirst(
@@ -36,9 +38,5 @@ class ExpensePage extends StatelessWidget {
               ],
             ),
             body: ExpenseForm(formMode: formMode, expense: expense)));
-  }
-
-  navigateBack(BuildContext context, bool result) {
-    Navigator.pop(context, result);
   }
 }

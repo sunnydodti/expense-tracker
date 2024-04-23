@@ -1,7 +1,8 @@
+import 'package:expense_tracker/data/helpers/navigation_helper.dart';
 import 'package:flutter/material.dart';
 
 import '../screens/category_screen.dart';
-import '../screens/settings_screen.dart';
+import '../screens/settings/settings_screen.dart';
 import '../screens/tag_screen.dart';
 
 class HomeDrawer extends StatefulWidget {
@@ -50,20 +51,11 @@ class HomeDrawerState extends State<HomeDrawer> {
   }
 
   void _navigateToSettingsScreen(BuildContext context) =>
-      _navigateToScreen(context, const SettingsScreen());
+      NavigationHelper.navigateToScreen(context, const SettingsScreen());
 
   void _navigateToCategoryScreen(BuildContext context) =>
-      _navigateToScreen(context, const CategoryScreen());
+      NavigationHelper.navigateToScreen(context, const CategoryScreen());
 
   void _navigateToTagScreen(BuildContext context) =>
-      _navigateToScreen(context, const TagScreen());
-
-  void _navigateToScreen(BuildContext context, Widget screenWidget) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => screenWidget,
-      ),
-    );
-  }
+      NavigationHelper.navigateToScreen(context, const TagScreen());
 }
