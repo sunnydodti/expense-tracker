@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
+import '../data/constants/form_constants.dart';
 import '../data/constants/shared_preferences_constants.dart';
 import '../data/helpers/shared_preferences_helper.dart';
 import '../models/enums/sort_criteria.dart';
@@ -43,21 +44,30 @@ class SharedPreferencesService {
     if (isFirstTime) {
       setBoolPreference(SharedPreferencesConstants.IS_FIRST_TIME_KEY, false);
 
-      // sort preferences
-      setStringPreference(SharedPreferencesConstants.sort.CRITERIA_KEY,
-          SortCriteria.modifiedDate.name);
-      setBoolPreference(
-          SharedPreferencesConstants.sort.IS_ASCENDIND_KEY, false);
-
-      // filter preferences
-      setBoolPreference(SharedPreferencesConstants.filter.IS_APPLIED_KEY, true);
-      setBoolPreference(SharedPreferencesConstants.filter.IS_BY_YEAR_KEY, true);
-      setBoolPreference(
-          SharedPreferencesConstants.filter.IS_BY_MONTH_KEY, true);
-      setStringPreference(SharedPreferencesConstants.filter.YEAR_KEY,
-          DateFormat('yyyy').format(DateTime.now()));
-      setStringPreference(SharedPreferencesConstants.filter.MONTH_KEY,
-          DateFormat('MMMM').format(DateTime.now()));
+      await initializeSortPreferences();
+      await initializeFilterPreferences();
+      await initializeSettingsPreferences();
     }
+  }
+
+  Future<void> initializeSortPreferences() async {
+    setStringPreference(SharedPreferencesConstants.sort.CRITERIA_KEY,
+        SortCriteria.modifiedDate.name);
+    setBoolPreference(SharedPreferencesConstants.sort.IS_ASCENDIND_KEY, false);
+  }
+
+  Future<void> initializeFilterPreferences() async {
+    setBoolPreference(SharedPreferencesConstants.filter.IS_APPLIED_KEY, true);
+    setBoolPreference(SharedPreferencesConstants.filter.IS_BY_YEAR_KEY, true);
+    setBoolPreference(SharedPreferencesConstants.filter.IS_BY_MONTH_KEY, true);
+    setStringPreference(SharedPreferencesConstants.filter.YEAR_KEY,
+        DateFormat('yyyy').format(DateTime.now()));
+    setStringPreference(SharedPreferencesConstants.filter.MONTH_KEY,
+        DateFormat('MMMM').format(DateTime.now()));
+  }
+
+  Future<void> initializeSettingsPreferences() async {
+    setStringPreference(SharedPreferencesConstants.settings.DEFAULT_CURRENCY,
+        FormConstants.expense.currencies.keys.first);
   }
 }
