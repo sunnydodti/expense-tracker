@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import '../data/constants/form_constants.dart';
 import '../service/settings_service.dart';
 
 class SettingsProvider extends ChangeNotifier {
@@ -14,7 +15,7 @@ class SettingsProvider extends ChangeNotifier {
   }
 
   // preferences
-  String _defaultCurrency = "INR";
+  String _defaultCurrency = FormConstants.expense.currencies.keys.first;
 
   String get defaultCurrency => _defaultCurrency;
 
@@ -22,6 +23,14 @@ class SettingsProvider extends ChangeNotifier {
     _defaultCurrency = value;
     _settingsService.setDefaultCurrency(value);
     notifyListeners();
+  }
+
+  refreshDefaultCurrency({bool notify = false}) async {
+    String? defaultCurrency = await _settingsService.getDefaultCurrency();
+
+    _defaultCurrency = defaultCurrency ?? _defaultCurrency;
+
+    if (notify) notifyListeners();
   }
 
   refreshPreferences({bool notify = false}) async {

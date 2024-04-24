@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
 
 import '../../data/constants/form_constants.dart';
 import '../../models/enums/form_modes.dart';
 import '../../models/expense.dart';
 import '../../models/expense_category.dart';
 import '../../models/tag.dart';
+import '../../providers/settings_provider.dart';
 import '../../service/category_service.dart';
 import '../../service/expense_service.dart';
 import '../../service/tag_service.dart';
@@ -98,8 +100,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
   void _populateFormFieldsWithDefaults() async {
     titleController.text = '';
-    currencyController.text = _defaultCurrency;
-    amountPrefixController.text = _currencies[_defaultCurrency]!;
     amountController.text = "";
     transactionTypeController.text =
         FormConstants.expense.transactionTypes.first;
@@ -111,6 +111,10 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
     List<ExpenseCategory> categories = await categoryService.getCategories();
     List<Tag> tags = await tagService.getTags();
+    _defaultCurrency = await getDefaultCurrency();
+
+    currencyController.text = _defaultCurrency;
+    amountPrefixController.text = _currencies[_defaultCurrency]!;
 
     setState(() {
       _categories = categories;
@@ -128,7 +132,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
   void initState() {
     super.initState();
     _currencies = FormConstants.expense.currencies;
-    _defaultCurrency = _currencies.keys.first;
 
     _highlightColor = Colors.green.shade300;
 
@@ -571,6 +574,12 @@ class _ExpenseFormState extends State<ExpenseForm> {
       return 'Please $errorMessage';
     }
     return null;
+  }
+
+  dynamic getDefaultCurrency() async {
+    final provider = Provider.of<SettingsProvider>(context, listen: false);
+    await provider.refreshDefaultCurrency();
+    return provider.defaultCurrency;
   }
 // --------------------------------- methods }--------------------------------- //
 }
