@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../forms/tag_form.dart';
 import '../../../models/tag.dart';
 import '../../../providers/tag_provider.dart';
 import '../../../service/tag_service.dart';
+import '../../forms/tag_form.dart';
 import '../empty_list_widget.dart';
 import 'tag_tile.dart';
 

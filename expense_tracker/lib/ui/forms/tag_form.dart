@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
-import '../models/tag.dart';
-import '../providers/tag_provider.dart';
-import '../service/tag_service.dart';
+import '../../models/tag.dart';
+import '../../providers/tag_provider.dart';
+import '../../service/tag_service.dart';
 
 class TagForm extends StatefulWidget {
   final List<Tag> tags;

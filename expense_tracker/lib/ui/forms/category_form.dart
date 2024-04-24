@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
-import '../models/expense_category.dart';
-import '../providers/category_provider.dart';
-import '../service/category_service.dart';
+import '../../models/expense_category.dart';
+import '../../providers/category_provider.dart';
+import '../../service/category_service.dart';
 
 class CategoryForm extends StatefulWidget {
   final List<ExpenseCategory> categories;
