@@ -18,7 +18,7 @@ class FormWidgets {
     return FormConstants.expense.currencies.entries
         .map((currency) => DropdownMenuItem(
               value: currency.key,
-              child: Text("(${currency.value}) ${currency.key}"),
+              child: Text("(${currency.value})  ${currency.key}"),
               // child: Text(e.value),
             ))
         .toList();

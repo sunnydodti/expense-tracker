@@ -6,37 +6,34 @@ import '../data/helpers/shared_preferences_helper.dart';
 import '../models/enums/sort_criteria.dart';
 
 class SharedPreferencesService {
-  static final Logger _logger =
-      Logger(printer: SimplePrinter(), level: Level.info);
+  final Logger _logger = Logger(printer: SimplePrinter(), level: Level.info);
 
-  static final SharedPreferencesHelper _helper = SharedPreferencesHelper();
+  final SharedPreferencesHelper _helper = SharedPreferencesHelper();
 
-  static Future<bool> setBoolPreference(String key, bool value) =>
+  Future<bool> setBoolPreference(String key, bool value) =>
       _helper.setBool(key, value);
 
-  static Future<bool?> getBoolPreference(String key) => _helper.getBool(key);
+  Future<bool?> getBoolPreference(String key) => _helper.getBool(key);
 
-  static Future<String?> getStringPreference(String key) =>
-      _helper.getString(key);
+  Future<String?> getStringPreference(String key) => _helper.getString(key);
 
-  static Future<void> setStringPreference(String key, String value) =>
+  Future<void> setStringPreference(String key, String value) =>
       _helper.setString(key, value);
 
-  static Future<int?> getIntPreference(String key) => _helper.getInt(key);
+  Future<int?> getIntPreference(String key) => _helper.getInt(key);
 
-  static Future<void> setIntPreference(String key, int value) =>
+  Future<void> setIntPreference(String key, int value) =>
       _helper.setInt(key, value);
 
-  static Future<double?> getDoublePreference(String key) =>
-      _helper.getDouble(key);
+  Future<double?> getDoublePreference(String key) => _helper.getDouble(key);
 
-  static Future<void> setDoublePreference(String key, double value) =>
+  Future<void> setDoublePreference(String key, double value) =>
       _helper.setDouble(key, value);
 
-  static Future<void> deletePreference(String key) =>
+  Future<void> deletePreference(String key) =>
       _helper.deleteSharedPreferences(key);
 
-  static Future<void> initializeSharedPreferences() async {
+  Future<void> initializeSharedPreferences() async {
     _logger.i("initializing shared preferences");
     // await _helper.clearSharedPreferences();
     bool isFirstTime =

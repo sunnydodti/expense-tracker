@@ -1,3 +1,5 @@
+import 'package:expense_tracker/data/helpers/navigation_helper.dart';
+import 'package:expense_tracker/ui/screens/settings/preferences_settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -41,6 +43,13 @@ class HomeScreen extends StatelessWidget {
                       tooltip: "add random expense",
                       onPressed: () => populateExpense(context),
                     ),
+                  if (DebugHelper.isDebugMode)
+                    IconButton(
+                      icon: const Icon(Icons.add_to_home_screen_outlined,
+                          size: 20),
+                      tooltip: "navigate to screen",
+                      onPressed: () => navigateToScreen(context),
+                    ),
                   IconButton(
                     icon: const Icon(Icons.person, size: 20),
                     tooltip: "Profile",
@@ -60,14 +69,14 @@ class HomeScreen extends StatelessWidget {
   }
 
   void _handelProfile(BuildContext context) => {
-        showDialog(
-          context: context,
-          builder: (context) => const SimpleDialogWidget(
-            title: 'To be added',
-            message: 'Profile will be added soon',
-          ),
-        ),
-      };
+    showDialog(
+      context: context,
+      builder: (context) => const SimpleDialogWidget(
+        title: 'To be added',
+        message: 'Profile will be added soon',
+      ),
+    ),
+  };
 
   void populateExpense(BuildContext context) async {
     ExpenseService service = await _expenseService;
@@ -103,5 +112,10 @@ class HomeScreen extends StatelessWidget {
     final expenseProvider =
         Provider.of<ExpenseProvider>(context, listen: false);
     expenseProvider.refreshExpenses();
+  }
+
+  navigateToScreen(BuildContext context) {
+    NavigationHelper.navigateToScreen(
+        context, const PreferencesSettingsScreen());
   }
 }

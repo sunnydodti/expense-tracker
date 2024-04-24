@@ -5,6 +5,7 @@ import '../../../forms/export_form.dart';
 import '../../../forms/import_form.dart';
 import '../../dialogs/delete_all_tile.dart';
 import '../../widgets/expandable_list_tile.dart';
+import 'preferences_settings_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -53,8 +54,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 Expanded(
                   child: ListView(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    children: [
+                      const ExpandableListTile(
                           title: 'Import', content: ImportForm()),
+                      const ExpandableListTile(
                           title: 'Export', content: ExportForm()),
+                      const DeleteAllTile(),
+                      ListTile(
+                        title: const Text('Preferences'),
+                        onTap: () => NavigationHelper.navigateToScreen(
+                            context, const PreferencesSettingsScreen()),
+                      )
                     ],
                   ),
                 )

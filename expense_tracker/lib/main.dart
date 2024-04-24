@@ -1,11 +1,12 @@
-import 'package:expense_tracker/service/shared_preferences_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/category_provider.dart';
 import 'providers/expense_provider.dart';
+import 'providers/settings_provider.dart';
 import 'providers/sort_filter_provider.dart';
 import 'providers/tag_provider.dart';
+import 'service/shared_preferences_service.dart';
 import 'ui/screens/home_screen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -13,7 +14,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await SharedPreferencesService.initializeSharedPreferences();
+  await SharedPreferencesService().initializeSharedPreferences();
 
   runApp(const MyApp());
 }
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => CategoryProvider()),
         ChangeNotifierProvider(create: (context) => TagProvider()),
         ChangeNotifierProvider(create: (context) => SortFilterProvider()),
+        ChangeNotifierProvider(create: (context) => SettingsProvider()),
       ],
       child: MaterialApp(
         key: navigatorKey,
