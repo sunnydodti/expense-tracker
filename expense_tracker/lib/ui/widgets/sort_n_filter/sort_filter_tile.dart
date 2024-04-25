@@ -18,7 +18,7 @@ class _SortFilterTileState extends State<SortFilterTile> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<SortFilterProvider>(context, listen: false)
-          .refreshPreferences();
+          .refreshPreferences(notify: true);
     });
   }
 
