@@ -177,38 +177,24 @@ class _ExpenseFormState extends State<ExpenseForm> {
         color: Colors.grey.shade900,
         child: Form(
           key: _formKey,
-          child: Column(
+          child: ListView(
             children: [
-              Row(
-                children: [getTitleField()],
-              ),
-              Row(
-                children: [getAmountField()],
-              ),
-              Row(
-                children: [getTransactionTypeField()],
-              ),
-              Row(
-                children: [getDateField(context)],
-              ),
-              Row(
-                children: [getCategoryField()],
-              ),
-              Row(
-                children: [getTagsField()],
-              ),
-              Row(
-                children: [getNotesField()],
-              ),
-              getSubmitButton(),
+              _buildTitleField(),
+              _buildAmountField(),
+              _buildTransactionTypeField(),
+              _buildDateField(),
+              _buildCategoryField(),
+              _buildTagsField(),
+              _buildNotesField(),
+              _buildSubmitButton(),
             ],
           ),
         ));
   }
 
-  Container getSubmitButton() {
+  Container _buildSubmitButton() {
     return Container(
-      padding: _fieldPadding(),
+      padding: _getFieldPadding(),
       child: ElevatedButton(
           onPressed: _submitExpense,
           style: ButtonStyle(
@@ -219,272 +205,200 @@ class _ExpenseFormState extends State<ExpenseForm> {
   }
 
   // ---------------------------------{ title --------------------------------- //
-  Expanded getTitleField() {
-    return Expanded(
-        flex: 1,
-        child: Container(
-          padding: _fieldPadding(),
-          child: TextFormField(
-            controller: titleController,
-            maxLines: 1,
-            decoration: InputDecoration(
-              focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                color: _highlightColor,
-              )),
-              focusColor: _highlightColor,
-              prefixIcon: Icon(Icons.title_outlined, size: _getIconSize()),
-              labelText: 'Title',
-              hintText: 'Add a Title',
-              suffixIcon: IconButton(
-                onPressed: () {
-                  titleController.clear();
-                },
-                icon: Icon(Icons.clear, size: _getIconSize()),
-              ),
-            ),
-            validator: (value) => validateTextField(value, 'enter Title'),
-            keyboardType: TextInputType.text,
-            onChanged: (value) {
-              _logger.i('title: $value');
-            },
+  Container _buildTitleField() {
+    return Container(
+      padding: _getFieldPadding(),
+      child: TextFormField(
+        controller: titleController,
+        maxLines: 1,
+        decoration: InputDecoration(
+          prefixIcon: Icon(Icons.title_outlined, size: _getIconSize()),
+          labelText: 'Title',
+          hintText: 'Add a Title',
+          suffixIcon: IconButton(
+            onPressed: () => titleController.clear(),
+            icon: Icon(Icons.clear, size: _getIconSize()),
           ),
-        ));
+        ),
+        validator: (value) => validateTextField(value, 'enter Title'),
+        keyboardType: TextInputType.text,
+      ),
+    );
   }
 
   // --------------------------------- title }--------------------------------- //
 
   // ---------------------------------{ notes --------------------------------- //
-  Expanded getNotesField() {
-    return Expanded(
-        flex: 1,
-        child: Container(
-          padding: _fieldPadding(),
-          child: TextFormField(
-            controller: notesController,
-            maxLines: 1,
-            decoration: InputDecoration(
-              prefixIcon: Icon(Icons.edit, size: _getIconSize()),
-              labelText: 'Notes',
-              hintText: "Add Notes",
-              suffixIcon: IconButton(
-                onPressed: () {
-                  notesController.clear();
-                },
-                icon: Icon(Icons.clear, size: _getIconSize()),
-              ),
-            ),
-            keyboardType: TextInputType.text,
-            onChanged: (value) {
-              _logger.i('note: $value');
-            },
+  Container _buildNotesField() {
+    return Container(
+      padding: _getFieldPadding(),
+      child: TextFormField(
+        controller: notesController,
+        maxLines: 1,
+        decoration: InputDecoration(
+          prefixIcon: Icon(Icons.edit, size: _getIconSize()),
+          labelText: 'Notes',
+          hintText: "Add Notes",
+          suffixIcon: IconButton(
+            onPressed: () => notesController.clear(),
+            icon: Icon(Icons.clear, size: _getIconSize()),
           ),
-        ));
+        ),
+        keyboardType: TextInputType.text,
+      ),
+    );
   }
 
   // --------------------------------- notes }--------------------------------- //
 
   // --------------------------------- tags --------------------------------- //
-  Expanded getTagsField() {
-    return Expanded(
-      flex: 1,
-      child: Container(
-        padding: _fieldPadding(),
-        child: DropdownButtonFormField<Tag>(
-          isExpanded: true,
-          value: _selectedTag,
-          items: FormWidgets.getDropdownItems(_tags, (tag) => tag.name),
-          decoration: InputDecoration(
-            prefixIcon: Icon(Icons.label_outline, size: _getIconSize()),
-            // border: OutlineInputBorder(),
-            labelText: 'Tags',
-          ),
-          validator: (value) => validateTag("select tags"),
-          onChanged: (value) {
-            _logger.i('tags: $value');
-            _selectedTag = value;
-          },
+  Container _buildTagsField() {
+    return Container(
+      padding: _getFieldPadding(),
+      child: DropdownButtonFormField<Tag>(
+        isExpanded: true,
+        value: _selectedTag,
+        items: FormWidgets.getDropdownItems(_tags, (tag) => tag.name),
+        decoration: InputDecoration(
+          prefixIcon: Icon(Icons.label_outline, size: _getIconSize()),
+          labelText: 'Tags',
         ),
+        validator: (value) => validateTag("select tags"),
+        onChanged: (value) => _selectedTag = value,
       ),
     );
   }
 
   // --------------------------------- category --------------------------------- //
-  Expanded getCategoryField() {
-    return Expanded(
-      flex: 1,
-      child: Container(
-          padding: _fieldPadding(),
-          child: DropdownButtonFormField<ExpenseCategory>(
-            isExpanded: true,
-            value: _selectedCategory,
-            items: FormWidgets.getDropdownItems(
-                _categories, (category) => category.name),
-            decoration: InputDecoration(
-              prefixIcon: Icon(Icons.edit, size: _getIconSize()),
-              // border: OutlineInputBorder(),
-              labelText: 'Category',
-            ),
-            validator: (value) => validateCategory("select category"),
-            onChanged: (value) {
-              _logger.i('category: ${value!.name}');
-              _selectedCategory = value;
-            },
-          )),
-    );
-  }
-
-  // --------------------------------- date --------------------------------- //
-  Expanded getDateField(BuildContext context) {
-    return Expanded(
-        flex: 1,
-        child: Container(
-          padding: _fieldPadding(),
-          child: TextFormField(
-            controller: dateController,
-            decoration: InputDecoration(
-              // border: const OutlineInputBorder(),
-              labelText: 'Date',
-              prefixIcon:
-                  Icon(Icons.calendar_today_outlined, size: _getIconSize()),
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please select date';
-              }
-              // Add additional validation logic if needed
-              return null; // Return null if the input is valid
-            },
-            readOnly: true,
-            onTap: () async {
-              DateTime? pickedDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(2000),
-                  lastDate: DateTime(2101));
-              if (pickedDate != null) {
-                String formattedDate =
-                    DateFormat('yyyy-MM-dd HH:mm:ss').format(pickedDate);
-                setState(() {
-                  dateController.text = formattedDate;
-                  _logger.i(dateController.text);
-                });
-                _logger.i('date: $formattedDate');
-              } else {
-                _logger.i("Date is not selected");
-              }
-
-              if (pickedDate != null) {
-                setState(() {
-                  dateController.text =
-                      DateFormat('yyyy-MM-dd').format(pickedDate);
-                });
-              } else {
-                // dateController.text =
-                //     DateFormat('yyyy-MM-dd').format(DateTime.now());
-              }
-            },
-            // keyboardType: TextInputType.datetime,
-            onChanged: (value) {
-              _logger.i('Date: $value');
-            },
-          ),
-        ));
-  }
-
-  // --------------------------------- transaction type --------------------------------- //
-  Expanded getTransactionTypeField() {
-    return Expanded(
-      flex: 1,
-      child: Container(
-          padding: _fieldPadding(),
-          child: DropdownButtonFormField(
-            isExpanded: true,
-            isDense: true,
-            value: transactionTypeController.text,
-            items: FormWidgets.getTransactionTypeDropdownItems(),
-            decoration: InputDecoration(
-              prefixIcon:
-                  Icon(Icons.monetization_on_outlined, size: _getIconSize()),
-              // border: const OutlineInputBorder(),
-              labelText: 'Transaction Type',
-            ),
-            validator: (value) =>
-                validateTextField(value, "select transaction type"),
-            onChanged: (value) {
-              _logger.i('transaction type : $value');
-              transactionTypeController.text = value!;
-              _logger.i(transactionTypeController.text);
-            },
-          )),
-    );
-  }
-
-  // -------------------------------- amount --------------------------------- //
-  Expanded getAmountField() {
-    return Expanded(
-      flex: 5,
-      child: Container(
-        padding: _fieldPadding(),
-        child: TextFormField(
-          controller: amountController,
-          decoration: InputDecoration(
-            // border: _fieldBorder(),
-            prefixIcon: Icon(Icons.attach_money_outlined, size: _getIconSize()),
-            prefixText: '${amountPrefixController.text} ',
-            labelText: 'Amount',
-            hintText: 'Add Amount',
-            suffixIcon: IconButton(
-              onPressed: () {
-                amountController.clear();
-              },
-              icon: const Icon(Icons.clear),
-            ),
-          ),
-          validator: (value) => validateTextField(value, 'enter amount'),
-          keyboardType: const TextInputType.numberWithOptions(decimal: false),
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}$')),
-          ],
-          onChanged: (value) {
-            _logger.i('amount: $value');
-          },
+  Container _buildCategoryField() {
+    return Container(
+      padding: _getFieldPadding(),
+      child: DropdownButtonFormField<ExpenseCategory>(
+        isExpanded: true,
+        value: _selectedCategory,
+        items: FormWidgets.getDropdownItems(
+            _categories, (category) => category.name),
+        decoration: InputDecoration(
+          prefixIcon: Icon(Icons.edit, size: _getIconSize()),
+          labelText: 'Category',
         ),
+        validator: (value) => validateCategory("select category"),
+        onChanged: (value) => _selectedCategory = value,
       ),
     );
   }
 
-  // String? _getAmountPrefix() => (widget.expense != null) ? _currencies[widget.expense?.currency.toString()] : _currencies[_defaultCurrency.toString()];
+  // --------------------------------- date --------------------------------- //
+  Container _buildDateField() {
+    return Container(
+      padding: _getFieldPadding(),
+      child: TextFormField(
+        controller: dateController,
+        decoration: InputDecoration(
+          labelText: 'Date',
+          prefixIcon: Icon(Icons.calendar_today_outlined, size: _getIconSize()),
+        ),
+        readOnly: true,
+        onTap: () async => showDatePickerDialog(context),
+        onChanged: (value) {
+          _logger.i('Date: $value');
+        },
+      ),
+    );
+  }
+
+  Future<void> showDatePickerDialog(BuildContext context) async {
+    {
+      DateTime? pickedDate = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(2000),
+          lastDate: DateTime(2101));
+      if (pickedDate != null) {
+        String formattedDate =
+            DateFormat('yyyy-MM-dd HH:mm:ss').format(pickedDate);
+        setState(() {
+          dateController.text = formattedDate;
+          _logger.i(dateController.text);
+        });
+        _logger.i('date: $formattedDate');
+      } else {
+        _logger.i("Date is not selected");
+      }
+      if (pickedDate != null) {
+        setState(() {
+          dateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+        });
+      }
+    }
+  }
+
+  // --------------------------------- transaction type --------------------------------- //
+  Container _buildTransactionTypeField() {
+    return Container(
+      padding: _getFieldPadding(),
+      child: DropdownButtonFormField(
+        isExpanded: true,
+        isDense: true,
+        value: transactionTypeController.text,
+        items: FormWidgets.getTransactionTypeDropdownItems(),
+        decoration: InputDecoration(
+          prefixIcon:
+              Icon(Icons.monetization_on_outlined, size: _getIconSize()),
+          labelText: 'Transaction Type',
+        ),
+        validator: (value) =>
+            validateTextField(value, "select transaction type"),
+        onChanged: (value) => transactionTypeController.text = value!,
+      ),
+    );
+  }
+
+  // -------------------------------- amount --------------------------------- //
+  Container _buildAmountField() {
+    return Container(
+      padding: _getFieldPadding(),
+      child: TextFormField(
+        controller: amountController,
+        decoration: InputDecoration(
+          prefixIcon: Icon(Icons.attach_money_outlined, size: _getIconSize()),
+          prefixText: '${amountPrefixController.text} ',
+          labelText: 'Amount',
+          hintText: 'Add Amount',
+          suffixIcon: IconButton(
+            onPressed: () => amountController.clear(),
+            icon: const Icon(Icons.clear),
+          ),
+        ),
+        validator: (value) => validateTextField(value, 'enter amount'),
+        keyboardType: const TextInputType.numberWithOptions(decimal: false),
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}$')),
+        ],
+      ),
+    );
+  }
 
   // ---------------------------------{ currency --------------------------------- //
-  Expanded getCurrencyField() {
-    return Expanded(
-      flex: 3,
-      child: Container(
-          padding: _fieldPadding(),
-          child: DropdownButtonFormField(
-            isExpanded: true,
-            value: currencyController.text,
-            items: FormWidgets.getCurrencyDropdownItems(),
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Currency',
-            ),
-            validator: (value) => validateTextField(value, "select currency"),
-            onChanged: (value) {
-              _logger.i('selected currency: $value');
-              setState(() {
-                _userCurrency = value;
-                currencyController.text = value;
-                amountPrefixController.text = _currencies[value]!;
-              });
-
-              _logger.i('user currency: $_userCurrency');
-              _logger.i('currency controller: ${currencyController.text}');
-              _logger
-                  .d('amountPrefix controller: ${amountPrefixController.text}');
-            },
-          )),
+  Container getCurrencyField() {
+    return Container(
+      padding: _getFieldPadding(),
+      child: DropdownButtonFormField(
+        isExpanded: true,
+        value: currencyController.text,
+        items: FormWidgets.getCurrencyDropdownItems(),
+        decoration: const InputDecoration(
+          labelText: 'Currency',
+        ),
+        validator: (value) => validateTextField(value, "select currency"),
+        onChanged: (value) {
+          setState(() {
+            _userCurrency = value;
+            currencyController.text = value;
+            amountPrefixController.text = _currencies[value]!;
+          });
+        },
+      ),
     );
   }
 
@@ -492,10 +406,8 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
   // ---------------------------------{ methods --------------------------------- //
 
-  EdgeInsets _fieldPadding() =>
+  EdgeInsets _getFieldPadding() =>
       const EdgeInsets.only(top: 15, left: 20, right: 20);
-
-  OutlineInputBorder _fieldBorder() => const OutlineInputBorder();
 
   double _getIconSize() => 20;
 
@@ -558,8 +470,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
     if (value == null || value.isEmpty) {
       return 'Please $errorMessage';
     }
-    // Add additional validation logic if needed
-    return null; // Return null if the input is valid
+    return null;
   }
 
   String? validateCategory(String errorMessage) {
