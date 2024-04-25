@@ -14,6 +14,7 @@ import '../../service/category_service.dart';
 import '../../service/expense_service.dart';
 import '../../service/tag_service.dart';
 import '../../ui/widgets/form_widgets.dart';
+import '../dialogs/date_picker_dialog.dart';
 
 class ExpenseForm extends StatefulWidget {
   final FormMode formMode;
@@ -35,7 +36,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
   final Future<CategoryService> _categoryService = CategoryService.create();
   final Future<TagService> _tagService = TagService.create();
 
-  //region Section 1: --------------------------------- form data display ---------------------------------
+  //region Section 1: formData
   late Map<String, String> _currencies;
   late String _defaultCurrency;
   late Color _highlightColor;
@@ -48,12 +49,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
   //endregion
 
-  //region Section 2: --------------------------------- form data input ---------------------------------
-  String? _userCurrency;
-
-  //endregion
-
-  //region Section 3: --------------------------------- controllers ---------------------------------
+  //region Section 2: controllers
   TextEditingController titleController = TextEditingController();
   TextEditingController currencyController = TextEditingController();
   TextEditingController amountPrefixController = TextEditingController();
@@ -61,13 +57,26 @@ class _ExpenseFormState extends State<ExpenseForm> {
   TextEditingController transactionTypeController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController notesController = TextEditingController();
-
-  // TextEditingController containsNestedExpensesController =
-  // TextEditingController();
-  // TextEditingController expensesController = TextEditingController();
   //endregion
 
-  //region Section 4: --------------------------------- methods ---------------------------------
+  //region Section 3: initState
+  @override
+  void initState() {
+    super.initState();
+    _currencies = FormConstants.expense.currencies;
+
+    _highlightColor = Colors.green.shade300;
+
+    if (widget.formMode == FormMode.edit) {
+      _populateFormFieldsForEdit(widget.expense!);
+      _highlightColor = Colors.orange.shade300;
+    } else {
+      _populateFormFieldsWithDefaults();
+    }
+  }
+  //endregion
+
+  //region Section 4: initStateMethods
   Future<void> _populateFormFieldsForEdit(Expense expense) async {
     titleController.text = expense.title;
     currencyController.text = expense.currency;
@@ -124,25 +133,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
       _selectedTag = _tags.isNotEmpty ? _tags[0] : null;
     });
   }
-
-  //endregion
-
-  //region Section 5: --------------------------------- initState ---------------------------------
-  @override
-  void initState() {
-    super.initState();
-    _currencies = FormConstants.expense.currencies;
-
-    _highlightColor = Colors.green.shade300;
-
-    if (widget.formMode == FormMode.edit) {
-      _populateFormFieldsForEdit(widget.expense!);
-      _highlightColor = Colors.orange.shade300;
-    } else {
-      _populateFormFieldsWithDefaults();
-    }
-  }
-
   //endregion
 
   @override
@@ -168,11 +158,12 @@ class _ExpenseFormState extends State<ExpenseForm> {
               color: _highlightColor,
             ),
           )),
-      child: _getExpenseFormFields(context),
+      child: _buildExpenseFormFields(context),
     ));
   }
 
-  Container _getExpenseFormFields(BuildContext context) {
+  //region Section 5: formFields
+  Container _buildExpenseFormFields(BuildContext context) {
     return Container(
         color: Colors.grey.shade900,
         child: Form(
@@ -204,7 +195,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
     );
   }
 
-  // ---------------------------------{ title --------------------------------- //
   Container _buildTitleField() {
     return Container(
       padding: _getFieldPadding(),
@@ -226,9 +216,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
     );
   }
 
-  // --------------------------------- title }--------------------------------- //
 
-  // ---------------------------------{ notes --------------------------------- //
   Container _buildNotesField() {
     return Container(
       padding: _getFieldPadding(),
@@ -249,9 +237,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
     );
   }
 
-  // --------------------------------- notes }--------------------------------- //
 
-  // --------------------------------- tags --------------------------------- //
   Container _buildTagsField() {
     return Container(
       padding: _getFieldPadding(),
@@ -269,7 +255,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
     );
   }
 
-  // --------------------------------- category --------------------------------- //
   Container _buildCategoryField() {
     return Container(
       padding: _getFieldPadding(),
@@ -288,7 +273,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
     );
   }
 
-  // --------------------------------- date --------------------------------- //
   Container _buildDateField() {
     return Container(
       padding: _getFieldPadding(),
@@ -309,31 +293,18 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
   Future<void> showDatePickerDialog(BuildContext context) async {
     {
-      DateTime? pickedDate = await showDatePicker(
-          context: context,
-          initialDate: DateTime.now(),
-          firstDate: DateTime(2000),
-          lastDate: DateTime(2101));
+      DateTime? pickedDate = await DateTimePickerDialog.datePicker(context);
       if (pickedDate != null) {
         String formattedDate =
             DateFormat('yyyy-MM-dd HH:mm:ss').format(pickedDate);
         setState(() {
-          dateController.text = formattedDate;
-          _logger.i(dateController.text);
-        });
-        _logger.i('date: $formattedDate');
-      } else {
-        _logger.i("Date is not selected");
-      }
-      if (pickedDate != null) {
-        setState(() {
           dateController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
         });
+        _logger.i('date: $formattedDate');
       }
     }
   }
 
-  // --------------------------------- transaction type --------------------------------- //
   Container _buildTransactionTypeField() {
     return Container(
       padding: _getFieldPadding(),
@@ -354,7 +325,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
     );
   }
 
-  // -------------------------------- amount --------------------------------- //
   Container _buildAmountField() {
     return Container(
       padding: _getFieldPadding(),
@@ -379,7 +349,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
     );
   }
 
-  // ---------------------------------{ currency --------------------------------- //
   Container getCurrencyField() {
     return Container(
       padding: _getFieldPadding(),
@@ -393,7 +362,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
         validator: (value) => validateTextField(value, "select currency"),
         onChanged: (value) {
           setState(() {
-            _userCurrency = value;
             currencyController.text = value;
             amountPrefixController.text = _currencies[value]!;
           });
@@ -401,10 +369,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
       ),
     );
   }
+  //endregion
 
-  // --------------------------------- currency }--------------------------------- //
-
-  // ---------------------------------{ methods --------------------------------- //
+  //region Section 6: methods
 
   EdgeInsets _getFieldPadding() =>
       const EdgeInsets.only(top: 15, left: 20, right: 20);
@@ -466,6 +433,14 @@ class _ExpenseFormState extends State<ExpenseForm> {
     return await expenseService.updateExpense(expense);
   }
 
+  dynamic getDefaultCurrency() async {
+    final provider = Provider.of<SettingsProvider>(context, listen: false);
+    await provider.refreshDefaultCurrency();
+    return provider.defaultCurrency;
+  }
+  //endregion
+
+  //region Section 7: validators
   String? validateTextField(var value, String errorMessage) {
     if (value == null || value.isEmpty) {
       return 'Please $errorMessage';
@@ -486,11 +461,5 @@ class _ExpenseFormState extends State<ExpenseForm> {
     }
     return null;
   }
-
-  dynamic getDefaultCurrency() async {
-    final provider = Provider.of<SettingsProvider>(context, listen: false);
-    await provider.refreshDefaultCurrency();
-    return provider.defaultCurrency;
-  }
-// --------------------------------- methods }--------------------------------- //
+//endregion
 }
