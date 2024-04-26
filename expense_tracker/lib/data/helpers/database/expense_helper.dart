@@ -186,6 +186,9 @@ class ExpenseHelper {
       case SortCriteria.expenseDate:
         orderBy = 'date';
         break;
+      case SortCriteria.expenseAmount:
+        orderBy = 'amount';
+        break;
     }
     return orderBy;
   }

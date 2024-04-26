@@ -1,4 +1,4 @@
-enum SortCriteria { modifiedDate, createdDate, expenseDate }
+enum SortCriteria { modifiedDate, createdDate, expenseDate, expenseAmount }
 
 class SortCriteriaHelper {
   static String getSortCriteriaText(SortCriteria criteria) {
@@ -9,6 +9,8 @@ class SortCriteriaHelper {
         return 'Created';
       case SortCriteria.expenseDate:
         return 'Date';
+      case SortCriteria.expenseAmount:
+        return 'Amount';
     }
   }
 
