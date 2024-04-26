@@ -32,9 +32,11 @@ class CategoryList extends StatelessWidget {
                                   return CategoryTile(
                                       categoryName: category.name,
                                       onDelete: () =>
-                                          _deleteCategory(context, category));
-                                },
-                              ))
+                                      _deleteCategory(context, category),
+                                );
+                              },
+                            ),
+                    )
                   ],
                 ),
               ),

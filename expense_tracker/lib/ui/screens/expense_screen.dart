@@ -1,9 +1,12 @@
+import 'package:expense_tracker/providers/expense_items_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../data/helpers/navigation_helper.dart';
 import '../../models/enums/form_modes.dart';
 import '../../models/expense.dart';
-import '../forms/expense_form.dart';
+import '../../providers/expense_provider.dart';
+import '../forms/expense/expense_form.dart';
 
 class ExpensePage extends StatelessWidget {
   final FormMode formMode;
@@ -23,8 +26,9 @@ class ExpensePage extends StatelessWidget {
                   child: BackButton(
                 onPressed: () =>
                     NavigationHelper.navigateBackWithBool(context, false),
-              )),
-              centerTitle: true,
+            ),
+          ),
+          centerTitle: true,
               title: Text("${formMode.name.replaceFirst(
                 RegExp(r'^\w'),
                 formMode.name[0].toUpperCase(),
@@ -37,6 +41,13 @@ class ExpensePage extends StatelessWidget {
                 ),
               ],
             ),
-            body: ExpenseForm(formMode: formMode, expense: expense)));
+        body: MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (context) => ExpenseItemsProvider()),
+          ],
+          child: ExpenseForm(formMode: formMode, expense: expense),
+        ),
+      ),
+    );
   }
 }

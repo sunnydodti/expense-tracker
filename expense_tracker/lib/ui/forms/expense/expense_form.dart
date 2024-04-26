@@ -1,20 +1,23 @@
+import 'package:expense_tracker/providers/expense_items_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
-import '../../data/constants/form_constants.dart';
-import '../../models/enums/form_modes.dart';
-import '../../models/expense.dart';
-import '../../models/expense_category.dart';
-import '../../models/tag.dart';
-import '../../providers/settings_provider.dart';
-import '../../service/category_service.dart';
-import '../../service/expense_service.dart';
-import '../../service/tag_service.dart';
-import '../../ui/widgets/form_widgets.dart';
-import '../dialogs/date_picker_dialog.dart';
+import '../../../data/constants/form_constants.dart';
+import '../../../models/enums/form_modes.dart';
+import '../../../models/expense.dart';
+import '../../../models/expense_category.dart';
+import '../../../models/tag.dart';
+import '../../../providers/settings_provider.dart';
+import '../../../service/category_service.dart';
+import '../../../service/expense_service.dart';
+import '../../../service/tag_service.dart';
+import '../../widgets/expense/expense_item_tile.dart';
+import '../../widgets/form_widgets.dart';
+import '../../dialogs/date_picker_dialog.dart';
+import 'expense_item_form.dart';
 
 class ExpenseForm extends StatefulWidget {
   final FormMode formMode;
@@ -40,6 +43,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
   late Map<String, String> _currencies;
   late String _defaultCurrency;
   late Color _highlightColor;
+  late bool _containsExpenseItems;
 
   List<ExpenseCategory> _categories = [];
   ExpenseCategory? _selectedCategory;
@@ -57,6 +61,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
   TextEditingController transactionTypeController = TextEditingController();
   TextEditingController dateController = TextEditingController();
   TextEditingController notesController = TextEditingController();
+
   //endregion
 
   //region Section 3: initState
@@ -66,6 +71,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
     _currencies = FormConstants.expense.currencies;
 
     _highlightColor = Colors.green.shade300;
+    _containsExpenseItems = false;
 
     if (widget.formMode == FormMode.edit) {
       _populateFormFieldsForEdit(widget.expense!);
@@ -74,6 +80,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
       _populateFormFieldsWithDefaults();
     }
   }
+
   //endregion
 
   //region Section 4: initStateMethods
@@ -133,6 +140,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
       _selectedTag = _tags.isNotEmpty ? _tags[0] : null;
     });
   }
+
   //endregion
 
   @override
@@ -177,10 +185,27 @@ class _ExpenseFormState extends State<ExpenseForm> {
               _buildCategoryField(),
               _buildTagsField(),
               _buildNotesField(),
+              _buildExpenseItemsToggle(),
+              if (_containsExpenseItems) const ExpenseItemForm(),
+              if (_containsExpenseItems) _buildExpenseItemsList(),
               _buildSubmitButton(),
+              // ListView(
+              //   children: [Placeholder()],
+              // )
             ],
           ),
         ));
+  }
+
+  Container _buildExpenseItemsToggle() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 5),
+      child: SwitchListTile(
+        title: const Text("Add Expense Items"),
+        value: _containsExpenseItems,
+        onChanged: (value) => _toggleExpenseItems(value),
+      ),
+    );
   }
 
   Container _buildSubmitButton() {
@@ -216,7 +241,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
     );
   }
 
-
   Container _buildNotesField() {
     return Container(
       padding: _getFieldPadding(),
@@ -236,7 +260,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
       ),
     );
   }
-
 
   Container _buildTagsField() {
     return Container(
@@ -369,6 +392,32 @@ class _ExpenseFormState extends State<ExpenseForm> {
       ),
     );
   }
+
+  Container _buildExpenseItemsList() {
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 5),
+        child: Consumer<ExpenseItemsProvider>(
+          builder: (context, expenseItemsProvider, child) => ExpansionTile(
+            // initiallyExpanded:
+            //     expenseItemsProvider.expenseItems.isNotEmpty ? true : false,
+            title: Text("Expense Items (${expenseItemsProvider.expenseItems.length})"),
+            children: [
+              Container(
+                height: 100,
+                child: ListView.builder(
+                    itemCount: expenseItemsProvider.expenseItems.length,
+                    itemBuilder: (context, index) {
+                      return ExpenseItemTile(
+                        expenseItem: expenseItemsProvider.expenseItems[index],
+                        onDelete: () {},
+                      );
+                    }),
+              ),
+            ],
+          ),
+        ));
+  }
+
   //endregion
 
   //region Section 6: methods
@@ -438,6 +487,13 @@ class _ExpenseFormState extends State<ExpenseForm> {
     await provider.refreshDefaultCurrency();
     return provider.defaultCurrency;
   }
+
+  void _toggleExpenseItems(value) {
+    setState(() {
+      _containsExpenseItems = value!;
+    });
+  }
+
   //endregion
 
   //region Section 7: validators

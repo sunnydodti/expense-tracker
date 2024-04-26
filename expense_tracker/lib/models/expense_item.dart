@@ -1,0 +1,80 @@
+import '../data/constants/db_constants.dart';
+
+class ExpenseItem {
+  final int id;
+  final int expenseId;
+  final String name;
+  final double amount;
+  final DateTime createdAt;
+  final DateTime modifiedAt;
+
+  ExpenseItem(
+      {required this.id,
+      required this.expenseId,
+      required this.name,
+      required this.amount,
+      required this.createdAt,
+      required this.modifiedAt});
+
+  Map<String, dynamic> toMap() {
+    return {
+      DBConstants.expenseItem.id: id,
+      DBConstants.expenseItem.expenseId: expenseId,
+      DBConstants.expenseItem.name: name,
+      DBConstants.expenseItem.amount: amount,
+      DBConstants.expenseItem.createdAt: createdAt,
+      DBConstants.expenseItem.modifiedAt: modifiedAt
+    };
+  }
+
+  factory ExpenseItem.fromMap(Map<String, dynamic> map) {
+    return ExpenseItem(
+        id: map[DBConstants.expenseItem.id],
+        expenseId: map[DBConstants.expenseItem.expenseId],
+        name: map[DBConstants.expenseItem.name],
+        amount: map[DBConstants.expenseItem.amount],
+        createdAt: DateTime.parse(map[DBConstants.expenseItem.createdAt]),
+        modifiedAt: DateTime.parse(map[DBConstants.expenseItem.modifiedAt]));
+  }
+}
+
+class ExpenseItemFormModel {
+  int? id;
+  int? expenseId;
+  String name;
+  double amount;
+  DateTime? createdAt;
+  DateTime? modifiedAt;
+
+  final String uuid;
+
+  ExpenseItemFormModel({
+    required this.name,
+    required this.amount,
+    id,
+    expenseId,
+    createdAt,
+    modifiedAt,
+  }): uuid = DateTime.now().toString();
+
+  Map<String, dynamic> toMap() {
+    return {
+      DBConstants.expenseItem.id: id,
+      DBConstants.expenseItem.expenseId: expenseId,
+      DBConstants.expenseItem.name: name,
+      DBConstants.expenseItem.amount: amount,
+      DBConstants.expenseItem.createdAt: createdAt,
+      DBConstants.expenseItem.modifiedAt: modifiedAt
+    };
+  }
+
+  factory ExpenseItemFormModel.fromMap(Map<String, dynamic> map) {
+    return ExpenseItemFormModel(
+        id: map[DBConstants.expenseItem.id],
+        expenseId: map[DBConstants.expenseItem.expenseId],
+        name: map[DBConstants.expenseItem.name],
+        amount: map[DBConstants.expenseItem.amount],
+        createdAt: DateTime.parse(map[DBConstants.expenseItem.createdAt]),
+        modifiedAt: DateTime.parse(map[DBConstants.expenseItem.modifiedAt]));
+  }
+}

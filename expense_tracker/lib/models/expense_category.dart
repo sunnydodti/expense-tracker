@@ -6,11 +6,12 @@ class ExpenseCategory {
   final DateTime createdAt;
   final DateTime modifiedAt;
 
-  ExpenseCategory(
-      {required this.id,
-      required this.name,
-      required this.createdAt,
-      required this.modifiedAt});
+  ExpenseCategory({
+    required this.id,
+    required this.name,
+    required this.createdAt,
+    required this.modifiedAt,
+  });
 
   Map<String, dynamic> toMap() {
     return {
