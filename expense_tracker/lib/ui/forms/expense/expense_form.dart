@@ -1,4 +1,3 @@
-import 'package:expense_tracker/providers/expense_items_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -10,6 +9,7 @@ import '../../../models/enums/form_modes.dart';
 import '../../../models/expense.dart';
 import '../../../models/expense_category.dart';
 import '../../../models/tag.dart';
+import '../../../providers/expense_items_provider.dart';
 import '../../../providers/settings_provider.dart';
 import '../../../service/category_service.dart';
 import '../../../service/expense_service.dart';
@@ -197,26 +197,27 @@ class _ExpenseFormState extends State<ExpenseForm> {
         ));
   }
 
-  Container _buildExpenseItemsToggle() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5),
-      child: SwitchListTile(
-        title: const Text("Add Expense Items"),
-        value: _containsExpenseItems,
-        onChanged: (value) => _toggleExpenseItems(value),
-      ),
+  Widget _buildExpenseItemsToggle() {
+    return SwitchListTile(
+      dense: true,
+      visualDensity: VisualDensity(vertical: -2),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+      title: Text("Add Expense Items"),
+      value: _containsExpenseItems,
+      onChanged: (value) => _toggleExpenseItems(value),
     );
   }
 
   Container _buildSubmitButton() {
     return Container(
-      padding: _getFieldPadding(),
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 0),
       child: ElevatedButton(
           onPressed: _submitExpense,
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all<Color>(_highlightColor),
           ),
-          child: Text((widget.formMode == FormMode.add) ? 'Submit' : 'Edit')),
+        child: Text((widget.formMode == FormMode.add) ? 'Submit' : 'Edit'),
+      ),
     );
   }
 
@@ -398,24 +399,26 @@ class _ExpenseFormState extends State<ExpenseForm> {
         padding: const EdgeInsets.symmetric(horizontal: 5),
         child: Consumer<ExpenseItemsProvider>(
           builder: (context, expenseItemsProvider, child) => ExpansionTile(
-            // initiallyExpanded:
-            //     expenseItemsProvider.expenseItems.isNotEmpty ? true : false,
-            title: Text("Expense Items (${expenseItemsProvider.expenseItems.length})"),
-            children: [
-              Container(
-                height: 100,
-                child: ListView.builder(
-                    itemCount: expenseItemsProvider.expenseItems.length,
-                    itemBuilder: (context, index) {
-                      return ExpenseItemTile(
-                        expenseItem: expenseItemsProvider.expenseItems[index],
-                        onDelete: () {},
-                      );
-                    }),
-              ),
-            ],
-          ),
-        ));
+          initiallyExpanded:
+              expenseItemsProvider.expenseItems.isNotEmpty ? true : false,
+          title: Text(
+              "Expense Items (${expenseItemsProvider.expenseItems.length})"),
+          children: [
+            SizedBox(
+              height: 150,
+              child: ListView.builder(
+                  itemCount: expenseItemsProvider.expenseItems.length,
+                  itemBuilder: (context, index) {
+                    return ExpenseItemTile(
+                      expenseItem: expenseItemsProvider.expenseItems[index],
+                      onDelete: () {},
+                    );
+                  }),
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   //endregion
@@ -423,7 +426,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
   //region Section 6: methods
 
   EdgeInsets _getFieldPadding() =>
-      const EdgeInsets.only(top: 15, left: 20, right: 20);
+      const EdgeInsets.only(left: 20, right: 20, top: 8);
 
   double _getIconSize() => 20;
 
