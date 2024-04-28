@@ -8,14 +8,12 @@ import '../../../data/constants/form_constants.dart';
 import '../../../models/enums/form_modes.dart';
 import '../../../models/expense.dart';
 import '../../../models/expense_category.dart';
-import '../../../models/expense_item.dart';
 import '../../../models/tag.dart';
-import '../../../providers/expense_items_provider.dart';
 import '../../../providers/settings_provider.dart';
 import '../../../service/category_service.dart';
 import '../../../service/expense_service.dart';
 import '../../../service/tag_service.dart';
-import '../../widgets/expense/expense_tem/expense_item_tile.dart';
+import '../../widgets/expense/expense_tem/expense_item_list.dart';
 import '../../widgets/form_widgets.dart';
 import '../../dialogs/date_picker_dialog.dart';
 import 'expense_item_form.dart';
@@ -188,8 +186,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
               _buildNotesField(),
               _buildExpenseItemsToggle(),
               if (_containsExpenseItems) const ExpenseItemForm(),
-              if (_containsExpenseItems) _buildExpenseItemsList(),
-              // if (_containsExpenseItems) const ExpenseItemsList(),
+              if (_containsExpenseItems) const ExpenseItemsList(),
               _buildSubmitButton(),
               // ListView(
               //   children: [Placeholder()],
@@ -395,41 +392,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
       ),
     );
   }
-
-  Container _buildExpenseItemsList() {
-    return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 5),
-        child: Consumer<ExpenseItemsProvider>(
-          builder: (context, expenseItemsProvider, child) => ExpansionTile(
-          initiallyExpanded:
-              expenseItemsProvider.expenseItems.isNotEmpty ? true : false,
-          title: Text(
-              "Expense Items (${expenseItemsProvider.expenseItems.length})"),
-          children: [
-            SizedBox(
-              height: 150,
-              child: ListView.builder(
-                  itemCount: expenseItemsProvider.expenseItems.length,
-                  itemBuilder: (context, index) {
-                    return ExpenseItemTile(
-                      expenseItem: expenseItemsProvider.expenseItems[index],
-                      onDelete: () => deleteExpenseItem(expenseItemsProvider, expenseItemsProvider.expenseItems[index]),
-                    );
-                  }),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
   //endregion
 
   //region Section 6: methods
-  deleteExpenseItem(ExpenseItemsProvider expenseItemsProvider, ExpenseItemFormModel expenseItem) {
-    expenseItemsProvider.deleteExpenseItem(expenseItem.uuid);
-  }
-
   EdgeInsets _getFieldPadding() =>
       const EdgeInsets.only(left: 20, right: 20, top: 8);
 
