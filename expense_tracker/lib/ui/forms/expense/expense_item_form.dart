@@ -21,16 +21,21 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
 
   final _nameController = TextEditingController();
   final _amountController = TextEditingController();
+  final _quantityController = TextEditingController();
+  final _totalController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    _totalController.text = '0';
   }
 
   @override
   void dispose() {
     _nameController.dispose();
     _amountController.dispose();
+    _quantityController.dispose();
+    _totalController.dispose();
     super.dispose();
   }
 
@@ -38,17 +43,33 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 5),
-      child: ListTile(
-        title: Form(
-          key: _formKey,
-          child: Row(
+      child: Form(
+        key: _formKey,
+        child: ListTile(
+          title: Row(
             children: [
               _buildNameField(),
-              _buildAmountField(),
+              buildSubmitButton(),
             ],
           ),
+          subtitle: Row(children: [
+            _buildAmountField(),
+            _buildSign("×"),
+            _buildQuantityField(),
+            _buildSign("="),
+            _buildTotalField(),
+          ]),
         ),
-        trailing: buildSubmitButton(),
+      ),
+    );
+  }
+
+  Padding _buildSign(String sign) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
+      child: Text(
+        sign,
+        style: TextStyle(fontSize: 20),
       ),
     );
   }
@@ -57,14 +78,13 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
     return Expanded(
       flex: 6,
       child: Container(
-        padding: const EdgeInsets.only(right: 5),
         child: TextFormField(
           controller: _nameController,
           decoration: const InputDecoration(
-              hintText: "Add Name",
-              label: Text("Item Name", textScaleFactor: .8)),
+            hintText: "Name",
+            label: Text("Name", textScaleFactor: .8),
+          ),
           validator: _validateItemName,
-          // onSaved: submitCategory,
           onChanged: (value) {
             _logger.i("tag: $value");
           },
@@ -76,21 +96,82 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
 
   Expanded _buildAmountField() {
     return Expanded(
-      flex: 4,
       child: Container(
-        padding: const EdgeInsets.only(left: 5),
+        // padding: const EdgeInsets.only(left: 5),
         child: TextFormField(
           controller: _amountController,
           decoration: const InputDecoration(
-            hintText: "Add Amount",
-            label: Text("Item Amount", textScaleFactor: .8),
+            isDense: true,
+            contentPadding: EdgeInsets.only(top: 15, left: 10, bottom: 5),
+            helperText: "Amount",
+            // label: Text("Amount", textScaleFactor: .8),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.transparent),
+            ),
           ),
           validator: _validateItemAmount,
           keyboardType: const TextInputType.numberWithOptions(decimal: false),
           inputFormatters: <TextInputFormatter>[
             FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
           ],
-          // onSaved: submitCategory,
+          onChanged: (value) {
+            _logger.i("tag: $value");
+            _updateAmount();
+          },
+        ),
+      ),
+    );
+  }
+
+  Expanded _buildQuantityField() {
+    return Expanded(
+      child: Container(
+        // padding: const EdgeInsets.only(left: 5),
+        child: TextFormField(
+          controller: _quantityController,
+          decoration: const InputDecoration(
+            isDense: true,
+            contentPadding: EdgeInsets.only(top: 15, left: 10, bottom: 5),
+            helperText: "Quantity",
+            // label: Text("Quantity", textScaleFactor: .8),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.transparent),
+            ),
+          ),
+          validator: _validateItemAmount,
+          keyboardType: const TextInputType.numberWithOptions(decimal: false),
+          inputFormatters: <TextInputFormatter>[
+            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+          ],
+          onChanged: (value) {
+            _logger.i("tag: $value");
+            _updateAmount();
+          },
+        ),
+      ),
+    );
+  }
+
+  Expanded _buildTotalField() {
+    return Expanded(
+      child: Container(
+        // padding: const EdgeInsets.only(left: 5),
+        child: TextFormField(
+          controller: _totalController,
+          readOnly: true,
+          decoration: const InputDecoration(
+            isDense: true,
+            contentPadding: EdgeInsets.only(top: 15, left: 10, bottom: 5),
+            helperText: "Total",
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.transparent),
+            ),
+          ),
+          validator: _validateItemAmount,
+          keyboardType: const TextInputType.numberWithOptions(decimal: false),
+          inputFormatters: <TextInputFormatter>[
+            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+          ],
           onChanged: (value) {
             _logger.i("tag: $value");
           },
@@ -113,14 +194,14 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
 
   void submitExpenseItem() async {
     if (_formKey.currentState?.validate() ?? false) {
-    _logger.i("name: ${_nameController.text}");
-    _logger.i("amount: ${_amountController.text}");
-    ExpenseItemFormModel expenseItem = ExpenseItemFormModel(
-        name: _nameController.text,
-        amount: double.parse(_amountController.text));
-    _addExpenseItem(expenseItem);
-    _nameController.clear();
-    _amountController.clear();
+      _logger.i("name: ${_nameController.text}");
+      _logger.i("amount: ${_amountController.text}");
+      ExpenseItemFormModel expenseItem = ExpenseItemFormModel(
+          name: _nameController.text,
+          amount: double.parse(_amountController.text));
+      _addExpenseItem(expenseItem);
+      _nameController.clear();
+      _amountController.clear();
     }
   }
 
@@ -141,5 +222,13 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
       return 'Enter Amount';
     }
     return null;
+  }
+
+  void _updateAmount() {
+    int amount = _amountController.text.isEmpty ? 0 : int.parse(_amountController.text);
+    int quantity = _quantityController.text.isEmpty ? 0 : int.parse(_quantityController.text);
+    setState(() {
+      _totalController.text = '${amount * quantity}';
+    });
   }
 }

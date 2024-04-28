@@ -13,29 +13,37 @@ class ExpenseItemsList extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: Consumer<ExpenseItemsProvider>(
-        builder: (context, expenseItemsProvider, child) => ExpansionTile(
-          initiallyExpanded: expenseItemsProvider.expenseItems.isNotEmpty,
-          title: Text("Expense Items (${expenseItemsProvider.expenseItems.length})"),
-          children: [
-            SizedBox(
-              height: 150,
-              child: ListView.builder(
-                itemCount: expenseItemsProvider.expenseItems.length,
-                itemBuilder: (context, index) {
-                  return ExpenseItemTile(
-                    expenseItem: expenseItemsProvider.expenseItems[index],
-                    onDelete: () => deleteExpenseItem(expenseItemsProvider, expenseItemsProvider.expenseItems[index]),
-                  );
-                },
-              ),
-            )
-          ],
+        builder: (context, expenseItemsProvider, child) => GestureDetector(
+          onLongPress: () => showExpandedExpenseItemList(expenseItemsProvider),
+          child: ExpansionTile(
+            initiallyExpanded: expenseItemsProvider.expenseItems.isNotEmpty,
+            title: Text(
+                "Expense Items (${expenseItemsProvider.expenseItems.length})"),
+            children: [
+              SizedBox(
+                height: 120,
+                child: ListView.builder(
+                  itemCount: expenseItemsProvider.expenseItems.length,
+                  itemBuilder: (context, index) {
+                    return ExpenseItemTile(
+                      expenseItem: expenseItemsProvider.expenseItems[index],
+                      onDelete: () => deleteExpenseItem(expenseItemsProvider,
+                          expenseItemsProvider.expenseItems[index]),
+                    );
+                  },
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
   }
 
-  deleteExpenseItem(ExpenseItemsProvider expenseItemsProvider, ExpenseItemFormModel expenseItem) {
+  void showExpandedExpenseItemList(ExpenseItemsProvider expenseItemsProvider) => print("longpress");
+
+  deleteExpenseItem(ExpenseItemsProvider expenseItemsProvider,
+      ExpenseItemFormModel expenseItem) {
     expenseItemsProvider.deleteExpenseItem(expenseItem.uuid);
   }
 }

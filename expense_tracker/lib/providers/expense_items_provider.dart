@@ -1,6 +1,6 @@
-import 'package:expense_tracker/models/expense_item.dart';
-
 import 'package:flutter/foundation.dart';
+
+import '../models/expense_item.dart';
 
 class ExpenseItemsProvider extends ChangeNotifier {
 

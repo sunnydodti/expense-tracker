@@ -1,9 +1,9 @@
-import 'package:expense_tracker/ui/widgets/preferences/preferences_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/helpers/navigation_helper.dart';
 import '../../../providers/settings_provider.dart';
+import '../../widgets/preferences/preferences_list.dart';
 
 class PreferencesSettingsScreen extends StatefulWidget {
   const PreferencesSettingsScreen({super.key});

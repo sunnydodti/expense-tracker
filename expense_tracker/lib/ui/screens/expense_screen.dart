@@ -1,11 +1,10 @@
-import 'package:expense_tracker/providers/expense_items_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/helpers/navigation_helper.dart';
 import '../../models/enums/form_modes.dart';
 import '../../models/expense.dart';
-import '../../providers/expense_provider.dart';
+import '../../providers/expense_items_provider.dart';
 import '../forms/expense/expense_form.dart';
 
 class ExpensePage extends StatelessWidget {
