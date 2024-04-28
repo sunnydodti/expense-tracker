@@ -8,13 +8,14 @@ import '../../../data/constants/form_constants.dart';
 import '../../../models/enums/form_modes.dart';
 import '../../../models/expense.dart';
 import '../../../models/expense_category.dart';
+import '../../../models/expense_item.dart';
 import '../../../models/tag.dart';
 import '../../../providers/expense_items_provider.dart';
 import '../../../providers/settings_provider.dart';
 import '../../../service/category_service.dart';
 import '../../../service/expense_service.dart';
 import '../../../service/tag_service.dart';
-import '../../widgets/expense/expense_item_tile.dart';
+import '../../widgets/expense/expense_tem/expense_item_tile.dart';
 import '../../widgets/form_widgets.dart';
 import '../../dialogs/date_picker_dialog.dart';
 import 'expense_item_form.dart';
@@ -188,6 +189,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
               _buildExpenseItemsToggle(),
               if (_containsExpenseItems) const ExpenseItemForm(),
               if (_containsExpenseItems) _buildExpenseItemsList(),
+              // if (_containsExpenseItems) const ExpenseItemsList(),
               _buildSubmitButton(),
               // ListView(
               //   children: [Placeholder()],
@@ -200,9 +202,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
   Widget _buildExpenseItemsToggle() {
     return SwitchListTile(
       dense: true,
-      visualDensity: VisualDensity(vertical: -2),
+      visualDensity: const VisualDensity(vertical: -2),
       contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-      title: Text("Add Expense Items"),
+      title: const Text("Add Expense Items"),
       value: _containsExpenseItems,
       onChanged: (value) => _toggleExpenseItems(value),
     );
@@ -411,7 +413,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
                   itemBuilder: (context, index) {
                     return ExpenseItemTile(
                       expenseItem: expenseItemsProvider.expenseItems[index],
-                      onDelete: () {},
+                      onDelete: () => deleteExpenseItem(expenseItemsProvider, expenseItemsProvider.expenseItems[index]),
                     );
                   }),
             )
@@ -424,6 +426,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
   //endregion
 
   //region Section 6: methods
+  deleteExpenseItem(ExpenseItemsProvider expenseItemsProvider, ExpenseItemFormModel expenseItem) {
+    expenseItemsProvider.deleteExpenseItem(expenseItem.uuid);
+  }
 
   EdgeInsets _getFieldPadding() =>
       const EdgeInsets.only(left: 20, right: 20, top: 8);

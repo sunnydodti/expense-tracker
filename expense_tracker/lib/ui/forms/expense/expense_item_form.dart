@@ -1,9 +1,10 @@
-import 'package:expense_tracker/models/expense_item.dart';
-import 'package:expense_tracker/providers/expense_items_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
+
+import '../../../models/expense_item.dart';
+import '../../../providers/expense_items_provider.dart';
 
 class ExpenseItemForm extends StatefulWidget {
   const ExpenseItemForm({Key? key}) : super(key: key);
@@ -36,7 +37,7 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 5),
       child: ListTile(
         title: Form(
           key: _formKey,
@@ -104,20 +105,23 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
       onPressed: () {
         if (_formKey.currentState!.validate()) {
           _formKey.currentState!.save();
+          submitExpenseItem();
         }
-        submitExpenseItem();
       },
     );
   }
 
   void submitExpenseItem() async {
-    if (_formKey.currentState?.validate() ?? false) {}
+    if (_formKey.currentState?.validate() ?? false) {
     _logger.i("name: ${_nameController.text}");
     _logger.i("amount: ${_amountController.text}");
     ExpenseItemFormModel expenseItem = ExpenseItemFormModel(
         name: _nameController.text,
         amount: double.parse(_amountController.text));
     _addExpenseItem(expenseItem);
+    _nameController.clear();
+    _amountController.clear();
+    }
   }
 
   void _addExpenseItem(ExpenseItemFormModel expenseItem) {

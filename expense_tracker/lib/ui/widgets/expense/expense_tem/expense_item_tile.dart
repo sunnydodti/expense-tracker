@@ -1,5 +1,6 @@
-import 'package:expense_tracker/models/expense_item.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../models/expense_item.dart';
 
 class ExpenseItemTile extends StatelessWidget {
   final ExpenseItemFormModel expenseItem;
