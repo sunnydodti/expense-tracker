@@ -105,7 +105,7 @@ class ExpenseHelper {
     String orderBy = '';
     orderBy = getOrderByCriteria(sortCriteria, orderBy);
 
-    orderBy += isAscendingSort ? ' ASC' : ' DESC';
+    orderBy += getSortOrder(isAscendingSort, sortCriteria);
 
     return await database.query(
       tableName,
@@ -196,5 +196,12 @@ class ExpenseHelper {
   String getMonthNumber(String monthName) {
     DateTime date = DateFormat('MMMM').parse(monthName);
     return DateFormat('MM').format(date);
+  }
+
+  String getSortOrder(bool isAscendingSort, SortCriteria sortCriteria) {
+    if (sortCriteria == SortCriteria.expenseAmount){
+      return isAscendingSort ? ' DESC' : ' ASC';
+    }
+    return isAscendingSort ? ' ASC' : ' DESC';
   }
 }
