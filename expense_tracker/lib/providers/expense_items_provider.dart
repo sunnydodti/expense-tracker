@@ -17,7 +17,7 @@ class ExpenseItemsProvider extends ChangeNotifier {
 
   /// add an expense item.
   void addExpenseItem(ExpenseItemFormModel expenseItem) {
-    _expenseItems.add(expenseItem);
+    _expenseItems.insert(0, expenseItem);
     notifyListeners();
   }
 

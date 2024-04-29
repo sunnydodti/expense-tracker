@@ -22,7 +22,7 @@ class ExpenseItemsList extends StatelessWidget {
                 "Expense Items (${expenseItemsProvider.expenseItems.length})"),
             children: [
               SizedBox(
-                height: 120,
+                height: getExpenseItemsListHeight(expenseItemsProvider),
                 child: ListView.builder(
                   itemCount: expenseItemsProvider.expenseItems.length,
                   itemBuilder: (context, index) {
@@ -40,6 +40,11 @@ class ExpenseItemsList extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  double getExpenseItemsListHeight(ExpenseItemsProvider expenseItemsProvider) {
+    if (expenseItemsProvider.expenseItems.length > 2) return 120;
+    return  expenseItemsProvider.expenseItems.length * 50;
   }
 
   void showExpandedExpenseItemList(ExpenseItemsProvider expenseItemsProvider) => print("longpress");

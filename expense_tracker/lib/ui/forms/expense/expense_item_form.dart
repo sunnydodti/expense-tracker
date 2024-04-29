@@ -32,10 +32,14 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
   @override
   void initState() {
     super.initState();
+    setDefaults();
+    // getCurrency();
+  }
+
+  setDefaults(){
     _totalController.text = '0';
     _amountController.text = '';
     _quantityController.text = '1';
-    // getCurrency();
   }
 
   @override
@@ -213,9 +217,7 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
       );
       _addExpenseItem(expenseItem);
       _nameController.clear();
-      _amountController.clear();
-      _quantityController.clear();
-      _totalController.clear();
+      setDefaults();
     }
   }
 
