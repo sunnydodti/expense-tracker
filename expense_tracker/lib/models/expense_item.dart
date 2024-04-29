@@ -5,6 +5,7 @@ class ExpenseItem {
   final int expenseId;
   final String name;
   final double amount;
+  final int quantity;
   final DateTime createdAt;
   final DateTime modifiedAt;
 
@@ -13,6 +14,7 @@ class ExpenseItem {
       required this.expenseId,
       required this.name,
       required this.amount,
+      required this.quantity,
       required this.createdAt,
       required this.modifiedAt});
 
@@ -22,6 +24,7 @@ class ExpenseItem {
       DBConstants.expenseItem.expenseId: expenseId,
       DBConstants.expenseItem.name: name,
       DBConstants.expenseItem.amount: amount,
+      DBConstants.expenseItem.quantity: quantity,
       DBConstants.expenseItem.createdAt: createdAt,
       DBConstants.expenseItem.modifiedAt: modifiedAt
     };
@@ -29,12 +32,14 @@ class ExpenseItem {
 
   factory ExpenseItem.fromMap(Map<String, dynamic> map) {
     return ExpenseItem(
-        id: map[DBConstants.expenseItem.id],
-        expenseId: map[DBConstants.expenseItem.expenseId],
-        name: map[DBConstants.expenseItem.name],
-        amount: map[DBConstants.expenseItem.amount],
-        createdAt: DateTime.parse(map[DBConstants.expenseItem.createdAt]),
-        modifiedAt: DateTime.parse(map[DBConstants.expenseItem.modifiedAt]));
+      id: map[DBConstants.expenseItem.id],
+      expenseId: map[DBConstants.expenseItem.expenseId],
+      name: map[DBConstants.expenseItem.name],
+      amount: map[DBConstants.expenseItem.amount],
+      quantity: map[DBConstants.expenseItem.quantity],
+      createdAt: DateTime.parse(map[DBConstants.expenseItem.createdAt]),
+      modifiedAt: DateTime.parse(map[DBConstants.expenseItem.modifiedAt]),
+    );
   }
 }
 
@@ -43,6 +48,7 @@ class ExpenseItemFormModel {
   int? expenseId;
   String name;
   double amount;
+  int quantity;
   DateTime? createdAt;
   DateTime? modifiedAt;
 
@@ -51,11 +57,12 @@ class ExpenseItemFormModel {
   ExpenseItemFormModel({
     required this.name,
     required this.amount,
+    required this.quantity,
     id,
     expenseId,
     createdAt,
     modifiedAt,
-  }): uuid = DateTime.now().toString();
+  }) : uuid = DateTime.now().toString();
 
   Map<String, dynamic> toMap() {
     return {
@@ -63,6 +70,7 @@ class ExpenseItemFormModel {
       DBConstants.expenseItem.expenseId: expenseId,
       DBConstants.expenseItem.name: name,
       DBConstants.expenseItem.amount: amount,
+      DBConstants.expenseItem.quantity: quantity,
       DBConstants.expenseItem.createdAt: createdAt,
       DBConstants.expenseItem.modifiedAt: modifiedAt
     };
@@ -74,6 +82,7 @@ class ExpenseItemFormModel {
         expenseId: map[DBConstants.expenseItem.expenseId],
         name: map[DBConstants.expenseItem.name],
         amount: map[DBConstants.expenseItem.amount],
+        quantity: map[DBConstants.expenseItem.quantity],
         createdAt: DateTime.parse(map[DBConstants.expenseItem.createdAt]),
         modifiedAt: DateTime.parse(map[DBConstants.expenseItem.modifiedAt]));
   }

@@ -36,6 +36,7 @@ class ExpenseItemConstants {
   final String expenseId = "expense_id";
   final String name = "name";
   final String amount = "amount";
+  final String quantity = "quantity";
 
   final String createdAt = "created_at";
   final String modifiedAt = "modified_at";

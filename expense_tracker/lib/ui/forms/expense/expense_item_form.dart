@@ -42,6 +42,7 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      // color: Colors.blue,
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: Form(
         key: _formKey,
@@ -49,7 +50,7 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
           title: Row(
             children: [
               _buildNameField(),
-              buildSubmitButton(),
+              _buildSubmitButton(),
             ],
           ),
           subtitle: Row(children: [
@@ -69,7 +70,7 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
       padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
       child: Text(
         sign,
-        style: TextStyle(fontSize: 20),
+        style: const TextStyle(fontSize: 20),
       ),
     );
   }
@@ -167,7 +168,6 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
               borderSide: BorderSide(color: Colors.transparent),
             ),
           ),
-          validator: _validateItemAmount,
           keyboardType: const TextInputType.numberWithOptions(decimal: false),
           inputFormatters: <TextInputFormatter>[
             FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
@@ -180,7 +180,7 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
     );
   }
 
-  IconButton buildSubmitButton() {
+  IconButton _buildSubmitButton() {
     return IconButton(
       icon: const Icon(Icons.add, color: Colors.green),
       onPressed: () {
@@ -198,10 +198,14 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
       _logger.i("amount: ${_amountController.text}");
       ExpenseItemFormModel expenseItem = ExpenseItemFormModel(
           name: _nameController.text,
-          amount: double.parse(_amountController.text));
+          amount: double.parse(_amountController.text),
+          quantity: int.parse(_quantityController.text),
+      );
       _addExpenseItem(expenseItem);
       _nameController.clear();
       _amountController.clear();
+      _quantityController.clear();
+      _totalController.clear();
     }
   }
 

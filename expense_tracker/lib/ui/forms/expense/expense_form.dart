@@ -146,54 +146,54 @@ class _ExpenseFormState extends State<ExpenseForm> {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
 
-    return Material(
-        child: Theme(
-      data: theme.copyWith(
-          textTheme: Theme.of(context).textTheme.apply(
-                fontSizeFactor: .9,
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: Theme(
+        data: theme.copyWith(
+            textTheme: Theme.of(context).textTheme.apply(
+                  fontSizeFactor: .9,
+                ),
+            inputDecorationTheme: InputDecorationTheme(
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
+              focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                color: _highlightColor,
+              )),
+              prefixIconColor: _highlightColor,
+              suffixIconColor: _highlightColor,
+              labelStyle: TextStyle(
+                color: _highlightColor,
               ),
-          inputDecorationTheme: InputDecorationTheme(
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
-            focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-              color: _highlightColor,
             )),
-            prefixIconColor: _highlightColor,
-            suffixIconColor: _highlightColor,
-            labelStyle: TextStyle(
-              color: _highlightColor,
-            ),
-          )),
-      child: _buildExpenseFormFields(context),
-    ));
+        child: _buildExpenseFormFields(context),
+      ),
+    );
   }
 
   //region Section 5: formFields
   Container _buildExpenseFormFields(BuildContext context) {
     return Container(
-        color: Colors.grey.shade900,
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              _buildTitleField(),
-              _buildAmountField(),
-              _buildTransactionTypeField(),
-              _buildDateField(),
-              _buildCategoryField(),
-              _buildTagsField(),
-              _buildNotesField(),
-              _buildExpenseItemsToggle(),
-              if (_containsExpenseItems) const ExpenseItemForm(),
-              if (_containsExpenseItems) const ExpenseItemsList(),
-              _buildSubmitButton(),
-              // ListView(
-              //   children: [Placeholder()],
-              // )
-            ],
-          ),
-        ));
+      color: Colors.grey.shade900,
+      child: Form(
+        key: _formKey,
+        child: ListView(
+          children: [
+            _buildTitleField(),
+            _buildAmountField(),
+            _buildTransactionTypeField(),
+            _buildDateField(),
+            _buildCategoryField(),
+            _buildTagsField(),
+            _buildNotesField(),
+            _buildExpenseItemsToggle(),
+            if (_containsExpenseItems) const ExpenseItemForm(),
+            if (_containsExpenseItems) const ExpenseItemsList(),
+            _buildSubmitButton(),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildExpenseItemsToggle() {
@@ -211,10 +211,10 @@ class _ExpenseFormState extends State<ExpenseForm> {
     return Container(
       padding: const EdgeInsets.only(left: 20, right: 20, top: 0),
       child: ElevatedButton(
-          onPressed: _submitExpense,
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(_highlightColor),
-          ),
+        onPressed: _submitExpense,
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(_highlightColor),
+        ),
         child: Text((widget.formMode == FormMode.add) ? 'Submit' : 'Edit'),
       ),
     );
@@ -392,6 +392,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
       ),
     );
   }
+
   //endregion
 
   //region Section 6: methods
