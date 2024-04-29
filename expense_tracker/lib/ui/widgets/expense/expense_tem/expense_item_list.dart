@@ -6,7 +6,8 @@ import '../../../../providers/expense_items_provider.dart';
 import 'expense_item_tile.dart';
 
 class ExpenseItemsList extends StatelessWidget {
-  const ExpenseItemsList({Key? key}) : super(key: key);
+  final String currency;
+  const ExpenseItemsList({Key? key, required this.currency}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +28,7 @@ class ExpenseItemsList extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return ExpenseItemTile(
                       expenseItem: expenseItemsProvider.expenseItems[index],
+                      currency: currency,
                       onDelete: () => deleteExpenseItem(expenseItemsProvider,
                           expenseItemsProvider.expenseItems[index]),
                     );

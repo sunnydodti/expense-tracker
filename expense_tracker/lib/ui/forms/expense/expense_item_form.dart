@@ -3,11 +3,14 @@ import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/constants/form_constants.dart';
 import '../../../models/expense_item.dart';
 import '../../../providers/expense_items_provider.dart';
+import '../../../providers/settings_provider.dart';
 
 class ExpenseItemForm extends StatefulWidget {
-  const ExpenseItemForm({Key? key}) : super(key: key);
+  final String currency;
+  const ExpenseItemForm({Key? key, required this.currency}) : super(key: key);
 
   @override
   State<ExpenseItemForm> createState() => _ExpenseItemFormState();
@@ -24,10 +27,15 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
   final _quantityController = TextEditingController();
   final _totalController = TextEditingController();
 
+  // late String _currency = "";
+
   @override
   void initState() {
     super.initState();
     _totalController.text = '0';
+    _amountController.text = '';
+    _quantityController.text = '1';
+    // getCurrency();
   }
 
   @override
@@ -101,12 +109,13 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
         // padding: const EdgeInsets.only(left: 5),
         child: TextFormField(
           controller: _amountController,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             isDense: true,
-            contentPadding: EdgeInsets.only(top: 15, left: 10, bottom: 5),
+            contentPadding: const EdgeInsets.only(top: 15, left: 10, bottom: 5),
             helperText: "Amount",
+            prefix: Text("${widget.currency} "),
             // label: Text("Amount", textScaleFactor: .8),
-            focusedBorder: OutlineInputBorder(
+            focusedBorder: const OutlineInputBorder(
               borderSide: BorderSide(color: Colors.transparent),
             ),
           ),
@@ -160,11 +169,12 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
         child: TextFormField(
           controller: _totalController,
           readOnly: true,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             isDense: true,
-            contentPadding: EdgeInsets.only(top: 15, left: 10, bottom: 5),
+            contentPadding: const EdgeInsets.only(top: 15, left: 10, bottom: 5),
+            prefix: Text("${widget.currency} "),
             helperText: "Total",
-            focusedBorder: OutlineInputBorder(
+            focusedBorder: const OutlineInputBorder(
               borderSide: BorderSide(color: Colors.transparent),
             ),
           ),
@@ -235,4 +245,12 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
       _totalController.text = '${amount * quantity}';
     });
   }
+
+  // getCurrency() async {
+  //   final provider = Provider.of<SettingsProvider>(context, listen: false);
+  //   await provider.refreshDefaultCurrency(notify: false);
+  //   setState(() {
+  //     _currency = "${FormConstants.expense.currencies[provider.defaultCurrency]!} ";
+  //   });
+  // }
 }

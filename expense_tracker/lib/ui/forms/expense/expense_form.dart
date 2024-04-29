@@ -187,8 +187,10 @@ class _ExpenseFormState extends State<ExpenseForm> {
             _buildTagsField(),
             _buildNotesField(),
             _buildExpenseItemsToggle(),
-            if (_containsExpenseItems) const ExpenseItemForm(),
-            if (_containsExpenseItems) const ExpenseItemsList(),
+            if (_containsExpenseItems)
+              ExpenseItemForm(currency: '${amountPrefixController.text} '),
+            if (_containsExpenseItems)
+              ExpenseItemsList(currency: '${amountPrefixController.text} '),
             _buildSubmitButton(),
           ],
         ),
@@ -368,27 +370,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
         inputFormatters: [
           FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}$')),
         ],
-      ),
-    );
-  }
-
-  Container getCurrencyField() {
-    return Container(
-      padding: _getFieldPadding(),
-      child: DropdownButtonFormField(
-        isExpanded: true,
-        value: currencyController.text,
-        items: FormWidgets.getCurrencyDropdownItems(),
-        decoration: const InputDecoration(
-          labelText: 'Currency',
-        ),
-        validator: (value) => validateTextField(value, "select currency"),
-        onChanged: (value) {
-          setState(() {
-            currencyController.text = value;
-            amountPrefixController.text = _currencies[value]!;
-          });
-        },
       ),
     );
   }
