@@ -99,9 +99,17 @@ class ExpenseFormModel {
   DateTime? createdAt;
   DateTime? modifiedAt;
 
-  ExpenseFormModel(this.title, this.currency, this.amount, this.transactionType,
-      this.date, this.category, this.containsExpenseItems,
-      [this.tags, this.note]);
+  ExpenseFormModel(
+    this.title,
+    this.currency,
+    this.amount,
+    this.transactionType,
+    this.date,
+    this.category,
+    this.containsExpenseItems, [
+    this.tags,
+    this.note,
+  ]);
 
   ExpenseFormModel.withId(this.id, this.title, this.currency, this.amount,
       this.transactionType, this.date, this.category, this.containsExpenseItems,

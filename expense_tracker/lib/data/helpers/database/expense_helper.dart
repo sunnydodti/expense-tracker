@@ -51,13 +51,12 @@ class ExpenseHelper {
     ''');
     }
   }
-
+  //region db update v2
   static Future<void> upgradeTableV1toV2(Transaction transaction) async {
     var result = await transaction.rawQuery(
         """SELECT name FROM sqlite_master WHERE type = 'table' AND name = '${DBConstants.expense.table}'""");
     if (result.isNotEmpty) {
       _logger.i("updating table ${DBConstants.expense.table}");
-
       _logger.i(
           "\trenaming ${DBConstants.expense.containsNestedExpenses} to ${DBConstants.expense.containsExpenseItems}");
       await transaction.execute('''
@@ -72,6 +71,21 @@ class ExpenseHelper {
       //   ''');
     }
   }
+
+  static Future<List<Map<String, dynamic>>> getAllExpenses(
+      Database database) async {
+    _logger.i("getting expenses");
+    return await database.query(DBConstants.expense.table);
+  }
+
+  static setContainsExpensesTrue(Transaction transaction, List<Map<String, dynamic>> allExpenses) {
+    transaction.execute('''
+    UPDATE ${DBConstants.expense.table}
+    SET ${DBConstants.expense.containsExpenseItems} = 1
+    ''');
+  }
+
+  //endregion
 
   // CRUD operations
   // CREATE
@@ -93,12 +107,6 @@ class ExpenseHelper {
   Future<List<Map<String, dynamic>>> getExpenses() async {
     _logger.i("getting expenses");
     Database database = getDatabase;
-    return await database.query(DBConstants.expense.table);
-  }
-
-  static Future<List<Map<String, dynamic>>> getAllExpenses(
-      Database database) async {
-    _logger.i("getting expenses");
     return await database.query(DBConstants.expense.table);
   }
 
