@@ -9,6 +9,7 @@ import 'package:sqflite/sqflite.dart';
 import '../../constants/db_constants.dart';
 import 'category_helper.dart';
 import 'expense_helper.dart';
+import 'expense_item_helper.dart';
 import 'tag_helper.dart';
 
 class DatabaseHelper {
@@ -73,6 +74,9 @@ class DatabaseHelper {
 
   Future<ExpenseHelper> get expenseHelper async =>
       ExpenseHelper(await getDatabase);
+
+  Future<ExpenseItemHelper> get expenseItemHelper async =>
+      ExpenseItemHelper(await getDatabase);
 
   Future<CategoryHelper> get categoryHelper async =>
       CategoryHelper(await getDatabase);

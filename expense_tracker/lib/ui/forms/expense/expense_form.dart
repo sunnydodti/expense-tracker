@@ -9,6 +9,7 @@ import '../../../models/enums/form_modes.dart';
 import '../../../models/expense.dart';
 import '../../../models/expense_category.dart';
 import '../../../models/tag.dart';
+import '../../../providers/expense_items_provider.dart';
 import '../../../providers/settings_provider.dart';
 import '../../../service/category_service.dart';
 import '../../../service/expense_service.dart';
@@ -97,7 +98,11 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
     List<ExpenseCategory> categories = await categoryService.getCategories();
     List<Tag> tags = await tagService.getTags();
-
+    if (mounted) {
+      final expenseItemProvider =
+          Provider.of<ExpenseItemsProvider>(context, listen: false);
+      expenseItemProvider.fetchExpenseItems(expenseId: expense.id);
+    }
     setState(() {
       _categories = categories;
       _tags = tags;
@@ -105,6 +110,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
       _selectedCategory =
           categoryService.getMatchingCategory(expense.category, _categories);
       _selectedTag = tagService.getMatchingTag(expense.tags ?? "", _tags);
+      _containsExpenseItems = expense.containsExpenseItems;
     });
   }
 
@@ -187,16 +193,20 @@ class _ExpenseFormState extends State<ExpenseForm> {
             _buildTagsField(),
             _buildNotesField(),
             _buildExpenseItemsToggle(),
-            if (_containsExpenseItems)
-              ExpenseItemForm(currency: '${amountPrefixController.text} '),
-            if (_containsExpenseItems)
-              ExpenseItemsList(currency: '${amountPrefixController.text} '),
+            if (_containsExpenseItems) _buildExpenseItemForm(),
+            if (_containsExpenseItems) _buildExpenseItemsList(),
             _buildSubmitButton(),
           ],
         ),
       ),
     );
   }
+
+  ExpenseItemsList _buildExpenseItemsList() =>
+      ExpenseItemsList(currency: '${amountPrefixController.text} ');
+
+  ExpenseItemForm _buildExpenseItemForm() =>
+      ExpenseItemForm(currency: '${amountPrefixController.text} ');
 
   Widget _buildExpenseItemsToggle() {
     return SwitchListTile(
@@ -392,6 +402,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
       _logger.i('category: ${_selectedCategory?.name}');
       _logger.i('tags: ${_selectedTag?.name}');
       _logger.i('notes: ${notesController.text}');
+      _logger.i('contains expense items: $_containsExpenseItems');
 
       ExpenseFormModel expense = ExpenseFormModel(
         titleController.text.trim(),
@@ -400,7 +411,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
         transactionTypeController.text.trim(),
         DateTime.parse(dateController.text.trim()),
         _selectedCategory!.name,
-        false,
+        _containsExpenseItems,
       );
 
       expense.tags = _selectedTag!.name;
