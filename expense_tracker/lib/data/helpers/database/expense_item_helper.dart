@@ -45,6 +45,24 @@ class ExpenseItemHelper {
     }
   }
 
+  /// migration db v1 to v2
+  static Future<int> addPreviousExpensesAsExpenseItem(
+      Transaction transaction, List<Map<String, dynamic>> expenses) async {
+    int count = 0;
+    for (var expense in expenses) {
+      var expenseId = expense[DBConstants.expense.id];
+      _logger.i("expense id for expense item $expenseId");
+      ExpenseItemFormModel expenseItem = ExpenseItemFormModel.forMigration(
+        name: expense[DBConstants.expense.title],
+        amount: expense[DBConstants.expense.amount],
+        quantity: 1,
+        expenseId: expenseId,
+      );
+      count += await addConvertedExpenseItem(expenseItem.toMap(), transaction);
+    }
+    return count;
+  }
+
   // CRUD operations
   // CREATE
   Future<int> addExpenseItem(Map<String, dynamic> expenseMap) async {
@@ -68,6 +86,14 @@ class ExpenseItemHelper {
     return await batch.commit();
   }
 
+  static Future<int> addConvertedExpenseItem(
+      Map<String, dynamic> expenseMap, Transaction transaction) async {
+    _logger.i(
+        "adding converted expense item ${expenseMap[DBConstants.expenseItem.name]} - expense: ${expenseMap[DBConstants.expenseItem.expenseId]}");
+    _logger.i(expenseMap.toString());
+    return await transaction.insert(DBConstants.expenseItem.table, expenseMap);
+  }
+
   Future<List<Map<String, dynamic>>> getExpenseItem(int id) async {
     _logger.i("getting expense item $id");
     Database database = getDatabase;
@@ -82,11 +108,13 @@ class ExpenseItemHelper {
     return await database.query(DBConstants.expenseItem.table);
   }
 
-  Future<List<Map<String, dynamic>>> getExpenseItemsByExpenseId(int expenseId) async {
+  Future<List<Map<String, dynamic>>> getExpenseItemsByExpenseId(
+      int expenseId) async {
     _logger.i("getting expense items for expense - $expenseId");
     Database database = getDatabase;
     return await database.query(DBConstants.expenseItem.table,
-        where: '${DBConstants.expenseItem.expenseId} = ?', whereArgs: [expenseId]);
+        where: '${DBConstants.expenseItem.expenseId} = ?',
+        whereArgs: [expenseId]);
   }
 
   // UPDATE
@@ -125,8 +153,7 @@ class ExpenseItemHelper {
   Future<int> getExpenseItemsCountForExpense(int expenseId) async {
     _logger.i("getting ${DBConstants.expenseItem.table} count");
     Database database = getDatabase;
-    final count = Sqflite.firstIntValue(await database
-        .rawQuery('''
+    final count = Sqflite.firstIntValue(await database.rawQuery('''
         SELECT COUNT(*) 
         FROM ${DBConstants.expenseItem.table}
         WHERE ${DBConstants.expenseItem.expenseId} = $expenseId

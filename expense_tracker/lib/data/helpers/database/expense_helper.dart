@@ -33,8 +33,7 @@ class ExpenseHelper {
             ${DBConstants.expense.category} TEXT,
             ${DBConstants.expense.tags} TEXT,
             ${DBConstants.expense.note} TEXT,
-            ${DBConstants.expense.containsNestedExpenses} INTEGER,
-            ${DBConstants.expense.expenses} TEXT,
+            ${DBConstants.expense.containsExpenseItems} INTEGER DEFAULT 0,
             ${DBConstants.expense.createdAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             ${DBConstants.expense.modifiedAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP
           )
@@ -50,6 +49,27 @@ class ExpenseHelper {
         WHERE ROWID = NEW.ROWID;
       END;
     ''');
+    }
+  }
+
+  static Future<void> upgradeTableV1toV2(Transaction transaction) async {
+    var result = await transaction.rawQuery(
+        """SELECT name FROM sqlite_master WHERE type = 'table' AND name = '${DBConstants.expense.table}'""");
+    if (result.isNotEmpty) {
+      _logger.i("updating table ${DBConstants.expense.table}");
+
+      _logger.i(
+          "\trenaming ${DBConstants.expense.containsNestedExpenses} to ${DBConstants.expense.containsExpenseItems}");
+      await transaction.execute('''
+          ALTER TABLE ${DBConstants.expense.table}
+          RENAME COLUMN ${DBConstants.expense.containsNestedExpenses} TO ${DBConstants.expense.containsExpenseItems}
+        ''');
+
+      // _logger.i("\tdropping column ${DBConstants.expense.expenses}");
+      // await transaction.execute('''
+      //     ALTER TABLE ${DBConstants.expense.table}
+      //     DROP COLUMN ${DBConstants.expense.expenses}
+      //   ''');
     }
   }
 
@@ -73,6 +93,12 @@ class ExpenseHelper {
   Future<List<Map<String, dynamic>>> getExpenses() async {
     _logger.i("getting expenses");
     Database database = getDatabase;
+    return await database.query(DBConstants.expense.table);
+  }
+
+  static Future<List<Map<String, dynamic>>> getAllExpenses(
+      Database database) async {
+    _logger.i("getting expenses");
     return await database.query(DBConstants.expense.table);
   }
 
@@ -122,21 +148,6 @@ class ExpenseHelper {
     Database database = getDatabase;
     return database.update(DBConstants.expense.table, expense.toMap(),
         where: '${DBConstants.expense.id} = ?', whereArgs: [expense.id]);
-  }
-
-  Future<int> updateExpenseV2(Map<String, dynamic> expenseMap) async {
-    _logger.i(
-        "updating expense V2 ${expenseMap[DBConstants.expense.id]} - ${expenseMap[DBConstants.expense.title]}");
-    _logger.i(expenseMap.toString());
-    Database database = getDatabase;
-    return database.rawUpdate('''
-      UPDATE ${DBConstants.expense.table}
-      SET ${DBConstants.expense.amount} = ?
-      WHERE ${DBConstants.expense.id} = ? 
-      ''', [
-      expenseMap[DBConstants.expense.amount],
-      expenseMap[DBConstants.expense.id]
-    ]);
   }
 
   // DELETE
@@ -199,7 +210,7 @@ class ExpenseHelper {
   }
 
   String getSortOrder(bool isAscendingSort, SortCriteria sortCriteria) {
-    if (sortCriteria == SortCriteria.expenseAmount){
+    if (sortCriteria == SortCriteria.expenseAmount) {
       return isAscendingSort ? ' DESC' : ' ASC';
     }
     return isAscendingSort ? ' ASC' : ' DESC';

@@ -58,21 +58,33 @@ class ExpenseItemFormModel {
     required this.name,
     required this.amount,
     required this.quantity,
-    id,
-    expenseId,
-    createdAt,
-    modifiedAt,
+    this.id,
+    this.expenseId,
+    this.createdAt,
+    this.modifiedAt,
   }) : uuid = DateTime.now().toString();
+
+  factory ExpenseItemFormModel.forMigration({
+    required name,
+    required amount,
+    required quantity,
+    required expenseId,
+  }) {
+    return ExpenseItemFormModel(
+      name: name,
+      amount: amount,
+      quantity: quantity,
+      expenseId: expenseId,
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return {
-      DBConstants.expenseItem.id: id,
+      if (id != null) DBConstants.expenseItem.id: id,
       DBConstants.expenseItem.expenseId: expenseId,
       DBConstants.expenseItem.name: name,
       DBConstants.expenseItem.amount: amount,
       DBConstants.expenseItem.quantity: quantity,
-      DBConstants.expenseItem.createdAt: createdAt,
-      DBConstants.expenseItem.modifiedAt: modifiedAt
     };
   }
 

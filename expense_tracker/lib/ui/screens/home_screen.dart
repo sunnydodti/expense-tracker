@@ -69,14 +69,14 @@ class HomeScreen extends StatelessWidget {
   }
 
   void _handelProfile(BuildContext context) => {
-    showDialog(
-      context: context,
-      builder: (context) => const SimpleDialogWidget(
-        title: 'To be added',
-        message: 'Profile will be added soon',
-      ),
-    ),
-  };
+        showDialog(
+          context: context,
+          builder: (context) => const SimpleDialogWidget(
+            title: 'To be added',
+            message: 'Profile will be added soon',
+          ),
+        ),
+      };
 
   void populateExpense(BuildContext context) async {
     ExpenseService service = await _expenseService;

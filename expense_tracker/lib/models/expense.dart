@@ -10,18 +10,27 @@ class Expense {
   String category;
   String? tags;
   String? note;
+  bool containsExpenseItems;
 
-  List<Expense>? expenses;
   DateTime createdAt;
   DateTime modifiedAt;
 
-  Expense(this.id, this.title, this.currency, this.amount, this.transactionType,
-      this.date, this.category, this.createdAt, this.modifiedAt,
-      [this.tags, this.note, this.expenses]);
+  Expense(
+      this.id,
+      this.title,
+      this.currency,
+      this.amount,
+      this.transactionType,
+      this.date,
+      this.category,
+      this.containsExpenseItems,
+      this.createdAt,
+      this.modifiedAt,
+      [this.tags,
+      this.note]);
 
   // Methods
-  //  // Expense Object to map
-  // Getter for the Map representation
+  // Expense Object to map
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = <String, dynamic>{};
     map[DBConstants.expense.id] = id;
@@ -33,8 +42,8 @@ class Expense {
     map[DBConstants.expense.category] = category;
     map[DBConstants.expense.tags] = tags;
     map[DBConstants.expense.note] = note;
-    map[DBConstants.expense.expenses] =
-        expenses?.map((expense) => expense.toMap()).toList();
+    map[DBConstants.expense.containsExpenseItems] =
+        _parseBoolAsInt(containsExpenseItems);
     map[DBConstants.expense.createdAt] = createdAt;
     map[DBConstants.expense.modifiedAt] = modifiedAt;
     return map;
@@ -58,22 +67,22 @@ class Expense {
         map[DBConstants.expense.transactionType],
         DateTime.parse(map[DBConstants.expense.date]),
         map[DBConstants.expense.category],
+        _parseIntAsBool(map[DBConstants.expense.containsExpenseItems]),
         DateTime.parse(map[DBConstants.expense.createdAt]),
         DateTime.parse(map[DBConstants.expense.modifiedAt]));
 
-    expense.id = map[DBConstants.expense.id];
     expense.tags = map[DBConstants.expense.tags];
-    // expense.tag = map[DBExpenseTableConstants.tag];
     expense.note = map[DBConstants.expense.note];
-    // expense.containsNestedExpenses = _parseIntAsBool(map[DBExpenseTableConstants.containsNestedExpenses]!);
-    expense.createdAt = DateTime.parse(map[DBConstants.expense.createdAt]);
-    expense.modifiedAt = DateTime.parse(map[DBConstants.expense.modifiedAt]);
     return expense;
   }
+}
 
-  static bool _parseIntAsBool(int value) {
-    return value != 0;
-  }
+bool _parseIntAsBool(int value) {
+  return value != 0;
+}
+
+int _parseBoolAsInt(bool value) {
+  return value ? 1 : 0;
 }
 
 class ExpenseFormModel {
@@ -84,29 +93,19 @@ class ExpenseFormModel {
   String transactionType;
   DateTime date;
   String category;
-  bool containsNestedExpenses;
   String? tags;
   String? note;
-  List<ExpenseFormModel>? expenses;
+  bool containsExpenseItems;
   DateTime? createdAt;
   DateTime? modifiedAt;
 
   ExpenseFormModel(this.title, this.currency, this.amount, this.transactionType,
-      this.date, this.category, this.containsNestedExpenses,
-      [this.tags, this.note, this.expenses]);
+      this.date, this.category, this.containsExpenseItems,
+      [this.tags, this.note]);
 
-  ExpenseFormModel.withId(
-      this.id,
-      this.title,
-      this.currency,
-      this.amount,
-      this.transactionType,
-      this.date,
-      this.category,
-      this.containsNestedExpenses,
-      [this.tags,
-      this.note,
-      this.expenses]);
+  ExpenseFormModel.withId(this.id, this.title, this.currency, this.amount,
+      this.transactionType, this.date, this.category, this.containsExpenseItems,
+      [this.tags, this.note]);
 
   // Methods
   //  // Expense Object to map
@@ -122,9 +121,8 @@ class ExpenseFormModel {
     map[DBConstants.expense.category] = category;
     map[DBConstants.expense.tags] = tags;
     map[DBConstants.expense.note] = note;
-    map[DBConstants.expense.containsNestedExpenses] = containsNestedExpenses;
-    map[DBConstants.expense.expenses] =
-        expenses?.map((expense) => expense.toMap()).toList();
+    map[DBConstants.expense.containsExpenseItems] = containsExpenseItems;
+
     return map;
   }
 
@@ -137,15 +135,10 @@ class ExpenseFormModel {
         transactionType = map[DBConstants.expense.transactionType],
         date = DateTime.parse(map[DBConstants.expense.date]),
         category = map[DBConstants.expense.category],
-        // tags = map[DBExpenseTableConstants.Tags]?.cast<String>(),
         tags = map[DBConstants.expense.tags],
         note = map[DBConstants.expense.note],
-        containsNestedExpenses =
-            map[DBConstants.expense.containsNestedExpenses],
+        containsExpenseItems =
+            _parseIntAsBool(map[DBConstants.expense.containsExpenseItems]),
         createdAt = map[DBConstants.expense.createdAt],
-        modifiedAt = map[DBConstants.expense.modifiedAt],
-        expenses =
-            (map[DBConstants.expense.expenses] as List<Map<String, dynamic>>?)
-                ?.map((expenseMap) => ExpenseFormModel.fromMap(expenseMap))
-                .toList();
+        modifiedAt = map[DBConstants.expense.modifiedAt];
 }

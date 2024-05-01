@@ -1,6 +1,4 @@
-class UiConstants {
-
-}
+class UiConstants {}
 
 class TextConstants {
   double textScaleFactor = .9;

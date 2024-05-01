@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import '../models/expense_item.dart';
 
 class ExpenseItemsProvider extends ChangeNotifier {
-
   ExpenseItemsProvider() {
     _init();
   }

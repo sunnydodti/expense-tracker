@@ -31,8 +31,7 @@ class SortFilterService extends SharedPreferencesService {
   Future<SortCriteria?> getPreferenceSortCriteria() async {
     SortCriteria? sortCriteria;
     try {
-      String? storedSortCriteria =
-      await getStringPreference(
+      String? storedSortCriteria = await getStringPreference(
           SharedPreferencesConstants.sort.CRITERIA_KEY);
       sortCriteria =
           SortCriteriaHelper.getSortCriteriaByName(storedSortCriteria!);

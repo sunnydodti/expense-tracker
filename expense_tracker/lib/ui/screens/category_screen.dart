@@ -29,7 +29,7 @@ class CategoryScreen extends StatelessWidget {
             appBar: AppBar(
               leading: SafeArea(
                   child: BackButton(
-                    onPressed: () => NavigationHelper.navigateBack(context),
+                onPressed: () => NavigationHelper.navigateBack(context),
               )),
               centerTitle: true,
               title: Text(title, textScaleFactor: 0.9),

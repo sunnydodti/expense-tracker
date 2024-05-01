@@ -42,7 +42,7 @@ class SharedPreferencesHelper {
     final preferences = await SharedPreferences.getInstance();
     await preferences.setDouble(_getKey(key), value);
   }
-  
+
   Future<void> deleteSharedPreferences(String key) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.remove(_getKey(key));
@@ -54,5 +54,4 @@ class SharedPreferencesHelper {
   }
 
   String _getKey(String key) => '$_preferencesKey.$key';
-
 }

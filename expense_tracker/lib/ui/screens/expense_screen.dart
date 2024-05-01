@@ -17,29 +17,29 @@ class ExpensePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () => NavigationHelper.navigateBackWithBool(context, false),
-        child: Scaffold(
-            // backgroundColor: Colors.grey.shade900,
-            appBar: AppBar(
-              leading: SafeArea(
-                  child: BackButton(
-                onPressed: () =>
-                    NavigationHelper.navigateBackWithBool(context, false),
+      onWillPop: () => NavigationHelper.navigateBackWithBool(context, false),
+      child: Scaffold(
+        // backgroundColor: Colors.grey.shade900,
+        appBar: AppBar(
+          leading: SafeArea(
+            child: BackButton(
+              onPressed: () =>
+                  NavigationHelper.navigateBackWithBool(context, false),
             ),
           ),
           centerTitle: true,
-              title: Text("${formMode.name.replaceFirst(
-                RegExp(r'^\w'),
-                formMode.name[0].toUpperCase(),
-              )} Expense"),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.check),
-                  tooltip: "Save",
-                  onPressed: () => {},
-                ),
-              ],
+          title: Text("${formMode.name.replaceFirst(
+            RegExp(r'^\w'),
+            formMode.name[0].toUpperCase(),
+          )} Expense"),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.check),
+              tooltip: "Save",
+              onPressed: () => {},
             ),
+          ],
+        ),
         body: MultiProvider(
           providers: [
             ChangeNotifierProvider(create: (context) => ExpenseItemsProvider()),

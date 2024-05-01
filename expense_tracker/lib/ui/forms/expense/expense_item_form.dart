@@ -3,13 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
-import '../../../data/constants/form_constants.dart';
 import '../../../models/expense_item.dart';
 import '../../../providers/expense_items_provider.dart';
-import '../../../providers/settings_provider.dart';
 
 class ExpenseItemForm extends StatefulWidget {
   final String currency;
+
   const ExpenseItemForm({Key? key, required this.currency}) : super(key: key);
 
   @override
@@ -36,7 +35,7 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
     // getCurrency();
   }
 
-  setDefaults(){
+  setDefaults() {
     _totalController.text = '0';
     _amountController.text = '';
     _quantityController.text = '1';
@@ -211,9 +210,9 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
       _logger.i("name: ${_nameController.text}");
       _logger.i("amount: ${_amountController.text}");
       ExpenseItemFormModel expenseItem = ExpenseItemFormModel(
-          name: _nameController.text,
-          amount: double.parse(_amountController.text),
-          quantity: int.parse(_quantityController.text),
+        name: _nameController.text,
+        amount: double.parse(_amountController.text),
+        quantity: int.parse(_quantityController.text),
       );
       _addExpenseItem(expenseItem);
       _nameController.clear();
@@ -241,18 +240,21 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
   }
 
   void _updateAmount() {
-    int amount = _amountController.text.isEmpty ? 0 : int.parse(_amountController.text);
-    int quantity = _quantityController.text.isEmpty ? 0 : int.parse(_quantityController.text);
+    int amount =
+        _amountController.text.isEmpty ? 0 : int.parse(_amountController.text);
+    int quantity = _quantityController.text.isEmpty
+        ? 0
+        : int.parse(_quantityController.text);
     setState(() {
       _totalController.text = '${amount * quantity}';
     });
   }
 
-  // getCurrency() async {
-  //   final provider = Provider.of<SettingsProvider>(context, listen: false);
-  //   await provider.refreshDefaultCurrency(notify: false);
-  //   setState(() {
-  //     _currency = "${FormConstants.expense.currencies[provider.defaultCurrency]!} ";
-  //   });
-  // }
+// getCurrency() async {
+//   final provider = Provider.of<SettingsProvider>(context, listen: false);
+//   await provider.refreshDefaultCurrency(notify: false);
+//   setState(() {
+//     _currency = "${FormConstants.expense.currencies[provider.defaultCurrency]!} ";
+//   });
+// }
 }

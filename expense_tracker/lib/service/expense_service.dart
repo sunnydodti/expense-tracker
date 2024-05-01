@@ -134,10 +134,8 @@ class ExpenseService {
       DBConstants.expense.tags:
           faker.randomGenerator.boolean() ? 'home' : 'work',
       DBConstants.expense.note: faker.lorem.sentence(),
-      DBConstants.expense.containsNestedExpenses:
+      DBConstants.expense.containsExpenseItems:
           faker.randomGenerator.boolean() ? 1 : 0,
-      DBConstants.expense.expenses: 'Nested expenses data',
-      // Add appropriate nested expenses data
       DBConstants.expense.createdAt: faker.date.dateTime().toIso8601String(),
       DBConstants.expense.modifiedAt: faker.date.dateTime().toIso8601String(),
     };

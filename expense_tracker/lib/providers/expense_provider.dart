@@ -46,7 +46,7 @@ class ExpenseProvider extends ChangeNotifier {
       }
     }
 
-    double totalBalance = totalIncome - totalExpense - totalReimbursement;
+    double totalBalance = totalIncome - totalExpense + totalReimbursement;
     return totalBalance;
   }
 
@@ -67,6 +67,9 @@ class ExpenseProvider extends ChangeNotifier {
     for (var expense in _expenses) {
       if (expense.transactionType == TransactionType.expense.name) {
         totalExpenses += expense.amount;
+      }
+      if (expense.transactionType == TransactionType.reimbursement.name) {
+        totalExpenses -= expense.amount;
       }
     }
     return totalExpenses;

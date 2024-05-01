@@ -7,6 +7,7 @@ import 'expense_item_tile.dart';
 
 class ExpenseItemsList extends StatelessWidget {
   final String currency;
+
   const ExpenseItemsList({Key? key, required this.currency}) : super(key: key);
 
   @override
@@ -44,10 +45,11 @@ class ExpenseItemsList extends StatelessWidget {
 
   double getExpenseItemsListHeight(ExpenseItemsProvider expenseItemsProvider) {
     if (expenseItemsProvider.expenseItems.length > 2) return 120;
-    return  expenseItemsProvider.expenseItems.length * 50;
+    return expenseItemsProvider.expenseItems.length * 50;
   }
 
-  void showExpandedExpenseItemList(ExpenseItemsProvider expenseItemsProvider) => print("longpress");
+  void showExpandedExpenseItemList(ExpenseItemsProvider expenseItemsProvider) =>
+      print("longpress");
 
   deleteExpenseItem(ExpenseItemsProvider expenseItemsProvider,
       ExpenseItemFormModel expenseItem) {

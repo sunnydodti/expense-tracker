@@ -19,10 +19,10 @@ class ExpenseConstants {
   final String date = "date";
   final String category = "category";
   final String tags = "tags";
-  final String tag = "tag";
   final String note = "note";
-  final String containsNestedExpenses = "contains_nested_expenses";
-  final String expenses = "expenses";
+  final String containsNestedExpenses = "contains_nested_expenses"; // dropped
+  final String containsExpenseItems = "contains_expense_items";
+  final String expenses = "expenses"; // dropped
 
   final String createdAt = "created_at";
   final String modifiedAt = "modified_at";

@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:expense_tracker/data/helpers/database/migration_helper.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -31,14 +33,29 @@ class DatabaseHelper {
     final Directory directory = await getApplicationDocumentsDirectory();
     final String path = '${directory.path}/${DBConstants.databaseName}.db';
 
-    return openDatabase(path, version: 1, onCreate: createDatabase,
-        onOpen: (db) {
-      _logger.i(path);
-      _logger.i("Database is open");
-    });
+    return openDatabase(
+      path,
+      version: 2,
+      onCreate: createDatabase,
+      onUpgrade: upgradeDatabase,
+      onOpen: (db) {
+        _logger.i(path);
+        _logger.i("Database is open");
+      },
+    );
+  }
+
+  FutureOr<void> upgradeDatabase(Database db, int oldVersion, int newVersion) {
+    // if upgrading from version 1
+    if (oldVersion == 1) {
+      if (newVersion == 2) {
+        upgradeFromV1toV2(db);
+      }
+    }
   }
 
   void createDatabase(Database database, int newVersion) async {
+    // version 1
     await ExpenseHelper.createTable(database);
 
     await CategoryHelper.createTable(database);
@@ -46,6 +63,12 @@ class DatabaseHelper {
 
     await TagHelper.createTable(database);
     await TagHelper.populateDefaults(database);
+
+    // version 2
+  }
+
+  void upgradeFromV1toV2(Database database) async {
+    MigrationHelper.migrateV1toV2(database);
   }
 
   Future<ExpenseHelper> get expenseHelper async =>

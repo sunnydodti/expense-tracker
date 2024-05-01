@@ -22,16 +22,16 @@ class CategoryList extends StatelessWidget {
                   children: [
                     getCategoryForm(categoryProvider.categories),
                     Expanded(
-                        child: categoryProvider.categories.isEmpty
-                            ? const EmptyListWidget(listName: 'Category')
-                            : ListView.builder(
-                                itemCount: categoryProvider.categories.length,
-                                itemBuilder: (context, index) {
-                                  final category =
-                                      categoryProvider.categories[index];
-                                  return CategoryTile(
-                                      categoryName: category.name,
-                                      onDelete: () =>
+                      child: categoryProvider.categories.isEmpty
+                          ? const EmptyListWidget(listName: 'Category')
+                          : ListView.builder(
+                              itemCount: categoryProvider.categories.length,
+                              itemBuilder: (context, index) {
+                                final category =
+                                    categoryProvider.categories[index];
+                                return CategoryTile(
+                                  categoryName: category.name,
+                                  onDelete: () =>
                                       _deleteCategory(context, category),
                                 );
                               },
