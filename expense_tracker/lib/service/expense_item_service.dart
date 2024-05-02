@@ -2,7 +2,6 @@ import 'package:logger/logger.dart';
 
 import '../data/helpers/database/database_helper.dart';
 import '../data/helpers/database/expense_item_helper.dart';
-import '../models/expense.dart';
 import '../models/expense_item.dart';
 
 class ExpenseItemService {
@@ -25,21 +24,20 @@ class ExpenseItemService {
       return id > 0 ? true : false;
     } on Exception catch (e, stackTrace) {
       _logger.e(
-          "Error adding expense item(${expenseItem.name}): $e - \n$stackTrace");
+          "Error adding expense item(${expenseItem.name}) for expense ${expenseItem.expenseId}: $e - \n$stackTrace");
       return false;
     }
   }
 
-  Future<void> addExpenseItems(List<ExpenseItemFormModel> expenseItems) async {
+  Future<bool> addExpenseItems(List<ExpenseItemFormModel> expenseItems) async {
     try {
       var result = await _expenseItemHelper
           .addExpenseItems(convertExpenseItemsToMapList(expenseItems));
-      // return id > 0 ? true : false;
-      int a = 0;
+      return result.isNotEmpty ? true : false;
     } on Exception catch (e, stackTrace) {
       _logger.e(
           "Error adding ${expenseItems.length} expense items for expense ${expenseItems[0].expenseId}: $e - \n$stackTrace");
-      // return false;
+      return false;
     }
   }
 
@@ -48,27 +46,54 @@ class ExpenseItemService {
     return expenseItems.map((expenseItem) => expenseItem.toMap()).toList();
   }
 
-  Future<Expense?> getExpenseItem(int id) async {
+  Future<ExpenseItem?> getExpenseItem(int id) async {
     try {
       final List<Map<String, dynamic>> expenses =
           await _expenseItemHelper.getExpenseItem(id);
-      return Expense.fromMap(expenses.first);
+      return ExpenseItem.fromMap(expenses.first);
     } catch (e, stackTrace) {
       _logger.e("Error getting expense ($id) - $e - \n$stackTrace");
       return null;
     }
   }
 
-  // Future<bool> updateExpenseItem(ExpenseFormModel expense) async {
-  //   try {
-  //     int result = await _expenseItemHelper.updateExpenseItem(expense);
-  //     return result > 0 ? true : false;
-  //   } on Exception catch (e, stackTrace) {
-  //     _logger
-  //         .e("Error updating expense (${expense.title}): $e - \n$stackTrace");
-  //     return false;
-  //   }
-  // }
+  Future<bool> updateExpenseItem(ExpenseItemFormModel expenseItem) async {
+    try {
+      if (await doesExistExpenseItem(expenseItem.id!)) {
+        int result = await _expenseItemHelper.updateExpenseItem(expenseItem);
+        return result > 0 ? true : false;
+      }
+      return false;
+    } on Exception catch (e, stackTrace) {
+      _logger.e(
+          "Error updating expense item(${expenseItem.name}) for expense ${expenseItem.expenseId}: $e - \n$stackTrace");
+      return false;
+    }
+  }
+
+  Future<bool> updateExpenseItems(
+      List<ExpenseItemFormModel> expenseItems) async {
+    try {
+      List<ExpenseItemFormModel> expenseItemsToUpdate = [];
+      List<ExpenseItemFormModel> expenseItemsNew = [];
+      for (var expenseItem in expenseItems) {
+        if (expenseItem.id == null) {
+          expenseItemsNew.add(expenseItem);
+        } else {
+          expenseItemsToUpdate.add(expenseItem);
+        }
+      }
+      var result =
+          await _expenseItemHelper.updateExpenseItems(expenseItemsToUpdate);
+      result += await _expenseItemHelper
+          .addExpenseItems(convertExpenseItemsToMapList(expenseItemsNew));
+      return result.isNotEmpty ? true : false;
+    } on Exception catch (e, stackTrace) {
+      _logger.e(
+          "Error updating (${expenseItems.length}) expense items for expense ${expenseItems[0].expenseId}: $e - \n$stackTrace");
+      return false;
+    }
+  }
 
   Future<List<ExpenseItem>> getExpenseItems(int expenseId) async {
     List<Map<String, dynamic>> expenseMapList =
@@ -95,14 +120,27 @@ class ExpenseItemService {
   //   }
   // }
 
-  // Future<int> deleteAllExpenses() async {
-  //   try {
-  //     return _expenseItemHelper.deleteAllExpenses();
-  //   } on Exception catch (e, stackTrace) {
-  //     _logger.e("Error deleting expenses: $e - \n$stackTrace");
-  //     return -1;
-  //   }
-  // }
+  Future<int> deleteExpenseItem(int id) async {
+    try {
+      return _expenseItemHelper.deleteExpenseItem(id);
+    } on Exception catch (e, stackTrace) {
+      _logger.e("Error deleting expenses: $e - \n$stackTrace");
+      return -1;
+    }
+  }
+
+  Future<int> deleteExpenseItems(List<int> ids) async {
+    int count = 0;
+    try {
+      for (int id in ids) {
+        count += await deleteExpenseItem(id);
+      }
+    } on Exception catch (e, stackTrace) {
+      _logger.e("Error deleting expenses: $e - \n$stackTrace");
+      return -1;
+    }
+    return count;
+  }
 
   // Future<bool> importExpenseItem(Map<String, dynamic> expense) async {
   //   try {
@@ -137,11 +175,17 @@ class ExpenseItemService {
   //   return false;
   // }
 
-  // Future<bool> isDuplicateExpenseItem(Expense expense) async {
-  //   Expense? existingExpense = await getExpenseItem(expense.id);
-  //   if (existingExpense == null) return false;
-  //   if (existingExpense.title == expense.title &&
-  //       existingExpense.amount == expense.amount) return true;
-  //   return false;
-  // }
+  Future<bool> isDuplicateExpenseItem(ExpenseItem expenseItem) async {
+    ExpenseItem? existingExpenseItem = await getExpenseItem(expenseItem.id);
+    if (existingExpenseItem == null) return false;
+    if (existingExpenseItem.name == expenseItem.name &&
+        existingExpenseItem.amount == expenseItem.amount) return true;
+    return false;
+  }
+
+  Future<bool> doesExistExpenseItem(int expenseItemId) async {
+    ExpenseItem? existingExpenseItem = await getExpenseItem(expenseItemId);
+    if (existingExpenseItem == null) return false;
+    return true;
+  }
 }

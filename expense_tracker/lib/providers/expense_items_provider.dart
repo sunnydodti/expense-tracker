@@ -19,9 +19,20 @@ class ExpenseItemsProvider extends ChangeNotifier {
   }
 
   List<ExpenseItemFormModel> _expenseItems = [];
+  List<ExpenseItemFormModel> _expenseItemsDeleted = [];
 
   /// get list of all expenseItems
   List<ExpenseItemFormModel> get expenseItems => _expenseItems;
+
+  List<ExpenseItemFormModel> get expenseItemsDeleted => _expenseItemsDeleted;
+
+  List<int> get expenseItemsDeletedIds {
+    List<int> ids = [];
+    for (var expenseItem in _expenseItemsDeleted) {
+      ids.add(expenseItem.id!);
+    }
+    return ids;
+  }
 
   /// add an expense item.
   void addExpenseItem(ExpenseItemFormModel expenseItem) {
@@ -31,6 +42,8 @@ class ExpenseItemsProvider extends ChangeNotifier {
 
   /// delete an expense by uuid.
   void deleteExpenseItem(String uuid) {
+    _expenseItemsDeleted.add(
+        _expenseItems.firstWhere((expenseItem) => expenseItem.uuid == uuid));
     _expenseItems.removeWhere((expenseItem) => expenseItem.uuid == uuid);
     notifyListeners();
   }

@@ -445,7 +445,8 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
   Future<bool> updateExpense(ExpenseFormModel expense) async {
     ExpenseService expenseService = await ExpenseService.create();
-    return await expenseService.updateExpense(expense);
+    return await expenseService.updateExpense(
+        expense, _getExpenseItemsProvider());
   }
 
   dynamic getDefaultCurrency() async {

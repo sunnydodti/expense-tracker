@@ -64,9 +64,27 @@ class ExpenseService {
     }
   }
 
-  Future<bool> updateExpense(ExpenseFormModel expense) async {
+  Future<bool> updateExpense(ExpenseFormModel expense,
+      ExpenseItemsProvider expenseItemsProvider) async {
     try {
       int result = await _expenseHelper.updateExpense(expense);
+      if (expense.containsExpenseItems) {
+        if (expenseItemsProvider.expenseItems.isNotEmpty) {
+          List<ExpenseItemFormModel> expenseItems =
+              expenseItemsProvider.expenseItems;
+          for (var expenseItem in expenseItems) {
+            expenseItem.expenseId = expense.id;
+          }
+          ExpenseItemService expenseItemService = await _expenseItemService;
+          expenseItemService.updateExpenseItems(expenseItems);
+        }
+
+        if (expenseItemsProvider.expenseItemsDeleted.isNotEmpty) {
+          ExpenseItemService expenseItemService = await _expenseItemService;
+          expenseItemService
+              .deleteExpenseItems(expenseItemsProvider.expenseItemsDeletedIds);
+        }
+      }
       return result > 0 ? true : false;
     } on Exception catch (e, stackTrace) {
       _logger

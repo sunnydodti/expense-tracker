@@ -76,7 +76,7 @@ class ExpenseItemHelper {
   Future<List<Object?>> addExpenseItems(
       List<Map<String, dynamic>> expenseItemMapList) async {
     _logger.i(
-        "adding ${expenseItemMapList.length} expense items - expense: ${expenseItemMapList[0][DBConstants.expenseItem.expenseId]}");
+        "adding ${expenseItemMapList.length} expense items - expense: ${expenseItemMapList.isNotEmpty ? expenseItemMapList[0][DBConstants.expenseItem.expenseId] : 'unknown'}");
     Database database = getDatabase;
     Batch batch = database.batch();
     for (var expenseItemMap in expenseItemMapList) {
@@ -118,12 +118,27 @@ class ExpenseItemHelper {
   }
 
   // UPDATE
-  Future<int> updateExpenseItem(ExpenseItemFormModel expense) async {
-    _logger.i("updating expense item ${expense.id} - ${expense.name}");
-    _logger.i(expense.toMap().toString());
+  Future<int> updateExpenseItem(ExpenseItemFormModel expenseItem) async {
+    _logger.i("updating expense item ${expenseItem.id} - ${expenseItem.name}");
+    _logger.i(expenseItem.toMap().toString());
     Database database = getDatabase;
-    return database.update(DBConstants.expenseItem.table, expense.toMap(),
-        where: '${DBConstants.expenseItem.id} = ?', whereArgs: [expense.id]);
+    return database.update(DBConstants.expenseItem.table, expenseItem.toMap(),
+        where: '${DBConstants.expenseItem.id} = ?',
+        whereArgs: [expenseItem.id]);
+  }
+
+  Future<List<Object?>> updateExpenseItems(
+      List<ExpenseItemFormModel> expenseItems) async {
+    Database database = getDatabase;
+    Batch batch = database.batch();
+
+    for (var expenseItem in expenseItems) {
+      _logger.i(expenseItem.toString());
+      batch.update(DBConstants.expenseItem.table, expenseItem.toMap(),
+          where: '${DBConstants.expenseItem.id} = ?',
+          whereArgs: [expenseItem.id]);
+    }
+    return await batch.commit();
   }
 
   // DELETE
@@ -133,6 +148,13 @@ class ExpenseItemHelper {
     return await database.delete(DBConstants.expenseItem.table,
         where: '${DBConstants.expenseItem.id} = ?', whereArgs: [id]);
   }
+
+  // Future<int> deleteExpenseItems(List<int> ids) async {
+  //   _logger.i("deleting (${ids.length}) ${DBConstants.expenseItem.table}");
+  //   Database database = getDatabase;
+  //   return await database.delete(DBConstants.expenseItem.table,
+  //       where: '${DBConstants.expenseItem.id} = ?', whereArgs: [id]);
+  // }
 
   // DELETE ALL
   Future<int> deleteAllExpenseItems() async {
