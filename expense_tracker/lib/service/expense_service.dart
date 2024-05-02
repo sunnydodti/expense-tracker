@@ -1,4 +1,3 @@
-import 'package:expense_tracker/service/expense_item_service.dart';
 import 'package:faker/faker.dart';
 import 'package:logger/logger.dart';
 
@@ -10,6 +9,7 @@ import '../models/expense.dart';
 import '../models/expense_filters.dart';
 import '../models/expense_item.dart';
 import '../providers/expense_items_provider.dart';
+import 'expense_item_service.dart';
 import 'sort_filter_service.dart';
 
 class ExpenseService {

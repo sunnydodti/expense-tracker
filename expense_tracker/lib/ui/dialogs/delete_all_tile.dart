@@ -6,7 +6,7 @@ import '../../service/category_service.dart';
 import '../../service/expense_service.dart';
 import '../../service/tag_service.dart';
 import '../notifications/snackbar_service.dart';
-import 'confirmation_dialog.dart';
+import 'common/confirmation_dialog.dart';
 
 class DeleteAllTile extends StatefulWidget {
   const DeleteAllTile({super.key});

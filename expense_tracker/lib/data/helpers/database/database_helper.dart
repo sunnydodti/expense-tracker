@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:expense_tracker/data/helpers/database/migration_helper.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -10,6 +9,7 @@ import '../../constants/db_constants.dart';
 import 'category_helper.dart';
 import 'expense_helper.dart';
 import 'expense_item_helper.dart';
+import 'migration_helper.dart';
 import 'tag_helper.dart';
 
 class DatabaseHelper {

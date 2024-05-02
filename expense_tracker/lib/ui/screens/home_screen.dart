@@ -6,7 +6,7 @@ import '../../data/helpers/navigation_helper.dart';
 import '../../models/enums/form_modes.dart';
 import '../../providers/expense_provider.dart';
 import '../../service/expense_service.dart';
-import '../dialogs/message_dialog.dart';
+import '../dialogs/common/message_dialog.dart';
 import '../drawer/home_drawer.dart';
 import '../widgets/expense/expense_list_dynamic.dart';
 import 'expense_screen.dart';

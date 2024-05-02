@@ -6,9 +6,9 @@ import 'package:provider/provider.dart';
 import '../../../models/expense_filters.dart';
 import '../../../providers/expense_provider.dart';
 import '../../../providers/sort_filter_provider.dart';
+import '../../dialogs/common/month_picker_dialog.dart';
+import '../../dialogs/common/year_picker_dialog.dart';
 import '../../dialogs/filter_expenses_dialog.dart';
-import '../../dialogs/month_picker_dialog.dart';
-import '../../dialogs/year_picker_dialog.dart';
 
 class FilterWidget extends StatefulWidget {
   const FilterWidget({super.key});
