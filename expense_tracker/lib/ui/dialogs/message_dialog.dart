@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class SimpleDialogWidget extends StatelessWidget {
+class MessageDialog extends StatelessWidget {
   final String title;
   final String message;
 
-  const SimpleDialogWidget(
+  const MessageDialog(
       {Key? key, required this.title, required this.message})
       : super(key: key);
 

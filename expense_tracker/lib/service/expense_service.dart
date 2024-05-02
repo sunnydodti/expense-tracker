@@ -1,3 +1,4 @@
+import 'package:expense_tracker/service/expense_item_service.dart';
 import 'package:faker/faker.dart';
 import 'package:logger/logger.dart';
 
@@ -7,15 +8,21 @@ import '../data/helpers/database/expense_helper.dart';
 import '../models/enums/sort_criteria.dart';
 import '../models/expense.dart';
 import '../models/expense_filters.dart';
+import '../models/expense_item.dart';
+import '../providers/expense_items_provider.dart';
 import 'sort_filter_service.dart';
 
 class ExpenseService {
   late final ExpenseHelper _expenseHelper;
+  late final Future<ExpenseItemService> _expenseItemService;
+
   static final Logger _logger =
       Logger(printer: SimplePrinter(), level: Level.info);
   final SortFilterService sortFilterService = SortFilterService.create();
 
-  ExpenseService._(this._expenseHelper);
+  ExpenseService._(this._expenseHelper) {
+    _expenseItemService = ExpenseItemService.create();
+  }
 
   static Future<ExpenseService> create() async {
     final databaseHelper = DatabaseHelper();
@@ -24,9 +31,21 @@ class ExpenseService {
     return ExpenseService._(expenseHelper);
   }
 
-  Future<bool> addExpense(ExpenseFormModel expense) async {
+  Future<bool> addExpense(ExpenseFormModel expense,
+      ExpenseItemsProvider expenseItemProvider) async {
     try {
       int id = await _expenseHelper.addExpense(expense.toMap());
+      if (expense.containsExpenseItems) {
+        if (expenseItemProvider.expenseItems.isNotEmpty) {
+          List<ExpenseItemFormModel> expenseItems =
+              expenseItemProvider.expenseItems;
+          for (var expenseItem in expenseItems) {
+            expenseItem.expenseId = id;
+          }
+          ExpenseItemService expenseItemService = await _expenseItemService;
+          expenseItemService.addExpenseItems(expenseItems);
+        }
+      }
       return id > 0 ? true : false;
     } on Exception catch (e, stackTrace) {
       _logger.e("Error adding expense (${expense.title}): $e - \n$stackTrace");

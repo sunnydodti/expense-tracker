@@ -440,7 +440,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
   Future<bool> insertExpense(ExpenseFormModel expense) async {
     ExpenseService expenseService = await ExpenseService.create();
-    return await expenseService.addExpense(expense);
+    return await expenseService.addExpense(expense, _getExpenseItemsProvider());
   }
 
   Future<bool> updateExpense(ExpenseFormModel expense) async {
@@ -452,6 +452,10 @@ class _ExpenseFormState extends State<ExpenseForm> {
     final provider = Provider.of<SettingsProvider>(context, listen: false);
     await provider.refreshDefaultCurrency();
     return provider.defaultCurrency;
+  }
+
+  ExpenseItemsProvider _getExpenseItemsProvider() {
+    return Provider.of<ExpenseItemsProvider>(context, listen: false);
   }
 
   void _toggleExpenseItems(value) {

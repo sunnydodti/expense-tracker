@@ -1,15 +1,9 @@
-import 'package:faker/faker.dart';
 import 'package:logger/logger.dart';
 
-import '../data/constants/db_constants.dart';
 import '../data/helpers/database/database_helper.dart';
-import '../data/helpers/database/expense_helper.dart';
 import '../data/helpers/database/expense_item_helper.dart';
-import '../models/enums/sort_criteria.dart';
 import '../models/expense.dart';
-import '../models/expense_filters.dart';
 import '../models/expense_item.dart';
-import 'sort_filter_service.dart';
 
 class ExpenseItemService {
   late final ExpenseItemHelper _expenseItemHelper;
@@ -25,15 +19,34 @@ class ExpenseItemService {
     return ExpenseItemService._(expenseItemHelper);
   }
 
-  // Future<bool> addExpenseItem(ExpenseItemFormModel expense) async {
-  //   try {
-  //     int id = await _expenseItemHelper.addExpenseItem(expense.toMap());
-  //     return id > 0 ? true : false;
-  //   } on Exception catch (e, stackTrace) {
-  //     _logger.e("Error adding expense item(${expense.name}): $e - \n$stackTrace");
-  //     return false;
-  //   }
-  // }
+  Future<bool> addExpenseItem(ExpenseItemFormModel expenseItem) async {
+    try {
+      int id = await _expenseItemHelper.addExpenseItem(expenseItem.toMap());
+      return id > 0 ? true : false;
+    } on Exception catch (e, stackTrace) {
+      _logger.e(
+          "Error adding expense item(${expenseItem.name}): $e - \n$stackTrace");
+      return false;
+    }
+  }
+
+  Future<void> addExpenseItems(List<ExpenseItemFormModel> expenseItems) async {
+    try {
+      var result = await _expenseItemHelper
+          .addExpenseItems(convertExpenseItemsToMapList(expenseItems));
+      // return id > 0 ? true : false;
+      int a = 0;
+    } on Exception catch (e, stackTrace) {
+      _logger.e(
+          "Error adding ${expenseItems.length} expense items for expense ${expenseItems[0].expenseId}: $e - \n$stackTrace");
+      // return false;
+    }
+  }
+
+  List<Map<String, dynamic>> convertExpenseItemsToMapList(
+      List<ExpenseItemFormModel> expenseItems) {
+    return expenseItems.map((expenseItem) => expenseItem.toMap()).toList();
+  }
 
   Future<Expense?> getExpenseItem(int id) async {
     try {
