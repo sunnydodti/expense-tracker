@@ -15,7 +15,7 @@ import '../../../service/category_service.dart';
 import '../../../service/expense_service.dart';
 import '../../../service/tag_service.dart';
 import '../../dialogs/common/date_picker_dialog.dart';
-import '../../widgets/expense/expense_tem/expense_item_list.dart';
+import '../../widgets/expense/expense_item/expense_item_list.dart';
 import '../../widgets/form_widgets.dart';
 import 'expense_item_form.dart';
 
