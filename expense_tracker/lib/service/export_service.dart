@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:archive/archive.dart';
+import 'package:expense_tracker/data/constants/db_constants.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
@@ -48,16 +49,19 @@ class ExportService {
     File categoriesJSON =
         File("${await tempJSONPath}/${FileConstants.export.categories}");
     File tagsJSON = File("${await tempJSONPath}/${FileConstants.export.tags}");
+    File versionJSON =
+        File("${await tempJSONPath}/${FileConstants.export.version}");
 
     try {
       await _saveJSONFiles(
         expensesJSON,
         categoriesJSON,
         tagsJSON,
+        versionJSON,
       );
 
-      Archive archive =
-          _getExportArchive(expensesJSON, categoriesJSON, tagsJSON);
+      Archive archive = _getExportArchive(
+          expensesJSON, categoriesJSON, tagsJSON, versionJSON);
 
       final zipEncoder = ZipEncoder();
       List<int>? encodedZip = zipEncoder.encode(archive);
@@ -98,8 +102,8 @@ class ExportService {
     return result;
   }
 
-  Future<void> _saveJSONFiles(
-      File expensesJSON, File categoriesJSON, File tagsJSON) async {
+  Future<void> _saveJSONFiles(File expensesJSON, File categoriesJSON,
+      File tagsJSON, File versionJSON) async {
     ExpenseService expenseService = await _expenseService;
     CategoryService categoryService = await _categoryService;
     TagService tagService = await _tagService;
@@ -119,6 +123,10 @@ class ExportService {
           _logger.i("exporting tags to ${tagsJSON.path}");
           tagsJSON.writeAsStringSync(
               getFormattedJSONString(await tagService.getTagMaps()));
+
+          _logger.i("exporting version info to ${versionJSON.path}");
+          versionJSON
+              .writeAsStringSync(getFormattedJSONString(await getVersionMap()));
         } else {
           throw Exception("storage permission denied");
         }
@@ -130,7 +138,7 @@ class ExportService {
   }
 
   Archive _getExportArchive(
-      File expensesJSON, File categoriesJSON, File tagsJSON) {
+      File expensesJSON, File categoriesJSON, File tagsJSON, File versionJSON) {
     Archive archive = Archive();
 
     archive.addFile(ArchiveFile(FileConstants.export.expenses,
@@ -139,6 +147,8 @@ class ExportService {
         categoriesJSON.lengthSync(), categoriesJSON.readAsBytesSync()));
     archive.addFile(ArchiveFile(FileConstants.export.tags,
         tagsJSON.lengthSync(), tagsJSON.readAsBytesSync()));
+    archive.addFile(ArchiveFile(FileConstants.export.version,
+        versionJSON.lengthSync(), versionJSON.readAsBytesSync()));
 
     return archive;
   }
@@ -173,5 +183,16 @@ class ExportService {
       // Handle selection cancellation
       return '';
     }
+  }
+
+  getVersionMap() {
+    Map<String, dynamic> versionInfo = {};
+    versionInfo[DBConstants.version.appVersionKey] =
+        DBConstants.version.appVersion;
+    versionInfo[DBConstants.version.databaseVersionKey] =
+        DBConstants.version.databaseVersion;
+    versionInfo[DBConstants.version.createdAt] =
+        DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+    return versionInfo;
   }
 }

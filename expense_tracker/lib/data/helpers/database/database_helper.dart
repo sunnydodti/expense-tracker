@@ -32,11 +32,11 @@ class DatabaseHelper {
 
   Future<Database> initializeDatabase() async {
     final Directory directory = await getApplicationDocumentsDirectory();
-    final String path = '${directory.path}/${DBConstants.databaseName}.db';
+    final String path = '${directory.path}/${DBConstants.databaseName}';
 
     return openDatabase(
       path,
-      version: 2,
+      version: DBConstants.databaseVersion,
       onCreate: createDatabase,
       onUpgrade: upgradeDatabase,
       onOpen: (db) {

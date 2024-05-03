@@ -1,5 +1,8 @@
 class DBConstants {
-  static String databaseName = "expense_tracker";
+  static String databaseName = "expense_tracker.db";
+  static int databaseVersion = 2;
+
+  static DatabaseVersionConstants version = DatabaseVersionConstants();
 
   static ExpenseConstants expense = ExpenseConstants();
   static ExpenseItemConstants expenseItem = ExpenseItemConstants();
@@ -84,4 +87,12 @@ class TransactionTypeConstants {
 
   final String createdAt = "created_at";
   final String modifiedAt = "modified_at";
+}
+
+class DatabaseVersionConstants {
+  final String databaseVersionKey = "database_version";
+  final int databaseVersion = 2;
+  final String appVersionKey = "app_version";
+  final String appVersion = "0.0.2";
+  final String createdAt = "created_at";
 }

@@ -11,6 +11,7 @@ class ExportConstants {
   final String expenses = "expenses.json";
   final String categories = "categories.json";
   final String tags = "tags.json";
+  final String version = "version.json";
 }
 
 class CacheConstants {
