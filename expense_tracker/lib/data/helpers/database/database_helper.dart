@@ -59,6 +59,8 @@ class DatabaseHelper {
     // version 1
     await ExpenseHelper.createTable(database);
 
+    await ExpenseItemHelper.createTable(database);
+
     await CategoryHelper.createTable(database);
     await CategoryHelper.populateDefaults(database);
 
