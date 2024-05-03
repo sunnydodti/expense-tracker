@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:expense_tracker/data/constants/db_constants.dart';
+import 'package:expense_tracker/service/expense_item_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
@@ -18,6 +19,7 @@ import 'tag_service.dart';
 
 class ExportService {
   late final Future<ExpenseService> _expenseService;
+  late final Future<ExpenseItemService> _expenseItemService;
   late final Future<CategoryService> _categoryService;
   late final Future<TagService> _tagService;
 
@@ -30,6 +32,7 @@ class ExportService {
 
   Future<void> _init() async {
     _expenseService = ExpenseService.create();
+    _expenseItemService = ExpenseItemService.create();
     _categoryService = CategoryService.create();
     _tagService = TagService.create();
   }
@@ -46,6 +49,8 @@ class ExportService {
 
     File expensesJSON =
         File("${await tempJSONPath}/${FileConstants.export.expenses}");
+    File expenseItemsJSON =
+        File("${await tempJSONPath}/${FileConstants.export.expenseItems}");
     File categoriesJSON =
         File("${await tempJSONPath}/${FileConstants.export.categories}");
     File tagsJSON = File("${await tempJSONPath}/${FileConstants.export.tags}");
@@ -55,13 +60,14 @@ class ExportService {
     try {
       await _saveJSONFiles(
         expensesJSON,
+        expenseItemsJSON,
         categoriesJSON,
         tagsJSON,
         versionJSON,
       );
 
-      Archive archive = _getExportArchive(
-          expensesJSON, categoriesJSON, tagsJSON, versionJSON);
+      Archive archive = _getExportArchive(expensesJSON, expenseItemsJSON,
+          categoriesJSON, tagsJSON, versionJSON);
 
       final zipEncoder = ZipEncoder();
       List<int>? encodedZip = zipEncoder.encode(archive);
@@ -94,17 +100,20 @@ class ExportService {
       _logger.e('Error at exportAllDataToJson() $e - \n$stackTrace');
     } finally {
       if (await expensesJSON.exists()) expensesJSON.delete();
+      if (await expenseItemsJSON.exists()) expenseItemsJSON.delete();
       if (await categoriesJSON.exists()) categoriesJSON.delete();
       if (await tagsJSON.exists()) tagsJSON.delete();
+      if (await versionJSON.exists()) versionJSON.delete();
     }
 
     _logger.i("Export: End");
     return result;
   }
 
-  Future<void> _saveJSONFiles(File expensesJSON, File categoriesJSON,
-      File tagsJSON, File versionJSON) async {
+  Future<void> _saveJSONFiles(File expensesJSON, File expenseItemsJSON,
+      File categoriesJSON, File tagsJSON, File versionJSON) async {
     ExpenseService expenseService = await _expenseService;
+    ExpenseItemService expenseItemService = await _expenseItemService;
     CategoryService categoryService = await _categoryService;
     TagService tagService = await _tagService;
 
@@ -115,6 +124,10 @@ class ExportService {
           _logger.i("exporting expenses to ${expensesJSON.path}");
           expensesJSON.writeAsStringSync(
               getFormattedJSONString(await expenseService.getExpenseMaps()));
+
+          _logger.i("exporting expense items to ${expenseItemsJSON.path}");
+          expenseItemsJSON.writeAsStringSync(getFormattedJSONString(
+              await expenseItemService.getExpenseItemsMaps()));
 
           _logger.i("exporting categories to ${categoriesJSON.path}");
           categoriesJSON.writeAsStringSync(
@@ -137,12 +150,14 @@ class ExportService {
     }
   }
 
-  Archive _getExportArchive(
-      File expensesJSON, File categoriesJSON, File tagsJSON, File versionJSON) {
+  Archive _getExportArchive(File expensesJSON, File expenseItemsJSON,
+      File categoriesJSON, File tagsJSON, File versionJSON) {
     Archive archive = Archive();
 
     archive.addFile(ArchiveFile(FileConstants.export.expenses,
         expensesJSON.lengthSync(), expensesJSON.readAsBytesSync()));
+    archive.addFile(ArchiveFile(FileConstants.export.expenseItems,
+        expenseItemsJSON.lengthSync(), expenseItemsJSON.readAsBytesSync()));
     archive.addFile(ArchiveFile(FileConstants.export.categories,
         categoriesJSON.lengthSync(), categoriesJSON.readAsBytesSync()));
     archive.addFile(ArchiveFile(FileConstants.export.tags,

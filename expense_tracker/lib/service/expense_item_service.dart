@@ -1,5 +1,6 @@
 import 'package:logger/logger.dart';
 
+import '../data/constants/db_constants.dart';
 import '../data/helpers/database/database_helper.dart';
 import '../data/helpers/database/expense_item_helper.dart';
 import '../models/expense_item.dart';
@@ -111,14 +112,14 @@ class ExpenseItemService {
         .toList();
   }
 
-  // Future<List<Map<String, dynamic>>> getExpenseMaps() async {
-  //   try {
-  //     return await _expenseItemHelper.getExpenses();
-  //   } on Exception catch (e, stackTrace) {
-  //     _logger.e("Error getting expenses: $e - \n$stackTrace");
-  //     return [];
-  //   }
-  // }
+  Future<List<Map<String, dynamic>>> getExpenseItemsMaps() async {
+    try {
+      return await _expenseItemHelper.getExpenseItems();
+    } on Exception catch (e, stackTrace) {
+      _logger.e("Error getting expense Items: $e - \n$stackTrace");
+      return [];
+    }
+  }
 
   Future<int> deleteExpenseItem(int id) async {
     try {
@@ -151,38 +152,15 @@ class ExpenseItemService {
     }
   }
 
-  // Future<bool> importExpenseItem(Map<String, dynamic> expense) async {
-  //   try {
-  //     if (await _expenseItemHelper.addExpenseItem(expense) > 0) return true;
-  //   } on Exception catch (e, stackTrace) {
-  //     _logger.e(
-  //         "Error importing expense (${expense[DBConstants.expense.title]}): $e - \n$stackTrace");
-  //   }
-  //   return false;
-  // }
-
-  // Future<bool> importExpenseV2(Map<String, dynamic> expense,
-  //     {safeImport = true}) async {
-  //   _logger.i(
-  //       "importing expense ${expense[DBConstants.expense.id]} - ${expense[DBConstants.expense.title]}");
-  //   try {
-  //     Expense expenseI = Expense.fromMap(expense);
-  //     if (await isDuplicateExpenseItem(expenseI)) {
-  //       _logger.i("found duplicate expense: ${expenseI.title}");
-  //       if (safeImport) return false;
-  //       _logger.i("safeImport: $safeImport - discarding existing expense");
-  //       await _expenseItemHelper.deleteExpenseItem(expenseI.id);
-  //     }
-  //     if (await _expenseItemHelper.addExpenseItem(expense) > 0) {
-  //       _logger.i("imported expense ${expenseI.title}");
-  //       return true;
-  //     }
-  //   } on Exception catch (e, stackTrace) {
-  //     _logger.e(
-  //         "Error importing expense (${expense[DBConstants.expense.title]}): $e - \n$stackTrace");
-  //   }
-  //   return false;
-  // }
+  Future<bool> importExpenseItem(Map<String, dynamic> expense) async {
+    try {
+      if (await _expenseItemHelper.addExpenseItem(expense) > 0) return true;
+    } on Exception catch (e, stackTrace) {
+      _logger.e(
+          "Error importing expense Item(${expense[DBConstants.expenseItem.name]}): $e - \n$stackTrace");
+    }
+    return false;
+  }
 
   Future<bool> isDuplicateExpenseItem(ExpenseItem expenseItem) async {
     ExpenseItem? existingExpenseItem = await getExpenseItem(expenseItem.id);

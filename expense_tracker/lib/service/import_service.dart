@@ -9,11 +9,13 @@ import '../data/constants/db_constants.dart';
 import '../data/constants/file_name_constants.dart';
 import '../models/import_result.dart';
 import 'category_service.dart';
+import 'expense_item_service.dart';
 import 'expense_service.dart';
 import 'tag_service.dart';
 
 class ImportService {
   late final Future<ExpenseService> _expenseService;
+  late final Future<ExpenseItemService> _expenseItemService;
   late final Future<CategoryService> _categoryService;
   late final Future<TagService> _tagService;
 
@@ -26,6 +28,7 @@ class ImportService {
 
   Future<void> _init() async {
     _expenseService = ExpenseService.create();
+    _expenseItemService = ExpenseItemService.create();
     _categoryService = CategoryService.create();
     _tagService = TagService.create();
   }
@@ -73,6 +76,10 @@ class ImportService {
             _logger.i("importing ${DBConstants.expense.table}");
             result = await importExpenses(jsonData, result);
           }
+          if (file.name == FileConstants.export.expenseItems) {
+            _logger.i("importing ${DBConstants.expenseItem.table}");
+            result = await importExpenseItems(jsonData, result);
+          }
           if (file.name == FileConstants.export.categories) {
             _logger.i("importing ${DBConstants.category.table}");
             result = await importCategories(jsonData, result);
@@ -119,6 +126,23 @@ class ImportService {
 
     result.expense.total = totalExpenses;
     result.expense.successCount = successCount;
+    return result;
+  }
+
+  dynamic importExpenseItems(
+      List<dynamic> jsonData, ImportResult result) async {
+    int totalExpenses = jsonData.length;
+    int successCount = 0;
+
+    ExpenseItemService service = await _expenseItemService;
+
+    for (Map<String, dynamic> expenseItem in jsonData) {
+      bool isInserted = await service.importExpenseItem(expenseItem);
+      if (isInserted) successCount++;
+    }
+
+    result.expenseItems.total = totalExpenses;
+    result.expenseItems.successCount = successCount;
     return result;
   }
 

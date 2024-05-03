@@ -183,8 +183,9 @@ class _ImportFormState extends State<ImportForm> {
       if (result.result) {
         _refreshExpenses();
         String message = "Import complete"
-            "\nExpenses:    ${result.expense.successCount}/${result.expense.total}"
-            "\nCategories:  ${result.category.successCount}/${result.category.total}"
+            "\nExpenses:        ${result.expense.successCount}/${result.expense.total}"
+            "\nExpenseItems:    ${result.expenseItems.successCount}/${result.expenseItems.total}"
+            "\nCategories:      ${result.category.successCount}/${result.category.total}"
             "\nTags:             ${result.tag.successCount}/${result.tag.total}\n";
         SnackBarService.showSuccessSnackBarWithContext(context, message,
             duration: 5);

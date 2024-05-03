@@ -9,6 +9,7 @@ class ExportConstants {
   final String zip = "export_et_{0}.zip";
   final String extension = ".zip";
   final String expenses = "expenses.json";
+  final String expenseItems = "expenseItems.json";
   final String categories = "categories.json";
   final String tags = "tags.json";
   final String version = "version.json";

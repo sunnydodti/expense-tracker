@@ -4,6 +4,7 @@ class ImportResult {
   String? path;
 
   ImportExpenseResult expense = ImportExpenseResult();
+  ImportExpenseItemsResult expenseItems = ImportExpenseItemsResult();
   ImportCategoriesResult category = ImportCategoriesResult();
   ImportTagResult tag = ImportTagResult();
 
@@ -13,6 +14,13 @@ class ImportResult {
 }
 
 class ImportExpenseResult {
+  int total = 0;
+  int successCount = 0;
+
+  int get failCount => total - successCount;
+}
+
+class ImportExpenseItemsResult {
   int total = 0;
   int successCount = 0;
 

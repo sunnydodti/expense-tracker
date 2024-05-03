@@ -20,7 +20,7 @@ class DeleteService {
     }
 
     if (deleteInput.deleteExpenseItems) {
-      // result += await expenseItemService.deleteAllExpenseItems();
+      result += await expenseItemService.deleteAllExpenseItems();
     }
     if (deleteInput.deleteCategories) {
     result += await categoryService.deleteAllCategories();
