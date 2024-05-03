@@ -173,8 +173,8 @@ class ExpenseService {
       DBConstants.expense.note: faker.lorem.sentence(),
       DBConstants.expense.containsExpenseItems:
           faker.randomGenerator.boolean() ? 1 : 0,
-      DBConstants.expense.createdAt: faker.date.dateTime().toIso8601String(),
-      DBConstants.expense.modifiedAt: faker.date.dateTime().toIso8601String(),
+      DBConstants.common.createdAt: faker.date.dateTime().toIso8601String(),
+      DBConstants.common.modifiedAt: faker.date.dateTime().toIso8601String(),
     };
     return expense;
   }

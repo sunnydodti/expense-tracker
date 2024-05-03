@@ -34,8 +34,8 @@ class ExpenseHelper {
             ${DBConstants.expense.tags} TEXT,
             ${DBConstants.expense.note} TEXT,
             ${DBConstants.expense.containsExpenseItems} INTEGER DEFAULT 0,
-            ${DBConstants.expense.createdAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            ${DBConstants.expense.modifiedAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ${DBConstants.common.createdAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            ${DBConstants.common.modifiedAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP
           )
         ''');
 

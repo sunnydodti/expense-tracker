@@ -4,10 +4,16 @@ class DBConstants {
 
   static DatabaseVersionConstants version = DatabaseVersionConstants();
 
+  static CommonConstants common = CommonConstants();
   static ExpenseConstants expense = ExpenseConstants();
   static ExpenseItemConstants expenseItem = ExpenseItemConstants();
   static CategoryConstants category = CategoryConstants();
   static TagConstants tag = TagConstants();
+}
+
+class CommonConstants {
+  final String createdAt = "created_at";
+  final String modifiedAt = "modified_at";
 }
 
 class ExpenseConstants {
@@ -26,9 +32,6 @@ class ExpenseConstants {
   final String containsNestedExpenses = "contains_nested_expenses"; // dropped
   final String containsExpenseItems = "contains_expense_items";
   final String expenses = "expenses"; // dropped
-
-  final String createdAt = "created_at";
-  final String modifiedAt = "modified_at";
 }
 
 class ExpenseItemConstants {
@@ -40,9 +43,6 @@ class ExpenseItemConstants {
   final String name = "name";
   final String amount = "amount";
   final String quantity = "quantity";
-
-  final String createdAt = "created_at";
-  final String modifiedAt = "modified_at";
 }
 
 class CategoryConstants {
@@ -51,9 +51,6 @@ class CategoryConstants {
 
   final String id = "id";
   final String name = "name";
-
-  final String createdAt = "created_at";
-  final String modifiedAt = "modified_at";
 }
 
 class TagConstants {
@@ -62,9 +59,6 @@ class TagConstants {
 
   final String id = "id";
   final String name = "name";
-
-  final String createdAt = "created_at";
-  final String modifiedAt = "modified_at";
 }
 
 class CurrencyConstants {
@@ -74,9 +68,6 @@ class CurrencyConstants {
   final String name = "name";
   final String symbol = "symbol";
   final String country = "country";
-
-  final String createdAt = "created_at";
-  final String modifiedAt = "modified_at";
 }
 
 class TransactionTypeConstants {
@@ -84,9 +75,6 @@ class TransactionTypeConstants {
 
   final String id = "id";
   final String type = "type";
-
-  final String createdAt = "created_at";
-  final String modifiedAt = "modified_at";
 }
 
 class DatabaseVersionConstants {

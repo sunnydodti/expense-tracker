@@ -17,8 +17,8 @@ class ExpenseCategory {
     return {
       DBConstants.category.id: id,
       DBConstants.category.id: name,
-      DBConstants.category.createdAt: createdAt,
-      DBConstants.category.modifiedAt: modifiedAt
+      DBConstants.common.createdAt: createdAt,
+      DBConstants.common.modifiedAt: modifiedAt
     };
   }
 
@@ -26,8 +26,8 @@ class ExpenseCategory {
     return ExpenseCategory(
         id: map[DBConstants.category.id],
         name: map[DBConstants.category.name],
-        createdAt: DateTime.parse(map[DBConstants.category.createdAt]),
-        modifiedAt: DateTime.parse(map[DBConstants.category.modifiedAt]));
+        createdAt: DateTime.parse(map[DBConstants.common.createdAt]),
+        modifiedAt: DateTime.parse(map[DBConstants.common.modifiedAt]));
   }
 }
 

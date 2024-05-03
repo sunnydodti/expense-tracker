@@ -25,8 +25,8 @@ class ExpenseItem {
       DBConstants.expenseItem.name: name,
       DBConstants.expenseItem.amount: amount,
       DBConstants.expenseItem.quantity: quantity,
-      DBConstants.expenseItem.createdAt: createdAt,
-      DBConstants.expenseItem.modifiedAt: modifiedAt
+      DBConstants.common.createdAt: createdAt,
+      DBConstants.common.modifiedAt: modifiedAt
     };
   }
 
@@ -37,8 +37,8 @@ class ExpenseItem {
       name: map[DBConstants.expenseItem.name],
       amount: map[DBConstants.expenseItem.amount],
       quantity: map[DBConstants.expenseItem.quantity],
-      createdAt: DateTime.parse(map[DBConstants.expenseItem.createdAt]),
-      modifiedAt: DateTime.parse(map[DBConstants.expenseItem.modifiedAt]),
+      createdAt: DateTime.parse(map[DBConstants.common.createdAt]),
+      modifiedAt: DateTime.parse(map[DBConstants.common.modifiedAt]),
     );
   }
 }
@@ -95,7 +95,7 @@ class ExpenseItemFormModel {
         name: map[DBConstants.expenseItem.name],
         amount: map[DBConstants.expenseItem.amount],
         quantity: map[DBConstants.expenseItem.quantity],
-        createdAt: DateTime.parse(map[DBConstants.expenseItem.createdAt]),
-        modifiedAt: DateTime.parse(map[DBConstants.expenseItem.modifiedAt]));
+        createdAt: DateTime.parse(map[DBConstants.common.createdAt]),
+        modifiedAt: DateTime.parse(map[DBConstants.common.modifiedAt]));
   }
 }

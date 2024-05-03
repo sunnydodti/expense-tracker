@@ -16,8 +16,8 @@ class Tag {
     return {
       DBConstants.tag.id: id,
       DBConstants.tag.id: name,
-      DBConstants.tag.createdAt: createdAt,
-      DBConstants.tag.modifiedAt: modifiedAt
+      DBConstants.common.createdAt: createdAt,
+      DBConstants.common.modifiedAt: modifiedAt
     };
   }
 
@@ -25,8 +25,8 @@ class Tag {
     return Tag(
         id: map[DBConstants.tag.id],
         name: map[DBConstants.tag.name],
-        createdAt: DateTime.parse(map[DBConstants.tag.createdAt]),
-        modifiedAt: DateTime.parse(map[DBConstants.tag.modifiedAt]));
+        createdAt: DateTime.parse(map[DBConstants.common.createdAt]),
+        modifiedAt: DateTime.parse(map[DBConstants.common.modifiedAt]));
   }
 }
 

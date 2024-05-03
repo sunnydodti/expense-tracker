@@ -32,8 +32,8 @@ class CategoryHelper {
       await database.execute('''CREATE TABLE ${DBConstants.category.table} (
         ${DBConstants.category.id} INTEGER PRIMARY KEY AUTOINCREMENT, 
         ${DBConstants.category.name} TEXT,
-        ${DBConstants.category.createdAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        ${DBConstants.category.modifiedAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ${DBConstants.common.createdAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        ${DBConstants.common.modifiedAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
         ''');
 

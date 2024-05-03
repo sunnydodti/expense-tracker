@@ -44,8 +44,8 @@ class Expense {
     map[DBConstants.expense.note] = note;
     map[DBConstants.expense.containsExpenseItems] =
         _parseBoolAsInt(containsExpenseItems);
-    map[DBConstants.expense.createdAt] = createdAt;
-    map[DBConstants.expense.modifiedAt] = modifiedAt;
+    map[DBConstants.common.createdAt] = createdAt;
+    map[DBConstants.common.modifiedAt] = modifiedAt;
     return map;
   }
 
@@ -68,8 +68,8 @@ class Expense {
         DateTime.parse(map[DBConstants.expense.date]),
         map[DBConstants.expense.category],
         _parseIntAsBool(map[DBConstants.expense.containsExpenseItems]),
-        DateTime.parse(map[DBConstants.expense.createdAt]),
-        DateTime.parse(map[DBConstants.expense.modifiedAt]));
+        DateTime.parse(map[DBConstants.common.createdAt]),
+        DateTime.parse(map[DBConstants.common.modifiedAt]));
 
     expense.tags = map[DBConstants.expense.tags];
     expense.note = map[DBConstants.expense.note];
@@ -147,6 +147,6 @@ class ExpenseFormModel {
         note = map[DBConstants.expense.note],
         containsExpenseItems =
             _parseIntAsBool(map[DBConstants.expense.containsExpenseItems]),
-        createdAt = map[DBConstants.expense.createdAt],
-        modifiedAt = map[DBConstants.expense.modifiedAt];
+        createdAt = map[DBConstants.common.createdAt],
+        modifiedAt = map[DBConstants.common.modifiedAt];
 }

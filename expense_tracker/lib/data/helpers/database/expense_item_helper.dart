@@ -26,8 +26,8 @@ class ExpenseItemHelper {
             ${DBConstants.expenseItem.name} TEXT,
             ${DBConstants.expenseItem.amount} REAL,
             ${DBConstants.expenseItem.quantity} INTEGER,
-            ${DBConstants.expenseItem.createdAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            ${DBConstants.expenseItem.modifiedAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ${DBConstants.common.createdAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            ${DBConstants.common.modifiedAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP
           )
         ''');
 
@@ -38,7 +38,7 @@ class ExpenseItemHelper {
       AFTER UPDATE ON ${DBConstants.expenseItem.table}
       BEGIN
         UPDATE ${DBConstants.expenseItem.table}
-        SET ${DBConstants.expenseItem.modifiedAt} = CURRENT_TIMESTAMP
+        SET ${DBConstants.common.modifiedAt} = CURRENT_TIMESTAMP
         WHERE ROWID = NEW.ROWID;
       END;
     ''');

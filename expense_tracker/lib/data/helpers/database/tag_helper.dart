@@ -29,8 +29,8 @@ class TagHelper {
       await database.execute('''CREATE TABLE ${DBConstants.tag.table} (
         ${DBConstants.tag.id} INTEGER PRIMARY KEY AUTOINCREMENT, 
         ${DBConstants.tag.name} TEXT,
-        ${DBConstants.tag.createdAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        ${DBConstants.tag.modifiedAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ${DBConstants.common.createdAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        ${DBConstants.common.modifiedAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
         ''');
 
