@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../data/helpers/navigation_helper.dart';
-import '../../dialogs/delete_all_tile.dart';
+import '../../dialogs/delete_all_dialog.dart';
 import '../../forms/export_form.dart';
 import '../../forms/import_form.dart';
 import '../../widgets/expandable_list_tile.dart';
@@ -60,7 +60,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           title: 'Import', content: ImportForm()),
                       const ExpandableListTile(
                           title: 'Export', content: ExportForm()),
-                      const DeleteAllTile(),
+                      const DeleteAllDialog(),
                       ListTile(
                         title: const Text('Preferences'),
                         onTap: () => NavigationHelper.navigateToScreen(

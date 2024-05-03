@@ -142,6 +142,15 @@ class ExpenseItemService {
     return count;
   }
 
+  Future<int> deleteAllExpenseItems() async {
+    try {
+      return _expenseItemHelper.deleteAllExpenseItems();
+    } on Exception catch (e, stackTrace) {
+      _logger.e("Error deleting expenses: $e - \n$stackTrace");
+      return -1;
+    }
+  }
+
   // Future<bool> importExpenseItem(Map<String, dynamic> expense) async {
   //   try {
   //     if (await _expenseItemHelper.addExpenseItem(expense) > 0) return true;

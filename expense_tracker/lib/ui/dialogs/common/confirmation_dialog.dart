@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ConfirmationDialog extends StatelessWidget {
   final String title;
-  final String content;
+  final Widget content;
   String cancelAction;
   String confirmAction;
   VoidCallback? onCancel;
@@ -26,7 +26,7 @@ class ConfirmationDialog extends StatelessWidget {
 
     return AlertDialog(
       title: Text(title),
-      content: Text(content),
+      content: content,
       actions: <Widget>[
         TextButton(
             child: Text(cancelAction),

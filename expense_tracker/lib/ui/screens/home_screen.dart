@@ -10,7 +10,7 @@ import '../dialogs/common/message_dialog.dart';
 import '../drawer/home_drawer.dart';
 import '../widgets/expense/expense_list_dynamic.dart';
 import 'expense_screen.dart';
-import 'settings/preferences_settings_screen.dart';
+import 'settings/settings_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -115,7 +115,6 @@ class HomeScreen extends StatelessWidget {
   }
 
   navigateToScreen(BuildContext context) {
-    NavigationHelper.navigateToScreen(
-        context, const PreferencesSettingsScreen());
+    NavigationHelper.navigateToScreen(context, const SettingsScreen());
   }
 }
