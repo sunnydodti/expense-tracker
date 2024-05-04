@@ -37,10 +37,12 @@ class _BlurScreenState extends State<BlurScreen> {
   void animateBlur() async {
     while (blurSigmaX < 2) {
       await Future.delayed(const Duration(milliseconds: 50));
-      setState(() {
+      if (mounted) {
+        setState(() {
         blurSigmaX += .01;
         blurSigmaY += .01;
       });
+      }
     }
   }
 }
