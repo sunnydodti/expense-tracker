@@ -139,4 +139,23 @@ class ExpenseProvider extends ChangeNotifier {
     // return await expenseService.getExpenses();
     return await expenseService.getSortedAndFilteredExpenses();
   }
+
+  bool _showPopup = false;
+
+  bool get showPopup => _showPopup;
+
+  Expense? _popUpExpense;
+
+  Expense? get popUpExpense => _popUpExpense;
+
+  void showExpensePopup(Expense expense) {
+    _showPopup = true;
+    _popUpExpense = expense;
+    notifyListeners();
+  }
+
+  void hideExpensePopup() {
+    _showPopup = false;
+    notifyListeners();
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:expense_tracker/ui/widgets/expense/expense_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,26 +21,32 @@ class ExpenseListDynamic extends StatelessWidget {
           body: RefreshIndicator(
             onRefresh: () => expenseProvider.refreshExpenses(),
             color: Colors.blue.shade500,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+            child: Stack(
               children: [
-                ExpenseSummary(expenseProvider: expenseProvider),
-                const SortFilterTile(),
-                expenseProvider.expenses.isEmpty
-                    ? const EmptyListWidget(listName: 'Expense')
-                    : Expanded(
-                        child: ListView.builder(
-                          itemCount: expenseCount,
-                          itemBuilder: (context, index) {
-                            return DismissibleExpenseTile(
-                                expense: expenseProvider.expenses[index],
-                                expenseProvider: expenseProvider,
-                                index: index);
-                          },
-                        ),
-                      ),
-                if (expenseCount < 4 && expenseCount > 0)
-                  const ExpenseSwipeInfoWidget(),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    ExpenseSummary(expenseProvider: expenseProvider),
+                    const SortFilterTile(),
+                    expenseProvider.expenses.isEmpty
+                        ? const EmptyListWidget(listName: 'Expense')
+                        : Expanded(
+                            child: ListView.builder(
+                              itemCount: expenseCount,
+                              itemBuilder: (context, index) {
+                                return DismissibleExpenseTile(
+                                    expense: expenseProvider.expenses[index],
+                                    expenseProvider: expenseProvider,
+                                    index: index);
+                              },
+                            ),
+                          ),
+                    if (expenseCount < 4 && expenseCount > 0)
+                      const ExpenseSwipeInfoWidget(),
+                  ],
+                ),
+                if (expenseProvider.showPopup)
+                  ExpensePopup(expense: expenseProvider.popUpExpense!),
               ],
             ),
           ),
