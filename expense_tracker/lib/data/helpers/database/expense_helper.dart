@@ -51,6 +51,7 @@ class ExpenseHelper {
     ''');
     }
   }
+
   //region db update v2
   static Future<void> upgradeTableV1toV2(Transaction transaction) async {
     var result = await transaction.rawQuery(
@@ -78,7 +79,8 @@ class ExpenseHelper {
     return await database.query(DBConstants.expense.table);
   }
 
-  static setContainsExpensesTrue(Transaction transaction, List<Map<String, dynamic>> allExpenses) {
+  static setContainsExpensesTrue(
+      Transaction transaction, List<Map<String, dynamic>> allExpenses) {
     transaction.execute('''
     UPDATE ${DBConstants.expense.table}
     SET ${DBConstants.expense.containsExpenseItems} = 1

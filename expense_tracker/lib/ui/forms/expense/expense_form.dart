@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +15,7 @@ import '../../../service/expense_service.dart';
 import '../../../service/tag_service.dart';
 import '../../dialogs/common/date_picker_dialog.dart';
 import '../../widgets/expense/expense_item/expense_item_list.dart';
-import '../../widgets/form_widgets.dart';
+import '../../widgets/expense/expense_widgets.dart';
 import 'expense_item_form.dart';
 
 class ExpenseForm extends StatefulWidget {
@@ -220,113 +219,48 @@ class _ExpenseFormState extends State<ExpenseForm> {
   }
 
   Container _buildSubmitButton() {
-    return Container(
-      padding: const EdgeInsets.only(left: 20, right: 20, top: 0),
-      child: ElevatedButton(
-        onPressed: _submitExpense,
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(_highlightColor),
-        ),
-        child: Text((widget.formMode == FormMode.add) ? 'Submit' : 'Edit'),
-      ),
-    );
+    return ExpenseWidgets.form
+        .buildSubmitButton(_submitExpense, widget.formMode, _highlightColor);
   }
 
   Container _buildTitleField() {
-    return Container(
-      padding: _getFieldPadding(),
-      child: TextFormField(
-        controller: titleController,
-        maxLines: 1,
-        decoration: InputDecoration(
-          prefixIcon: Icon(Icons.title_outlined, size: _getIconSize()),
-          labelText: 'Title',
-          hintText: 'Add a Title',
-          suffixIcon: IconButton(
-            onPressed: () => titleController.clear(),
-            icon: Icon(Icons.clear, size: _getIconSize()),
-          ),
-        ),
-        validator: (value) => validateTextField(value, 'enter Title'),
-        keyboardType: TextInputType.text,
-      ),
-    );
+    return ExpenseWidgets.form.buildTitleField(titleController);
   }
 
-  Container _buildNotesField() {
-    return Container(
-      padding: _getFieldPadding(),
-      child: TextFormField(
-        controller: notesController,
-        maxLines: 1,
-        decoration: InputDecoration(
-          prefixIcon: Icon(Icons.edit, size: _getIconSize()),
-          labelText: 'Notes',
-          hintText: "Add Notes",
-          suffixIcon: IconButton(
-            onPressed: () => notesController.clear(),
-            icon: Icon(Icons.clear, size: _getIconSize()),
-          ),
-        ),
-        keyboardType: TextInputType.text,
-      ),
-    );
+  Container _buildAmountField() {
+    return ExpenseWidgets.form
+        .buildAmountField(amountController, amountPrefixController.text);
   }
 
-  Container _buildTagsField() {
-    return Container(
-      padding: _getFieldPadding(),
-      child: DropdownButtonFormField<Tag>(
-        isExpanded: true,
-        value: _selectedTag,
-        items: FormWidgets.getDropdownItems(_tags, (tag) => tag.name),
-        decoration: InputDecoration(
-          prefixIcon: Icon(Icons.label_outline, size: _getIconSize()),
-          labelText: 'Tags',
-        ),
-        validator: (value) => validateTag("select tags"),
-        onChanged: (value) => _selectedTag = value,
-      ),
-    );
-  }
-
-  Container _buildCategoryField() {
-    return Container(
-      padding: _getFieldPadding(),
-      child: DropdownButtonFormField<ExpenseCategory>(
-        isExpanded: true,
-        value: _selectedCategory,
-        items: FormWidgets.getDropdownItems(
-            _categories, (category) => category.name),
-        decoration: InputDecoration(
-          prefixIcon: Icon(Icons.edit, size: _getIconSize()),
-          labelText: 'Category',
-        ),
-        validator: (value) => validateCategory("select category"),
-        onChanged: (value) => _selectedCategory = value,
-      ),
-    );
+  Container _buildTransactionTypeField() {
+    return ExpenseWidgets.form
+        .buildTransactionTypeField(transactionTypeController);
   }
 
   Container _buildDateField() {
-    return Container(
-      padding: _getFieldPadding(),
-      child: TextFormField(
-        controller: dateController,
-        decoration: InputDecoration(
-          labelText: 'Date',
-          prefixIcon: Icon(Icons.calendar_today_outlined, size: _getIconSize()),
-        ),
-        readOnly: true,
-        onTap: () async => showDatePickerDialog(context),
-        onChanged: (value) {
-          _logger.i('Date: $value');
-        },
-      ),
-    );
+    return ExpenseWidgets.form
+        .buildDateField(context, dateController, showDatePickerDialog);
   }
 
-  Future<void> showDatePickerDialog(BuildContext context) async {
+  Container _buildCategoryField() {
+    return ExpenseWidgets.form
+        .buildCategoryField(_selectedCategory, _categories, setCategory);
+  }
+
+  void setCategory(ExpenseCategory? selectedCategory) =>
+      _selectedCategory = selectedCategory;
+
+  Container _buildTagsField() {
+    return ExpenseWidgets.form.buildTagsField(_selectedTag, _tags, setTag);
+  }
+
+  void setTag(Tag? tag) => _selectedTag = tag;
+
+  Container _buildNotesField() {
+    return ExpenseWidgets.form.buildNotesField(notesController);
+  }
+
+  Future<void> showDatePickerDialog() async {
     {
       DateTime? pickedDate = await DateTimePickerDialog.datePicker(context);
       if (pickedDate != null) {
@@ -340,58 +274,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
     }
   }
 
-  Container _buildTransactionTypeField() {
-    return Container(
-      padding: _getFieldPadding(),
-      child: DropdownButtonFormField(
-        isExpanded: true,
-        isDense: true,
-        value: transactionTypeController.text,
-        items: FormWidgets.getTransactionTypeDropdownItems(),
-        decoration: InputDecoration(
-          prefixIcon:
-              Icon(Icons.monetization_on_outlined, size: _getIconSize()),
-          labelText: 'Transaction Type',
-        ),
-        validator: (value) =>
-            validateTextField(value, "select transaction type"),
-        onChanged: (value) => transactionTypeController.text = value!,
-      ),
-    );
-  }
-
-  Container _buildAmountField() {
-    return Container(
-      padding: _getFieldPadding(),
-      child: TextFormField(
-        controller: amountController,
-        decoration: InputDecoration(
-          prefixIcon: Icon(Icons.attach_money_outlined, size: _getIconSize()),
-          prefixText: '${amountPrefixController.text} ',
-          labelText: 'Amount',
-          hintText: 'Add Amount',
-          suffixIcon: IconButton(
-            onPressed: () => amountController.clear(),
-            icon: const Icon(Icons.clear),
-          ),
-        ),
-        validator: (value) => validateTextField(value, 'enter amount'),
-        keyboardType: const TextInputType.numberWithOptions(decimal: false),
-        inputFormatters: [
-          FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}$')),
-        ],
-      ),
-    );
-  }
-
   //endregion
 
   //region Section 6: methods
-  EdgeInsets _getFieldPadding() =>
-      const EdgeInsets.only(left: 20, right: 20, top: 8);
-
-  double _getIconSize() => 20;
-
   void _submitExpense() {
     if (_formKey.currentState?.validate() ?? false) {
       _logger.i('submitting');
@@ -440,13 +325,12 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
   Future<bool> insertExpense(ExpenseFormModel expense) async {
     ExpenseService expenseService = await ExpenseService.create();
-    return await expenseService.addExpense(expense, _getExpenseItemsProvider());
+    return await expenseService.addExpense(expense, _expenseItemsProvider);
   }
 
   Future<bool> updateExpense(ExpenseFormModel expense) async {
     ExpenseService expenseService = await ExpenseService.create();
-    return await expenseService.updateExpense(
-        expense, _getExpenseItemsProvider());
+    return await expenseService.updateExpense(expense, _expenseItemsProvider);
   }
 
   dynamic getDefaultCurrency() async {
@@ -455,38 +339,13 @@ class _ExpenseFormState extends State<ExpenseForm> {
     return provider.defaultCurrency;
   }
 
-  ExpenseItemsProvider _getExpenseItemsProvider() {
-    return Provider.of<ExpenseItemsProvider>(context, listen: false);
-  }
+  ExpenseItemsProvider get _expenseItemsProvider =>
+      Provider.of<ExpenseItemsProvider>(context, listen: false);
 
   void _toggleExpenseItems(value) {
     setState(() {
       _containsExpenseItems = value!;
     });
-  }
-
-  //endregion
-
-  //region Section 7: validators
-  String? validateTextField(var value, String errorMessage) {
-    if (value == null || value.isEmpty) {
-      return 'Please $errorMessage';
-    }
-    return null;
-  }
-
-  String? validateCategory(String errorMessage) {
-    if (_selectedCategory == null) {
-      return 'Please $errorMessage';
-    }
-    return null;
-  }
-
-  String? validateTag(String errorMessage) {
-    if (_selectedTag == null) {
-      return 'Please $errorMessage';
-    }
-    return null;
   }
 //endregion
 }

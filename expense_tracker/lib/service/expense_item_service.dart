@@ -104,7 +104,8 @@ class ExpenseItemService {
         .toList();
   }
 
-  Future<List<ExpenseItemFormModel>> getExpenseItemsForEdit(int expenseId) async {
+  Future<List<ExpenseItemFormModel>> getExpenseItemsForEdit(
+      int expenseId) async {
     List<Map<String, dynamic>> expenseMapList =
         await _expenseItemHelper.getExpenseItemsByExpenseId(expenseId);
     return expenseMapList

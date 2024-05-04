@@ -1,4 +1,4 @@
-class DeleteInput{
+class DeleteInput {
   bool deleteExpenses = false;
   bool deleteExpenseItems = false;
   bool deleteCategories = false;

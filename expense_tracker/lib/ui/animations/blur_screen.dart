@@ -39,9 +39,9 @@ class _BlurScreenState extends State<BlurScreen> {
       await Future.delayed(const Duration(milliseconds: 50));
       if (mounted) {
         setState(() {
-        blurSigmaX += .01;
-        blurSigmaY += .01;
-      });
+          blurSigmaX += .01;
+          blurSigmaY += .01;
+        });
       }
     }
   }

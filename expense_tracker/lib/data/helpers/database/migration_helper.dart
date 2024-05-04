@@ -16,11 +16,14 @@ class MigrationHelper {
         await ExpenseItemHelper.createTable(database);
         _logger.i("upgrading table ${DBConstants.expense.table}");
         await ExpenseHelper.upgradeTableV1toV2(txn);
-        List<Map<String, dynamic>> allExpenses = await ExpenseHelper.getAllExpenses(database);
-        _logger.i("adding existing ${DBConstants.expense.table} as ${DBConstants.expenseItem.table}");
+        List<Map<String, dynamic>> allExpenses =
+            await ExpenseHelper.getAllExpenses(database);
+        _logger.i(
+            "adding existing ${DBConstants.expense.table} as ${DBConstants.expenseItem.table}");
         await ExpenseItemHelper.addPreviousExpensesAsExpenseItem(
             txn, allExpenses);
-        _logger.i("setting ${DBConstants.expense.containsExpenseItems} as true ${DBConstants.expense.table}");
+        _logger.i(
+            "setting ${DBConstants.expense.containsExpenseItems} as true ${DBConstants.expense.table}");
         await ExpenseHelper.setContainsExpensesTrue(txn, allExpenses);
       } catch (e, stackTrace) {
         _logger.e("Error migrating for v1 to v2 - $e - \n$stackTrace");

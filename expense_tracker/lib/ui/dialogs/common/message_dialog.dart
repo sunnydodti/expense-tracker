@@ -4,8 +4,7 @@ class MessageDialog extends StatelessWidget {
   final String title;
   final String message;
 
-  const MessageDialog(
-      {Key? key, required this.title, required this.message})
+  const MessageDialog({Key? key, required this.title, required this.message})
       : super(key: key);
 
   @override

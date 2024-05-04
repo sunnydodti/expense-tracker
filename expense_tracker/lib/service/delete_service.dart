@@ -23,10 +23,10 @@ class DeleteService {
       result += await expenseItemService.deleteAllExpenseItems();
     }
     if (deleteInput.deleteCategories) {
-    result += await categoryService.deleteAllCategories();
+      result += await categoryService.deleteAllCategories();
     }
     if (deleteInput.deleteTags) {
-    result += await tagService.deleteAllTags();
+      result += await tagService.deleteAllTags();
     }
 
     if (result > 0) {

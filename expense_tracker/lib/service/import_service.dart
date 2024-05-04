@@ -121,7 +121,7 @@ class ImportService {
 
     for (Map<String, dynamic> expense in jsonData) {
       // backward compatibility db v1
-      if (expense.containsKey(DBConstants.expense.expenses)){
+      if (expense.containsKey(DBConstants.expense.expenses)) {
         expense.remove(DBConstants.expense.expenses);
       }
       bool isInserted = await service.importExpense(expense);
