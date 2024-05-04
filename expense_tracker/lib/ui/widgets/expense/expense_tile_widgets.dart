@@ -6,9 +6,9 @@ import '../../../models/enums/transaction_type.dart';
 import '../../../models/expense.dart';
 
 class ExpenseTileWidgets {
-  static double getTextScaleFactor() => .9;
+  double getTextScaleFactor() => .9;
 
-  static Expanded getExpenseDate(Expense expense) {
+  Expanded getExpenseDate(Expense expense) {
     return Expanded(
       child: Align(
         alignment: Alignment.topRight,
@@ -24,7 +24,7 @@ class ExpenseTileWidgets {
     );
   }
 
-  static Expanded titleWidget(Expense expense) {
+  Expanded titleWidget(Expense expense) {
     return Expanded(
       child: Align(
         alignment: Alignment.topLeft,
@@ -40,7 +40,7 @@ class ExpenseTileWidgets {
     );
   }
 
-  static Expanded categoryWidget(Expense expense) {
+  Expanded categoryWidget(Expense expense) {
     return Expanded(
       child: Align(
           alignment: Alignment.topLeft,
@@ -60,7 +60,7 @@ class ExpenseTileWidgets {
     );
   }
 
-  static Container tagsWidget(Expense expense) {
+  Container tagsWidget(Expense expense) {
     Text tags;
     expense.note == null
         ? tags = const Text("")
@@ -71,7 +71,7 @@ class ExpenseTileWidgets {
     return Container(child: tags);
   }
 
-  static Expanded noteWidget(Expense expense) {
+  Expanded noteWidget(Expense expense) {
     Text note;
     (expense.note == null || expense.note == "")
         ? note = const Text(
@@ -106,7 +106,7 @@ class ExpenseTileWidgets {
     );
   }
 
-  static Expanded amountWidget(Expense expense) {
+  Expanded amountWidget(Expense expense) {
     return Expanded(
       flex: 1,
       child: Align(
@@ -116,7 +116,7 @@ class ExpenseTileWidgets {
     );
   }
 
-  static Padding _getAmount(Expense expense) {
+  Padding _getAmount(Expense expense) {
     String transactionType = expense.transactionType;
     return Padding(
       padding: const EdgeInsets.only(left: 20),
@@ -131,7 +131,7 @@ class ExpenseTileWidgets {
     );
   }
 
-  static String _getAmountText(Expense expense) {
+  String _getAmountText(Expense expense) {
     String amountText = "${FormConstants.expense.currencies[expense.currency]} "
         "${expense.amount.round()}";
     amountText = (expense.transactionType == TransactionType.expense.name)
@@ -140,7 +140,7 @@ class ExpenseTileWidgets {
     return amountText;
   }
 
-  static Color _getAmountColor(String transactionType) {
+  Color _getAmountColor(String transactionType) {
     if (transactionType == TransactionType.expense.name) {
       return Colors.red.shade300;
     }

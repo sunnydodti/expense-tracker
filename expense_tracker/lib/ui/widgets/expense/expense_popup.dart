@@ -7,6 +7,7 @@ import '../../../models/expense_item.dart';
 import '../../../providers/expense_items_provider.dart';
 import '../../animations/blur_screen.dart';
 import '../../animations/scale_up.dart';
+import 'expense_widgets.dart';
 
 class ExpensePopup extends StatefulWidget {
   final Expense expense;
@@ -18,21 +19,9 @@ class ExpensePopup extends StatefulWidget {
 }
 
 class _ExpensePopupState extends State<ExpensePopup> {
-  final double paddingTop = 5;
-  final double paddingBottom = 5;
-  final double paddingHorizontal = 5;
-
   @override
   void initState() {
     super.initState();
-
-    // if (widget.expense.containsExpenseItems){
-    //   if (mounted) {
-    //     final expenseItemProvider =
-    //     Provider.of<ExpenseItemsProvider>(context, listen: false);
-    //     expenseItemProvider.fetchExpenseItems(expenseId: expense.id);
-    //   }
-    // }
   }
 
   @override
@@ -80,160 +69,54 @@ class _ExpensePopupState extends State<ExpensePopup> {
     );
   }
 
-  Container _buildKeyValRow(String key, String value, int i) {
-    Color rowColor = Colors.white10.withOpacity(.1);
-    if (i == 1) rowColor = Colors.white10.withOpacity(.05);
-    return Container(
-      color: rowColor,
-      padding: _buildPadding(),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text("$key:"),
-          Text(value),
-        ],
-      ),
-    );
-  }
-
   Container _buildAmountRow(Expense expense, int i) {
-    return _buildKeyValRow("Amount", "${expense.amount.round()}", i);
+    return ExpenseWidgets.detail
+        .buildKeyValRow("Amount", "${expense.amount.round()}", i);
   }
 
   Container _buildDateRow(Expense expense, int i) {
-    return _buildKeyValRow(
+    return ExpenseWidgets.detail.buildKeyValRow(
         "Date", DateFormat("dd MMM yyy").format(expense.date), i);
   }
 
   Container _buildTransactionTypeRow(Expense expense, int i) {
-    return _buildKeyValRow("Transaction Type", expense.transactionType, i);
+    return ExpenseWidgets.detail
+        .buildKeyValRow("Transaction Type", expense.transactionType, i);
   }
 
   Container _buildCategoryRow(Expense expense, int i) {
-    return _buildKeyValRow("Category", expense.category, i);
+    return ExpenseWidgets.detail
+        .buildKeyValRow("Category", expense.category, i);
   }
 
   Container _buildTagsRow(Expense expense, int i) {
-    return _buildKeyValRow("Tags", expense.tags!, i);
+    return ExpenseWidgets.detail.buildKeyValRow("Tags", expense.tags!, i);
   }
 
   Container _buildCreatedDateRow(Expense expense, int i) {
-    return _buildKeyValRow("Created",
+    return ExpenseWidgets.detail.buildKeyValRow("Created",
         DateFormat("HH:mm | dd MMM yyy").format(expense.createdAt), i);
   }
 
   Container _buildModifiedDateRow(Expense expense, int i) {
-    return _buildKeyValRow("Modified",
+    return ExpenseWidgets.detail.buildKeyValRow("Modified",
         DateFormat("HH:mm | dd MMM yyy").format(expense.modifiedAt), i);
   }
 
   Container _buildNotesColumn(Expense expense, int i) {
-    Color rowColor = Colors.white10.withOpacity(.1);
-    if (i == 1) rowColor = Colors.white10.withOpacity(.05);
-    return Container(
-      width: double.infinity,
-      color: rowColor,
-      padding: _buildPadding(),
-      child: Column(
-        children: <Widget>[
-          Row(
-            children: const [
-              Text("Notes:"),
-            ],
-          ),
-          if (expense.note != null && expense.note!.isNotEmpty)
-            const Divider(
-              thickness: .8,
-              indent: 8,
-              endIndent: 8,
-            ),
-          if (expense.note != null && expense.note!.isNotEmpty)
-            Text(expense.note!,
-                maxLines: 5,
-                overflow: TextOverflow.fade,
-                textAlign: TextAlign.end),
-        ],
-      ),
-    );
+    return ExpenseWidgets.detail
+        .buildNotesKeyValColumn("Notes", expense.note, i);
   }
 
   Container _buildExpenseItemsColumn(Expense expense, int i) {
-    Color rowColor = Colors.white10.withOpacity(.1);
-    if (i == 1) rowColor = Colors.white10.withOpacity(.05);
-    return Container(
-      width: double.infinity,
-      color: rowColor,
-      padding: _buildPadding(),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Row(
-            children: const [
-              Text("Expense Items:"),
-            ],
-          ),
-          const Divider(
-            thickness: .8,
-            indent: 8,
-            endIndent: 8,
-          ),
-          _fetchAndBuildExpenseItemsList(expense),
-        ],
-      ),
-    );
+    return ExpenseWidgets.detail
+        .buildExpenseItemsColumn(expense.id, _refreshExpenseItems, i);
   }
 
-  FutureBuilder _fetchAndBuildExpenseItemsList(Expense expense) {
-    return FutureBuilder(
-        future: _refreshExpenseItems(expense),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            return _buildExpenseItemsList(snapshot.data);
-          }
-        });
-  }
-
-  Container _buildExpenseItemsList(List<ExpenseItemFormModel> expenseItems) {
-    return Container(
-      constraints: const BoxConstraints(maxHeight: 200),
-      child: SingleChildScrollView(
-        child: DataTable(
-          columnSpacing: 15,
-          dataRowHeight: 35,
-          columns: const [
-            DataColumn(
-              label: Text('Name'),
-            ),
-            DataColumn(label: Text('Amount')),
-            DataColumn(label: Text('Quantity')),
-            DataColumn(label: Text('Total')),
-          ],
-          rows: _buildDataRows(expenseItems),
-        ),
-      ),
-    );
-  }
-
-  List<DataRow> _buildDataRows(List<ExpenseItemFormModel> expenseItems) {
-    return expenseItems.map((expenseItem) {
-      return DataRow(cells: [
-        DataCell(Text(expenseItem.name)),
-        DataCell(Text('${expenseItem.amount.round()}')),
-        DataCell(Text('${expenseItem.quantity}')),
-        DataCell(Text('${expenseItem.total.round()}')),
-      ]);
-    }).toList();
-  }
-
-  Future<List<ExpenseItemFormModel>> _refreshExpenseItems(
-      Expense expense) async {
+  Future<List<ExpenseItemFormModel>> _refreshExpenseItems(int expenseId) async {
     final expenseItemsProvider =
         Provider.of<ExpenseItemsProvider>(context, listen: false);
-    await expenseItemsProvider.fetchExpenseItems(expenseId: expense.id);
+    await expenseItemsProvider.fetchExpenseItems(expenseId: expenseId);
     // await Future.delayed(const Duration(milliseconds: 300));
     return expenseItemsProvider.expenseItems;
   }
@@ -242,13 +125,5 @@ class _ExpensePopupState extends State<ExpensePopup> {
     return const Divider(
       thickness: 1.5,
     );
-  }
-
-  EdgeInsets _buildPadding() {
-    return EdgeInsets.only(
-        top: paddingTop,
-        bottom: paddingBottom,
-        left: paddingHorizontal,
-        right: paddingHorizontal);
   }
 }

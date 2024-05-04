@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../models/expense.dart';
 import '../../../providers/expense_provider.dart';
-import 'expense_tile_widgets.dart';
+import 'expense_widgets.dart';
 
 class ExpenseTile extends StatefulWidget {
   final Expense expense;
@@ -48,23 +48,23 @@ class _ExpenseTileState extends State<ExpenseTile> {
         children: [
           Row(
             children: [
-              ExpenseTileWidgets.titleWidget(widget.expense),
-              ExpenseTileWidgets.categoryWidget(widget.expense),
-              ExpenseTileWidgets.getExpenseDate(widget.expense),
+              ExpenseWidgets.tile.titleWidget(widget.expense),
+              ExpenseWidgets.tile.categoryWidget(widget.expense),
+              ExpenseWidgets.tile.getExpenseDate(widget.expense),
             ],
           ),
           const SizedBox(height: 5.0),
           Row(
             children: [
-              ExpenseTileWidgets.tagsWidget(widget.expense),
+              ExpenseWidgets.tile.tagsWidget(widget.expense),
             ],
           ),
           const SizedBox(height: 5.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              ExpenseTileWidgets.noteWidget(widget.expense),
-              ExpenseTileWidgets.amountWidget(widget.expense),
+              ExpenseWidgets.tile.noteWidget(widget.expense),
+              ExpenseWidgets.tile.amountWidget(widget.expense),
             ],
           ),
         ],
