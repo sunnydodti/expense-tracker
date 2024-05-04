@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/category_provider.dart';
+import 'providers/expense_items_provider.dart';
 import 'providers/expense_provider.dart';
 import 'providers/settings_provider.dart';
 import 'providers/sort_filter_provider.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => ExpenseProvider()),
+        ChangeNotifierProvider(create: (context) => ExpenseItemsProvider()),
         ChangeNotifierProvider(create: (context) => CategoryProvider()),
         ChangeNotifierProvider(create: (context) => TagProvider()),
         ChangeNotifierProvider(create: (context) => SortFilterProvider()),

@@ -9,6 +9,8 @@ class ExpenseItem {
   final DateTime createdAt;
   final DateTime modifiedAt;
 
+  double get total => quantity * amount;
+
   ExpenseItem(
       {required this.id,
       required this.expenseId,
@@ -51,6 +53,8 @@ class ExpenseItemFormModel {
   int quantity;
   DateTime? createdAt;
   DateTime? modifiedAt;
+
+  double get total => quantity * amount;
 
   final String uuid;
 

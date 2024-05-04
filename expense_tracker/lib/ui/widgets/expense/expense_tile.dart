@@ -27,12 +27,9 @@ class _ExpenseTileState extends State<ExpenseTile> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onLongPressStart: (details) => setState(() {
-        expenseProvider.showExpensePopup(widget.expense);
-      }),
-      onLongPressEnd: (details) => setState(() {
-        expenseProvider.hideExpensePopup();
-      }),
+      onLongPressStart: (details) =>
+          expenseProvider.showExpensePopup(widget.expense),
+      onLongPressEnd: (details) => expenseProvider.hideExpensePopup(),
       onTap: widget.onTap,
       child: Container(
         decoration: BoxDecoration(

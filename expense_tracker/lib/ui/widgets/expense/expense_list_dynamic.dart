@@ -1,4 +1,3 @@
-import 'package:expense_tracker/ui/widgets/expense/expense_popup.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,6 +6,7 @@ import '../empty_list_widget.dart';
 import '../expense_swipe_info_widget.dart';
 import '../sort_n_filter/sort_filter_tile.dart';
 import 'dismissible_expense_tile.dart';
+import 'expense_popup.dart';
 import 'expense_summary.dart';
 
 class ExpenseListDynamic extends StatelessWidget {

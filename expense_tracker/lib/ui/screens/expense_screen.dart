@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../data/helpers/navigation_helper.dart';
 import '../../models/enums/form_modes.dart';
 import '../../models/expense.dart';
-import '../../providers/expense_items_provider.dart';
 import '../forms/expense/expense_form.dart';
 
 class ExpensePage extends StatelessWidget {
@@ -40,12 +38,7 @@ class ExpensePage extends StatelessWidget {
             ),
           ],
         ),
-        body: MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (context) => ExpenseItemsProvider()),
-          ],
-          child: ExpenseForm(formMode: formMode, expense: expense),
-        ),
+        body: ExpenseForm(formMode: formMode, expense: expense),
       ),
     );
   }
