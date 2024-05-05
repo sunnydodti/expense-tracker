@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../data/helpers/navigation_helper.dart';
 import '../../models/enums/form_modes.dart';
 import '../../models/expense.dart';
+import '../../providers/expense_items_provider.dart';
 import '../forms/expense/expense_form.dart';
 
 class ExpensePage extends StatelessWidget {
@@ -15,14 +17,12 @@ class ExpensePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () => NavigationHelper.navigateBackWithBool(context, false),
+      onWillPop: () => _navigateBackWithBool(context),
       child: Scaffold(
-        // backgroundColor: Colors.grey.shade900,
         appBar: AppBar(
           leading: SafeArea(
             child: BackButton(
-              onPressed: () =>
-                  NavigationHelper.navigateBackWithBool(context, false),
+              onPressed: () => _navigateBackWithBool(context),
             ),
           ),
           centerTitle: true,
@@ -41,5 +41,10 @@ class ExpensePage extends StatelessWidget {
         body: ExpenseForm(formMode: formMode, expense: expense),
       ),
     );
+  }
+
+  _navigateBackWithBool(BuildContext context) {
+    Provider.of<ExpenseItemsProvider>(context, listen: false).clear();
+    return NavigationHelper.navigateBackWithBool(context, false);
   }
 }
