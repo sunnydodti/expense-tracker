@@ -7,6 +7,7 @@ import '../../../data/constants/form_constants.dart';
 import '../../../models/enums/form_modes.dart';
 import '../../../models/expense.dart';
 import '../../../models/expense_category.dart';
+import '../../../models/expense_item.dart';
 import '../../../models/tag.dart';
 import '../../../providers/expense_items_provider.dart';
 import '../../../providers/settings_provider.dart';
@@ -50,6 +51,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
   List<Tag> _tags = [];
   Tag? _selectedTag;
 
+  bool isFirstValidExpenseItemsToggle = true;
   //endregion
 
   //region Section 2: controllers
@@ -73,6 +75,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
     _containsExpenseItems = false;
 
     if (widget.formMode == FormMode.edit) {
+      isFirstValidExpenseItemsToggle = false;
       _populateFormFieldsForEdit(widget.expense!);
       _highlightColor = Colors.orange.shade300;
     } else {
@@ -98,9 +101,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
     List<ExpenseCategory> categories = await categoryService.getCategories();
     List<Tag> tags = await tagService.getTags();
     if (mounted) {
-      final expenseItemProvider =
-          Provider.of<ExpenseItemsProvider>(context, listen: false);
-      expenseItemProvider.fetchExpenseItems(expenseId: expense.id);
+      _expenseItemsProvider.fetchExpenseItems(expenseId: expense.id);
     }
     setState(() {
       _categories = categories;
@@ -228,9 +229,32 @@ class _ExpenseFormState extends State<ExpenseForm> {
     return ExpenseWidgets.form.buildTitleField(titleController);
   }
 
-  Container _buildAmountField() {
-    return ExpenseWidgets.form
-        .buildAmountField(amountController, amountPrefixController.text);
+  Consumer<ExpenseItemsProvider> _buildAmountField() {
+    bool isAmountReadOnly = false;
+    return Consumer<ExpenseItemsProvider>(
+        builder: (context, expenseItemsProvider, child) {
+      if (_containsExpenseItems) {
+        if (isFirstValidExpenseItemsToggle) {
+          handleFistValidExpenseItemsToggle(expenseItemsProvider);
+        }
+        isAmountReadOnly = true;
+      }
+      return ExpenseWidgets.form.buildAmountField(
+          amountController, amountPrefixController.text,
+          isReadOnly: isAmountReadOnly);
+    });
+  }
+
+  void handleFistValidExpenseItemsToggle(
+      ExpenseItemsProvider expenseItemsProvider) {
+    if (titleController.text.isNotEmpty && amountController.text.isNotEmpty) {
+      isFirstValidExpenseItemsToggle = false;
+      ExpenseItemFormModel expenseItem = ExpenseItemFormModel(
+          name: titleController.text,
+          amount: double.parse(amountController.text),
+          quantity: 1);
+      expenseItemsProvider.addExpenseItem(expenseItem, notify: false);
+    }
   }
 
   Container _buildTransactionTypeField() {
@@ -308,6 +332,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
         updateExpense(expense).then((value) {
           if (value) {
             _logger.i("Expense updated successfully");
+            _expenseItemsProvider.clear();
             Navigator.pop(context, value);
           } else {
             _logger.i("Failed to update expense");
@@ -317,6 +342,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
         insertExpense(expense).then((value) {
           if (value) {
             _logger.i("inserted");
+            _expenseItemsProvider.clear();
             Navigator.pop(context, value);
           }
         });

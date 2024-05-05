@@ -51,11 +51,12 @@ class ExpenseFormWidgets {
     );
   }
 
-  Container buildAmountField(
-      TextEditingController controller, String currency) {
+  Container buildAmountField(TextEditingController controller, String currency,
+      {bool isReadOnly = false}) {
     return Container(
       padding: _getFieldPadding(),
       child: TextFormField(
+        readOnly: isReadOnly,
         controller: controller,
         decoration: InputDecoration(
           prefixIcon: Icon(Icons.attach_money_outlined, size: _getIconSize()),

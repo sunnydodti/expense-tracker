@@ -34,10 +34,20 @@ class ExpenseItemsProvider extends ChangeNotifier {
     return ids;
   }
 
+  double get getTotalAmount {
+    return expenseItems.fold<double>(
+        0.0, (sum, expenseItem) => sum + expenseItem.amount);
+  }
+
+  void clear() {
+    _expenseItems = [];
+    _expenseItemsDeleted = [];
+  }
+
   /// add an expense item.
-  void addExpenseItem(ExpenseItemFormModel expenseItem) {
+  void addExpenseItem(ExpenseItemFormModel expenseItem, {bool notify = true}) {
     _expenseItems.insert(0, expenseItem);
-    notifyListeners();
+    if (notify) notifyListeners();
   }
 
   /// delete an expense by uuid.
