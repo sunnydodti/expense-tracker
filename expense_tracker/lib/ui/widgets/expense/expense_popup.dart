@@ -36,7 +36,6 @@ class _ExpensePopupState extends State<ExpensePopup> {
 
   Container buildExpensePopup() {
     return Container(
-      width: 500,
       margin: const EdgeInsets.only(left: 40, right: 40, top: 75),
       child: Card(
         color: Colors.grey.shade700,

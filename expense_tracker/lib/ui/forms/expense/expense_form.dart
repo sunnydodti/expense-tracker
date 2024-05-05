@@ -201,8 +201,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
     );
   }
 
-  ExpenseItemsList _buildExpenseItemsList() =>
-      ExpenseItemsList(currency: '${amountPrefixController.text} ');
+  ExpenseItemsList _buildExpenseItemsList() => ExpenseItemsList(
+      currency: '${amountPrefixController.text} ',
+      expenseTitle: titleController.text);
 
   ExpenseItemForm _buildExpenseItemForm() =>
       ExpenseItemForm(currency: '${amountPrefixController.text} ');

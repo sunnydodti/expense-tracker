@@ -90,12 +90,12 @@ class ExpenseDetailsWidgets {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
-            return _buildExpenseItemsList(snapshot.data);
+            return buildExpenseItemsList(snapshot.data);
           }
         });
   }
 
-  Container _buildExpenseItemsList(List<ExpenseItemFormModel> expenseItems) {
+  Container buildExpenseItemsList(List<ExpenseItemFormModel> expenseItems) {
     return Container(
       constraints: const BoxConstraints(maxHeight: 200),
       child: SingleChildScrollView(

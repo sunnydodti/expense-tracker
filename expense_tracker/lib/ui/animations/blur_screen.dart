@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 
 class BlurScreen extends StatefulWidget {
   final bool animate;
+  final VoidCallback? onTap;
 
-  const BlurScreen({super.key, this.animate = true});
+  const BlurScreen({super.key, this.animate = true, this.onTap});
 
   @override
   State<BlurScreen> createState() => _BlurScreenState();
@@ -25,12 +26,18 @@ class _BlurScreenState extends State<BlurScreen> {
   @override
   Widget build(BuildContext context) {
     if (widget.animate) animateBlur();
-    return BackdropFilter(
-      filter: ImageFilter.blur(
-        sigmaX: blurSigmaX,
-        sigmaY: blurSigmaY,
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: Container(
+        color: Colors.blue.withOpacity(.01),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(
+            sigmaX: blurSigmaX,
+            sigmaY: blurSigmaY,
+          ),
+          child: Container(),
+        ),
       ),
-      child: Container(),
     );
   }
 

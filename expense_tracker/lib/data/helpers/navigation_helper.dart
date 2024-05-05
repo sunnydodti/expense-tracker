@@ -14,4 +14,14 @@ class NavigationHelper {
 
   static navigateBackWithBool(BuildContext context, bool result) =>
       Navigator.pop(context, result);
+
+  static navigateToRoute(BuildContext context, Widget widget) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        opaque: false, // Set opaque to false for transparency
+        pageBuilder: (BuildContext context, _, __) => widget,
+      ),
+    );
+  }
 }
