@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import '../../../models/delete_input.dart';
 
 class DeleteConfirmationDialog extends StatefulWidget {
-  VoidCallback? onCancel;
+  final VoidCallback? onCancel;
+
   final Future<void> Function(
     BuildContext context,
     DeleteInput deleteInput,
   )? onConfirm;
 
-  DeleteConfirmationDialog({super.key, this.onCancel, this.onConfirm});
+  const DeleteConfirmationDialog({super.key, this.onCancel, this.onConfirm});
 
   @override
   State<DeleteConfirmationDialog> createState() =>
@@ -21,6 +22,8 @@ class _DeleteConfirmationDialogState extends State<DeleteConfirmationDialog> {
   bool deleteExpenseItems = false;
   bool deleteCategories = false;
   bool deleteTags = false;
+
+  bool deleteEverything = false;
 
   final String cancelAction = "Cancel";
   final String confirmAction = "Confirm";
@@ -36,7 +39,7 @@ class _DeleteConfirmationDialogState extends State<DeleteConfirmationDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           const Text("Please select what's to be deleted"),
           CheckboxListTile(
             title: const Text("Expenses"),
@@ -66,6 +69,11 @@ class _DeleteConfirmationDialogState extends State<DeleteConfirmationDialog> {
               deleteTags = value!;
             }),
           ),
+          CheckboxListTile(
+            title: const Text("Delete All"),
+            value: deleteEverything,
+            onChanged: handleDeleteAll,
+          ),
           const Text("Note: Consider Export before proceeding"),
         ],
       ),
@@ -83,6 +91,14 @@ class _DeleteConfirmationDialogState extends State<DeleteConfirmationDialog> {
       ],
     );
   }
+
+  void handleDeleteAll(value) => setState(() {
+        deleteEverything = value!;
+        deleteExpenses = deleteEverything ? true : false;
+        deleteExpenseItems = deleteEverything ? true : false;
+        deleteCategories = deleteEverything ? true : false;
+        deleteTags = deleteEverything ? true : false;
+      });
 
   handleConfirmation() {
     if (widget.onConfirm != null) {
