@@ -28,43 +28,43 @@ class HomeScreen extends StatelessWidget {
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
-          return MaterialApp(
-            theme: ThemeData(colorScheme: const ColorScheme.dark()),
-            home: Scaffold(
-              drawer: const SafeArea(child: HomeDrawer()),
-              appBar: AppBar(
-                centerTitle: true,
-                title: Text(title, textScaleFactor: 0.9),
-                backgroundColor: Colors.black,
-                actions: [
-                  if (DebugHelper.isDebugMode)
-                    IconButton(
-                      icon: const Icon(Icons.add, size: 20),
-                      tooltip: "add random expense",
-                      onPressed: () => populateExpense(context),
-                    ),
-                  if (DebugHelper.isDebugMode)
-                    IconButton(
-                      icon: const Icon(Icons.add_to_home_screen_outlined,
-                          size: 20),
-                      tooltip: "navigate to screen",
-                      onPressed: () => navigateToScreen(context),
-                    ),
-                  IconButton(
-                    icon: const Icon(Icons.person, size: 20),
-                    tooltip: "Profile",
-                    onPressed: () => _handelProfile(context),
-                  ),
-                ],
-              ),
-              body: Column(
-                children: const [Expanded(child: ExpenseListDynamic())],
-              ),
-              floatingActionButton: addExpenseButton(context),
+          return Scaffold(
+            drawer: const SafeArea(child: HomeDrawer()),
+            appBar: _buildAppBar(context),
+            body: Column(
+              children: const [Expanded(child: ExpenseListDynamic())],
             ),
+            floatingActionButton: _buildAddExpenseButton(context),
           );
         }
       },
+    );
+  }
+
+  AppBar _buildAppBar(BuildContext context) {
+    return AppBar(
+      centerTitle: true,
+      title: Text(title, textScaleFactor: 0.9),
+      backgroundColor: Colors.black,
+      actions: [
+        if (DebugHelper.isDebugMode)
+          IconButton(
+            icon: const Icon(Icons.add, size: 20),
+            tooltip: "add random expense",
+            onPressed: () => populateExpense(context),
+          ),
+        if (DebugHelper.isDebugMode)
+          IconButton(
+            icon: const Icon(Icons.add_to_home_screen_outlined, size: 20),
+            tooltip: "navigate to screen",
+            onPressed: () => navigateToScreen(context),
+          ),
+        IconButton(
+          icon: const Icon(Icons.person, size: 20),
+          tooltip: "Profile",
+          onPressed: () => _handelProfile(context),
+        ),
+      ],
     );
   }
 
@@ -85,7 +85,7 @@ class HomeScreen extends StatelessWidget {
         .then((value) => _refreshExpensesHome(context));
   }
 
-  Padding addExpenseButton(BuildContext context) {
+  Padding _buildAddExpenseButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 35.0),
       child: FloatingActionButton.small(

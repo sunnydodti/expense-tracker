@@ -17,38 +17,36 @@ class ExpenseListDynamic extends StatelessWidget {
     return Consumer<ExpenseProvider>(
       builder: (context, expenseProvider, child) {
         final expenseCount = expenseProvider.expenses.length;
-        return Scaffold(
-          body: RefreshIndicator(
-            onRefresh: () => expenseProvider.refreshExpenses(),
-            color: Colors.blue.shade500,
-            child: Stack(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    ExpenseSummary(expenseProvider: expenseProvider),
-                    const SortFilterTile(),
-                    expenseProvider.expenses.isEmpty
-                        ? const EmptyListWidget(listName: 'Expense')
-                        : Expanded(
-                            child: ListView.builder(
-                              itemCount: expenseCount,
-                              itemBuilder: (context, index) {
-                                return DismissibleExpenseTile(
-                                    expense: expenseProvider.expenses[index],
-                                    expenseProvider: expenseProvider,
-                                    index: index);
-                              },
-                            ),
+        return RefreshIndicator(
+          onRefresh: () => expenseProvider.refreshExpenses(),
+          color: Colors.blue.shade500,
+          child: Stack(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ExpenseSummary(expenseProvider: expenseProvider),
+                  const SortFilterTile(),
+                  expenseProvider.expenses.isEmpty
+                      ? const EmptyListWidget(listName: 'Expense')
+                      : Expanded(
+                          child: ListView.builder(
+                            itemCount: expenseCount,
+                            itemBuilder: (context, index) {
+                              return DismissibleExpenseTile(
+                                  expense: expenseProvider.expenses[index],
+                                  expenseProvider: expenseProvider,
+                                  index: index);
+                            },
                           ),
-                    if (expenseCount < 4 && expenseCount > 0)
-                      const ExpenseSwipeInfoWidget(),
-                  ],
-                ),
-                if (expenseProvider.showPopup)
-                  ExpensePopup(expense: expenseProvider.popUpExpense!),
-              ],
-            ),
+                        ),
+                  if (expenseCount < 4 && expenseCount > 0)
+                    const ExpenseSwipeInfoWidget(),
+                ],
+              ),
+              if (expenseProvider.showPopup)
+                ExpensePopup(expense: expenseProvider.popUpExpense!),
+            ],
           ),
         );
       },
