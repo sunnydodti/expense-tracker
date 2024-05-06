@@ -71,7 +71,7 @@ class _ExpensePopupState extends State<ExpensePopup> {
 
   Container _buildAmountRow(Expense expense, int i) {
     return ExpenseWidgets.detail.buildKeyValRow(
-        "Amount", getAmountText(expense), i,
+        "Amount", getExpenseAmountText(expense), i,
         valueColor: getAmountColor(expense.transactionType));
   }
 
@@ -111,7 +111,7 @@ class _ExpensePopupState extends State<ExpensePopup> {
 
   Container _buildExpenseItemsColumn(Expense expense, int i) {
     return ExpenseWidgets.detail
-        .buildExpenseItemsColumn(expense.id, _refreshExpenseItems, i);
+        .buildExpenseItemsColumn(expense, _refreshExpenseItems, i);
   }
 
   Future<List<ExpenseItemFormModel>> _refreshExpenseItems(int expenseId) async {

@@ -119,7 +119,7 @@ class ExpenseTileWidgets {
     return Padding(
       padding: const EdgeInsets.only(left: 20),
       child: Text(
-        getAmountText(expense),
+        getExpenseAmountText(expense),
         textScaleFactor: 1.1,
         style: TextStyle(
           color: getAmountColor(expense.transactionType),

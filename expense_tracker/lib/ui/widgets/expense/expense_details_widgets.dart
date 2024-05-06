@@ -1,5 +1,7 @@
+import 'package:expense_tracker/utils/expense_utils.dart';
 import 'package:flutter/material.dart';
 
+import '../../../models/expense.dart';
 import '../../../models/expense_item.dart';
 
 class ExpenseDetailsWidgets {
@@ -68,7 +70,7 @@ class ExpenseDetailsWidgets {
   }
 
   Container buildExpenseItemsColumn(
-      int expenseId, Function(int exenseId) fetchMethod, int i) {
+      Expense expense, Function(int exenseId) fetchMethod, int i) {
     Color rowColor = Colors.white10.withOpacity(.1);
     if (i == 1) rowColor = Colors.white10.withOpacity(.05);
     return Container(
@@ -80,28 +82,29 @@ class ExpenseDetailsWidgets {
         children: <Widget>[
           Row(children: const <Widget>[Text("Expense Items:")]),
           const Divider(thickness: .8, indent: 8, endIndent: 8),
-          _fetchAndBuildExpenseItemsList(expenseId, fetchMethod),
+          _fetchAndBuildExpenseItemsList(expense, fetchMethod),
         ],
       ),
     );
   }
 
   FutureBuilder _fetchAndBuildExpenseItemsList(
-      int expenseId, Function(int expenseId) fetchMethod) {
+      Expense expense, Function(int expenseId) fetchMethod) {
     return FutureBuilder(
-        future: fetchMethod(expenseId),
+        future: fetchMethod(expense.id),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator();
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
-            return buildExpenseItemsList(snapshot.data);
+            return buildExpenseItemsList(snapshot.data, expense);
           }
         });
   }
 
-  Container buildExpenseItemsList(List<ExpenseItemFormModel> expenseItems) {
+  Container buildExpenseItemsList(
+      List<ExpenseItemFormModel> expenseItems, Expense expense) {
     return Container(
       constraints: const BoxConstraints(maxHeight: 200),
       child: SingleChildScrollView(
@@ -116,20 +119,50 @@ class ExpenseDetailsWidgets {
             DataColumn(label: Text('Quantity')),
             DataColumn(label: Text('Total')),
           ],
-          rows: _buildDataRows(expenseItems),
+          rows: [
+            ..._buildDataRows(expenseItems),
+            _buildTotalRow(expenseItems, expense),
+          ],
         ),
       ),
     );
   }
 
   List<DataRow> _buildDataRows(List<ExpenseItemFormModel> expenseItems) {
-    return expenseItems.map((expenseItem) {
+    var dataRows = expenseItems.map((expenseItem) {
       return DataRow(cells: [
         DataCell(Text(expenseItem.name)),
         DataCell(Text('${expenseItem.amount.round()}')),
         DataCell(Text('${expenseItem.quantity}')),
         DataCell(Text('${expenseItem.total.round()}')),
       ]);
-    }).toList();
+    });
+
+    return dataRows.toList();
+  }
+
+  DataRow _buildTotalRow(
+      List<ExpenseItemFormModel> expenseItems, Expense expense) {
+    double overallTotal =
+        expenseItems.fold(0, (prev, curr) => prev + curr.total);
+    Color color = getAmountColor(expense.transactionType);
+    return DataRow(cells: [
+      const DataCell(
+          Text('Total', style: TextStyle(fontWeight: FontWeight.bold))),
+      const DataCell(Text('')),
+      DataCell(
+        Text(
+          getAmountText(overallTotal, expense.transactionType, expense.currency,
+              includeAmount: false),
+          style: TextStyle(color: color),
+        ),
+      ),
+      DataCell(
+        Text(
+          '${overallTotal.round()}',
+          style: TextStyle(fontWeight: FontWeight.bold, color: color),
+        ),
+      ),
+    ]);
   }
 }
