@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../data/constants/form_constants.dart';
-import '../../../models/enums/transaction_type.dart';
 import '../../../models/expense.dart';
+import '../../../utils/expense_utils.dart';
 
 class ExpenseTileWidgets {
   double getTextScaleFactor() => .9;
@@ -117,36 +116,15 @@ class ExpenseTileWidgets {
   }
 
   Padding _getAmount(Expense expense) {
-    String transactionType = expense.transactionType;
     return Padding(
       padding: const EdgeInsets.only(left: 20),
       child: Text(
-        _getAmountText(expense),
+        getAmountText(expense),
         textScaleFactor: 1.1,
         style: TextStyle(
-          // fontSize: 16.0,
-          color: _getAmountColor(transactionType),
+          color: getAmountColor(expense.transactionType),
         ),
       ),
     );
-  }
-
-  String _getAmountText(Expense expense) {
-    String amountText = "${FormConstants.expense.currencies[expense.currency]} "
-        "${expense.amount.round()}";
-    amountText = (expense.transactionType == TransactionType.expense.name)
-        ? "- $amountText"
-        : "+ $amountText";
-    return amountText;
-  }
-
-  Color _getAmountColor(String transactionType) {
-    if (transactionType == TransactionType.expense.name) {
-      return Colors.red.shade300;
-    }
-    if (transactionType == TransactionType.income.name) {
-      return Colors.green.shade300;
-    }
-    return Colors.white;
   }
 }

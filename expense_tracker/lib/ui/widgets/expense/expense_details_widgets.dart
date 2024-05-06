@@ -21,7 +21,8 @@ class ExpenseDetailsWidgets {
     return rowColor;
   }
 
-  Container buildKeyValRow(String key, String value, int i) {
+  Container buildKeyValRow(String key, String value, int i,
+      {Color? valueColor}) {
     Color rowColor = _getColor(i);
     return Container(
       color: rowColor,
@@ -30,7 +31,12 @@ class ExpenseDetailsWidgets {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text("$key:"),
-          Text(value),
+          Text(
+            value,
+            style: TextStyle(
+              color: valueColor,
+            ),
+          ),
         ],
       ),
     );

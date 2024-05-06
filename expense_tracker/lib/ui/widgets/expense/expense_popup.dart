@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../../models/expense.dart';
 import '../../../models/expense_item.dart';
 import '../../../providers/expense_items_provider.dart';
+import '../../../utils/expense_utils.dart';
 import '../../animations/blur_screen.dart';
 import '../../animations/scale_up.dart';
 import 'expense_widgets.dart';
@@ -69,8 +70,9 @@ class _ExpensePopupState extends State<ExpensePopup> {
   }
 
   Container _buildAmountRow(Expense expense, int i) {
-    return ExpenseWidgets.detail
-        .buildKeyValRow("Amount", "${expense.amount.round()}", i);
+    return ExpenseWidgets.detail.buildKeyValRow(
+        "Amount", getAmountText(expense), i,
+        valueColor: getAmountColor(expense.transactionType));
   }
 
   Container _buildDateRow(Expense expense, int i) {
