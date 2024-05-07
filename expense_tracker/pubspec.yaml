@@ -20,7 +20,7 @@ dependencies:
   share:
   permission_handler:
   shared_preferences: ^2.0.13
-
+  fl_chart: ^0.62.0
 
 dev_dependencies:
   flutter_test:

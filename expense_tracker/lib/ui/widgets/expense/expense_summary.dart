@@ -1,3 +1,5 @@
+import 'package:expense_tracker/data/helpers/navigation_helper.dart';
+import 'package:expense_tracker/ui/screens/charts_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../../providers/expense_provider.dart';
@@ -12,32 +14,36 @@ class ExpenseSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey.shade900,
-      ),
-      margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
-      child: Column(
-        children: [
-          _buildSummaryContainer(
-              "Total Balance", expenseProvider.getTotalBalance(),
-              top: 10, bottom: 5, left: 10, right: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: _buildSummaryContainer(
-                    "Total Income", expenseProvider.getTotalIncome(),
-                    top: 5, bottom: 10, left: 10, right: 5),
-              ),
-              Expanded(
-                child: _buildSummaryContainer(
-                    "Total Expense", expenseProvider.getTotalExpenses() * -1,
-                    top: 5, bottom: 10, left: 5, right: 10),
-              ),
-            ],
-          ),
-        ],
+    return GestureDetector(
+      onTap: () => NavigationHelper.navigateToScreen(
+          context, ChartsScreen(expenseProvider.expenses)),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey.shade900,
+        ),
+        margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
+        child: Column(
+          children: [
+            _buildSummaryContainer(
+                "Total Balance", expenseProvider.getTotalBalance(),
+                top: 10, bottom: 5, left: 10, right: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: _buildSummaryContainer(
+                      "Total Income", expenseProvider.getTotalIncome(),
+                      top: 5, bottom: 10, left: 10, right: 5),
+                ),
+                Expanded(
+                  child: _buildSummaryContainer(
+                      "Total Expense", expenseProvider.getTotalExpenses() * -1,
+                      top: 5, bottom: 10, left: 5, right: 10),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
