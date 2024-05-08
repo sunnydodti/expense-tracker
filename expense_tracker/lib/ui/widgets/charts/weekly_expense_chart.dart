@@ -1,3 +1,4 @@
+import 'package:expense_tracker/data/constants/chart_constants.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -13,8 +14,6 @@ class WeeklyExpenseChart extends StatefulWidget {
 }
 
 class _WeeklyExpenseChartState extends State<WeeklyExpenseChart> {
-  double barWidth = 15;
-
   @override
   Widget build(BuildContext context) {
     Map<int, double> dailySum = widget.chartData.calculateDailySumForWeek();
@@ -29,10 +28,54 @@ class _WeeklyExpenseChartState extends State<WeeklyExpenseChart> {
           show: true,
           rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
           topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        ),
+            bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                    showTitles: true,
+                    getTitlesWidget: getTitles,
+                    reservedSize: 35))),
       ),
       // swapAnimationCurve: Curves.linear,
       // swapAnimationDuration: const Duration(milliseconds: 500),
+    );
+  }
+
+  Widget getTitles(double value, TitleMeta meta) {
+    const style = TextStyle(
+      color: Colors.white,
+      fontWeight: FontWeight.bold,
+      fontSize: 14,
+    );
+    Widget text;
+    switch (value.toInt()) {
+      case 1:
+        text = const Text('M', style: style);
+        break;
+      case 2:
+        text = const Text('T', style: style);
+        break;
+      case 3:
+        text = const Text('W', style: style);
+        break;
+      case 4:
+        text = const Text('T', style: style);
+        break;
+      case 5:
+        text = const Text('F', style: style);
+        break;
+      case 6:
+        text = const Text('S', style: style);
+        break;
+      case 7:
+        text = const Text('S', style: style);
+        break;
+      default:
+        text = const Text('', style: style);
+        break;
+    }
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      space: 16,
+      child: text,
     );
   }
 
@@ -106,7 +149,7 @@ class _WeeklyExpenseChartState extends State<WeeklyExpenseChart> {
           barRods: [
             BarChartRodData(
               toY: sum,
-              width: barWidth,
+              width: ChartConstants.bar.barWidth,
               color: Colors.blue.shade400,
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(4)),
