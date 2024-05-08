@@ -13,6 +13,23 @@ class ChartData {
     this.year,
   });
 
+  double _maxDailyAmount = 0;
+  double _minDailyAmount = 0;
+
+  List<int> _daysWithMaxAmount = [];
+  List<int> _daysWithMinAmount = [];
+
+  double get maxDailyAmount => _maxDailyAmount;
+
+  double get minDailyAmount => _minDailyAmount;
+
+  List<int> get daysWithMaxAmount => _daysWithMaxAmount;
+
+  List<int> get daysWithMinAmount => _daysWithMinAmount;
+
+  // chart ui data
+  double get barHeight => _maxDailyAmount + _maxDailyAmount * 0.25;
+
   List<Expense> filterExpenses() {
     return expenses.where((expense) {
       if (week != null && _getWeekOfYear(expense.date) != week) {
@@ -117,5 +134,36 @@ class ChartData {
     final Duration difference = date.difference(firstMonday);
     final int weekNumber = (difference.inDays / 7).ceil();
     return weekNumber;
+  }
+
+  Map<int, double> calculateDailySumForWeek() {
+    List<Expense> expenses = getExpensesForCurrentWeek();
+
+    Map<int, double> dailySum = {
+      DateTime.monday: 0,
+      DateTime.tuesday: 0,
+      DateTime.wednesday: 0,
+      DateTime.thursday: 0,
+      DateTime.friday: 0,
+      DateTime.saturday: 0,
+      DateTime.sunday: 0,
+    };
+
+    for (var expense in expenses) {
+      dailySum[expense.date.weekday] =
+          dailySum[expense.date.weekday]! + expense.amount;
+    }
+    calculateDaysWithHighestAndLowestAmounts(dailySum);
+    return dailySum;
+  }
+
+  void calculateDaysWithHighestAndLowestAmounts(Map<int, double> dailySums) {
+    _maxDailyAmount = dailySums.values.reduce((a, b) => a > b ? a : b);
+    _minDailyAmount = dailySums.values.reduce((a, b) => a < b ? a : b);
+
+    dailySums.forEach((day, amount) {
+      if (amount == _maxDailyAmount) _daysWithMaxAmount.add(day);
+      if (amount == _minDailyAmount) _daysWithMinAmount.add(day);
+    });
   }
 }

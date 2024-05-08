@@ -1,14 +1,19 @@
+import 'package:expense_tracker/models/chart_data.dart';
 import 'package:expense_tracker/service/chart_service.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/enums/chart_type.dart';
 import '../../models/expense.dart';
+import '../widgets/charts/weekly_expense_chart.dart';
 
 class ChartsScreen extends StatefulWidget {
   final List<Expense> expenses;
+  late final ChartData chartData;
 
-  const ChartsScreen(this.expenses, {super.key});
+  ChartsScreen(this.expenses, {super.key}) {
+    chartData = ChartData(expenses: expenses);
+  }
 
   @override
   ExpenseVisualizationScreenState createState() =>
@@ -110,7 +115,11 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
             Expanded(
                 flex: 4,
                 child: Container(
-                  child: _buildChart(widget.expenses),
+                  padding: const EdgeInsets.all(10),
+                  // child: _buildChart(widget.expenses),
+                  child: WeeklyExpenseChart(
+                    chartData: widget.chartData,
+                  ),
                 )),
             Expanded(
                 flex: 1, // 1 part out of 10
