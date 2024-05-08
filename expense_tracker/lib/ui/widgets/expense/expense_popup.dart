@@ -20,10 +20,8 @@ class ExpensePopup extends StatefulWidget {
 }
 
 class _ExpensePopupState extends State<ExpensePopup> {
-  @override
-  void initState() {
-    super.initState();
-  }
+  ExpenseItemsProvider get expenseItemsProvider =>
+      Provider.of<ExpenseItemsProvider>(context, listen: false);
 
   @override
   Widget build(BuildContext context) {
@@ -115,8 +113,6 @@ class _ExpensePopupState extends State<ExpensePopup> {
   }
 
   Future<List<ExpenseItemFormModel>> _refreshExpenseItems(int expenseId) async {
-    final expenseItemsProvider =
-        Provider.of<ExpenseItemsProvider>(context, listen: false);
     await expenseItemsProvider.fetchExpenseItems(expenseId: expenseId);
     // await Future.delayed(const Duration(milliseconds: 300));
     return expenseItemsProvider.expenseItems;

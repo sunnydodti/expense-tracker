@@ -2,18 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/expense.dart';
+import '../../../providers/expense_items_provider.dart';
 import '../../../providers/expense_provider.dart';
 import 'expense_widgets.dart';
 
 class ExpenseTile extends StatefulWidget {
   final Expense expense;
-  final ExpenseProvider expenseProvider;
   final VoidCallback onTap;
 
   const ExpenseTile({
     Key? key,
     required this.expense,
-    required this.expenseProvider,
     required this.onTap,
   }) : super(key: key);
 
@@ -29,7 +28,10 @@ class _ExpenseTileState extends State<ExpenseTile> {
     return GestureDetector(
       onLongPressStart: (details) =>
           expenseProvider.showExpensePopup(widget.expense),
-      onLongPressEnd: (details) => expenseProvider.hideExpensePopup(),
+      onLongPressEnd: (details) {
+        expenseItemsProvider.clear();
+        expenseProvider.hideExpensePopup();
+      },
       onTap: widget.onTap,
       child: Container(
         decoration: BoxDecoration(
@@ -74,4 +76,7 @@ class _ExpenseTileState extends State<ExpenseTile> {
 
   ExpenseProvider get expenseProvider =>
       Provider.of<ExpenseProvider>(context, listen: false);
+
+  ExpenseItemsProvider get expenseItemsProvider =>
+      Provider.of<ExpenseItemsProvider>(context, listen: false);
 }

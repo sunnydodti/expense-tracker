@@ -55,7 +55,6 @@ class DismissibleExpenseTile extends StatelessWidget {
       },
       child: ExpenseTile(
         expense: expense,
-        expenseProvider: expenseProvider,
         onTap: () => _editExpense(context, expense, expenseProvider),
       ),
     );

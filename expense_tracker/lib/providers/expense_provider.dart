@@ -156,6 +156,7 @@ class ExpenseProvider extends ChangeNotifier {
 
   void hideExpensePopup() {
     _showPopup = false;
+    _popUpExpense = null;
     notifyListeners();
   }
 }

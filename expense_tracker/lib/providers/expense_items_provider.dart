@@ -39,7 +39,7 @@ class ExpenseItemsProvider extends ChangeNotifier {
         0.0, (sum, expenseItem) => sum + expenseItem.amount);
   }
 
-  void clear() {
+  void clear() async {
     _expenseItems = [];
     _expenseItemsDeleted = [];
   }
