@@ -1,3 +1,8 @@
+import 'dart:math';
+
+import 'package:expense_tracker/models/chart_record.dart';
+import 'package:expense_tracker/models/enums/chart_type.dart';
+
 import 'expense.dart';
 
 class ChartData {
@@ -5,6 +10,7 @@ class ChartData {
   int? week;
   int? month;
   int? year;
+  bool splitSum = false;
 
   ChartData({
     required this.expenses,
@@ -149,7 +155,7 @@ class ChartData {
       DateTime.sunday: 0,
     };
 
-    for (var expense in expenses) {
+    for (Expense expense in expenses) {
       dailySum[expense.date.weekday] =
           dailySum[expense.date.weekday]! + expense.amount;
     }
@@ -165,5 +171,83 @@ class ChartData {
       if (amount == _maxDailyAmount) _daysWithMaxAmount.add(day);
       if (amount == _minDailyAmount) _daysWithMinAmount.add(day);
     });
+  }
+
+  void calculateDaysWithHighestAndLowestAmountsForTotal(
+      Map<int, ChartRecord> dailySums) {
+    double maxTotalAmount = 0.0;
+    double minTotalAmount = 0.0;
+
+    dailySums.forEach((day, record) {
+      double totalAmount = record.totalAmount;
+      maxTotalAmount = max(maxTotalAmount, totalAmount);
+      minTotalAmount = min(minTotalAmount, totalAmount);
+    });
+
+    _maxDailyAmount = maxTotalAmount;
+    _minDailyAmount = minTotalAmount;
+  }
+
+  Map<int, ChartRecord> calculateDailySumForWeekV2(ExpenseChartType chartType) {
+    List<Expense> expenses = getExpensesForCurrentWeek();
+
+    Map<int, ChartRecord> dailySum = {
+      DateTime.monday: ChartRecord(),
+      DateTime.tuesday: ChartRecord(),
+      DateTime.wednesday: ChartRecord(),
+      DateTime.thursday: ChartRecord(),
+      DateTime.friday: ChartRecord(),
+      DateTime.saturday: ChartRecord(),
+      DateTime.sunday: ChartRecord(),
+    };
+
+    for (var expense in expenses) {
+      dailySum[expense.date.weekday]!.add(expense);
+    }
+
+    dailySum.forEach((key, value) {
+      print(value.expenses.length);
+      print(value.expenseAmount);
+      print(value.incomeAmount);
+      print(value.reimbursementAmount);
+      print(value.totalAmount);
+    });
+    if (chartType == ExpenseChartType.split) {
+      calculateDaysWithHighestAndLowestAmountsForSplit(dailySum);
+    }
+    if (chartType == ExpenseChartType.total) {
+      calculateDaysWithHighestAndLowestAmountsForTotal(dailySum);
+    }
+    return dailySum;
+  }
+
+  void calculateDaysWithHighestAndLowestAmountsForSplit(
+      Map<int, ChartRecord> dailySums) {
+    double maxExpenseAmount = 0.0;
+    double minExpenseAmount = 0.0;
+
+    double maxIncomeAmount = 0.0;
+    double minIncomeAmount = 0.0;
+
+    double maxReimbursementAmount = 0.0;
+    double minReimbursementAmount = 0.0;
+
+    for (var record in dailySums.values) {
+      maxExpenseAmount = max(record.expenseAmount, maxExpenseAmount);
+      minExpenseAmount = max(record.expenseAmount, minExpenseAmount);
+
+      maxIncomeAmount = max(record.incomeAmount, maxIncomeAmount);
+      minIncomeAmount = min(record.incomeAmount, minIncomeAmount);
+
+      maxReimbursementAmount =
+          max(record.reimbursementAmount, maxReimbursementAmount);
+      minReimbursementAmount =
+          min(record.reimbursementAmount, minReimbursementAmount);
+
+      _maxDailyAmount =
+          max(maxExpenseAmount, max(maxIncomeAmount, maxReimbursementAmount));
+      _minDailyAmount =
+          min(minExpenseAmount, min(minIncomeAmount, minReimbursementAmount));
+    }
   }
 }

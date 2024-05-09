@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../models/chart_data.dart';
 import '../../models/expense.dart';
 import '../../service/chart_service.dart';
-import '../widgets/charts/weekly_expense_chart.dart';
+import '../widgets/charts/weekly_expense_bar_chart.dart';
 
 class ChartsScreen extends StatefulWidget {
   final List<Expense> expenses;
@@ -42,18 +42,18 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
                 flex: 4,
                 child: Container(
                   padding: const EdgeInsets.all(10),
-                  child: WeeklyExpenseChart(chartData: widget.chartData),
+                  child: WeeklyExpenseBarChart(chartData: widget.chartData),
                 )),
             Expanded(
                 flex: 1,
                 child: Container(
-                  color: Colors.red,
+                  color: Colors.grey.shade800.withOpacity(.3),
                   child: const Center(child: Text('1 Part')),
                 )),
             Expanded(
                 flex: 5,
                 child: Container(
-                  color: Colors.green,
+                  color: Colors.grey.shade800.withOpacity(.6),
                   child: const Center(child: Text('5 Parts')),
                 ))
           ],
