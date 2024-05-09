@@ -8,12 +8,12 @@ import '../../../models/enums/chart_type.dart';
 
 class WeeklyExpenseBarChart extends StatefulWidget {
   final ChartData chartData;
-  final ExpenseChartType chartType;
+  final ExpenseBarChartType barChartType;
 
   const WeeklyExpenseBarChart(
       {super.key,
       required this.chartData,
-      this.chartType = ExpenseChartType.split});
+      this.barChartType = ExpenseBarChartType.split});
 
   @override
   State<WeeklyExpenseBarChart> createState() => _WeeklyExpenseBarChartState();
@@ -23,13 +23,13 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
   @override
   Widget build(BuildContext context) {
     Map<int, ChartRecord> dailySum =
-        widget.chartData.calculateDailySumForWeekV2(widget.chartType);
+        widget.chartData.calculateDailySumForWeekV2(widget.barChartType);
     return buildTotalBarChart(dailySum);
   }
 
   BarChart buildTotalBarChart(Map<int, ChartRecord> dailySum) {
     List<BarChartGroupData> barGroups =
-        (widget.chartType == ExpenseChartType.split)
+        (widget.barChartType == ExpenseBarChartType.split)
             ? _buildBarGroupsForSplit(dailySum)
             : _buildBarGroupsForTotal(dailySum);
     return BarChart(

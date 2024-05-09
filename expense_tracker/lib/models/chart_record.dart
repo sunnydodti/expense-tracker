@@ -1,5 +1,4 @@
-import 'package:expense_tracker/models/enums/transaction_type.dart';
-
+import 'enums/transaction_type.dart';
 import 'expense.dart';
 
 class ChartRecord {

@@ -1,8 +1,8 @@
-import 'package:expense_tracker/data/helpers/navigation_helper.dart';
-import 'package:expense_tracker/ui/screens/charts_screen.dart';
 import 'package:flutter/material.dart';
 
+import '../../../data/helpers/navigation_helper.dart';
 import '../../../providers/expense_provider.dart';
+import '../../screens/charts_screen.dart';
 
 class ExpenseSummary extends StatelessWidget {
   final ExpenseProvider expenseProvider;

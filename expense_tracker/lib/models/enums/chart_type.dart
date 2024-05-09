@@ -1,3 +1,3 @@
 enum ChartType { bar, line, pie }
 
-enum ExpenseChartType { total, split }
+enum ExpenseBarChartType { total, split }

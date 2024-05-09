@@ -1,8 +1,8 @@
-import 'package:expense_tracker/utils/expense_utils.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/expense.dart';
 import '../../../models/expense_item.dart';
+import '../../../utils/expense_utils.dart';
 
 class ExpenseDetailsWidgets {
   final double paddingTop = 5;

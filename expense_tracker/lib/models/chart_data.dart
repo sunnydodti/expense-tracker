@@ -1,8 +1,7 @@
 import 'dart:math';
 
-import 'package:expense_tracker/models/chart_record.dart';
-import 'package:expense_tracker/models/enums/chart_type.dart';
-
+import 'chart_record.dart';
+import 'enums/chart_type.dart';
 import 'expense.dart';
 
 class ChartData {
@@ -188,7 +187,8 @@ class ChartData {
     _minDailyAmount = minTotalAmount;
   }
 
-  Map<int, ChartRecord> calculateDailySumForWeekV2(ExpenseChartType chartType) {
+  Map<int, ChartRecord> calculateDailySumForWeekV2(
+      ExpenseBarChartType chartType) {
     List<Expense> expenses = getExpensesForCurrentWeek();
 
     Map<int, ChartRecord> dailySum = {
@@ -212,10 +212,10 @@ class ChartData {
       print(value.reimbursementAmount);
       print(value.totalAmount);
     });
-    if (chartType == ExpenseChartType.split) {
+    if (chartType == ExpenseBarChartType.split) {
       calculateDaysWithHighestAndLowestAmountsForSplit(dailySum);
     }
-    if (chartType == ExpenseChartType.total) {
+    if (chartType == ExpenseBarChartType.total) {
       calculateDaysWithHighestAndLowestAmountsForTotal(dailySum);
     }
     return dailySum;
