@@ -178,7 +178,7 @@ class ChartData {
     double minTotalAmount = 0.0;
 
     dailySums.forEach((day, record) {
-      double totalAmount = record.totalAmount;
+      double totalAmount = record.totalAmount.abs();
       maxTotalAmount = max(maxTotalAmount, totalAmount);
       minTotalAmount = min(minTotalAmount, totalAmount);
     });
@@ -233,21 +233,20 @@ class ChartData {
     double minReimbursementAmount = 0.0;
 
     for (var record in dailySums.values) {
-      maxExpenseAmount = max(record.expenseAmount, maxExpenseAmount);
-      minExpenseAmount = max(record.expenseAmount, minExpenseAmount);
+      maxExpenseAmount = max(record.expenseAmount.abs(), maxExpenseAmount);
+      minExpenseAmount = max(record.expenseAmount.abs(), minExpenseAmount);
 
-      maxIncomeAmount = max(record.incomeAmount, maxIncomeAmount);
-      minIncomeAmount = min(record.incomeAmount, minIncomeAmount);
+      maxIncomeAmount = max(record.incomeAmount.abs(), maxIncomeAmount);
+      minIncomeAmount = min(record.incomeAmount.abs(), minIncomeAmount);
 
       maxReimbursementAmount =
-          max(record.reimbursementAmount, maxReimbursementAmount);
+          max(record.reimbursementAmount.abs(), maxReimbursementAmount);
       minReimbursementAmount =
-          min(record.reimbursementAmount, minReimbursementAmount);
-
-      _maxDailyAmount =
-          max(maxExpenseAmount, max(maxIncomeAmount, maxReimbursementAmount));
-      _minDailyAmount =
-          min(minExpenseAmount, min(minIncomeAmount, minReimbursementAmount));
+          min(record.reimbursementAmount.abs(), minReimbursementAmount);
     }
+    _maxDailyAmount =
+        max(maxExpenseAmount, max(maxIncomeAmount, maxReimbursementAmount));
+    _minDailyAmount =
+        min(minExpenseAmount, min(minIncomeAmount, minReimbursementAmount));
   }
 }

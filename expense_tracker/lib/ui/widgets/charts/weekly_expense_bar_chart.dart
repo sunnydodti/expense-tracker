@@ -21,13 +21,18 @@ class WeeklyExpenseBarChart extends StatefulWidget {
 
 class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
   @override
-  Widget build(BuildContext context) {
-    Map<int, ChartRecord> dailySum =
-        widget.chartData.calculateDailySumForWeekV2(widget.barChartType);
-    return buildTotalBarChart(dailySum);
+  void initState() {
+    super.initState();
   }
 
-  BarChart buildTotalBarChart(Map<int, ChartRecord> dailySum) {
+  @override
+  Widget build(BuildContext context) {
+    return _buildWeeklyBarChart();
+  }
+
+  BarChart _buildWeeklyBarChart() {
+    Map<int, ChartRecord> dailySum =
+        widget.chartData.calculateDailySumForWeekV2(widget.barChartType);
     List<BarChartGroupData> barGroups =
         (widget.barChartType == ExpenseBarChartType.split)
             ? _buildBarGroupsForSplit(dailySum)
