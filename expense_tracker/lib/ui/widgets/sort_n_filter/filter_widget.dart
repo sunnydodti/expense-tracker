@@ -21,6 +21,8 @@ class FilterWidgetState extends State<FilterWidget> {
   static final Logger _logger =
       Logger(printer: SimplePrinter(), level: Level.info);
 
+  final swipeVelocity = 50;
+
   _refreshExpenses() {
     final expenseProvider =
         Provider.of<ExpenseProvider>(context, listen: false);
@@ -87,11 +89,14 @@ class FilterWidgetState extends State<FilterWidget> {
       SortFilterProvider sortFilterProvider) {
     return GestureDetector(
       onTap: () => _showMonthPicker(sortFilterProvider),
-      onHorizontalDragEnd: (details) {
-        if (details.primaryVelocity! < 0) {
-          _decrementMonth(sortFilterProvider);
-        } else {
+      onDoubleTap: () => _decrementMonth(sortFilterProvider),
+      onLongPress: () => _incrementMonth(sortFilterProvider),
+      onPanEnd: (details) {
+        if (details.velocity.pixelsPerSecond.dx > swipeVelocity) {
           _incrementMonth(sortFilterProvider);
+        }
+        if (details.velocity.pixelsPerSecond.dx < swipeVelocity) {
+          _decrementMonth(sortFilterProvider);
         }
       },
       child: _buildMonthText(sortFilterProvider),
@@ -102,10 +107,13 @@ class FilterWidgetState extends State<FilterWidget> {
       SortFilterProvider sortFilterProvider) {
     return GestureDetector(
       onTap: () => _showYearPicker(sortFilterProvider),
-      onVerticalDragEnd: (details) {
-        if (details.primaryVelocity! < 0) {
+      onDoubleTap: () => _decrementYear(sortFilterProvider),
+      onLongPress: () => _incrementYear(sortFilterProvider),
+      onPanEnd: (details) {
+        if (details.velocity.pixelsPerSecond.dx > swipeVelocity) {
           _incrementYear(sortFilterProvider);
-        } else {
+        }
+        if (details.velocity.pixelsPerSecond.dx < swipeVelocity) {
           _decrementYear(sortFilterProvider);
         }
       },
