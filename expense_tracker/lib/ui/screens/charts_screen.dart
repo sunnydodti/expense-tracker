@@ -44,20 +44,10 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
         child: Column(
           children: <Widget>[
             Expanded(
-                flex: 4,
+                flex: 5,
                 child: Container(
                   padding: const EdgeInsets.all(10),
-                  child: WeeklyExpenseBarChart(
-                      chartData: widget.chartData,
-                      barChartType: splitBarChart
-                          ? ExpenseBarChartType.split
-                          : ExpenseBarChartType.total),
-                )),
-            Expanded(
-                flex: 1,
-                child: Container(
-                  color: Colors.grey.shade800.withOpacity(.3),
-                  child: buildChartOptions(),
+                  child: _buildWeeklyExpenseBarChart(),
                 )),
             Expanded(
                 flex: 5,
@@ -69,6 +59,14 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
         ),
       ),
     );
+  }
+
+  WeeklyExpenseBarChart _buildWeeklyExpenseBarChart() {
+    return WeeklyExpenseBarChart(
+        chartData: widget.chartData,
+        barChartType: splitBarChart
+            ? ExpenseBarChartType.split
+            : ExpenseBarChartType.total);
   }
 
   Widget buildChartFilters() {
@@ -88,7 +86,11 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
     return const Center(child: Text('5 Parts'));
   }
 
-  Center buildChartOptions() {
-    return const Center(child: Text('1 Part'));
+  Column buildChartOptions() {
+    return Column(
+      children: const [
+        Center(child: Text('1 Part')),
+      ],
+    );
   }
 }

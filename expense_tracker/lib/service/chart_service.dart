@@ -1,6 +1,3 @@
-import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
-
 import '../models/expense.dart';
 
 class ChartService {
@@ -18,35 +15,15 @@ class ChartService {
   static const double radius = 50.0;
   static const double barWidth = 10.0;
 
-  BarChart buildBarChart() {
-    return BarChart(BarChartData(barGroups: _getBarGroups(expenses)));
+  static int getCurrentWeek() {
+    DateTime date = DateTime.now();
+    final DateTime startOfYear = DateTime(date.year, 1, 1);
+    final DateTime firstMonday = startOfYear.weekday == DateTime.monday
+        ? startOfYear
+        : startOfYear
+            .add(Duration(days: DateTime.monday - startOfYear.weekday));
+    final Duration difference = date.difference(firstMonday);
+    final int weekNumber = (difference.inDays / 7).ceil();
+    return weekNumber;
   }
-
-  List<BarChartGroupData> _getBarGroups(List<Expense> expenses) {
-    final Map<String, double> totalByCategory = {};
-    for (var expense in expenses) {
-      totalByCategory[expense.category] ??= 0.0;
-      totalByCategory[expense.category] =
-      (totalByCategory[expense.category]! + expense.amount)!;
-    }
-
-    List<BarChartGroupData> barGroups = [];
-    totalByCategory.forEach((category, total) {
-      barGroups.add(
-        BarChartGroupData(
-          x: (barsSpacing + category.length * (barWidth + spacing)).round(),
-          barRods: [
-            BarChartRodData(
-              borderRadius: BorderRadius.zero,
-              color: Colors.lightBlueAccent,
-              width: barWidth,
-              toY: total,
-            ),
-          ],
-        ),
-      );
-    });
-    return barGroups;
-  }
-
 }

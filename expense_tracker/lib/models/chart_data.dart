@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import '../service/chart_service.dart';
 import 'chart_record.dart';
 import 'enums/chart_type.dart';
 import 'expense.dart';
@@ -37,7 +38,7 @@ class ChartData {
 
   List<Expense> filterExpenses() {
     return expenses.where((expense) {
-      if (week != null && _getCurrentWeek(expense.date) != week) {
+      if (week != null && ChartService.getCurrentWeek() != week) {
         return false;
       }
       if (month != null && expense.date.month != month) {
@@ -81,10 +82,26 @@ class ChartData {
     return getExpensesBetween(yearStart, yearEnd);
   }
 
+  List<Expense> getExpensesForWeek(int week) {
+    final now = DateTime.now();
+    final currentYear = now.year;
+
+    final DateTime weekStart = DateTime(currentYear)
+        .subtract(
+          const Duration(days: DateTime.monday - 1),
+        )
+        .add(
+          Duration(days: (week - 1) * 7),
+        );
+    final DateTime weekEnd = weekStart.add(const Duration(days: 6));
+
+    return getExpensesBetween(weekStart, weekEnd);
+  }
+
   List<Expense> getExpensesForSelectedWeek() {
     if (week != null) {
       return expenses
-          .where((expense) => _getCurrentWeek(expense.date) == week)
+          .where((expense) => ChartService.getCurrentWeek() == week)
           .toList();
     } else {
       throw Exception('Week is not specified.');
@@ -108,14 +125,12 @@ class ChartData {
   }
 
   void goToNextWeek() {
-    final now = DateTime.now();
-    final currentWeek = _getCurrentWeek(now);
+    final currentWeek = ChartService.getCurrentWeek();
     week = currentWeek + 1;
   }
 
   void goToPreviousWeek() {
-    final now = DateTime.now();
-    final currentWeek = _getCurrentWeek(now);
+    final currentWeek = ChartService.getCurrentWeek();
     week = currentWeek - 1;
   }
 
@@ -137,17 +152,6 @@ class ChartData {
   void goToPreviousYear() {
     final now = DateTime.now();
     year = now.year - 1;
-  }
-
-  int _getCurrentWeek(DateTime date) {
-    final DateTime startOfYear = DateTime(date.year, 1, 1);
-    final DateTime firstMonday = startOfYear.weekday == DateTime.monday
-        ? startOfYear
-        : startOfYear
-            .add(Duration(days: DateTime.monday - startOfYear.weekday));
-    final Duration difference = date.difference(firstMonday);
-    final int weekNumber = (difference.inDays / 7).ceil();
-    return weekNumber;
   }
 
   void calculateDaysWithHighestAndLowestAmounts(Map<int, double> dailySums) {
@@ -175,10 +179,12 @@ class ChartData {
     _minDailyAmount = minTotalAmount;
   }
 
-  Map<int, ChartRecord> calculateDailySumForWeek(
-      ExpenseBarChartType chartType) {
+  Map<int, ChartRecord> calculateDailySumForWeek(ExpenseBarChartType chartType,
+      {int week = 0}) {
     List<Expense> expenses = getExpensesForCurrentWeek();
-
+    if (week > 0 && week < 52) {
+      expenses = getExpensesForWeek(week);
+    }
     Map<int, ChartRecord> dailySum = {
       DateTime.monday: ChartRecord(),
       DateTime.tuesday: ChartRecord(),

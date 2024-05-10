@@ -5,34 +5,78 @@ import '../../../data/constants/chart_constants.dart';
 import '../../../models/chart_data.dart';
 import '../../../models/chart_record.dart';
 import '../../../models/enums/chart_type.dart';
+import '../../../service/chart_service.dart';
 
 class WeeklyExpenseBarChart extends StatefulWidget {
   final ChartData chartData;
   final ExpenseBarChartType barChartType;
+  final ChartRange chartRange;
 
   const WeeklyExpenseBarChart(
       {super.key,
       required this.chartData,
-      this.barChartType = ExpenseBarChartType.split});
+      this.barChartType = ExpenseBarChartType.split,
+      this.chartRange = ChartRange.weekly});
 
   @override
   State<WeeklyExpenseBarChart> createState() => _WeeklyExpenseBarChartState();
 }
 
 class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
+  late int currentWeek;
+  int selectedWeek = 0;
+
   @override
   void initState() {
     super.initState();
+    currentWeek = ChartService.getCurrentWeek();
   }
 
   @override
   Widget build(BuildContext context) {
-    return _buildWeeklyBarChart();
+    return Stack(
+      children: [
+        _buildWeeklyBarChart(),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: buildChartOptions(),
+        )
+      ],
+    );
+  }
+
+  Container buildChartOptions() {
+    return Container(
+      height: 80,
+      color: Colors.grey.shade700.withOpacity(.1),
+      child: Row(
+        children: [
+          IconButton(onPressed: decrementWeek, icon: Icon(Icons.chevron_left)),
+          Text("Week ${selectedWeek == 0 ? currentWeek : selectedWeek}"),
+          IconButton(onPressed: incrementWeek, icon: Icon(Icons.chevron_right)),
+        ],
+      ),
+    );
+  }
+
+  void decrementWeek() {
+    int week = selectedWeek == 0 ? currentWeek - 1 : selectedWeek - 1;
+    if (week < 1) week = 52;
+    setState(() {
+      selectedWeek = week;
+    });
+  }
+
+  void incrementWeek() {
+    int week = selectedWeek == 0 ? currentWeek + 1 : selectedWeek + 1;
+    if (week > 52) week = 1;
+    setState(() {
+      selectedWeek = week;
+    });
   }
 
   BarChart _buildWeeklyBarChart() {
-    Map<int, ChartRecord> dailySum =
-        widget.chartData.calculateDailySumForWeek(widget.barChartType);
+    Map<int, ChartRecord> dailySum = _getDailySumForWeek();
     List<BarChartGroupData> barGroups =
         (widget.barChartType == ExpenseBarChartType.split)
             ? _buildBarGroupsForSplit(dailySum)
@@ -50,11 +94,16 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
                 sideTitles: SideTitles(
                     showTitles: true,
                     getTitlesWidget: getTitles,
-                    reservedSize: 35))),
+                    reservedSize: 120))),
       ),
       swapAnimationCurve: Curves.linear,
       swapAnimationDuration: const Duration(milliseconds: 350),
     );
+  }
+
+  Map<int, ChartRecord> _getDailySumForWeek() {
+    return widget.chartData
+        .calculateDailySumForWeek(widget.barChartType, week: selectedWeek);
   }
 
   Widget getTitles(double value, TitleMeta meta) {
