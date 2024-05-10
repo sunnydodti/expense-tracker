@@ -52,8 +52,8 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
                     getTitlesWidget: getTitles,
                     reservedSize: 35))),
       ),
-      // swapAnimationCurve: Curves.linear,
-      // swapAnimationDuration: const Duration(milliseconds: 500),
+      swapAnimationCurve: Curves.linear,
+      swapAnimationDuration: const Duration(milliseconds: 350),
     );
   }
 
@@ -116,7 +116,7 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
               backDrawRodData: BackgroundBarChartRodData(
                 show: true,
                 toY: widget.chartData.barHeight,
-                color: Colors.green.withOpacity(.15),
+                color: color.withOpacity(.10),
               ),
             ),
           ],
@@ -173,7 +173,7 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
       backDrawRodData: BackgroundBarChartRodData(
         show: true,
         toY: widget.chartData.barHeight,
-        color: color.withOpacity(.02),
+        color: color.withOpacity(.1),
       ),
     );
   }
