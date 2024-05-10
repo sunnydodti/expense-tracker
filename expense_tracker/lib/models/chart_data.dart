@@ -37,7 +37,7 @@ class ChartData {
 
   List<Expense> filterExpenses() {
     return expenses.where((expense) {
-      if (week != null && _getWeekOfYear(expense.date) != week) {
+      if (week != null && _getCurrentWeek(expense.date) != week) {
         return false;
       }
       if (month != null && expense.date.month != month) {
@@ -50,33 +50,42 @@ class ChartData {
     }).toList();
   }
 
+  List<Expense> getExpensesBetween(DateTime startDate, DateTime endDate) {
+    return expenses.where((expense) {
+      final expenseDate = expense.date;
+      return expenseDate.isAfter(startDate.subtract(const Duration(days: 1))) &&
+          expenseDate.isBefore(endDate.add(const Duration(days: 1)));
+    }).toList();
+  }
+
   List<Expense> getExpensesForCurrentWeek() {
     final now = DateTime.now();
-    final currentWeek = _getWeekOfYear(now);
-    return expenses
-        .where((expense) => _getWeekOfYear(expense.date) == currentWeek)
-        .toList();
+    final DateTime weekStart =
+        now.subtract(Duration(days: now.weekday - DateTime.monday));
+    final DateTime weekEnd =
+        weekStart.add(const Duration(days: DateTime.sunday - DateTime.monday));
+    return getExpensesBetween(weekStart, weekEnd);
   }
 
   List<Expense> getExpensesForCurrentMonth() {
     final now = DateTime.now();
-    final currentMonth = now.month;
-    return expenses
-        .where((expense) => expense.date.month == currentMonth)
-        .toList();
+    final DateTime monthStart = DateTime(now.year, now.month, 1);
+    final DateTime monthEnd = DateTime(now.year, now.month + 1, 0);
+    return getExpensesBetween(monthStart, monthEnd);
   }
 
   List<Expense> getExpensesForCurrentYear() {
     final now = DateTime.now();
-    final currentYear = now.year;
-    return expenses
-        .where((expense) => expense.date.year == currentYear)
-        .toList();
+    final DateTime yearStart = DateTime(now.year, 1, 1);
+    final DateTime yearEnd = DateTime(now.year, 12, 31);
+    return getExpensesBetween(yearStart, yearEnd);
   }
 
   List<Expense> getExpensesForSelectedWeek() {
     if (week != null) {
-      return expenses.where((expense) => _getWeekOfYear(expense.date) == week).toList();
+      return expenses
+          .where((expense) => _getCurrentWeek(expense.date) == week)
+          .toList();
     } else {
       throw Exception('Week is not specified.');
     }
@@ -100,13 +109,13 @@ class ChartData {
 
   void goToNextWeek() {
     final now = DateTime.now();
-    final currentWeek = _getWeekOfYear(now);
+    final currentWeek = _getCurrentWeek(now);
     week = currentWeek + 1;
   }
 
   void goToPreviousWeek() {
     final now = DateTime.now();
-    final currentWeek = _getWeekOfYear(now);
+    final currentWeek = _getCurrentWeek(now);
     week = currentWeek - 1;
   }
 
@@ -130,36 +139,15 @@ class ChartData {
     year = now.year - 1;
   }
 
-
-  int _getWeekOfYear(DateTime date) {
+  int _getCurrentWeek(DateTime date) {
     final DateTime startOfYear = DateTime(date.year, 1, 1);
-    final DateTime firstMonday = startOfYear.weekday == 1
+    final DateTime firstMonday = startOfYear.weekday == DateTime.monday
         ? startOfYear
-        : startOfYear.add(Duration(days: 8 - startOfYear.weekday));
+        : startOfYear
+            .add(Duration(days: DateTime.monday - startOfYear.weekday));
     final Duration difference = date.difference(firstMonday);
     final int weekNumber = (difference.inDays / 7).ceil();
     return weekNumber;
-  }
-
-  Map<int, double> calculateDailySumForWeek() {
-    List<Expense> expenses = getExpensesForCurrentWeek();
-
-    Map<int, double> dailySum = {
-      DateTime.monday: 0,
-      DateTime.tuesday: 0,
-      DateTime.wednesday: 0,
-      DateTime.thursday: 0,
-      DateTime.friday: 0,
-      DateTime.saturday: 0,
-      DateTime.sunday: 0,
-    };
-
-    for (Expense expense in expenses) {
-      dailySum[expense.date.weekday] =
-          dailySum[expense.date.weekday]! + expense.amount;
-    }
-    calculateDaysWithHighestAndLowestAmounts(dailySum);
-    return dailySum;
   }
 
   void calculateDaysWithHighestAndLowestAmounts(Map<int, double> dailySums) {
@@ -187,7 +175,7 @@ class ChartData {
     _minDailyAmount = minTotalAmount;
   }
 
-  Map<int, ChartRecord> calculateDailySumForWeekV2(
+  Map<int, ChartRecord> calculateDailySumForWeek(
       ExpenseBarChartType chartType) {
     List<Expense> expenses = getExpensesForCurrentWeek();
 
@@ -205,13 +193,13 @@ class ChartData {
       dailySum[expense.date.weekday]!.add(expense);
     }
 
-    dailySum.forEach((key, value) {
-      print(value.expenses.length);
-      print(value.expenseAmount);
-      print(value.incomeAmount);
-      print(value.reimbursementAmount);
-      print(value.totalAmount);
-    });
+    // dailySum.forEach((key, value) {
+    //   print(value.expenses.length);
+    //   print(value.expenseAmount);
+    //   print(value.incomeAmount);
+    //   print(value.reimbursementAmount);
+    //   print(value.totalAmount);
+    // });
     if (chartType == ExpenseBarChartType.split) {
       calculateDaysWithHighestAndLowestAmountsForSplit(dailySum);
     }

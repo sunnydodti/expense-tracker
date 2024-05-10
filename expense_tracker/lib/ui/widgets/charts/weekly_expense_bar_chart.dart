@@ -32,7 +32,7 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
 
   BarChart _buildWeeklyBarChart() {
     Map<int, ChartRecord> dailySum =
-        widget.chartData.calculateDailySumForWeekV2(widget.barChartType);
+        widget.chartData.calculateDailySumForWeek(widget.barChartType);
     List<BarChartGroupData> barGroups =
         (widget.barChartType == ExpenseBarChartType.split)
             ? _buildBarGroupsForSplit(dailySum)
