@@ -9,13 +9,11 @@ import '../../../service/chart_service.dart';
 
 class WeeklyExpenseBarChart extends StatefulWidget {
   final ChartData chartData;
-  final ExpenseBarChartType barChartType;
   final ChartRange chartRange;
 
   const WeeklyExpenseBarChart(
       {super.key,
       required this.chartData,
-      this.barChartType = ExpenseBarChartType.split,
       this.chartRange = ChartRange.weekly});
 
   @override
@@ -25,6 +23,8 @@ class WeeklyExpenseBarChart extends StatefulWidget {
 class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
   late int currentWeek;
   int selectedWeek = 0;
+  bool splitBarChart = false;
+  ExpenseBarChartType barChartType = ExpenseBarChartType.total;
 
   @override
   void initState() {
@@ -45,18 +45,42 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
     );
   }
 
-  Container buildChartOptions() {
-    return Container(
+  SizedBox buildChartOptions() {
+    return SizedBox(
       height: 80,
-      color: Colors.grey.shade700.withOpacity(.1),
+      // color: Colors.grey.shade700.withOpacity(.1),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          IconButton(onPressed: decrementWeek, icon: Icon(Icons.chevron_left)),
-          Text("Week ${selectedWeek == 0 ? currentWeek : selectedWeek}"),
-          IconButton(onPressed: incrementWeek, icon: Icon(Icons.chevron_right)),
+          Row(
+            children: [
+              IconButton(
+                  onPressed: decrementWeek,
+                  icon: const Icon(Icons.chevron_left)),
+              Text("Week ${selectedWeek == 0 ? currentWeek : selectedWeek}"),
+              IconButton(
+                  onPressed: incrementWeek,
+                  icon: const Icon(Icons.chevron_right)),
+            ],
+          ),
+          Row(
+            children: [
+              const Text("Split"),
+              Checkbox(value: splitBarChart, onChanged: toggleBarChartType)
+            ],
+          ),
         ],
       ),
     );
+  }
+
+  void toggleBarChartType(value) {
+    ExpenseBarChartType chartType = ExpenseBarChartType.total;
+    if (value!) chartType = ExpenseBarChartType.split;
+    setState(() {
+      splitBarChart = value!;
+      barChartType = chartType;
+    });
   }
 
   void decrementWeek() {
@@ -78,7 +102,7 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
   BarChart _buildWeeklyBarChart() {
     Map<int, ChartRecord> dailySum = _getDailySumForWeek();
     List<BarChartGroupData> barGroups =
-        (widget.barChartType == ExpenseBarChartType.split)
+        (barChartType == ExpenseBarChartType.split)
             ? _buildBarGroupsForSplit(dailySum)
             : _buildBarGroupsForTotal(dailySum);
     return BarChart(
@@ -103,7 +127,7 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
 
   Map<int, ChartRecord> _getDailySumForWeek() {
     return widget.chartData
-        .calculateDailySumForWeek(widget.barChartType, week: selectedWeek);
+        .calculateDailySumForWeek(barChartType, week: selectedWeek);
   }
 
   Widget getTitles(double value, TitleMeta meta) {

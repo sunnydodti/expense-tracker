@@ -70,7 +70,7 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
                 flex: 5,
                 child: Container(
                   color: Colors.grey.shade800.withOpacity(.6),
-                  child: buildChartFilters(),
+                  // child: const Placeholder(),
                 ))
           ],
         ),
@@ -87,30 +87,9 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
-            return WeeklyExpenseBarChart(
-                chartData: snapshot.data!,
-                barChartType: splitBarChart
-                    ? ExpenseBarChartType.split
-                    : ExpenseBarChartType.total);
+            return WeeklyExpenseBarChart(chartData: snapshot.data!);
           }
         });
-  }
-
-  Widget buildChartFilters() {
-    if (_chartType == ChartType.bar) {
-      return ListView(
-        children: [
-          CheckboxListTile(
-              dense: true,
-              title: const Text("Split"),
-              value: splitBarChart,
-              onChanged: (value) => setState(() {
-                    splitBarChart = value!;
-                  })),
-        ],
-      );
-    }
-    return const Center(child: Text('5 Parts'));
   }
 
   Column buildChartOptions() {
