@@ -15,8 +15,7 @@ class ExpenseSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => NavigationHelper.navigateToScreen(
-          context, ChartsScreen(expenseProvider.expenses)),
+      onTap: () => NavigationHelper.navigateToScreen(context, const ChartsScreen()),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.grey.shade900,
