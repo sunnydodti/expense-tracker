@@ -140,6 +140,11 @@ class ExpenseProvider extends ChangeNotifier {
     return await expenseService.getSortedAndFilteredExpenses();
   }
 
+  Future<List<Expense>> fetchAllExpenses() async {
+    ExpenseService expenseService = await _expenseService;
+    return await expenseService.getExpenses();
+  }
+
   bool _showPopup = false;
 
   bool get showPopup => _showPopup;

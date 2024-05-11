@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/chart_data.dart';
 import '../../models/enums/chart_type.dart';
 import '../../models/expense.dart';
+import '../../providers/expense_provider.dart';
 import '../../service/chart_service.dart';
 import '../widgets/charts/weekly_expense_bar_chart.dart';
 
@@ -32,8 +34,20 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
     _chartType = ChartType.bar;
   }
 
+  ExpenseProvider get expenseProvider =>
+      Provider.of<ExpenseProvider>(context, listen: false);
+
+  Future<List<Expense>> _getExpenses() async {
+    await Future.delayed(const Duration(seconds: 1));
+    return await expenseProvider.fetchAllExpenses();
+  }
+
   @override
   Widget build(BuildContext context) {
+    return _buildChartScreen(context);
+  }
+
+  Scaffold _buildChartScreen(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Charts'),
@@ -61,12 +75,22 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
     );
   }
 
-  WeeklyExpenseBarChart _buildWeeklyExpenseBarChart() {
-    return WeeklyExpenseBarChart(
-        chartData: widget.chartData,
-        barChartType: splitBarChart
-            ? ExpenseBarChartType.split
-            : ExpenseBarChartType.total);
+  FutureBuilder<List<Expense>> _buildWeeklyExpenseBarChart() {
+    return FutureBuilder(
+        future: _getExpenses(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            return WeeklyExpenseBarChart(
+                chartData: widget.chartData,
+                barChartType: splitBarChart
+                    ? ExpenseBarChartType.split
+                    : ExpenseBarChartType.total);
+          }
+        });
   }
 
   Widget buildChartFilters() {
