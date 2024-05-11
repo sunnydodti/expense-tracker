@@ -23,10 +23,13 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => NavigationHelper.navigateToScreen(context, const ChartsScreen()),
+      onTap: () => navigateToChartsScreen(context),
       child: _buildSummary(),
     );
   }
+
+  void navigateToChartsScreen(BuildContext context) =>
+      NavigationHelper.navigateToScreen(context, const ChartsScreen());
 
   Container _buildSummary() {
     return Container(
@@ -41,7 +44,7 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
               _buildSummaryContainer(
                   "Total Balance", widget.expenseProvider.getTotalBalance(),
                   top: 10, bottom: 5, left: 10, right: 10),
-              buildIHideIcon()
+              buildIcons()
             ],
           ),
           Row(
@@ -62,21 +65,6 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
         ],
       ),
     );
-  }
-
-  Align buildIHideIcon() {
-    return Align(
-        alignment: Alignment.bottomRight,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 2, right: 10),
-          child: IconButton(
-              onPressed: () => setState(() {
-                    hideTotal = !hideTotal;
-                  }),
-              icon: hideTotal
-                  ? const Icon(Icons.visibility_outlined)
-                  : const Icon(Icons.visibility_off_outlined)),
-        ));
   }
 
   Container _buildSummaryContainer(
@@ -130,6 +118,39 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
       style: const TextStyle(
         fontWeight: FontWeight.bold,
         color: Colors.white70,
+      ),
+    );
+  }
+
+  buildIcons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        buildChartIcon(),
+        buildIHideIcon(),
+      ],
+    );
+  }
+
+  Padding buildChartIcon() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+      child: IconButton(
+          onPressed: () => navigateToChartsScreen(context),
+          icon: Icon(Icons.bar_chart_outlined, color: Colors.grey.shade400)),
+    );
+  }
+
+  Padding buildIHideIcon() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+      child: IconButton(
+        onPressed: () => setState(() {
+          hideTotal = !hideTotal;
+        }),
+        icon: hideTotal
+            ? Icon(Icons.visibility_outlined, color: Colors.grey.shade400)
+            : Icon(Icons.visibility_off_outlined, color: Colors.grey.shade400),
       ),
     );
   }
