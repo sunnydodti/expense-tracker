@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
-import '../../../data/helpers/database/database_helper.dart';
-import '../../../data/helpers/database/expense_helper.dart';
 import '../../../models/enums/form_modes.dart';
 import '../../../models/expense.dart';
 import '../../../providers/expense_provider.dart';
@@ -47,7 +45,7 @@ class DismissibleExpenseTile extends StatelessWidget {
       onDismissed: (direction) {
         if (direction == DismissDirection.startToEnd) {
           // Swipe left to delete
-          _deleteExpense(context, index, expense, expenseProvider);
+          _deleteExpenseFromList(context, index, expense, expenseProvider);
         } else {
           // Swipe right to edit
           _editItem(context, index, expense, expenseProvider);
@@ -60,7 +58,7 @@ class DismissibleExpenseTile extends StatelessWidget {
     );
   }
 
-  void _deleteExpense(BuildContext context, int index, Expense expense,
+  void _deleteExpenseFromList(BuildContext context, int index, Expense expense,
       ExpenseProvider expenseProvider) async {
     int expenseLength = expenseProvider.expenses.length;
 
@@ -91,7 +89,7 @@ class DismissibleExpenseTile extends StatelessWidget {
   completeExpenseDeletion(Expense expense, int index, int expenseLength,
       ExpenseProvider expenseProvider, BuildContext context) async {
     _logger.i("Expense deleted");
-    _deleteExpenseFromDatabase(expense).then((value) {
+    _deleteExpenseFromDatabase(expense, expenseProvider).then((value) {
       if (value == 0) {
         if (index + 1 == expenseLength) {
           _logger.i("adding at end $index");

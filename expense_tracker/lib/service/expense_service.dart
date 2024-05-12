@@ -107,12 +107,6 @@ class ExpenseService {
     bool? isAscendingSort =
         await sortFilterService.getPreferenceIsAscendingSort();
     ExpenseFilters expenseFilters = await sortFilterService.getExpenseFilters();
-    // _logger.i("isAscendingSort: $isAscendingSort");
-    // _logger.i("sortCriteria: ${sortCriteria!.name}");
-    // _logger.i("filters: ");
-    // _logger.i("month: ${expenseFilters.selectedMonth} - ${expenseFilters.filterByMonth}");
-    // _logger.i("year: ${expenseFilters.selectedYear} - ${expenseFilters.filterByYear}");
-    // _logger.i("isApplied: ${expenseFilters.isApplied}");
     List<Map<String, dynamic>> expenseMapList =
         await _expenseHelper.getSortedAndFilteredExpenses(
             sortCriteria!, isAscendingSort!, expenseFilters);
@@ -120,7 +114,6 @@ class ExpenseService {
     List<Expense> expenses = expenseMapList
         .map((expenseMap) => Expense.fromMap(expenseMap))
         .toList();
-    // _expenses = await sortFilterService.sortAndFilter(updatedExpenses);
     return expenses;
   }
 
@@ -130,6 +123,15 @@ class ExpenseService {
     } on Exception catch (e, stackTrace) {
       _logger.e("Error getting expenses: $e - \n$stackTrace");
       return [];
+    }
+  }
+
+  Future<int> deleteExpense(int id) async {
+    try {
+      return _expenseHelper.deleteExpense(id);
+    } on Exception catch (e, stackTrace) {
+      _logger.e("Error deleting expense($id): $e - \n$stackTrace");
+      return -1;
     }
   }
 
