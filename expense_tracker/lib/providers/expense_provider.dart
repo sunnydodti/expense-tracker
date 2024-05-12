@@ -113,10 +113,13 @@ class ExpenseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<int> deleteExpenseFromDatabase(int id, {bool notify = true}) async {
+  Future<int> deleteExpenseFromDatabase(int id, {bool notify = false}) async {
+    if (notify) {
+      _expenses.removeWhere((element) => element.id == id);
+      notifyListeners();
+    }
     ExpenseService expenseService = await _expenseService;
     int result = await expenseService.deleteExpense(id);
-    if (notify) notifyListeners();
     return result;
   }
 

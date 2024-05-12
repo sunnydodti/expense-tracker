@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/helpers/navigation_helper.dart';
 import '../../../models/expense.dart';
 import '../../../providers/expense_items_provider.dart';
 import '../../../providers/expense_provider.dart';
+import '../../bottom_sheets/expense_bottom_sheet.dart';
+import 'expense_popup.dart';
 import 'expense_widgets.dart';
 
 class ExpenseTile extends StatefulWidget {
   final Expense expense;
-  final VoidCallback onTap;
+  final VoidCallback editCallBack;
+  final Future<int> Function() deleteCallBack;
 
   const ExpenseTile({
     Key? key,
     required this.expense,
-    required this.onTap,
+    required this.editCallBack,
+    required this.deleteCallBack,
   }) : super(key: key);
 
   @override
@@ -32,7 +37,8 @@ class _ExpenseTileState extends State<ExpenseTile> {
         expenseItemsProvider.clear();
         expenseProvider.hideExpensePopup();
       },
-      onTap: widget.onTap,
+      onTap: _buildBottomSheet,
+      onDoubleTap: widget.editCallBack,
       child: Container(
         decoration: BoxDecoration(
           color: Colors.grey.shade900,
@@ -41,6 +47,21 @@ class _ExpenseTileState extends State<ExpenseTile> {
         child: _buildExpenseTile(),
       ),
     );
+  }
+
+  void _buildBottomSheet() {
+    ExpenseBottomSheet.show(context, widget.expense,
+        deleteCallBack: widget.deleteCallBack,
+        editCallBack: widget.editCallBack,
+        viewCallBack: viewExpense);
+  }
+
+  void viewExpense() {
+    NavigationHelper.navigateToRoute(
+        context,
+        ExpensePopup(
+            expense: widget.expense,
+            onOutsideTap: () => NavigationHelper.navigateBack(context)));
   }
 
   Padding _buildExpenseTile() {

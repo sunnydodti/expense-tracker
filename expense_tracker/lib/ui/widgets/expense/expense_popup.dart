@@ -12,8 +12,9 @@ import 'expense_widgets.dart';
 
 class ExpensePopup extends StatefulWidget {
   final Expense expense;
+  final VoidCallback? onOutsideTap;
 
-  const ExpensePopup({super.key, required this.expense});
+  const ExpensePopup({super.key, required this.expense, this.onOutsideTap});
 
   @override
   State<ExpensePopup> createState() => _ExpensePopupState();
@@ -23,11 +24,13 @@ class _ExpensePopupState extends State<ExpensePopup> {
   ExpenseItemsProvider get expenseItemsProvider =>
       Provider.of<ExpenseItemsProvider>(context, listen: false);
 
+  defaultOnTap() {}
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        const BlurScreen(),
+        BlurScreen(onTap: widget.onOutsideTap ?? defaultOnTap),
         ScaleUp(child: buildExpensePopup()),
       ],
     );

@@ -53,7 +53,9 @@ class DismissibleExpenseTile extends StatelessWidget {
       },
       child: ExpenseTile(
         expense: expense,
-        onTap: () => _editExpense(context, expense, expenseProvider),
+        editCallBack: () => _editExpense(context, expense, expenseProvider),
+        deleteCallBack: () =>
+            _deleteExpenseFromDatabase(expense, expenseProvider, notify: true),
       ),
     );
   }
@@ -103,10 +105,11 @@ class DismissibleExpenseTile extends StatelessWidget {
     });
   }
 
-  Future<int> _deleteExpenseFromDatabase(Expense expense) async {
-    DatabaseHelper databaseHelper = DatabaseHelper();
-    ExpenseHelper expenseHelper = await databaseHelper.expenseHelper;
-    return await expenseHelper.deleteExpense(expense.id);
+  Future<int> _deleteExpenseFromDatabase(
+      Expense expense, ExpenseProvider expenseProvider,
+      {bool notify = false}) {
+    return expenseProvider.deleteExpenseFromDatabase(expense.id,
+        notify: notify);
   }
 
   void _editItem(BuildContext context, int index, Expense expense,
