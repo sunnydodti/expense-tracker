@@ -15,16 +15,55 @@ class ChartService {
   static const double radius = 50.0;
   static const double barWidth = 10.0;
 
-  static int getCurrentWeek() {
+  static int _currentWeek = 0;
+
+  static int get currentWeek {
+    if (_currentWeek != 0) return _currentWeek;
+
     final DateTime date = DateTime.now();
+
     final DateTime startOfYear = DateTime(date.year, 1, 1);
     final DateTime firstMonday = startOfYear.weekday == DateTime.monday
         ? startOfYear
         : startOfYear
             .add(Duration(days: DateTime.monday - startOfYear.weekday));
+
     final Duration difference = date.difference(firstMonday);
     int weekNumber = (difference.inDays / 7).ceil();
     if (date.weekday == DateTime.monday) weekNumber += 1;
-    return weekNumber;
+
+    _currentWeek = weekNumber;
+    return _currentWeek;
+  }
+
+  static String getWeekDay(int weekDayNumber) {
+    String weekDay;
+
+    switch (weekDayNumber) {
+      case 1:
+        weekDay = 'Monday';
+        break;
+      case 2:
+        weekDay = 'Tuesday';
+        break;
+      case 3:
+        weekDay = 'Wednesday';
+        break;
+      case 4:
+        weekDay = 'Thursday';
+        break;
+      case 5:
+        weekDay = 'Friday';
+        break;
+      case 6:
+        weekDay = 'Saturday';
+        break;
+      case 7:
+        weekDay = 'Sunday';
+        break;
+      default:
+        throw Error();
+    }
+    return weekDay;
   }
 }

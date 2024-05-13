@@ -34,11 +34,11 @@ class ChartData {
   List<int> get daysWithMinAmount => _daysWithMinAmount;
 
   // chart ui data
-  double get barHeight => _maxDailyAmount + _maxDailyAmount * 0.25;
+  double get barHeight => _maxDailyAmount + _maxDailyAmount * 0.30;
 
   List<Expense> filterExpenses() {
     return expenses.where((expense) {
-      if (week != null && ChartService.getCurrentWeek() != week) {
+      if (week != null && ChartService.currentWeek != week) {
         return false;
       }
       if (month != null && expense.date.month != month) {
@@ -102,7 +102,7 @@ class ChartData {
   List<Expense> getExpensesForSelectedWeek() {
     if (week != null) {
       return expenses
-          .where((expense) => ChartService.getCurrentWeek() == week)
+          .where((expense) => ChartService.currentWeek == week)
           .toList();
     } else {
       throw Exception('Week is not specified.');
@@ -126,12 +126,12 @@ class ChartData {
   }
 
   void goToNextWeek() {
-    final currentWeek = ChartService.getCurrentWeek();
+    final currentWeek = ChartService.currentWeek;
     week = currentWeek + 1;
   }
 
   void goToPreviousWeek() {
-    final currentWeek = ChartService.getCurrentWeek();
+    final currentWeek = ChartService.currentWeek;
     week = currentWeek - 1;
   }
 

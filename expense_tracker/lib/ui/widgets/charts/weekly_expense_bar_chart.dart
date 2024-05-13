@@ -26,10 +26,12 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
   bool splitBarChart = false;
   ExpenseBarChartType barChartType = ExpenseBarChartType.total;
 
+  int touchedIndex = -1;
+
   @override
   void initState() {
     super.initState();
-    currentWeek = ChartService.getCurrentWeek();
+    currentWeek = ChartService.currentWeek;
   }
 
   @override
@@ -117,11 +119,54 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
                 sideTitles: SideTitles(
                     showTitles: true,
                     getTitlesWidget: getTitles,
-                    reservedSize: 120))),
+              reservedSize: 120,
+            ),
+          ),
+        ),
+        barTouchData: buildBarTouchData(),
       ),
       swapAnimationCurve: Curves.linear,
       swapAnimationDuration: const Duration(milliseconds: 350),
     );
+  }
+
+  BarTouchData buildBarTouchData() {
+    return BarTouchData(
+        touchCallback: (FlTouchEvent event, barTouchResponse) {
+          setState(() {
+            if ((!event.isInterestedForInteractions ||
+                barTouchResponse == null ||
+                barTouchResponse.spot == null)) {
+              touchedIndex = -1;
+              return;
+            }
+            touchedIndex = barTouchResponse.spot!.touchedBarGroupIndex;
+          });
+        },
+        touchTooltipData: BarTouchTooltipData(
+          fitInsideHorizontally: true,
+          fitInsideVertically: true,
+          tooltipHorizontalAlignment: touchedIndex < 3
+              ? FLHorizontalAlignment.right
+              : FLHorizontalAlignment.left,
+          tooltipHorizontalOffset: touchedIndex < 3 ? 10 : -10,
+          tooltipMargin: 50,
+          getTooltipItem: (group, groupIndex, rod, rodIndex) {
+            String weekDay = ChartService.getWeekDay(group.x);
+            return BarTooltipItem(
+              '$weekDay\n',
+              const TextStyle(),
+              children: <TextSpan>[
+                TextSpan(
+                  text: (rod.toY - widget.chartData.barHeight * .05)
+                      .round()
+                      .toString(),
+                  style: const TextStyle(),
+                ),
+              ],
+            );
+          },
+        ));
   }
 
   Map<int, ChartRecord> _getDailySumForWeek() {
@@ -173,22 +218,33 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
     List<BarChartGroupData> barGroups = [];
 
     dailySum.forEach((day, record) {
+      double maxHeight = widget.chartData.barHeight;
+      bool isTouched = touchedIndex == day - 1;
+
       double total = record.totalAmount;
-      Color color = total > 0 ? Colors.green.shade400 : Colors.red.shade400;
+      double touchTotal =
+          record.totalAmount.abs() + widget.chartData.barHeight * .05;
+
+      final Color color =
+          total > 0 ? Colors.green.shade400 : Colors.red.shade400;
+      final Color touchColor = Colors.blue.shade600;
+
       barGroups.add(
         BarChartGroupData(
           x: day,
           barRods: [
             BarChartRodData(
-              toY: total.abs(),
+              toY: isTouched ? touchTotal.abs() : total.abs(),
               width: ChartConstants.bar.barWidth,
-              color: color,
+              color: isTouched ? touchColor : color,
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(4)),
               backDrawRodData: BackgroundBarChartRodData(
                 show: true,
-                toY: widget.chartData.barHeight,
-                color: color.withOpacity(.10),
+                toY: maxHeight,
+                color: isTouched
+                    ? touchColor.withOpacity(.5)
+                    : color.withOpacity(.1),
               ),
             ),
           ],
