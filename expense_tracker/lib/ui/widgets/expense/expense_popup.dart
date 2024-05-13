@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../../models/enums/transaction_type.dart';
 import '../../../models/expense.dart';
 import '../../../models/expense_item.dart';
 import '../../../providers/expense_items_provider.dart';
@@ -40,7 +41,7 @@ class _ExpensePopupState extends State<ExpensePopup> {
     return Container(
       margin: const EdgeInsets.only(left: 40, right: 40, top: 75),
       child: Card(
-        color: Colors.grey.shade700,
+        color: getBorderColor(),
         child: Container(
           margin: const EdgeInsets.all(10),
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
@@ -49,6 +50,17 @@ class _ExpensePopupState extends State<ExpensePopup> {
         ),
       ),
     );
+  }
+
+  Color getBorderColor() {
+    Color color = Colors.grey.shade700;
+    if (widget.expense.transactionType == TransactionType.expense.name) {
+      return color.withRed(130);
+    }
+    if (widget.expense.transactionType == TransactionType.income.name) {
+      return color.withGreen(110);
+    }
+    return color.withBlue(110);
   }
 
   Column buildExpensePopUpContent(Expense expense) {
