@@ -237,7 +237,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
         if (isFirstValidExpenseItemsToggle) {
           handleFistValidExpenseItemsToggle(expenseItemsProvider);
         }
-        isAmountReadOnly = true;
+        // isAmountReadOnly = true;
       }
       return ExpenseWidgets.form.buildAmountField(
           amountController, amountPrefixController.text,
