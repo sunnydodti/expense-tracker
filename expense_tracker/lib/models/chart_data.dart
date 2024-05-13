@@ -86,13 +86,14 @@ class ChartData {
     final now = DateTime.now();
     final currentYear = now.year;
 
-    final DateTime weekStart = DateTime(currentYear)
-        .subtract(
-          const Duration(days: DateTime.monday - 1),
-        )
-        .add(
-          Duration(days: (week - 1) * 7),
-        );
+    DateTime weekStart = DateTime(currentYear);
+    weekStart = weekStart.subtract(
+      const Duration(days: DateTime.monday - 1),
+    );
+    weekStart = weekStart.add(
+      Duration(days: (week - 1) * 7),
+    );
+
     final DateTime weekEnd = weekStart.add(const Duration(days: 6));
 
     return getExpensesBetween(weekStart, weekEnd);

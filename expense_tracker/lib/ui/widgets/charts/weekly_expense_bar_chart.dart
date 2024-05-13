@@ -48,7 +48,6 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
   SizedBox buildChartOptions() {
     return SizedBox(
       height: 80,
-      // color: Colors.grey.shade700.withOpacity(.1),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

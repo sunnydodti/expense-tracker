@@ -16,14 +16,15 @@ class ChartService {
   static const double barWidth = 10.0;
 
   static int getCurrentWeek() {
-    DateTime date = DateTime.now();
+    final DateTime date = DateTime.now();
     final DateTime startOfYear = DateTime(date.year, 1, 1);
     final DateTime firstMonday = startOfYear.weekday == DateTime.monday
         ? startOfYear
         : startOfYear
             .add(Duration(days: DateTime.monday - startOfYear.weekday));
     final Duration difference = date.difference(firstMonday);
-    final int weekNumber = (difference.inDays / 7).ceil();
+    int weekNumber = (difference.inDays / 7).ceil();
+    if (date.weekday == DateTime.monday) weekNumber += 1;
     return weekNumber;
   }
 }
