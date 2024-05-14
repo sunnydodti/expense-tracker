@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../../data/constants/chart_constants.dart';
 import '../../../models/chart_data.dart';
@@ -23,6 +24,10 @@ class WeeklyExpenseBarChart extends StatefulWidget {
 class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
   late int currentWeek;
   int selectedWeek = 0;
+
+  late DateTime startDate;
+  late DateTime endDate;
+
   bool splitBarChart = false;
   ExpenseBarChartType barChartType = ExpenseBarChartType.total;
 
@@ -48,26 +53,42 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
   }
 
   SizedBox buildChartOptions() {
+    Map<String, DateTime> dates = ChartService.getWeekStartAndEnd(
+        selectedWeek == 0 ? currentWeek : selectedWeek);
     return SizedBox(
       height: 80,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              IconButton(
-                  onPressed: decrementWeek,
-                  icon: const Icon(Icons.chevron_left)),
-              Text("Week ${selectedWeek == 0 ? currentWeek : selectedWeek}"),
-              IconButton(
-                  onPressed: incrementWeek,
-                  icon: const Icon(Icons.chevron_right)),
+              Text(DateFormat('d MMM y').format(dates["start"]!)),
+              const Text("-"),
+              Text(DateFormat('d MMM y').format(dates["end"]!)),
             ],
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text("Split"),
-              Checkbox(value: splitBarChart, onChanged: toggleBarChartType)
+              Row(
+                children: [
+                  IconButton(
+                      onPressed: decrementWeek,
+                      icon: const Icon(Icons.chevron_left)),
+                  Text(
+                      "Week ${selectedWeek == 0 ? currentWeek : selectedWeek}"),
+                  IconButton(
+                      onPressed: incrementWeek,
+                      icon: const Icon(Icons.chevron_right)),
+                ],
+              ),
+              Row(
+                children: [
+                  const Text("Split"),
+                  Checkbox(value: splitBarChart, onChanged: toggleBarChartType)
+                ],
+              ),
             ],
           ),
         ],
@@ -126,7 +147,7 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
         barTouchData: buildBarTouchData(),
       ),
       swapAnimationCurve: Curves.linear,
-      swapAnimationDuration: const Duration(milliseconds: 350),
+      swapAnimationDuration: const Duration(milliseconds: 250),
     );
   }
 

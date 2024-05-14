@@ -66,4 +66,22 @@ class ChartService {
     }
     return weekDay;
   }
+
+  static Map<String, DateTime> getWeekStartAndEnd(int week) {
+    final currentYear = DateTime.now().year;
+
+    DateTime weekStart = DateTime(currentYear);
+    weekStart = weekStart.subtract(
+      const Duration(days: DateTime.monday - 1),
+    );
+    weekStart = weekStart.add(
+      Duration(days: (week - 1) * 7),
+    );
+    final DateTime weekEnd = weekStart.add(const Duration(days: 6));
+
+    return {
+      "start": weekStart,
+      "end": weekEnd,
+    };
+  }
 }
