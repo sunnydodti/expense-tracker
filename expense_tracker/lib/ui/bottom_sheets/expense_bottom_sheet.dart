@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 
 import '../../data/helpers/navigation_helper.dart';
 import '../../models/expense.dart';
@@ -42,7 +43,8 @@ class ExpenseBottomSheet {
           _buildDecoration(),
           Text(expense.title),
           const Divider(),
-          _buildOptionList(context, viewCallBack, editCallBack, deleteCallBack),
+          _buildOptionList(
+              context, viewCallBack, editCallBack, deleteCallBack, expense),
         ],
       ),
     );
@@ -65,10 +67,17 @@ class ExpenseBottomSheet {
       BuildContext context,
       VoidCallback viewCallBack,
       VoidCallback editCallBack,
-      VoidCallback deleteCallBack) {
+      VoidCallback deleteCallBack,
+      Expense expense) {
     return ListView(
       shrinkWrap: true,
       children: [
+        ListTile(
+          iconColor: Colors.blue.shade800,
+          title: const Text("Share"),
+          trailing: const Icon(Icons.share_outlined),
+          onTap: () => handleShare(expense),
+        ),
         ListTile(
           iconColor: Colors.green.shade800,
           title: const Text("View"),
@@ -95,5 +104,9 @@ class ExpenseBottomSheet {
       {bool pop = false}) {
     callBack();
     if (pop) NavigationHelper.navigateBack(context);
+  }
+
+  static handleShare(Expense expense) async {
+    Share.share(expense.shareData());
   }
 }

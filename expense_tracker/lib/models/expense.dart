@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import '../data/constants/db_constants.dart';
 
 class Expense {
@@ -74,6 +76,39 @@ class Expense {
     expense.tags = map[DBConstants.expense.tags];
     expense.note = map[DBConstants.expense.note];
     return expense;
+  }
+
+  String shareData() {
+    String sharedData = "";
+    sharedData += "Title                   \t\t: $title\n";
+    sharedData += "Amount               \t: $amount\n";
+    sharedData += "Transaction Type  \t\t: $transactionType\n";
+    sharedData +=
+        "Date                   \t: ${DateFormat('dd-MM-yy').format(date)}\n";
+    sharedData += "Category             \t\t: $category\n";
+    if (note != null) {
+      sharedData += "Tags                    \t: $tags\n";
+    }
+    if (note != null) {
+      sharedData += "Note                   \t: $note\n";
+    }
+    return sharedData;
+  }
+
+  String shareDataV2() {
+    String sharedData = '''
+Title: $title
+Amount: $amount
+Transaction Type: $transactionType
+Date: ${DateFormat('dd-MM-yy').format(date)}
+Category: $category''';
+    if (tags != null) {
+      sharedData += '\nTags: $tags';
+    }
+    if (note != null) {
+      sharedData += '\nNote: $note';
+    }
+    return sharedData;
   }
 }
 
