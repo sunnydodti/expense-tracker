@@ -87,7 +87,10 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
-            return WeeklyExpenseBarChart(chartData: snapshot.data!);
+            return Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: WeeklyExpenseBarChart(chartData: snapshot.data!),
+            );
           }
         });
   }
