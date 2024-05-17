@@ -144,7 +144,9 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
             ),
           ),
         ),
-        barTouchData: buildBarTouchData(),
+        barTouchData: barChartType == ExpenseBarChartType.total
+            ? buildBarTouchData()
+            : null,
       ),
       swapAnimationCurve: Curves.linear,
       swapAnimationDuration: const Duration(milliseconds: 250),
