@@ -30,14 +30,19 @@ class ExpenseListDynamic extends StatelessWidget {
                   expenseProvider.expenses.isEmpty
                       ? const EmptyListWidget(listName: 'Expense')
                       : Expanded(
-                          child: ListView.builder(
-                            itemCount: expenseCount,
-                            itemBuilder: (context, index) {
-                              return DismissibleExpenseTile(
-                                  expense: expenseProvider.expenses[index],
-                                  expenseProvider: expenseProvider,
-                                  index: index);
-                            },
+                          child: Scrollbar(
+                            interactive: true,
+                            thickness: 8,
+                            radius: const Radius.circular(5),
+                            child: ListView.builder(
+                              itemCount: expenseCount,
+                              itemBuilder: (context, index) {
+                                return DismissibleExpenseTile(
+                                    expense: expenseProvider.expenses[index],
+                                    expenseProvider: expenseProvider,
+                                    index: index);
+                              },
+                            ),
                           ),
                         ),
                   if (expenseCount < 4 && expenseCount > 0)

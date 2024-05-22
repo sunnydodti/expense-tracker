@@ -41,20 +41,13 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height,
-      child: Column(
-        children: [
-          Expanded(
-            flex: 20,
-            child: _buildWeeklyBarChart(),
-          ),
-          Expanded(
-            flex: 5,
-            child: buildChartOptions(),
-          )
-        ],
-      ),
+    return Column(
+      children: [
+        Expanded(
+          child: _buildWeeklyBarChart(),
+        ),
+        buildChartOptions(),
+      ],
     );
   }
 
@@ -63,7 +56,7 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
         selectedWeek == 0 ? currentWeek : selectedWeek);
     return Container(
       color: Colors.grey.shade800,
-      height: 80,
+      padding: EdgeInsets.only(top: 5),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -71,9 +64,13 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Text(DateFormat('d MMM y').format(dates["start"]!)),
-              const Text("-"),
-              Text(DateFormat('d MMM y').format(dates["end"]!)),
+              Text(
+                  textScaleFactor: .9,
+                  DateFormat('d MMM y').format(dates["start"]!)),
+              const Text(textScaleFactor: .9, "-"),
+              Text(
+                  textScaleFactor: .9,
+                  DateFormat('d MMM y').format(dates["end"]!)),
             ],
           ),
           Row(
@@ -85,6 +82,7 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
                       onPressed: decrementWeek,
                       icon: const Icon(Icons.chevron_left)),
                   Text(
+                      textScaleFactor: .9,
                       "Week ${selectedWeek == 0 ? currentWeek : selectedWeek}"),
                   IconButton(
                       onPressed: incrementWeek,
@@ -93,7 +91,7 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
               ),
               Row(
                 children: [
-                  const Text("Split"),
+                  const Text(textScaleFactor: .9, "Split"),
                   Checkbox(value: splitBarChart, onChanged: toggleBarChartType)
                 ],
               ),
@@ -129,14 +127,15 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
     });
   }
 
-  Padding _buildWeeklyBarChart() {
+  Container _buildWeeklyBarChart() {
     Map<int, ChartRecord> dailySum = _getDailySumForWeek();
     List<BarChartGroupData> barGroups =
         (barChartType == ExpenseBarChartType.split)
             ? _buildBarGroupsForSplit(dailySum)
             : _buildBarGroupsForTotal(dailySum);
-    return Padding(
-      padding: const EdgeInsets.only(top: 10, bottom: 5, left: 10),
+    return Container(
+      // color: Colors.blue.withOpacity(.05),
+      padding: const EdgeInsets.only(top: 20, bottom: 5, left: 10),
       child: BarChart(
         BarChartData(
           barGroups: barGroups,

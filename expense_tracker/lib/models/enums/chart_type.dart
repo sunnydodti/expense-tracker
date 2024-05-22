@@ -26,7 +26,7 @@ enum ChartRange {
 }
 
 class ChartRangeHelper {
-  static String getDateRangeText(ChartRange type) {
+  static String getChartRangeText(ChartRange type) {
     switch (type) {
       case ChartRange.weekly:
         return 'Weekly';
