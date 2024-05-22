@@ -3,6 +3,7 @@ class SharedPreferencesConstants {
   static SortPreferencesConstants sort = SortPreferencesConstants();
   static FilterPreferencesConstants filter = FilterPreferencesConstants();
   static SettingsPreferencesConstants settings = SettingsPreferencesConstants();
+  static SummaryPreferencesConstants summary = SummaryPreferencesConstants();
 }
 
 class SortPreferencesConstants {
@@ -20,4 +21,8 @@ class FilterPreferencesConstants {
 
 class SettingsPreferencesConstants {
   final String DEFAULT_CURRENCY = "default_currency";
+}
+
+class SummaryPreferencesConstants {
+  final String HIDE_TOTAL_KEY = "hide_total";
 }

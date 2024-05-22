@@ -47,6 +47,7 @@ class SharedPreferencesService {
       await initializeSortPreferences();
       await initializeFilterPreferences();
       await initializeSettingsPreferences();
+      await initializeSummaryPreferences();
     }
   }
 
@@ -69,5 +70,9 @@ class SharedPreferencesService {
   Future<void> initializeSettingsPreferences() async {
     setStringPreference(SharedPreferencesConstants.settings.DEFAULT_CURRENCY,
         FormConstants.expense.currencies.keys.first);
+  }
+
+  Future<void> initializeSummaryPreferences() async {
+    setBoolPreference(SharedPreferencesConstants.summary.HIDE_TOTAL_KEY, false);
   }
 }

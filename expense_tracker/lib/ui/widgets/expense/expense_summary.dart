@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../../data/constants/shared_preferences_constants.dart';
 import '../../../data/helpers/navigation_helper.dart';
 import '../../../providers/expense_provider.dart';
+import '../../../providers/sort_filter_provider.dart';
+import '../../../service/shared_preferences_service.dart';
 import '../../animations/blur_widget.dart';
 import '../../screens/charts_screen.dart';
 
@@ -18,8 +21,25 @@ class ExpenseSummary extends StatefulWidget {
 }
 
 class _ExpenseSummaryState extends State<ExpenseSummary> {
-  // bool hideTotal = false;
-  bool hideTotal = true;
+  late bool hideTotal = false;
+  SharedPreferencesService sharedPreferencesService =
+      SharedPreferencesService();
+
+  void getHideTotalPreference() async {
+    bool? isTotalHidden = await sharedPreferencesService
+        .getBoolPreference(SharedPreferencesConstants.summary.HIDE_TOTAL_KEY);
+
+    setState(() {
+      hideTotal = isTotalHidden ?? false;
+    });
+  }
+
+  @override
+  void initState() {
+    getHideTotalPreference();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -145,13 +165,24 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
       child: IconButton(
-        onPressed: () => setState(() {
-          hideTotal = !hideTotal;
-        }),
+        onPressed: () {
+          setState(() {
+            hideTotal = !hideTotal;
+          });
+          setHideTotalPreference();
+        },
         icon: hideTotal
             ? Icon(Icons.visibility_outlined, color: Colors.grey.shade400)
             : Icon(Icons.visibility_off_outlined, color: Colors.grey.shade400),
       ),
     );
+  }
+
+  void setHideTotalPreference() async {
+    sharedPreferencesService.setBoolPreference(
+        SharedPreferencesConstants.summary.HIDE_TOTAL_KEY, hideTotal);
+    bool? hide = await sharedPreferencesService
+        .getBoolPreference(SharedPreferencesConstants.summary.HIDE_TOTAL_KEY);
+    int a = 0;
   }
 }

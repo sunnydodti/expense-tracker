@@ -41,25 +41,33 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        _buildWeeklyBarChart(),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: buildChartOptions(),
-        )
-      ],
+    return SizedBox(
+      height: MediaQuery.of(context).size.height,
+      child: Column(
+        children: [
+          Expanded(
+            flex: 20,
+            child: _buildWeeklyBarChart(),
+          ),
+          Expanded(
+            flex: 5,
+            child: buildChartOptions(),
+          )
+        ],
+      ),
     );
   }
 
-  SizedBox buildChartOptions() {
+  Container buildChartOptions() {
     Map<String, DateTime> dates = ChartService.getWeekStartAndEnd(
         selectedWeek == 0 ? currentWeek : selectedWeek);
-    return SizedBox(
+    return Container(
+      color: Colors.grey.shade800,
       height: 80,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+          const SizedBox(height: 5),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -121,35 +129,38 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
     });
   }
 
-  BarChart _buildWeeklyBarChart() {
+  Padding _buildWeeklyBarChart() {
     Map<int, ChartRecord> dailySum = _getDailySumForWeek();
     List<BarChartGroupData> barGroups =
         (barChartType == ExpenseBarChartType.split)
             ? _buildBarGroupsForSplit(dailySum)
             : _buildBarGroupsForTotal(dailySum);
-    return BarChart(
-      BarChartData(
-        barGroups: barGroups,
-        gridData: FlGridData(show: false),
-        borderData: FlBorderData(show: false),
-        titlesData: FlTitlesData(
+    return Padding(
+      padding: const EdgeInsets.only(top: 10, bottom: 5, left: 10),
+      child: BarChart(
+        BarChartData(
+          barGroups: barGroups,
+          gridData: FlGridData(show: false),
+          borderData: FlBorderData(show: false),
+          titlesData: FlTitlesData(
             show: true,
             rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
             topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
             bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                    showTitles: true,
-                    getTitlesWidget: getTitles,
-              reservedSize: 120,
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: getTitles,
+                reservedSize: 35,
+              ),
             ),
           ),
+          barTouchData: barChartType == ExpenseBarChartType.total
+              ? buildBarTouchData()
+              : null,
         ),
-        barTouchData: barChartType == ExpenseBarChartType.total
-            ? buildBarTouchData()
-            : null,
+        swapAnimationCurve: Curves.linear,
+        swapAnimationDuration: const Duration(milliseconds: 250),
       ),
-      swapAnimationCurve: Curves.linear,
-      swapAnimationDuration: const Duration(milliseconds: 250),
     );
   }
 

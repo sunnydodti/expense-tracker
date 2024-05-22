@@ -6,6 +6,7 @@ import '../../models/enums/chart_type.dart';
 import '../../models/expense.dart';
 import '../../providers/expense_provider.dart';
 import '../widgets/charts/weekly_expense_bar_chart.dart';
+import '../widgets/form_widgets.dart';
 
 class ChartsScreen extends StatefulWidget {
   const ChartsScreen({super.key});
@@ -63,15 +64,16 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
             Expanded(
                 flex: 5,
                 child: Container(
-                  padding: const EdgeInsets.all(10),
                   child: _buildWeeklyExpenseBarChart(),
-                )),
+              ),
+            ),
             Expanded(
                 flex: 5,
                 child: Container(
                   color: Colors.grey.shade800.withOpacity(.6),
                   // child: const Placeholder(),
-                ))
+              ),
+            )
           ],
         ),
       ),
@@ -87,12 +89,63 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
-            return Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: WeeklyExpenseBarChart(chartData: snapshot.data!),
+            return SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                children: [
+                  Expanded(
+                    flex: 9,
+                    child: Stack(children: <Widget>[
+                      WeeklyExpenseBarChart(chartData: snapshot.data!),
+                      buildChartToggleIcon()
+                    ]),
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: buildChartTypeDropdown(),
+                      ))
+                ],
+              ),
             );
           }
         });
+  }
+
+  Container buildChartToggleIcon() {
+    return Container(
+                      padding: EdgeInsets.only(bottom: 65),
+                      alignment: Alignment.bottomLeft,
+                        child: IconButton(
+                            onPressed: () {},
+                            icon: Icon(Icons.bar_chart_outlined)));
+  }
+
+  Row buildChartTypeDropdown() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text("Chart Type"),
+        DropdownButton<ChartType>(
+          value: _chartType,
+          onChanged: (chartType) {
+            //updateChartType(chartType);
+          },
+          items: ChartType.values
+              .map<DropdownMenuItem<ChartType>>(
+                (chartType) => DropdownMenuItem<ChartType>(
+                  value: chartType,
+                  child: Text(
+                      textScaleFactor: .9,
+                      ChartTypeHelper.getChartTypeText(chartType)),
+                ),
+              )
+              .toList(),
+          underline: Container(),
+        ),
+      ],
+    );
   }
 
   Column buildChartOptions() {

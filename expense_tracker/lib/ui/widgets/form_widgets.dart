@@ -35,4 +35,16 @@ class FormWidgets {
     }
     return dropdownItems;
   }
+
+  static List<DropdownMenuItem> getChartTypeDropdownItems() {
+    List<DropdownMenuItem> dropdownItems = [];
+    for (String transactionType in getTransactionTypes()) {
+      var newItem = DropdownMenuItem(
+        value: transactionType,
+        child: Text(transactionType, maxLines: 1),
+      );
+      dropdownItems.add(newItem);
+    }
+    return dropdownItems;
+  }
 }
