@@ -5,7 +5,9 @@ import '../../models/chart_data.dart';
 import '../../models/enums/chart_type.dart';
 import '../../models/expense.dart';
 import '../../providers/expense_provider.dart';
-import '../widgets/charts/weekly_expense_bar_chart.dart';
+import '../widgets/charts/bar charts/weekly_expense_bar_chart.dart';
+import '../widgets/charts/line charts/weekly_expense_line_chart.dart';
+import '../widgets/charts/pie charts/weekly_expense_pie_chart.dart';
 
 class ChartsScreen extends StatefulWidget {
   const ChartsScreen({super.key});
@@ -62,7 +64,7 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
         color: Colors.grey.shade900.withBlue(40),
         child: ListView(
           children: [
-            _buildWeeklyExpenseBarChart(),
+            _buildChart(),
             _buildChartRangeDropdown(),
             _buildChartTypeDropdown(),
           ],
@@ -71,39 +73,131 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
     );
   }
 
+  FutureBuilder<ChartData> _buildChart() {
+    switch (_chartType) {
+      case ChartType.bar:
+        return _buildBarChart();
+      case ChartType.pie:
+        return _buildPieChart();
+      case ChartType.line:
+        return _buildLineChart();
+    }
+  }
+
+  FutureBuilder<ChartData> _buildBarChart() {
+    return _buildWeeklyExpenseBarChart();
+  }
+
+  FutureBuilder<ChartData> _buildPieChart() {
+    return _buildWeeklyExpensePieChart();
+  }
+
+  FutureBuilder<ChartData> _buildLineChart() {
+    return _buildWeeklyExpenseLineChart();
+  }
+
   FutureBuilder<ChartData> _buildWeeklyExpenseBarChart() {
     return FutureBuilder<ChartData>(
         future: _getChartData(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: Text("Loading ..."));
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            return SizedBox(
-              height: MediaQuery.of(context).size.height * .4,
-              child: Column(
-                children: [
-                  Expanded(
-                    flex: 9,
-                    child: Stack(children: <Widget>[
-                      WeeklyExpenseBarChart(chartData: snapshot.data!),
-                      buildChartToggleIcon()
-                    ]),
-                  ),
-                ],
-              ),
-            );
-          }
+          if (snapshot.hasError) return Text('Error: ${snapshot.error}');
+
+          Widget widget = SizedBox(
+            height: MediaQuery.of(context).size.height * .4,
+            child: Column(
+              children: [
+                Expanded(
+                  flex: 9,
+                  child: Stack(children: <Widget>[
+                    (snapshot.connectionState == ConnectionState.waiting)
+                        ? buildLoadingWidget()
+                        : WeeklyExpenseBarChart(chartData: snapshot.data!),
+                    buildChartToggleIcon()
+                  ]),
+                ),
+              ],
+            ),
+          );
+          return widget;
         });
   }
+
+  FutureBuilder<ChartData> _buildWeeklyExpensePieChart() {
+    return FutureBuilder<ChartData>(
+        future: _getChartData(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) return Text('Error: ${snapshot.error}');
+
+          Widget widget = SizedBox(
+            height: MediaQuery.of(context).size.height * .4,
+            child: Column(
+              children: [
+                Expanded(
+                  flex: 9,
+                  child: Stack(children: <Widget>[
+                    (snapshot.connectionState == ConnectionState.waiting)
+                        ? buildLoadingWidget()
+                        : const WeeklyExpensePieChart(),
+                    buildChartToggleIcon()
+                  ]),
+                ),
+              ],
+            ),
+          );
+          return widget;
+        });
+  }
+
+  FutureBuilder<ChartData> _buildWeeklyExpenseLineChart() {
+    return FutureBuilder<ChartData>(
+        future: _getChartData(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) return Text('Error: ${snapshot.error}');
+
+          Widget widget = SizedBox(
+            height: MediaQuery.of(context).size.height * .4,
+            child: Column(
+              children: [
+                Expanded(
+                  flex: 9,
+                  child: Stack(children: <Widget>[
+                    (snapshot.connectionState == ConnectionState.waiting)
+                        ? buildLoadingWidget()
+                        : const WeeklyExpenseLineChart(),
+                    buildChartToggleIcon()
+                  ]),
+                ),
+              ],
+            ),
+          );
+          return widget;
+        });
+  }
+
+  Center buildLoadingWidget() => const Center(child: Text("Loading ..."));
 
   Container buildChartToggleIcon() {
     return Container(
         padding: const EdgeInsets.only(bottom: 65),
         alignment: Alignment.bottomLeft,
         child: IconButton(
-            onPressed: () {}, icon: const Icon(Icons.bar_chart_outlined)));
+            onPressed: () {
+              ChartType newType = ChartType
+                  .values[(_chartType.index + 1) % ChartType.values.length];
+              setState(() => _chartType = newType);
+            },
+            icon: Icon(getChartIcon())));
+  }
+
+  IconData getChartIcon() {
+    switch (_chartType) {
+      case ChartType.bar:
+        return Icons.bar_chart_outlined;
+      case ChartType.pie:
+        return Icons.pie_chart_outline;
+      case ChartType.line:
+        return Icons.line_axis_outlined;
+    }
   }
 
   Container _buildChartRangeDropdown() {
@@ -153,7 +247,9 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
           DropdownButton<ChartType>(
             value: _chartType,
             onChanged: (chartType) {
-              //updateChartType(chartType);
+              setState(() {
+                _chartType = chartType!;
+              });
             },
             items: ChartType.values
                 .map<DropdownMenuItem<ChartType>>(
