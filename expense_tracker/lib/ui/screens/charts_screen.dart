@@ -6,7 +6,6 @@ import '../../models/enums/chart_type.dart';
 import '../../models/expense.dart';
 import '../../providers/expense_provider.dart';
 import '../widgets/charts/weekly_expense_bar_chart.dart';
-import '../widgets/form_widgets.dart';
 
 class ChartsScreen extends StatefulWidget {
   const ChartsScreen({super.key});
@@ -60,7 +59,7 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
         centerTitle: true,
       ),
       body: Container(
-        color: Colors.grey.shade900,
+        color: Colors.grey.shade900.withBlue(40),
         child: ListView(
           children: [
             _buildWeeklyExpenseBarChart(),
@@ -89,15 +88,9 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
                     flex: 9,
                     child: Stack(children: <Widget>[
                       WeeklyExpenseBarChart(chartData: snapshot.data!),
-                      // buildChartToggleIcon()
+                      buildChartToggleIcon()
                     ]),
                   ),
-                  // Expanded(
-                  //     flex: 1,
-                  //     child: Padding(
-                  //       padding: const EdgeInsets.all(8.0),
-                  //       child: buildChartTypeDropdown(),
-                  //     ))
                 ],
               ),
             );
@@ -107,15 +100,14 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
 
   Container buildChartToggleIcon() {
     return Container(
-        padding: EdgeInsets.only(bottom: 65),
+        padding: const EdgeInsets.only(bottom: 65),
         alignment: Alignment.bottomLeft,
-        child:
-            IconButton(onPressed: () {}, icon: Icon(Icons.bar_chart_outlined)));
+        child: IconButton(
+            onPressed: () {}, icon: const Icon(Icons.bar_chart_outlined)));
   }
 
   Container _buildChartRangeDropdown() {
     return Container(
-      // color: Colors.grey.withOpacity(.1),
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -177,14 +169,6 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
           ),
         ],
       ),
-    );
-  }
-
-  Column buildChartOptions() {
-    return Column(
-      children: const [
-        Center(child: Text('1 Part')),
-      ],
     );
   }
 }

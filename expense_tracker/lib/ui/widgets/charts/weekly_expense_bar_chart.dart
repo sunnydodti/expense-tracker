@@ -55,8 +55,8 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
     Map<String, DateTime> dates = ChartService.getWeekStartAndEnd(
         selectedWeek == 0 ? currentWeek : selectedWeek);
     return Container(
-      color: Colors.grey.shade800,
-      padding: EdgeInsets.only(top: 5),
+      color: Colors.grey.shade800.withOpacity(.2),
+      padding: const EdgeInsets.only(top: 5),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -134,7 +134,6 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
             ? _buildBarGroupsForSplit(dailySum)
             : _buildBarGroupsForTotal(dailySum);
     return Container(
-      // color: Colors.blue.withOpacity(.05),
       padding: const EdgeInsets.only(top: 20, bottom: 5, left: 10),
       child: BarChart(
         BarChartData(
