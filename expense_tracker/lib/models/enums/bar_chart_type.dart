@@ -1,0 +1,1 @@
+enum BarChartType { total, split }

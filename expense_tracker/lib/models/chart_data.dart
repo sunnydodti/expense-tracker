@@ -2,7 +2,8 @@ import 'dart:math';
 
 import '../service/chart_service.dart';
 import 'chart_record.dart';
-import 'enums/chart_type.dart';
+import 'enums/bar_chart_type.dart';
+import 'enums/line_chart_type.dart';
 import 'expense.dart';
 
 class ChartData {
@@ -180,7 +181,7 @@ class ChartData {
     _minDailyAmount = minTotalAmount;
   }
 
-  Map<int, ChartRecord> calculateDailySumForWeek(ExpenseBarChartType chartType,
+  Map<int, ChartRecord> calculateDailySumForWeekBar(BarChartType chartType,
       {int week = 0}) {
     List<Expense> expenses = getExpensesForCurrentWeek();
     if (week > 0 && week < 52) {
@@ -200,17 +201,39 @@ class ChartData {
       dailySum[expense.date.weekday]!.add(expense);
     }
 
-    // dailySum.forEach((key, value) {
-    //   print(value.expenses.length);
-    //   print(value.expenseAmount);
-    //   print(value.incomeAmount);
-    //   print(value.reimbursementAmount);
-    //   print(value.totalAmount);
-    // });
-    if (chartType == ExpenseBarChartType.split) {
+    if (chartType == BarChartType.split) {
       calculateDaysWithHighestAndLowestAmountsForSplit(dailySum);
     }
-    if (chartType == ExpenseBarChartType.total) {
+    if (chartType == BarChartType.total) {
+      calculateDaysWithHighestAndLowestAmountsForTotal(dailySum);
+    }
+    return dailySum;
+  }
+
+  Map<int, ChartRecord> calculateDailySumForWeekLine(LineChartType chartType,
+      {int week = 0}) {
+    List<Expense> expenses = getExpensesForCurrentWeek();
+    if (week > 0 && week < 52) {
+      expenses = getExpensesForWeek(week);
+    }
+    Map<int, ChartRecord> dailySum = {
+      DateTime.monday: ChartRecord(),
+      DateTime.tuesday: ChartRecord(),
+      DateTime.wednesday: ChartRecord(),
+      DateTime.thursday: ChartRecord(),
+      DateTime.friday: ChartRecord(),
+      DateTime.saturday: ChartRecord(),
+      DateTime.sunday: ChartRecord(),
+    };
+
+    for (var expense in expenses) {
+      dailySum[expense.date.weekday]!.add(expense);
+    }
+
+    if (chartType == LineChartType.split) {
+      calculateDaysWithHighestAndLowestAmountsForSplit(dailySum);
+    }
+    if (chartType == LineChartType.total) {
       calculateDaysWithHighestAndLowestAmountsForTotal(dailySum);
     }
     return dailySum;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/chart_data.dart';
+import '../../models/enums/chart_range.dart';
 import '../../models/enums/chart_type.dart';
 import '../../models/expense.dart';
 import '../../providers/expense_provider.dart';
@@ -163,7 +164,7 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
                   child: Stack(children: <Widget>[
                     (snapshot.connectionState == ConnectionState.waiting)
                         ? buildLoadingWidget()
-                        : const WeeklyExpenseLineChart(),
+                        : WeeklyExpenseLineChart(chartData: snapshot.data!),
                     buildChartToggleIcon()
                   ]),
                 ),
@@ -220,8 +221,7 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
                   (chartRange) => DropdownMenuItem<ChartRange>(
                     value: chartRange,
                     child: Text(
-                        textScaleFactor: .8,
-                        ChartRangeHelper.getChartRangeText(chartRange)),
+                        textScaleFactor: .8, getChartRangeText(chartRange)),
                   ),
                 )
                 .toList(),

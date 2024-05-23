@@ -5,7 +5,8 @@ import 'package:intl/intl.dart';
 import '../../../../data/constants/chart_constants.dart';
 import '../../../../models/chart_data.dart';
 import '../../../../models/chart_record.dart';
-import '../../../../models/enums/chart_type.dart';
+import '../../../../models/enums/bar_chart_type.dart';
+import '../../../../models/enums/chart_range.dart';
 import '../../../../service/chart_service.dart';
 
 class WeeklyExpenseBarChart extends StatefulWidget {
@@ -29,7 +30,7 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
   late DateTime endDate;
 
   bool splitBarChart = false;
-  ExpenseBarChartType barChartType = ExpenseBarChartType.total;
+  BarChartType barChartType = BarChartType.total;
 
   int touchedIndex = -1;
 
@@ -103,8 +104,8 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
   }
 
   void toggleBarChartType(value) {
-    ExpenseBarChartType chartType = ExpenseBarChartType.total;
-    if (value!) chartType = ExpenseBarChartType.split;
+    BarChartType chartType = BarChartType.total;
+    if (value!) chartType = BarChartType.split;
     setState(() {
       splitBarChart = value!;
       barChartType = chartType;
@@ -129,9 +130,8 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
 
   Container _buildWeeklyBarChart() {
     Map<int, ChartRecord> dailySum = _getDailySumForWeek();
-    List<BarChartGroupData> barGroups =
-        (barChartType == ExpenseBarChartType.split)
-            ? _buildBarGroupsForSplit(dailySum)
+    List<BarChartGroupData> barGroups = (barChartType == BarChartType.split)
+        ? _buildBarGroupsForSplit(dailySum)
             : _buildBarGroupsForTotal(dailySum);
     return Container(
       padding: const EdgeInsets.only(top: 20, bottom: 5, left: 10),
@@ -152,8 +152,8 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
               ),
             ),
           ),
-          barTouchData: barChartType == ExpenseBarChartType.total
-              ? buildBarTouchData()
+          barTouchData:
+              barChartType == BarChartType.total ? buildBarTouchData()
               : null,
         ),
         swapAnimationCurve: Curves.linear,
@@ -203,7 +203,7 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
 
   Map<int, ChartRecord> _getDailySumForWeek() {
     return widget.chartData
-        .calculateDailySumForWeek(barChartType, week: selectedWeek);
+        .calculateDailySumForWeekBar(barChartType, week: selectedWeek);
   }
 
   Widget getTitles(double value, TitleMeta meta) {

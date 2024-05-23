@@ -1,0 +1,1 @@
+enum LineChartType { total, split }
