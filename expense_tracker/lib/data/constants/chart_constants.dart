@@ -23,4 +23,10 @@ class LineChartConstants {
   final Color colorExpense = Colors.red.shade400;
   final Color colorIncome = Colors.green.shade400;
   final Color colorReimbursement = Colors.white;
+
+  final Color colorAccent = Colors.indigoAccent;
+  final Color colorExpenseAccent = Colors.redAccent;
+  final Color colorIncomeAccent = Colors.greenAccent;
+  final Color colorReimbursementAccent = Colors.indigoAccent;
+
 }

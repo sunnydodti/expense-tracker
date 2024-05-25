@@ -216,11 +216,19 @@ class _WeeklyExpenseLineChartState extends State<WeeklyExpenseLineChart> {
       LineChartBarData(
         spots: spots,
         isCurved: true,
-        color: Colors.blue,
-        barWidth: 4,
+        preventCurveOverShooting: true,
+        color: ChartConstants.line.color,
+        barWidth: 3,
         belowBarData: BarAreaData(
           show: true,
-          color: Colors.blue.withOpacity(0.3),
+          gradient: LinearGradient(
+            colors: [
+              ChartConstants.line.color.withOpacity(0.3),
+              ChartConstants.line.colorAccent.withOpacity(0.05),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
         ),
       ),
     ];
@@ -243,31 +251,56 @@ class _WeeklyExpenseLineChartState extends State<WeeklyExpenseLineChart> {
       LineChartBarData(
         spots: incomeSpots,
         isCurved: true,
+        preventCurveOverShooting: true,
         color: ChartConstants.line.colorIncome,
-        barWidth: 4,
+        barWidth: 3,
         belowBarData: BarAreaData(
           show: true,
+          gradient: LinearGradient(
+            colors: [
+              ChartConstants.line.colorIncome.withOpacity(0.3),
+              ChartConstants.line.colorIncomeAccent.withOpacity(0.05),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
           color: ChartConstants.line.colorIncome.withOpacity(0.3),
         ),
       ),
       LineChartBarData(
         spots: expenseSpots,
         isCurved: true,
+        preventCurveOverShooting: true,
         color: ChartConstants.line.colorExpense,
-        barWidth: 4,
+        barWidth: 3,
         belowBarData: BarAreaData(
           show: true,
-          color: ChartConstants.line.colorExpense.withOpacity(0.3),
+          gradient: LinearGradient(
+            colors: [
+              ChartConstants.line.colorExpense.withOpacity(0.3),
+              ChartConstants.line.colorExpenseAccent.withOpacity(0.05),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
         ),
       ),
       LineChartBarData(
         spots: reimbursementSpots,
         isCurved: true,
+        preventCurveOverShooting: true,
         color: ChartConstants.line.colorReimbursement,
-        barWidth: 4,
+        barWidth: 3,
         belowBarData: BarAreaData(
           show: true,
-          color: ChartConstants.line.colorReimbursement.withOpacity(0.3),
+          gradient: LinearGradient(
+            colors: [
+              ChartConstants.line.colorReimbursement.withOpacity(0.3),
+              ChartConstants.line.colorReimbursementAccent.withOpacity(0.05),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
         ),
       ),
     ];
