@@ -137,7 +137,6 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
       padding: const EdgeInsets.only(top: 20, bottom: 5, left: 10),
       child: BarChart(
         BarChartData(
-          // maxY: widget.chartData.barHeight,
           barGroups: barGroups,
           gridData: FlGridData(show: false),
           borderData: FlBorderData(show: false),
@@ -160,9 +159,8 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
               ),
             ),
           ),
-            barTouchData: buildBarTouchData()
-            // : null,
-            ),
+          barTouchData: buildBarTouchData(),
+        ),
         swapAnimationCurve: Curves.linear,
         swapAnimationDuration: const Duration(milliseconds: 250),
       ),

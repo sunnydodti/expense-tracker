@@ -160,6 +160,7 @@ class _WeeklyExpenseLineChartState extends State<WeeklyExpenseLineChart> {
               ),
             ),
           ),
+          lineTouchData: buildBarTouchData(),
         ),
         swapAnimationCurve: Curves.linear,
         swapAnimationDuration: const Duration(milliseconds: 250),
@@ -171,6 +172,15 @@ class _WeeklyExpenseLineChartState extends State<WeeklyExpenseLineChart> {
     String text = meta.formattedValue;
     if (value % meta.appliedInterval != 0) text = "";
     return Text(text, textScaleFactor: .85, textAlign: TextAlign.center);
+  }
+
+  LineTouchData buildBarTouchData() {
+    return LineTouchData(
+        touchTooltipData: LineTouchTooltipData(
+      fitInsideHorizontally: true,
+      fitInsideVertically: true,
+      tooltipMargin: 50,
+    ));
   }
 
   Map<int, ChartRecord> _getDailySumForWeek() {
