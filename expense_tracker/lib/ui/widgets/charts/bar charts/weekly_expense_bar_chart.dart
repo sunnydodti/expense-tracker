@@ -160,10 +160,9 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
               ),
             ),
           ),
-          barTouchData:
-              barChartType == BarChartType.total ? buildBarTouchData()
-              : null,
-        ),
+            barTouchData: buildBarTouchData()
+            // : null,
+            ),
         swapAnimationCurve: Curves.linear,
         swapAnimationDuration: const Duration(milliseconds: 250),
       ),
@@ -197,21 +196,22 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
               : FLHorizontalAlignment.left,
           tooltipHorizontalOffset: touchedIndex < 3 ? 10 : -10,
           tooltipMargin: 50,
-          getTooltipItem: (group, groupIndex, rod, rodIndex) {
-            String weekDay = ChartService.getWeekDay(group.x);
-            return BarTooltipItem(
-              '$weekDay\n',
-              const TextStyle(),
-              children: <TextSpan>[
-                TextSpan(
-                  text: (rod.toY - widget.chartData.barHeight * .05)
+          getTooltipItem: (barChartType == BarChartType.split)
+              ? null
+              : (group, groupIndex, rod, rodIndex) {
+                  return BarTooltipItem(
+                    '${ChartService.getWeekDay(group.x)}\n',
+                    const TextStyle(),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: (rod.toY - widget.chartData.barHeight * .05)
                       .round()
                       .toString(),
                   style: const TextStyle(),
                 ),
               ],
-            );
-          },
+                  );
+                },
         ));
   }
 
