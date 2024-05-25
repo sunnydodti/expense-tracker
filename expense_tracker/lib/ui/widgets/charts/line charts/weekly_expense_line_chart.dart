@@ -152,15 +152,14 @@ class _WeeklyExpenseLineChartState extends State<WeeklyExpenseLineChart> {
                   reservedSize: 35,
                   interval: 1),
             ),
-              leftTitles: AxisTitles(
-                  sideTitles: SideTitles(
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(
                 showTitles: true,
                 reservedSize: 40,
-                getTitlesWidget: (value, meta) {
-                  final data = leftTitleWidgets(value, meta);
-                  return data;
-                },
-              ))),
+                getTitlesWidget: (value, meta) => leftTitleWidgets(value, meta),
+              ),
+            ),
+          ),
         ),
         swapAnimationCurve: Curves.linear,
         swapAnimationDuration: const Duration(milliseconds: 250),
@@ -171,7 +170,7 @@ class _WeeklyExpenseLineChartState extends State<WeeklyExpenseLineChart> {
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     String text = meta.formattedValue;
     if (value % meta.appliedInterval != 0) text = "";
-    return Text(text, textScaleFactor: .85);
+    return Text(text, textScaleFactor: .85, textAlign: TextAlign.center);
   }
 
   Map<int, ChartRecord> _getDailySumForWeek() {

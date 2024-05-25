@@ -152,6 +152,13 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
                 reservedSize: 35,
               ),
             ),
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 35,
+                getTitlesWidget: (value, meta) => leftTitleWidgets(value, meta),
+              ),
+            ),
           ),
           barTouchData:
               barChartType == BarChartType.total ? buildBarTouchData()
@@ -161,6 +168,12 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
         swapAnimationDuration: const Duration(milliseconds: 250),
       ),
     );
+  }
+
+  Widget leftTitleWidgets(double value, TitleMeta meta) {
+    String text = meta.formattedValue;
+    if (value % meta.appliedInterval != 0) text = "";
+    return Text(text, textScaleFactor: .85, textAlign: TextAlign.center);
   }
 
   BarTouchData buildBarTouchData() {
