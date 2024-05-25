@@ -132,6 +132,7 @@ class _WeeklyExpenseLineChartState extends State<WeeklyExpenseLineChart> {
     List<LineChartBarData> lineBars = (lineChartType == LineChartType.split)
         ? _buildLineBarsForSplit(dailySum)
         : _buildLineBarsForTotal(dailySum);
+
     return Container(
       padding: const EdgeInsets.only(top: 20, bottom: 5, left: 10, right: 10),
       margin: const EdgeInsets.all(1),
@@ -151,12 +152,26 @@ class _WeeklyExpenseLineChartState extends State<WeeklyExpenseLineChart> {
                   reservedSize: 35,
                   interval: 1),
             ),
-          ),
+              leftTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 40,
+                getTitlesWidget: (value, meta) {
+                  final data = leftTitleWidgets(value, meta);
+                  return data;
+                },
+              ))),
         ),
         swapAnimationCurve: Curves.linear,
         swapAnimationDuration: const Duration(milliseconds: 250),
       ),
     );
+  }
+
+  Widget leftTitleWidgets(double value, TitleMeta meta) {
+    String text = meta.formattedValue;
+    if (value % meta.appliedInterval != 0) text = "";
+    return Text(text, textScaleFactor: .85);
   }
 
   Map<int, ChartRecord> _getDailySumForWeek() {

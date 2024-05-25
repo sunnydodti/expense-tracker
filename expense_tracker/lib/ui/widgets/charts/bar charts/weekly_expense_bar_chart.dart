@@ -132,11 +132,12 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
     Map<int, ChartRecord> dailySum = _getDailySumForWeek();
     List<BarChartGroupData> barGroups = (barChartType == BarChartType.split)
         ? _buildBarGroupsForSplit(dailySum)
-            : _buildBarGroupsForTotal(dailySum);
+        : _buildBarGroupsForTotal(dailySum);
     return Container(
       padding: const EdgeInsets.only(top: 20, bottom: 5, left: 10),
       child: BarChart(
         BarChartData(
+          // maxY: widget.chartData.barHeight,
           barGroups: barGroups,
           gridData: FlGridData(show: false),
           borderData: FlBorderData(show: false),
