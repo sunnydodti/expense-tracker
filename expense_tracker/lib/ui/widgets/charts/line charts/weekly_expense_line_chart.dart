@@ -233,16 +233,10 @@ class _WeeklyExpenseLineChartState extends State<WeeklyExpenseLineChart> {
     List<FlSpot> reimbursementSpots = [];
 
     dailySum.forEach((day, record) {
-      if (record.incomeAmount != 0) {
-        incomeSpots.add(FlSpot(day.toDouble(), record.incomeAmount));
-      }
-      if (record.expenseAmount != 0) {
-        expenseSpots.add(FlSpot(day.toDouble(), record.expenseAmount));
-      }
-      if (record.reimbursementAmount != 0) {
-        reimbursementSpots
-            .add(FlSpot(day.toDouble(), record.reimbursementAmount));
-      }
+      incomeSpots.add(FlSpot(day.toDouble(), record.incomeAmount));
+      expenseSpots.add(FlSpot(day.toDouble(), record.expenseAmount));
+      reimbursementSpots
+          .add(FlSpot(day.toDouble(), record.reimbursementAmount));
     });
 
     return [
