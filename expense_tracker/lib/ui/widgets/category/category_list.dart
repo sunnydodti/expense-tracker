@@ -24,17 +24,21 @@ class CategoryList extends StatelessWidget {
                     Expanded(
                       child: categoryProvider.categories.isEmpty
                           ? const EmptyListWidget(listName: 'Category')
-                          : ListView.builder(
-                              itemCount: categoryProvider.categories.length,
-                              itemBuilder: (context, index) {
-                                final category =
-                                    categoryProvider.categories[index];
-                                return CategoryTile(
-                                  categoryName: category.name,
-                                  onDelete: () =>
-                                      _deleteCategory(context, category),
-                                );
-                              },
+                          : Scrollbar(
+                              interactive: true,
+                              radius: const Radius.circular(5),
+                              child: ListView.builder(
+                                itemCount: categoryProvider.categories.length,
+                                itemBuilder: (context, index) {
+                                  final category =
+                                      categoryProvider.categories[index];
+                                  return CategoryTile(
+                                    categoryName: category.name,
+                                    onDelete: () =>
+                                        _deleteCategory(context, category),
+                                  );
+                                },
+                              ),
                             ),
                     )
                   ],

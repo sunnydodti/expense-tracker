@@ -24,14 +24,19 @@ class TagList extends StatelessWidget {
                     Expanded(
                         child: tagProvider.tags.isEmpty
                             ? const EmptyListWidget(listName: 'Tag')
-                            : ListView.builder(
-                                itemCount: tagProvider.tags.length,
-                                itemBuilder: (context, index) {
-                                  final tag = tagProvider.tags[index];
-                                  return TagTile(
-                                      tagName: tag.name,
-                                      onDelete: () => _deleteTag(context, tag));
-                                },
+                            : Scrollbar(
+                                interactive: true,
+                                radius: const Radius.circular(5),
+                                child: ListView.builder(
+                                  itemCount: tagProvider.tags.length,
+                                  itemBuilder: (context, index) {
+                                    final tag = tagProvider.tags[index];
+                                    return TagTile(
+                                        tagName: tag.name,
+                                        onDelete: () =>
+                                            _deleteTag(context, tag));
+                                  },
+                                ),
                               ))
                   ],
                 ),
