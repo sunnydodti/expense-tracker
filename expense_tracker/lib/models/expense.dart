@@ -164,7 +164,8 @@ class ExpenseFormModel {
     map[DBConstants.expense.category] = category;
     map[DBConstants.expense.tags] = tags;
     map[DBConstants.expense.note] = note;
-    map[DBConstants.expense.containsExpenseItems] = containsExpenseItems;
+    map[DBConstants.expense.containsExpenseItems] =
+        _parseBoolAsInt(containsExpenseItems);
 
     return map;
   }
