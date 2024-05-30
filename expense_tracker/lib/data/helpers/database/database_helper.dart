@@ -4,6 +4,9 @@ import 'dart:io';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite/sqlite_api.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
 
 import '../../constants/db_constants.dart';
 import 'category_helper.dart';
@@ -32,7 +35,13 @@ class DatabaseHelper {
 
   Future<Database> initializeDatabase() async {
     final Directory directory = await getApplicationDocumentsDirectory();
-    final String path = '${directory.path}/${DBConstants.databaseName}';
+    String path = '${directory.path}/${DBConstants.databaseName}';
+
+    if (Platform.isWindows | Platform.isLinux){
+      sqfliteFfiInit();
+      path = inMemoryDatabasePath;
+      databaseFactory = databaseFactoryFfi;
+    }
 
     return openDatabase(
       path,
