@@ -10,12 +10,14 @@ import '../../screens/settings/settings_screen.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final bool centerTitle;
 
   static final Future<ExpenseService> _expenseService = ExpenseService.create();
 
   const MainAppBar({
     super.key,
     this.title = "Expense Tracker",
+    this.centerTitle = true,
   });
 
   @override
@@ -49,7 +51,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
         };
 
     return AppBar(
-      centerTitle: true,
+      centerTitle: centerTitle,
       title: Text(title, textScaleFactor: .8),
       backgroundColor: Colors.black,
       actions: [

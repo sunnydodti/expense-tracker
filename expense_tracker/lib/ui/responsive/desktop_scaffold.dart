@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../widgets/common/main_app_bar.dart';
+
 class DesktopScaffold extends StatelessWidget {
   const DesktopScaffold({super.key});
 
@@ -7,7 +9,7 @@ class DesktopScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       backgroundColor: Colors.blue,
-      // appBar: ,
+      appBar: MainAppBar(centerTitle: false),
     );
   }
 }
