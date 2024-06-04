@@ -7,6 +7,7 @@ class DesktopScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       backgroundColor: Colors.blue,
-    );;
+      // appBar: ,
+    );
   }
 }

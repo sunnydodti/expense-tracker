@@ -7,8 +7,12 @@ import 'providers/expense_provider.dart';
 import 'providers/settings_provider.dart';
 import 'providers/sort_filter_provider.dart';
 import 'providers/tag_provider.dart';
+import 'providers/theme_provider.dart';
 import 'service/shared_preferences_service.dart';
-import 'ui/screens/home_screen.dart';
+import 'ui/responsive/desktop_scaffold.dart';
+import 'ui/responsive/mobile_scaffold.dart';
+import 'ui/responsive/responsive_layout.dart';
+import 'ui/responsive/tablet_scaffold.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -27,6 +31,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
         ChangeNotifierProvider(create: (context) => ExpenseProvider()),
         ChangeNotifierProvider(create: (context) => ExpenseItemsProvider()),
         ChangeNotifierProvider(create: (context) => CategoryProvider()),
@@ -34,10 +39,17 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => SortFilterProvider()),
         ChangeNotifierProvider(create: (context) => SettingsProvider()),
       ],
-      child: MaterialApp(
-        key: navigatorKey,
-        theme: ThemeData(colorScheme: const ColorScheme.dark()),
-        home: const HomeScreen(),
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, _) {
+          return MaterialApp(
+            key: navigatorKey,
+            theme: themeProvider.currentTheme,
+            home: const ResponsiveLayout(
+                mobileScaffold: MobileScaffold(),
+                tabletScaffold: TabletScaffold(),
+                desktopScaffold: DesktopScaffold()),
+          );
+        },
       ),
     );
   }
