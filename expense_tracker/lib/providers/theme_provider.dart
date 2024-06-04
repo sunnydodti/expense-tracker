@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../data/constants/theme_constants.dart';
 
 class ThemeProvider with ChangeNotifier {
-  ThemeData _currentTheme = blackTheme;
+  ThemeData _currentTheme = lightTheme;
 
   ThemeData get currentTheme => _currentTheme;
 
