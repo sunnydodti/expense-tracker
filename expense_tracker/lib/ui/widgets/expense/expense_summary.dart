@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../data/constants/shared_preferences_constants.dart';
 import '../../../data/helpers/navigation_helper.dart';
 import '../../../providers/expense_provider.dart';
-import '../../../providers/sort_filter_provider.dart';
 import '../../../service/shared_preferences_service.dart';
 import '../../animations/blur_widget.dart';
 import '../../screens/charts_screen.dart';
 
 class ExpenseSummary extends StatefulWidget {
-  final ExpenseProvider expenseProvider;
-
-  const ExpenseSummary({
-    Key? key,
-    required this.expenseProvider,
-  }) : super(key: key);
+  const ExpenseSummary({Key? key}) : super(key: key);
 
   @override
   State<ExpenseSummary> createState() => _ExpenseSummaryState();
@@ -51,40 +46,43 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
   void navigateToChartsScreen(BuildContext context) =>
       NavigationHelper.navigateToScreen(context, const ChartsScreen());
 
-  Container _buildSummary() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey.shade900,
-      ),
+  Consumer<ExpenseProvider> _buildSummary() {
+    return Consumer<ExpenseProvider>(
+        builder: (context, expenseProvider, child) {
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.grey.shade900,
+        ),
       margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
       child: Column(
         children: [
           Stack(
             children: [
               _buildSummaryContainer(
-                  "Total Balance", widget.expenseProvider.getTotalBalance(),
-                  top: 10, bottom: 5, left: 10, right: 10),
-              buildIcons()
-            ],
+                    "Total Balance", expenseProvider.getTotalBalance(),
+                    top: 10, bottom: 5, left: 10, right: 10),
+                buildIcons()
+              ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 child: _buildSummaryContainer(
-                    "Total Income", widget.expenseProvider.getTotalIncome(),
-                    top: 5, bottom: 10, left: 10, right: 5),
-              ),
-              Expanded(
-                child: _buildSummaryContainer("Total Expense",
-                    widget.expenseProvider.getTotalExpenses() * -1,
-                    top: 5, bottom: 10, left: 5, right: 10),
-              ),
-            ],
+                      "Total Income", expenseProvider.getTotalIncome(),
+                      top: 5, bottom: 10, left: 10, right: 5),
+                ),
+                Expanded(
+                  child: _buildSummaryContainer(
+                      "Total Expense", expenseProvider.getTotalExpenses() * -1,
+                      top: 5, bottom: 10, left: 5, right: 10),
+                ),
+              ],
           ),
         ],
       ),
     );
+    });
   }
 
   Container _buildSummaryContainer(

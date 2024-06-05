@@ -25,7 +25,7 @@ class ExpenseListDynamic extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  ExpenseSummary(expenseProvider: expenseProvider),
+                  const ExpenseSummary(),
                   const SortFilterTile(),
                   expenseProvider.expenses.isEmpty
                       ? const EmptyListWidget(listName: 'Expense')
