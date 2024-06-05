@@ -29,7 +29,7 @@ class HomeScreen extends StatelessWidget {
           return Text('Error: ${snapshot.error}');
         } else {
           return Scaffold(
-            drawer: const SafeArea(child: HomeDrawer()),
+            drawer: const HomeDrawer(),
             appBar: _buildAppBar(context),
             body: Column(
               children: const [Expanded(child: ExpenseListDynamic())],

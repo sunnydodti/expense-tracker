@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../drawer/home_drawer.dart';
 import '../widgets/common/main_app_bar.dart';
 
 class DesktopScaffold extends StatelessWidget {
@@ -7,9 +8,15 @@ class DesktopScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
+      // drawer: HomeDrawer(),
+      appBar: const MainAppBar(centerTitle: false),
       backgroundColor: Colors.blue,
-      appBar: MainAppBar(centerTitle: false),
+      body: Row(
+        children: const [
+          HomeDrawer(),
+        ],
+      ),
     );
   }
 }

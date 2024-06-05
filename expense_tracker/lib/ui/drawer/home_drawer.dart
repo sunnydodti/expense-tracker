@@ -20,32 +20,29 @@ class HomeDrawerState extends State<HomeDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-              child: Text('Menu'),
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.blue,
             ),
-            ListTile(
-              title: const Text('Categories'),
-              onTap: () => _navigateToCategoryScreen(context),
-            ),
-            ListTile(
-              title: const Text('Tags'),
-              onTap: () => _navigateToTagScreen(context),
-            ),
-            ListTile(
-              title: const Text('Settings'),
-              onTap: () => _navigateToSettingsScreen(context),
-            ),
-          ],
-        ),
+            child: Text('Menu'),
+          ),
+          ListTile(
+            title: const Text('Categories'),
+            onTap: () => _navigateToCategoryScreen(context),
+          ),
+          ListTile(
+            title: const Text('Tags'),
+            onTap: () => _navigateToTagScreen(context),
+          ),
+          ListTile(
+            title: const Text('Settings'),
+            onTap: () => _navigateToSettingsScreen(context),
+          ),
+        ],
       ),
     );
   }
