@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../drawer/home_drawer.dart';
 import '../widgets/common/main_app_bar.dart';
+import '../widgets/expense/expense_list.dart';
+import '../widgets/expense/expense_summary.dart';
+import '../widgets/sort_n_filter/sort_filter_tile.dart';
 
 class TabletScaffold extends StatelessWidget {
   const TabletScaffold({super.key});
@@ -12,6 +15,14 @@ class TabletScaffold extends StatelessWidget {
       drawer: const SafeArea(child: HomeDrawer()),
       appBar: const MainAppBar(),
       backgroundColor: Theme.of(context).colorScheme.primary.withGreen(500),
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          ExpenseSummary(),
+          SortFilterTile(),
+          Expanded(child: ExpenseList())
+        ],
+      ),
     );
   }
 }
