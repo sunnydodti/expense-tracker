@@ -11,30 +11,25 @@ class EmptyListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final message = "icon to add $listName";
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 100),
-      child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Text(
-              'Click',
-              style: TextStyle(color: Colors.grey),
-            ),
-            const SizedBox(width: 8),
-            const Icon(
-              Icons.add,
-              color: Colors.grey,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              message,
-              style: const TextStyle(color: Colors.grey),
-            ),
-          ],
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        const Text(
+          'Click',
+          style: TextStyle(color: Colors.grey),
         ),
-      ),
+        const SizedBox(width: 8),
+        const Icon(
+          Icons.add,
+          color: Colors.grey,
+        ),
+        const SizedBox(width: 8),
+        Text(
+          message,
+          style: const TextStyle(color: Colors.grey),
+        ),
+      ],
     );
   }
 }

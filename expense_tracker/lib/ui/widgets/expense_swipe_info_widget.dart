@@ -8,8 +8,9 @@ class ExpenseSwipeInfoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const message = "to edit or delete";
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 100),
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.only(bottom: 80),
       child: Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
