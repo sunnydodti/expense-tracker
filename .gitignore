@@ -1,5 +1,10 @@
 .vscode
 expense_tracker/macos/Flutter/GeneratedPluginRegistrant.swift
+
 expense_tracker/windows/flutter/generated_plugin_registrant.cc
 expense_tracker/windows/flutter/generated_plugin_registrant.h
 expense_tracker/windows/flutter/generated_plugins.cmake
+
+expense_tracker/linux/flutter/generated_plugin_registrant.cc
+expense_tracker/linux/flutter/generated_plugin_registrant.h
+expense_tracker/linux/flutter/generated_plugins.cmake
