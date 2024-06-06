@@ -37,45 +37,64 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
+
     return GestureDetector(
       onTap: () => navigateToChartsScreen(context),
-      child: _buildSummary(),
+      child: _buildSummary(theme),
     );
   }
 
   void navigateToChartsScreen(BuildContext context) =>
       NavigationHelper.navigateToScreen(context, const ChartsScreen());
 
-  Consumer<ExpenseProvider> _buildSummary() {
+  Consumer<ExpenseProvider> _buildSummary(ThemeData theme) {
+    double lerpT = theme.colorScheme.brightness == Brightness.light ? .7 : .1;
     return Consumer<ExpenseProvider>(
         builder: (context, expenseProvider, child) {
-      return Container(
-        decoration: BoxDecoration(
-          color: Colors.grey.shade900,
-        ),
-      margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
-      child: Column(
-        children: [
-          Stack(
-            children: [
-              _buildSummaryContainer(
-                    "Total Balance", expenseProvider.getTotalBalance(),
-                    top: 10, bottom: 5, left: 10, right: 10),
-                buildIcons()
+      return Card(
+        color: Color.lerp(theme.colorScheme.primary, Colors.white, lerpT),
+        margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                _buildSummaryContainer(
+                  "Total Balance",
+                  expenseProvider.getTotalBalance(),
+                  theme,
+                  top: 10,
+                  bottom: 5,
+                  left: 10,
+                  right: 10,
+                ),
+                buildIcons(theme)
               ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: _buildSummaryContainer(
-                      "Total Income", expenseProvider.getTotalIncome(),
-                      top: 5, bottom: 10, left: 10, right: 5),
+                  child: _buildSummaryContainer(
+                    "Total Income",
+                    expenseProvider.getTotalIncome(),
+                    theme,
+                    top: 5,
+                    bottom: 10,
+                    left: 10,
+                    right: 5,
+                  ),
                 ),
                 Expanded(
                   child: _buildSummaryContainer(
-                      "Total Expense", expenseProvider.getTotalExpenses() * -1,
-                      top: 5, bottom: 10, left: 5, right: 10),
+                    "Total Expense",
+                    expenseProvider.getTotalExpenses() * -1,
+                    theme,
+                    top: 5,
+                    bottom: 10,
+                    left: 5,
+                    right: 10,
+                  ),
                 ),
               ],
           ),
@@ -85,31 +104,33 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
     });
   }
 
-  Container _buildSummaryContainer(
+  Card _buildSummaryContainer(
     String summaryText,
-    double amount, {
+    double amount,
+    ThemeData theme, {
     double top = 10,
     double bottom = 10,
     double left = 10,
     double right = 10,
     double padding = 5,
   }) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.grey.shade800,
-      ),
+    double lerpT = theme.colorScheme.brightness == Brightness.light ? .8 : .13;
+    return Card(
       margin:
           EdgeInsets.only(top: top, bottom: bottom, left: left, right: right),
-      padding: EdgeInsets.symmetric(vertical: padding, horizontal: padding),
-      child: Column(
-        children: [
-          _getSummaryText(summaryText),
-          const SizedBox(height: 5),
-          hideTotal
-              ? BlurWidget(widget: _getSummaryAmount(amount))
-              : _getSummaryAmount(amount),
-        ],
+      color: Color.lerp(theme.colorScheme.primary, Colors.white, lerpT),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(vertical: padding, horizontal: padding),
+        child: Column(
+          children: [
+            _getSummaryText(summaryText),
+            const SizedBox(height: 5),
+            hideTotal
+                ? BlurWidget(widget: _getSummaryAmount(amount))
+                : _getSummaryAmount(amount),
+          ],
+        ),
       ),
     );
   }
@@ -135,31 +156,35 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
       textScaleFactor: 1.1,
       style: const TextStyle(
         fontWeight: FontWeight.bold,
-        color: Colors.white70,
       ),
     );
   }
 
-  buildIcons() {
+  buildIcons(ThemeData theme) {
+    double lerpT = theme.colorScheme.brightness == Brightness.light ? .3 : 1;
+
+    Color? color =
+        Color.lerp(Theme.of(context).colorScheme.primary, Colors.white, lerpT);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        buildChartIcon(),
-        buildIHideIcon(),
+        buildChartIcon(color),
+        buildIHideIcon(color),
       ],
     );
   }
 
-  Padding buildChartIcon() {
+  Padding buildChartIcon(Color? color) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
       child: IconButton(
           onPressed: () => navigateToChartsScreen(context),
-          icon: Icon(Icons.bar_chart_outlined, color: Colors.grey.shade400)),
+          icon: Icon(Icons.bar_chart_outlined, color: color)),
     );
   }
 
-  Padding buildIHideIcon() {
+  Padding buildIHideIcon(Color? color) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
       child: IconButton(
@@ -170,8 +195,8 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
           setHideTotalPreference();
         },
         icon: hideTotal
-            ? Icon(Icons.visibility_outlined, color: Colors.grey.shade400)
-            : Icon(Icons.visibility_off_outlined, color: Colors.grey.shade400),
+            ? Icon(Icons.visibility_outlined, color: color)
+            : Icon(Icons.visibility_off_outlined, color: color),
       ),
     );
   }
@@ -181,6 +206,5 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
         SharedPreferencesConstants.summary.HIDE_TOTAL_KEY, hideTotal);
     bool? hide = await sharedPreferencesService
         .getBoolPreference(SharedPreferencesConstants.summary.HIDE_TOTAL_KEY);
-    int a = 0;
   }
 }
