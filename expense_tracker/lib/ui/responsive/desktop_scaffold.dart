@@ -11,9 +11,13 @@ class DesktopScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double lerpT = Theme.of(context).colorScheme.brightness == Brightness.light
+        ? .85
+        : .05;
     return Scaffold(
       appBar: const MainAppBar(centerTitle: false),
-      backgroundColor: Colors.blue,
+      backgroundColor: Color.lerp(
+          Theme.of(context).colorScheme.primary, Colors.white, lerpT),
       body: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -21,7 +25,7 @@ class DesktopScaffold extends StatelessWidget {
           Expanded(
               flex: 2,
               child: Container(
-                color: Colors.grey.shade400,
+                // color: Colors.grey.shade400,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: const [
@@ -32,7 +36,9 @@ class DesktopScaffold extends StatelessWidget {
               )),
           Expanded(
             child: Container(
-                color: Colors.grey.shade500, child: const ExpenseSummary()),
+                color: Color.lerp(
+                    Theme.of(context).colorScheme.primary, Colors.white, lerpT),
+                child: const ExpenseSummary()),
           )
           // ExpenseListDynamic(),
           // ExpenseList(),
