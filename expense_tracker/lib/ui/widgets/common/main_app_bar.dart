@@ -25,6 +25,9 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    double lerpT =
+        Theme.of(context).colorScheme.brightness == Brightness.light ? .1 : 0;
+
     Future refreshExpenses(BuildContext context) async {
       Provider.of<ExpenseProvider>(context, listen: false).refreshExpenses();
     }
@@ -51,35 +54,33 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
         };
 
     return AppBar(
+      backgroundColor: Color.lerp(
+          Theme.of(context).colorScheme.primary, Colors.white, lerpT),
       centerTitle: centerTitle,
       title: Text(title, textScaleFactor: .8),
-      backgroundColor: Colors.black,
       actions: [
         if (DebugHelper.isDebugMode)
           IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.add,
               size: 20,
-              color: Theme.of(context).colorScheme.inversePrimary,
             ),
             tooltip: "Add random expense",
             onPressed: populateExpense,
           ),
         if (DebugHelper.isDebugMode)
           IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.add_to_home_screen_outlined,
               size: 20,
-              color: Theme.of(context).colorScheme.inversePrimary,
             ),
             tooltip: "Navigate to screen",
             onPressed: navigateToScreen,
           ),
         IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.person,
             size: 20,
-            color: Theme.of(context).colorScheme.inversePrimary,
           ),
           tooltip: "Profile",
           onPressed: handleProfile,
