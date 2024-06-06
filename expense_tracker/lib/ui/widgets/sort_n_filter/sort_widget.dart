@@ -36,6 +36,11 @@ class _SortWidgetState extends State<SortWidget> {
   }
 
   IconButton _buildSortButton(SortFilterProvider sortFilterProvider) {
+    double lerpT =
+        Theme.of(context).colorScheme.brightness == Brightness.light ? .2 : 1;
+    Color? color =
+        Color.lerp(Theme.of(context).colorScheme.primary, Colors.white, lerpT);
+
     return IconButton(
       icon: Transform(
           alignment: Alignment.center,
@@ -44,8 +49,9 @@ class _SortWidgetState extends State<SortWidget> {
               : Matrix4.rotationX(0),
           child: Transform.rotate(
             angle: math.pi,
-            child: const Icon(
+            child: Icon(
               Icons.sort_outlined,
+              color: color,
             ),
           )),
       onPressed: () {

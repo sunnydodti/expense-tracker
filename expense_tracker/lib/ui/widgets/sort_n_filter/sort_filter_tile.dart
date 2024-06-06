@@ -24,10 +24,11 @@ class _SortFilterTileState extends State<SortFilterTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey.shade900,
-      ),
+    double lerpT =
+        Theme.of(context).colorScheme.brightness == Brightness.light ? .7 : .1;
+    return Card(
+      color: Color.lerp(
+          Theme.of(context).colorScheme.primary, Colors.white, lerpT),
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

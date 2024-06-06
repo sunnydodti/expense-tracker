@@ -160,10 +160,16 @@ class FilterWidgetState extends State<FilterWidget> {
   }
 
   IconButton _buildFilterButton(SortFilterProvider sortFilterProvider) {
+    double lerpT =
+        Theme.of(context).colorScheme.brightness == Brightness.light ? .2 : 1;
+    Color? color =
+        Color.lerp(Theme.of(context).colorScheme.primary, Colors.white, lerpT);
+
     return IconButton(
       icon: const Icon(Icons.filter_list),
       onPressed: () => _showFilterDialog(sortFilterProvider),
       tooltip: "Filter",
+      color: color,
     );
   }
 
