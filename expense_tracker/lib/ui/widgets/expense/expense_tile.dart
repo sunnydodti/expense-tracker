@@ -30,6 +30,11 @@ class _ExpenseTileState extends State<ExpenseTile> {
 
   @override
   Widget build(BuildContext context) {
+    double lerpT =
+        Theme.of(context).colorScheme.brightness == Brightness.light ? .7 : .1;
+    Color? color =
+        Color.lerp(Theme.of(context).colorScheme.primary, Colors.white, lerpT);
+
     return GestureDetector(
       onLongPressStart: (details) =>
           expenseProvider.showExpensePopup(widget.expense),
@@ -39,10 +44,8 @@ class _ExpenseTileState extends State<ExpenseTile> {
       },
       onTap: _buildBottomSheet,
       onDoubleTap: widget.editCallBack,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.grey.shade900,
-        ),
+      child: Card(
+        color: color,
         margin: const EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
         child: _buildExpenseTile(),
       ),

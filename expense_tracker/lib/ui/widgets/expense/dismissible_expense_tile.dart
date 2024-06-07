@@ -28,19 +28,30 @@ class DismissibleExpenseTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dismissible(
       key: Key(expense.id.toString()),
-      background: Container(
+      background: Card(
         color: Colors.red.shade400,
-        alignment: Alignment.centerLeft,
-        padding: const EdgeInsets.only(left: 20.0),
         margin: const EdgeInsets.only(top: 0.0, bottom: 10.0),
-        child: const Icon(Icons.delete, color: Colors.white),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: const [
+            Padding(
+              padding: EdgeInsets.only(left: 20),
+              child: Icon(Icons.delete, color: Colors.white),
+            ),
+          ],
+        ),
       ),
-      secondaryBackground: Container(
+      secondaryBackground: Card(
         color: Colors.blue.shade400,
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 20.0),
-        margin: const EdgeInsets.only(top: 0.0, bottom: 10.0),
-        child: const Icon(Icons.edit, color: Colors.white),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: const [
+            Padding(
+              padding: EdgeInsets.only(right: 20),
+              child: Icon(Icons.edit, color: Colors.white),
+            ),
+          ],
+        ),
       ),
       onDismissed: (direction) {
         if (direction == DismissDirection.startToEnd) {
