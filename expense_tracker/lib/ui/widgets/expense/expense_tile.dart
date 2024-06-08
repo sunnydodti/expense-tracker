@@ -85,7 +85,8 @@ class _ExpenseTileState extends State<ExpenseTile> {
               ExpenseWidgets.tile.tagsWidget(widget.expense),
             ],
           ),
-          const SizedBox(height: 5.0),
+          const SizedBox(height: 2),
+          const Divider(height: 5, thickness: 1),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

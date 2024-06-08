@@ -69,7 +69,6 @@ class ExpenseTileWidgets {
       overflow: TextOverflow.ellipsis,
       style: const TextStyle(fontWeight: FontWeight.w500),
     );
-    // style: const TextStyle(fontSize: 10.0),
     return Container(child: tags);
   }
 
@@ -80,22 +79,12 @@ class ExpenseTileWidgets {
     Text note = Text(
       text,
       textScaleFactor: 0.8,
-      overflow: TextOverflow.ellipsis,
+      // overflow: TextOverflow.ellipsis,
       style: TextStyle(color: color, fontWeight: FontWeight.w500),
     );
     return Expanded(
       flex: 2,
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey, width: .1),
-          borderRadius: BorderRadius.circular(5.0),
-        ),
-        padding: const EdgeInsets.all(5.0),
-        child: Padding(
-          padding: EdgeInsets.zero,
-          child: note,
-        ),
-      ),
+      child: note,
     );
   }
 
