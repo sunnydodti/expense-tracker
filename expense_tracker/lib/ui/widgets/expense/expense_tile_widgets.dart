@@ -9,15 +9,14 @@ class ExpenseTileWidgets {
 
   Expanded getExpenseDate(Expense expense) {
     return Expanded(
-      child: Align(
-        alignment: Alignment.topRight,
-        child: Padding(
-          padding: EdgeInsets.zero,
-          child: Text(
-            DateFormat('dd-MM-yy').format(expense.date),
-            textScaleFactor: getTextScaleFactor(),
-            // style: const TextStyle(fontSize: 16.0),
-          ),
+      child: Padding(
+        padding: EdgeInsets.zero,
+        child: Text(
+          DateFormat('dd-MM-yy').format(expense.date),
+          textScaleFactor: getTextScaleFactor(),
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.end,
+          style: const TextStyle(fontWeight: FontWeight.w500),
         ),
       ),
     );
@@ -25,15 +24,12 @@ class ExpenseTileWidgets {
 
   Expanded titleWidget(Expense expense) {
     return Expanded(
-      child: Align(
-        alignment: Alignment.topLeft,
-        child: Padding(
-          padding: EdgeInsets.zero,
-          child: Text(
-            expense.title,
-            textScaleFactor: getTextScaleFactor(),
-            // style: const TextStyle(fontSize: 16.0),
-          ),
+      child: Padding(
+        padding: EdgeInsets.zero,
+        child: Text(
+          expense.title,
+          textScaleFactor: getTextScaleFactor(),
+          style: const TextStyle(fontWeight: FontWeight.w500),
         ),
       ),
     );
@@ -41,78 +37,70 @@ class ExpenseTileWidgets {
 
   Expanded categoryWidget(Expense expense) {
     return Expanded(
-      child: Align(
-          alignment: Alignment.topLeft,
-          child: Padding(
-            padding: const EdgeInsets.only(right: 0.0),
-            child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-              Text(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: Text(
                 '${expense.category} ',
                 textScaleFactor: getTextScaleFactor(),
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontWeight: FontWeight.w500),
+                textAlign: TextAlign.end,
               ),
-              const Icon(
-                Icons.category_outlined,
-                size: 16.0,
-              )
-            ]),
-          )),
+            ),
+          ),
+          const Icon(
+            Icons.category_outlined,
+            size: 16.0,
+          ),
+        ],
+      ),
     );
   }
 
   Container tagsWidget(Expense expense) {
-    Text tags;
-    expense.note == null
-        ? tags = const Text("")
-        : tags = Text(
-            expense.tags!,
-            style: const TextStyle(fontSize: 10.0),
-          );
+    String text = expense.tags ?? "";
+    Text tags = Text(
+      text,
+      textScaleFactor: .7,
+      overflow: TextOverflow.ellipsis,
+      style: const TextStyle(fontWeight: FontWeight.w500),
+    );
+    // style: const TextStyle(fontSize: 10.0),
     return Container(child: tags);
   }
 
   Expanded noteWidget(Expense expense) {
-    Text note;
-    (expense.note == null || expense.note == "")
-        ? note = const Text(
-            "Add Notes",
-            style: TextStyle(
-                // fontSize: 13.5,
-                color: Colors.grey),
-          )
-        : note = Text(
-            '${expense.note}',
-            textScaleFactor: 0.9,
-            // style: const TextStyle(fontSize: 13.5),
-          );
+    bool isNote = !(expense.note == null || expense.note == "");
+    String text = isNote ? expense.note! : "Add Notes";
+    Color? color = isNote ? null : Colors.grey;
+    Text note = Text(
+      text,
+      textScaleFactor: 0.8,
+      overflow: TextOverflow.ellipsis,
+      style: TextStyle(color: color, fontWeight: FontWeight.w500),
+    );
     return Expanded(
       flex: 2,
-      child: Align(
-          alignment: Alignment.topLeft,
-          child: FractionallySizedBox(
-            widthFactor: 1,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey, width: 1.0),
-                borderRadius: BorderRadius.circular(5.0),
-              ),
-              padding: const EdgeInsets.all(5.0),
-              child: Padding(
-                padding: EdgeInsets.zero,
-                child: note,
-              ),
-            ),
-          )),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey, width: .1),
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+        padding: const EdgeInsets.all(5.0),
+        child: Padding(
+          padding: EdgeInsets.zero,
+          child: note,
+        ),
+      ),
     );
   }
 
-  Expanded amountWidget(Expense expense) {
-    return Expanded(
-      flex: 1,
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: _getAmount(expense),
-      ),
-    );
+  Padding amountWidget(Expense expense) {
+    return _getAmount(expense);
   }
 
   Padding _getAmount(Expense expense) {
@@ -121,7 +109,9 @@ class ExpenseTileWidgets {
       child: Text(
         getExpenseAmountText(expense),
         textScaleFactor: 1.1,
+        textAlign: TextAlign.end,
         style: TextStyle(
+          fontWeight: FontWeight.w500,
           color: getAmountColor(expense.transactionType),
         ),
       ),

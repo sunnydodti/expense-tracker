@@ -57,7 +57,14 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Color.lerp(
           Theme.of(context).colorScheme.primary, Colors.white, lerpT),
       centerTitle: centerTitle,
-      title: Text(title, textScaleFactor: .8),
+      title: Text(
+        title,
+        textScaleFactor: .85,
+        overflow: TextOverflow.fade,
+        style: const TextStyle(
+          fontWeight: FontWeight.w600,
+        ),
+      ),
       actions: [
         if (DebugHelper.isDebugMode)
           IconButton(
