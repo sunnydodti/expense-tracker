@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/helpers/color_helper.dart';
 import '../../models/chart_data.dart';
 import '../../models/enums/chart_range.dart';
 import '../../models/enums/chart_type.dart';
@@ -57,19 +58,18 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
 
   Scaffold _buildChartScreen(BuildContext context) {
     return Scaffold(
+      backgroundColor: ColorHelper.getBackgroundColor(Theme.of(context)),
       appBar: AppBar(
         title: const Text('Charts'),
         centerTitle: true,
+        backgroundColor: ColorHelper.getAppBarColor(Theme.of(context)),
       ),
-      body: Container(
-        color: Colors.grey.shade900.withBlue(40),
-        child: ListView(
-          children: [
-            _buildChart(),
-            _buildChartRangeDropdown(),
-            _buildChartTypeDropdown(),
-          ],
-        ),
+      body: ListView(
+        children: [
+          _buildChart(),
+          _buildChartRangeDropdown(),
+          _buildChartTypeDropdown(),
+        ],
       ),
     );
   }
@@ -187,7 +187,11 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
                   .values[(_chartType.index + 1) % ChartType.values.length];
               setState(() => _chartType = newType);
             },
-            icon: Icon(getChartIcon())));
+          icon: Icon(getChartIcon()),
+          color: ColorHelper.getIconColor(
+            Theme.of(context),
+          ),
+        ));
   }
 
   IconData getChartIcon() {
@@ -234,7 +238,6 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
 
   Container _buildChartTypeDropdown() {
     return Container(
-      // color: Colors.grey.withOpacity(.2),
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

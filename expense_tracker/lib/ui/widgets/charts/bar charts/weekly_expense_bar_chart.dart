@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../data/constants/chart_constants.dart';
+import '../../../../data/helpers/color_helper.dart';
 import '../../../../models/chart_data.dart';
 import '../../../../models/chart_record.dart';
 import '../../../../models/enums/bar_chart_type.dart';
@@ -56,7 +57,7 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
     Map<String, DateTime> dates = ChartService.getWeekStartAndEnd(
         selectedWeek == 0 ? currentWeek : selectedWeek);
     return Container(
-      color: Colors.grey.shade800.withOpacity(.2),
+      color: ColorHelper.getTileColor(Theme.of(context)),
       padding: const EdgeInsets.only(top: 5),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -219,36 +220,36 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
   }
 
   Widget getTitles(double value, TitleMeta meta) {
-    const style = TextStyle(
-      color: Colors.white,
+    TextStyle style = TextStyle(
+      color: ColorHelper.getIconColor(Theme.of(context)),
       fontWeight: FontWeight.bold,
       fontSize: 14,
     );
     Widget text;
     switch (value.toInt()) {
       case 1:
-        text = const Text('M', style: style);
+        text = Text('M', style: style);
         break;
       case 2:
-        text = const Text('T', style: style);
+        text = Text('T', style: style);
         break;
       case 3:
-        text = const Text('W', style: style);
+        text = Text('W', style: style);
         break;
       case 4:
-        text = const Text('T', style: style);
+        text = Text('T', style: style);
         break;
       case 5:
-        text = const Text('F', style: style);
+        text = Text('F', style: style);
         break;
       case 6:
-        text = const Text('S', style: style);
+        text = Text('S', style: style);
         break;
       case 7:
-        text = const Text('S', style: style);
+        text = Text('S', style: style);
         break;
       default:
-        text = const Text('', style: style);
+        text = Text('', style: style);
         break;
     }
     return SideTitleWidget(
