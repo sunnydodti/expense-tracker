@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/helpers/color_helper.dart';
 import '../../../models/expense_category.dart';
 import '../../../providers/category_provider.dart';
 import '../../../service/category_service.dart';
@@ -14,35 +15,33 @@ class CategoryList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<CategoryProvider>(
-        builder: (context, categoryProvider, child) => Scaffold(
-              body: RefreshIndicator(
-                onRefresh: () => categoryProvider.refreshCategories(),
-                color: Colors.blue.shade500,
-                child: Column(
-                  children: [
-                    getCategoryForm(categoryProvider.categories),
-                    Expanded(
-                      child: categoryProvider.categories.isEmpty
-                          ? const EmptyListWidget(listName: 'Category')
-                          : Scrollbar(
-                              interactive: true,
-                              radius: const Radius.circular(5),
-                              child: ListView.builder(
-                                itemCount: categoryProvider.categories.length,
-                                itemBuilder: (context, index) {
-                                  final category =
-                                      categoryProvider.categories[index];
-                                  return CategoryTile(
-                                    categoryName: category.name,
-                                    onDelete: () =>
-                                        _deleteCategory(context, category),
-                                  );
-                                },
-                              ),
+        builder: (context, categoryProvider, child) => RefreshIndicator(
+              onRefresh: () => categoryProvider.refreshCategories(),
+              color: Colors.blue.shade500,
+              child: Column(
+                children: [
+                  getCategoryForm(categoryProvider.categories, context),
+                  Expanded(
+                    child: categoryProvider.categories.isEmpty
+                        ? const EmptyListWidget(listName: 'Category')
+                        : Scrollbar(
+                            interactive: true,
+                            radius: const Radius.circular(5),
+                            child: ListView.builder(
+                              itemCount: categoryProvider.categories.length,
+                              itemBuilder: (context, index) {
+                                final category =
+                                    categoryProvider.categories[index];
+                                return CategoryTile(
+                                  categoryName: category.name,
+                                  onDelete: () =>
+                                      _deleteCategory(context, category),
+                                );
+                              },
                             ),
-                    )
-                  ],
-                ),
+                          ),
+                  )
+                ],
               ),
             ));
   }
@@ -62,10 +61,11 @@ class CategoryList extends StatelessWidget {
     categoryProvider.refreshCategories();
   }
 
-  Container getCategoryForm(List<ExpenseCategory> categories) {
+  Container getCategoryForm(
+      List<ExpenseCategory> categories, BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-          color: Colors.grey.shade900,
+          color: ColorHelper.getTileColor(Theme.of(context)),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
         margin: const EdgeInsets.only(top: 5, bottom: 2.5),

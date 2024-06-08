@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../data/helpers/color_helper.dart';
+
 class DeletableTile extends StatelessWidget {
   final String title;
   final VoidCallback? onDelete;
@@ -14,11 +16,8 @@ class DeletableTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.grey.shade900,
-      ),
-      padding: const EdgeInsets.only(top: 5, bottom: 5, left: 10),
+    return Card(
+      color: ColorHelper.getTileColor(Theme.of(context)),
       margin: const EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
       child: ListTile(
         dense: true,

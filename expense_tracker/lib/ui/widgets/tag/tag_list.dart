@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/helpers/color_helper.dart';
 import '../../../models/tag.dart';
 import '../../../providers/tag_provider.dart';
 import '../../../service/tag_service.dart';
@@ -14,34 +15,33 @@ class TagList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<TagProvider>(
-        builder: (context, tagProvider, child) => Scaffold(
-              body: RefreshIndicator(
-                onRefresh: () => tagProvider.refreshTags(),
-                color: Colors.blue.shade500,
-                child: Column(
-                  children: [
-                    getTagForm(tagProvider.tags),
-                    Expanded(
-                        child: tagProvider.tags.isEmpty
-                            ? const EmptyListWidget(listName: 'Tag')
-                            : Scrollbar(
-                                interactive: true,
-                                radius: const Radius.circular(5),
-                                child: ListView.builder(
-                                  itemCount: tagProvider.tags.length,
-                                  itemBuilder: (context, index) {
-                                    final tag = tagProvider.tags[index];
-                                    return TagTile(
-                                        tagName: tag.name,
-                                        onDelete: () =>
-                                            _deleteTag(context, tag));
-                                  },
-                                ),
-                              ))
-                  ],
-                ),
-              ),
-            ));
+      builder: (context, tagProvider, child) => RefreshIndicator(
+        onRefresh: () => tagProvider.refreshTags(),
+        color: Colors.blue.shade500,
+        child: Column(
+          children: [
+            getTagForm(tagProvider.tags, context),
+            Expanded(
+              child: tagProvider.tags.isEmpty
+                  ? const EmptyListWidget(listName: 'Tag')
+                  : Scrollbar(
+                      interactive: true,
+                      radius: const Radius.circular(5),
+                      child: ListView.builder(
+                        itemCount: tagProvider.tags.length,
+                        itemBuilder: (context, index) {
+                          final tag = tagProvider.tags[index];
+                          return TagTile(
+                              tagName: tag.name,
+                              onDelete: () => _deleteTag(context, tag));
+                        },
+                      ),
+                    ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   _deleteTag(BuildContext context, Tag tag) async {
@@ -58,10 +58,10 @@ class TagList extends StatelessWidget {
     tagProvider.refreshTags();
   }
 
-  Container getTagForm(List<Tag> tags) {
+  Container getTagForm(List<Tag> tags, BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-          color: Colors.grey.shade900,
+          color: ColorHelper.getTileColor(Theme.of(context)),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
         margin: const EdgeInsets.only(top: 5, bottom: 2.5),

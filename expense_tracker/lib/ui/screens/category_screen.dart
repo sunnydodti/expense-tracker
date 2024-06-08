@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/helpers/color_helper.dart';
 import '../../data/helpers/navigation_helper.dart';
 import '../../providers/category_provider.dart';
 import '../widgets/category/category_list.dart';
@@ -17,34 +18,35 @@ class CategoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<void>(
-      future: _refreshCategories(context),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          return Scaffold(
-            appBar: AppBar(
-              leading: SafeArea(
-                  child: BackButton(
-                onPressed: () => NavigationHelper.navigateBack(context),
-              )),
-              centerTitle: true,
-              title: Text(title, textScaleFactor: 0.9),
-              backgroundColor: Colors.black,
+    return Scaffold(
+      backgroundColor: ColorHelper.getBackgroundColor(Theme.of(context)),
+      appBar: AppBar(
+        leading: SafeArea(
+            child: BackButton(
+          onPressed: () => NavigationHelper.navigateBack(context),
+        )),
+        centerTitle: true,
+        title: Text(title, textScaleFactor: 0.9),
+        backgroundColor: ColorHelper.getAppBarColor(Theme.of(context)),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: FutureBuilder<void>(
+              future: _refreshCategories(context),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return const CategoryList();
+                }
+              },
             ),
-            body: Column(
-              children: const [
-                Expanded(
-                  child: CategoryList(),
-                )
-              ],
-            ),
-          );
-        }
-      },
+          )
+        ],
+      ),
     );
   }
 }
