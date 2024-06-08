@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../drawer/home_drawer.dart';
+import '../widgets/common/add_expense_fab.dart';
 import '../widgets/common/main_app_bar.dart';
 import '../widgets/expense/expense_list.dart';
 import '../widgets/expense/expense_summary.dart';
@@ -27,6 +28,7 @@ class TabletScaffold extends StatelessWidget {
           Expanded(child: ExpenseList())
         ],
       ),
+      floatingActionButton: const AddExpenseFAB(),
     );
   }
 }
