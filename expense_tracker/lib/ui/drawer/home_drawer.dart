@@ -43,7 +43,15 @@ class HomeDrawerState extends State<HomeDrawer> {
             decoration: BoxDecoration(
               color: headerColor,
             ),
-            child: const Text('Menu'),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(Icons.attach_money_outlined, size: 30),
+                SizedBox(height: 20),
+                Text("Expense Tracker")
+              ],
+            ),
           ),
           ListTile(
             title: const Text('Categories'),
