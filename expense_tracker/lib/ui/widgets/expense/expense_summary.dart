@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/constants/shared_preferences_constants.dart';
+import '../../../data/helpers/color_helper.dart';
 import '../../../data/helpers/navigation_helper.dart';
 import '../../../providers/expense_provider.dart';
 import '../../../service/shared_preferences_service.dart';
@@ -49,11 +50,10 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
       NavigationHelper.navigateToScreen(context, const ChartsScreen());
 
   Consumer<ExpenseProvider> _buildSummary(ThemeData theme) {
-    double lerpT = theme.colorScheme.brightness == Brightness.light ? .7 : .1;
     return Consumer<ExpenseProvider>(
         builder: (context, expenseProvider, child) {
       return Card(
-        color: Color.lerp(theme.colorScheme.primary, Colors.white, lerpT),
+        color: ColorHelper.getTileColor(Theme.of(context)),
         margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
         child: Column(
           children: [
@@ -114,11 +114,10 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
     double right = 10,
     double padding = 5,
   }) {
-    double lerpT = theme.colorScheme.brightness == Brightness.light ? .8 : .13;
     return Card(
       margin:
           EdgeInsets.only(top: top, bottom: bottom, left: left, right: right),
-      color: Color.lerp(theme.colorScheme.primary, Colors.white, lerpT),
+      color: ColorHelper.getBackgroundColor(Theme.of(context)),
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: padding, horizontal: padding),
@@ -161,10 +160,7 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
   }
 
   buildIcons(ThemeData theme) {
-    double lerpT = theme.colorScheme.brightness == Brightness.light ? .3 : 1;
-
-    Color? color =
-        Color.lerp(Theme.of(context).colorScheme.primary, Colors.white, lerpT);
+    Color? color = ColorHelper.getIconColor(Theme.of(context));
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -204,7 +200,7 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
   void setHideTotalPreference() async {
     sharedPreferencesService.setBoolPreference(
         SharedPreferencesConstants.summary.HIDE_TOTAL_KEY, hideTotal);
-    bool? hide = await sharedPreferencesService
+    await sharedPreferencesService
         .getBoolPreference(SharedPreferencesConstants.summary.HIDE_TOTAL_KEY);
   }
 }

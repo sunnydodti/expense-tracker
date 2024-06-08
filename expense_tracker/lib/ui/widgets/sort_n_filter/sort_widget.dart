@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/helpers/color_helper.dart';
 import '../../../models/enums/sort_criteria.dart';
 import '../../../providers/expense_provider.dart';
 import '../../../providers/sort_filter_provider.dart';
@@ -36,11 +37,6 @@ class _SortWidgetState extends State<SortWidget> {
   }
 
   IconButton _buildSortButton(SortFilterProvider sortFilterProvider) {
-    double lerpT =
-        Theme.of(context).colorScheme.brightness == Brightness.light ? .2 : 1;
-    Color? color =
-        Color.lerp(Theme.of(context).colorScheme.primary, Colors.white, lerpT);
-
     return IconButton(
       icon: Transform(
           alignment: Alignment.center,
@@ -51,7 +47,7 @@ class _SortWidgetState extends State<SortWidget> {
             angle: math.pi,
             child: Icon(
               Icons.sort_outlined,
-              color: color,
+              color: ColorHelper.getIconColor(Theme.of(context)),
             ),
           )),
       onPressed: () {

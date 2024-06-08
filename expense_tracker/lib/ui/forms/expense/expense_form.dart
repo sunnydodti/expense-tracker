@@ -157,9 +157,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
     if (widget.formMode == FormMode.edit) {
       _highlightColor = Colors.orange[shade]!;
-      // if (theme.brightness == Brightness.light) {
-      //   _highlightColor = Color.lerp(_highlightColor, Colors.black, .07)!;
-      // }
     }
 
     return Theme(

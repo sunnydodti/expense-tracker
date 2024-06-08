@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/helpers/color_helper.dart';
 import '../../../models/enums/form_modes.dart';
 import '../../../providers/expense_provider.dart';
 import '../../screens/expense_screen.dart';
@@ -10,13 +11,8 @@ class AddExpenseFAB extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double lerpT =
-        Theme.of(context).colorScheme.brightness == Brightness.light ? .3 : 1;
-
-    Color? color =
-        Color.lerp(Theme.of(context).colorScheme.primary, Colors.white, lerpT);
     return FloatingActionButton.small(
-      backgroundColor: color,
+      backgroundColor: ColorHelper.getIconColor(Theme.of(context)),
       tooltip: 'Add New Expense',
       onPressed: () => _addExpense(context),
       child: const Icon(Icons.add, size: 20),

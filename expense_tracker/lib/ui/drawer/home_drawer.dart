@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../data/helpers/color_helper.dart';
 import '../../data/helpers/navigation_helper.dart';
 import '../screens/category_screen.dart';
 import '../screens/settings/settings_screen.dart';
@@ -20,28 +21,16 @@ class HomeDrawerState extends State<HomeDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData theme =Theme.of(context);
-    Brightness brightness = Theme.of(context).colorScheme.brightness;
-
-    double drawerLerpT =
-        brightness == Brightness.light ? .6 : .1;
-    double headerLerpT =
-        brightness == Brightness.light ? .8 : .13;
-
-    Color? headerColor =
-        Color.lerp(theme.colorScheme.primary, Colors.white, drawerLerpT);
-    Color? drawerColor =
-        Color.lerp(theme.colorScheme.primary, Colors.white, headerLerpT);
-
+    ThemeData theme = Theme.of(context);
     return Drawer(
-      backgroundColor: drawerColor,
+      backgroundColor: ColorHelper.getBackgroundColor(theme),
       width: 250,
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
             decoration: BoxDecoration(
-              color: headerColor,
+              color: ColorHelper.getTileColor(theme),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/helpers/color_helper.dart';
 import '../../../data/helpers/navigation_helper.dart';
 import '../../../models/expense.dart';
 import '../../../providers/expense_items_provider.dart';
@@ -30,11 +31,6 @@ class _ExpenseTileState extends State<ExpenseTile> {
 
   @override
   Widget build(BuildContext context) {
-    double lerpT =
-        Theme.of(context).colorScheme.brightness == Brightness.light ? .7 : .1;
-    Color? color =
-        Color.lerp(Theme.of(context).colorScheme.primary, Colors.white, lerpT);
-
     return GestureDetector(
       onLongPressStart: (details) =>
           expenseProvider.showExpensePopup(widget.expense),
@@ -45,7 +41,7 @@ class _ExpenseTileState extends State<ExpenseTile> {
       onTap: _buildBottomSheet,
       onDoubleTap: widget.editCallBack,
       child: Card(
-        color: color,
+        color: ColorHelper.getTileColor(Theme.of(context)),
         margin: const EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
         child: _buildExpenseTile(),
       ),

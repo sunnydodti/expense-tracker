@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/helpers/color_helper.dart';
 import '../../data/helpers/navigation_helper.dart';
 import '../../models/enums/form_modes.dart';
 import '../../models/expense.dart';
@@ -16,17 +17,10 @@ class ExpensePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double backgroundLerpT =
-        Theme.of(context).colorScheme.brightness == Brightness.light
-            ? .85
-            : .05;
-    double appBarLerpT =
-        Theme.of(context).colorScheme.brightness == Brightness.light ? .1 : 0;
+    ThemeData theme = Theme.of(context);
 
-    Color? backgroundColor = Color.lerp(
-        Theme.of(context).colorScheme.primary, Colors.white, backgroundLerpT);
-    Color? appBarColor = Color.lerp(
-        Theme.of(context).colorScheme.primary, Colors.white, appBarLerpT);
+    Color? backgroundColor = ColorHelper.getBackgroundColor(theme);
+    Color? appBarColor = ColorHelper.getAppBarColor(theme);
 
     return WillPopScope(
       onWillPop: () => _navigateBackWithBool(context),

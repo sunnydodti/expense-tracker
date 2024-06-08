@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/helpers/color_helper.dart';
 import '../../../providers/sort_filter_provider.dart';
 import 'filter_widget.dart';
 import 'sort_widget.dart';
@@ -24,11 +25,8 @@ class _SortFilterTileState extends State<SortFilterTile> {
 
   @override
   Widget build(BuildContext context) {
-    double lerpT =
-        Theme.of(context).colorScheme.brightness == Brightness.light ? .7 : .1;
     return Card(
-      color: Color.lerp(
-          Theme.of(context).colorScheme.primary, Colors.white, lerpT),
+      color: ColorHelper.getTileColor(Theme.of(context)),
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

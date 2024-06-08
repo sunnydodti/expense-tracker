@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/helpers/color_helper.dart';
 import '../../../data/helpers/debug_helper.dart';
 import '../../../data/helpers/navigation_helper.dart';
 import '../../../providers/expense_provider.dart';
@@ -25,8 +26,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    double lerpT =
-        Theme.of(context).colorScheme.brightness == Brightness.light ? .1 : 0;
+    ;
 
     Future refreshExpenses(BuildContext context) async {
       Provider.of<ExpenseProvider>(context, listen: false).refreshExpenses();
@@ -54,8 +54,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
         };
 
     return AppBar(
-      backgroundColor: Color.lerp(
-          Theme.of(context).colorScheme.primary, Colors.white, lerpT),
+      backgroundColor: ColorHelper.getAppBarColor(Theme.of(context)),
       centerTitle: centerTitle,
       title: Text(
         title,
