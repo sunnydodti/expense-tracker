@@ -15,35 +15,33 @@ class PreferencesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<SettingsProvider>(
-      builder: (context, settingsProvider, child) => Scaffold(
-        body: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          children: [
-            const ExpandableListTile(
-              title: 'some preference',
-              content: Placeholder(),
+      builder: (context, settingsProvider, child) => ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        children: [
+          const ExpandableListTile(
+            title: 'some preference',
+            content: Placeholder(),
+          ),
+          const ExpandableListTile(
+            title: 'some preference',
+            content: Placeholder(),
+          ),
+          SwitchListTile(
+            title: const Text('Preferences'),
+            value: false,
+            onChanged: (bool value) {},
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('Default Currency'),
+                _buildDefaultCurrencySelector(settingsProvider),
+              ],
             ),
-            const ExpandableListTile(
-              title: 'some preference',
-              content: Placeholder(),
-            ),
-            SwitchListTile(
-              title: const Text('Preferences'),
-              value: false,
-              onChanged: (bool value) {},
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Default Currency'),
-                  _buildDefaultCurrencySelector(settingsProvider),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

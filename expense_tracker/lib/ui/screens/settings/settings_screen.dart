@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../data/helpers/color_helper.dart';
 import '../../../data/helpers/navigation_helper.dart';
 import '../../dialogs/delete_all_dialog.dart';
 import '../../forms/export_form.dart';
@@ -32,28 +33,29 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<void>(
-      future: _refreshSettings(context),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          return Scaffold(
-            appBar: AppBar(
-              leading: SafeArea(
-                  child: BackButton(
-                onPressed: () => NavigationHelper.navigateBack(context),
-              )),
-              centerTitle: true,
-              title: Text(widget.title, textScaleFactor: 0.9),
-              backgroundColor: Colors.black,
-            ),
-            body: Column(
-              children: [
-                Expanded(
-                  child: ListView(
+    return Scaffold(
+      backgroundColor: ColorHelper.getBackgroundColor(Theme.of(context)),
+      appBar: AppBar(
+        leading: SafeArea(
+            child: BackButton(
+          onPressed: () => NavigationHelper.navigateBack(context),
+        )),
+        centerTitle: true,
+        title: Text(widget.title, textScaleFactor: 0.9),
+        backgroundColor: ColorHelper.getAppBarColor(Theme.of(context)),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: FutureBuilder<void>(
+              future: _refreshSettings(context),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return ListView(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     children: [
                       const ExpandableListTile(
@@ -67,13 +69,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             context, const PreferencesSettingsScreen()),
                       )
                     ],
-                  ),
-                )
-              ],
+                  );
+                }
+              },
             ),
-          );
-        }
-      },
+          )
+        ],
+      ),
     );
   }
 }
