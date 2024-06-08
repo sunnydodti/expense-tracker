@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 
+import '../../data/helpers/color_helper.dart';
 import '../../data/helpers/navigation_helper.dart';
 import '../../models/expense.dart';
 
@@ -35,12 +36,12 @@ class ExpenseBottomSheet {
     return Container(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        color: Colors.grey.shade900,
+        color: ColorHelper.getTileColor(Theme.of(context)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildDecoration(),
+          _buildDecoration(context),
           Text(expense.title),
           const Divider(),
           _buildOptionList(
@@ -50,15 +51,15 @@ class ExpenseBottomSheet {
     );
   }
 
-  static Padding _buildDecoration() {
+  static Padding _buildDecoration(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Container(
         height: 5,
         width: 50,
-        decoration: const BoxDecoration(
-            color: Colors.grey,
-            borderRadius: BorderRadius.all(Radius.circular(5))),
+        decoration: BoxDecoration(
+            color: ColorHelper.getIconColor(Theme.of(context)),
+            borderRadius: const BorderRadius.all(Radius.circular(5))),
       ),
     );
   }
