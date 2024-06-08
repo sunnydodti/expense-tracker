@@ -3,7 +3,6 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/settings_provider.dart';
-import '../expandable_list_tile.dart';
 import '../form_widgets.dart';
 
 class PreferencesList extends StatelessWidget {
@@ -18,19 +17,6 @@ class PreferencesList extends StatelessWidget {
       builder: (context, settingsProvider, child) => ListView(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         children: [
-          const ExpandableListTile(
-            title: 'some preference',
-            content: Placeholder(),
-          ),
-          const ExpandableListTile(
-            title: 'some preference',
-            content: Placeholder(),
-          ),
-          SwitchListTile(
-            title: const Text('Preferences'),
-            value: false,
-            onChanged: (bool value) {},
-          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15),
             child: Row(
