@@ -6,6 +6,7 @@ import '../../dialogs/delete_all_dialog.dart';
 import '../../forms/export_form.dart';
 import '../../forms/import_form.dart';
 import '../../widgets/expandable_list_tile.dart';
+import '../../widgets/theme_selector.dart';
 import 'preferences_settings_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -67,7 +68,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         title: const Text('Preferences'),
                         onTap: () => NavigationHelper.navigateToScreen(
                             context, const PreferencesSettingsScreen()),
-                      )
+                      ),
+                      const ThemeSelector()
+                      // buildThemeDropdown(context)
                     ],
                   );
                 }

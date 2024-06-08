@@ -1,5 +1,22 @@
 import 'package:flutter/material.dart';
 
+import '../../models/enums/app_theme.dart';
+
+final Map<AppTheme, ThemeData> appThemeMap = {
+  AppTheme.red: redTheme,
+  AppTheme.orange: orangeTheme,
+  AppTheme.pink: pinkTheme,
+  AppTheme.purple: purpleTheme,
+  AppTheme.green: greenTheme,
+  AppTheme.lightGreen: lightGreenTheme,
+  AppTheme.teal: tealTheme,
+  AppTheme.cyan: cyanTheme,
+  AppTheme.blue: blueTheme,
+  AppTheme.indigo: indigoTheme,
+  AppTheme.black: blackTheme,
+  AppTheme.custom: customTheme,
+};
+
 final ThemeData redTheme =
     ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.red));
 
@@ -43,9 +60,6 @@ final ThemeData blackTheme = ThemeData(
     background: Colors.black,
   ),
 );
-
-// final ThemeData blackTheme =
-//     ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.black));
 
 final ThemeData customTheme = ThemeData(
   colorScheme: const ColorScheme.light(

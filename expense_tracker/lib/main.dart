@@ -43,11 +43,13 @@ class MyApp extends StatelessWidget {
         builder: (context, themeProvider, _) {
           return MaterialApp(
             key: navigatorKey,
-            theme: themeProvider.currentTheme,
-            home: const ResponsiveLayout(
-                mobileScaffold: MobileScaffold(),
-                tabletScaffold: TabletScaffold(),
-                desktopScaffold: DesktopScaffold()),
+            theme: themeProvider.themeData,
+            home: Consumer<ThemeProvider>(
+                builder: (context, themeProvider, child) =>
+                    const ResponsiveLayout(
+                        mobileScaffold: MobileScaffold(),
+                        tabletScaffold: TabletScaffold(),
+                        desktopScaffold: DesktopScaffold())),
           );
         },
       ),
