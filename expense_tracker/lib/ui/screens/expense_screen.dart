@@ -16,20 +16,42 @@ class ExpensePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double backgroundLerpT =
+        Theme.of(context).colorScheme.brightness == Brightness.light
+            ? .85
+            : .05;
+    double appBarLerpT =
+        Theme.of(context).colorScheme.brightness == Brightness.light ? .1 : 0;
+
+    Color? backgroundColor = Color.lerp(
+        Theme.of(context).colorScheme.primary, Colors.white, backgroundLerpT);
+    Color? appBarColor = Color.lerp(
+        Theme.of(context).colorScheme.primary, Colors.white, appBarLerpT);
+
     return WillPopScope(
       onWillPop: () => _navigateBackWithBool(context),
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: backgroundColor,
         appBar: AppBar(
+          backgroundColor: appBarColor,
           leading: SafeArea(
             child: BackButton(
               onPressed: () => _navigateBackWithBool(context),
             ),
           ),
           centerTitle: true,
-          title: Text("${formMode.name.replaceFirst(
-            RegExp(r'^\w'),
-            formMode.name[0].toUpperCase(),
-          )} Expense"),
+          title: Text(
+            "${formMode.name.replaceFirst(
+              RegExp(r'^\w'),
+              formMode.name[0].toUpperCase(),
+            )} Expense",
+            textScaleFactor: .85,
+            overflow: TextOverflow.fade,
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
           actions: [
             IconButton(
               icon: const Icon(Icons.check),
@@ -39,6 +61,7 @@ class ExpensePage extends StatelessWidget {
           ],
         ),
         body: ExpenseForm(formMode: formMode, expense: expense),
+        // body: const Placeholder(),
       ),
     );
   }

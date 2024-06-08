@@ -42,9 +42,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
   //region Section 1: formData
   late Map<String, String> _currencies;
   late String _defaultCurrency;
-  late Color _highlightColor;
   late bool _containsExpenseItems;
 
+  Color _highlightColor = Colors.grey;
   List<ExpenseCategory> _categories = [];
   ExpenseCategory? _selectedCategory;
 
@@ -71,13 +71,11 @@ class _ExpenseFormState extends State<ExpenseForm> {
     super.initState();
     _currencies = FormConstants.expense.currencies;
 
-    _highlightColor = Colors.green.shade300;
     _containsExpenseItems = false;
 
     if (widget.formMode == FormMode.edit) {
       isFirstValidExpenseItemsToggle = false;
       _populateFormFieldsForEdit(widget.expense!);
-      _highlightColor = Colors.orange.shade300;
     } else {
       _populateFormFieldsWithDefaults();
     }
@@ -151,53 +149,61 @@ class _ExpenseFormState extends State<ExpenseForm> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    int shade = 300;
+    if (theme.brightness == Brightness.light) {
+      shade = 900;
+    }
+    _highlightColor = Colors.green[shade]!;
 
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: Theme(
-        data: theme.copyWith(
-            textTheme: Theme.of(context).textTheme.apply(
-                  fontSizeFactor: .9,
-                ),
-            inputDecorationTheme: InputDecorationTheme(
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
-              focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                color: _highlightColor,
-              )),
-              prefixIconColor: _highlightColor,
-              suffixIconColor: _highlightColor,
-              labelStyle: TextStyle(
+    if (widget.formMode == FormMode.edit) {
+      _highlightColor = Colors.orange[shade]!;
+      // if (theme.brightness == Brightness.light) {
+      //   _highlightColor = Color.lerp(_highlightColor, Colors.black, .07)!;
+      // }
+    }
+
+    return Theme(
+      data: theme.copyWith(
+          textTheme: theme.textTheme.apply(
+            fontSizeFactor: .9,
+          ),
+          inputDecorationTheme: InputDecorationTheme(
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
                 color: _highlightColor,
               ),
-            )),
-        child: _buildExpenseFormFields(context),
-      ),
+            ),
+            prefixIconColor: _highlightColor,
+            suffixIconColor: _highlightColor,
+            labelStyle: TextStyle(
+              color: _highlightColor,
+              fontWeight: FontWeight.w500,
+            ),
+          )),
+      child: _buildExpenseFormFields(context),
     );
   }
 
   //region Section 5: formFields
-  Container _buildExpenseFormFields(BuildContext context) {
-    return Container(
-      color: Colors.grey.shade900,
-      child: Form(
-        key: _formKey,
-        child: ListView(
-          children: [
-            _buildTitleField(),
-            _buildAmountField(),
-            _buildTransactionTypeField(),
-            _buildDateField(),
-            _buildCategoryField(),
-            _buildTagsField(),
-            _buildNotesField(),
-            _buildExpenseItemsToggle(),
-            if (_containsExpenseItems) _buildExpenseItemForm(),
-            if (_containsExpenseItems) _buildExpenseItemsList(),
-            _buildSubmitButton(),
-          ],
-        ),
+  Form _buildExpenseFormFields(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: ListView(
+        children: [
+          _buildTitleField(),
+          _buildAmountField(),
+          _buildTransactionTypeField(),
+          _buildDateField(),
+          _buildCategoryField(),
+          _buildTagsField(),
+          _buildNotesField(),
+          _buildExpenseItemsToggle(),
+          if (_containsExpenseItems) _buildExpenseItemForm(),
+          if (_containsExpenseItems) _buildExpenseItemsList(),
+          _buildSubmitButton(),
+        ],
       ),
     );
   }
