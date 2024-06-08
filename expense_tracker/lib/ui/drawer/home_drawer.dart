@@ -20,15 +20,30 @@ class HomeDrawerState extends State<HomeDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme =Theme.of(context);
+    Brightness brightness = Theme.of(context).colorScheme.brightness;
+
+    double drawerLerpT =
+        brightness == Brightness.light ? .6 : .1;
+    double headerLerpT =
+        brightness == Brightness.light ? .8 : .13;
+
+    Color? headerColor =
+        Color.lerp(theme.colorScheme.primary, Colors.white, drawerLerpT);
+    Color? drawerColor =
+        Color.lerp(theme.colorScheme.primary, Colors.white, headerLerpT);
+
     return Drawer(
+      backgroundColor: drawerColor,
+      width: 250,
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          const DrawerHeader(
+          DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: headerColor,
             ),
-            child: Text('Menu'),
+            child: const Text('Menu'),
           ),
           ListTile(
             title: const Text('Categories'),
