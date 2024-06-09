@@ -40,12 +40,13 @@ class _ExpensePopupState extends State<ExpensePopup> {
 
   @override
   Widget build(BuildContext context) {
+    Brightness brightness = Theme.of(context).brightness;
     return Stack(
       children: [
         BlurScreen(
             onTap: widget.onOutsideTap ?? defaultOnTap,
             color: getBlurColor(),
-            colorOpacity: .1),
+            colorOpacity: (brightness == Brightness.dark) ? .1 : .15),
         ScaleUp(child: buildExpensePopup(context)),
       ],
     );
