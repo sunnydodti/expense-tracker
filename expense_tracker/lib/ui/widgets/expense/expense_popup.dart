@@ -93,52 +93,86 @@ class _ExpensePopupState extends State<ExpensePopup> {
 
   Container _buildAmountRow(Expense expense, int i) {
     return ExpenseWidgets.detail.buildKeyValRow(
-        "Amount", getExpenseAmountText(expense), i,
-        valueColor: getAmountColor(expense.transactionType));
+      "Amount",
+      getExpenseAmountText(expense),
+      i,
+      context,
+      valueColor: getAmountColor(expense.transactionType),
+    );
   }
 
   Container _buildDateRow(Expense expense, int i) {
     return ExpenseWidgets.detail.buildKeyValRow(
-        "Date", DateFormat("dd MMM yyy").format(expense.date), i);
+      "Date",
+      DateFormat("dd MMM yyy").format(expense.date),
+      i,
+      context,
+    );
   }
 
   Container _buildTransactionTypeRow(Expense expense, int i) {
-    return ExpenseWidgets.detail
-        .buildKeyValRow("Transaction Type", expense.transactionType, i);
+    return ExpenseWidgets.detail.buildKeyValRow(
+      "Transaction Type",
+      expense.transactionType,
+      i,
+      context,
+    );
   }
 
   Container _buildCategoryRow(Expense expense, int i) {
-    return ExpenseWidgets.detail
-        .buildKeyValRow("Category", expense.category, i);
+    return ExpenseWidgets.detail.buildKeyValRow(
+      "Category",
+      expense.category,
+      i,
+      context,
+    );
   }
 
   Container _buildTagsRow(Expense expense, int i) {
-    return ExpenseWidgets.detail.buildKeyValRow("Tags", expense.tags!, i);
+    return ExpenseWidgets.detail.buildKeyValRow(
+      "Tags",
+      expense.tags!,
+      i,
+      context,
+    );
   }
 
   Container _buildCreatedDateRow(Expense expense, int i) {
     return ExpenseWidgets.detail.buildKeyValRow("Created",
-        DateFormat("HH:mm | dd MMM yyy").format(expense.createdAt), i);
+      DateFormat("HH:mm | dd MMM yyy").format(expense.createdAt),
+      i,
+      context,
+    );
   }
 
   Container _buildModifiedDateRow(Expense expense, int i) {
     return ExpenseWidgets.detail.buildKeyValRow("Modified",
-        DateFormat("HH:mm | dd MMM yyy").format(expense.modifiedAt), i);
+      DateFormat("HH:mm | dd MMM yyy").format(expense.modifiedAt),
+      i,
+      context,
+    );
   }
 
   Container _buildNotesColumn(Expense expense, int i) {
-    return ExpenseWidgets.detail
-        .buildNotesKeyValColumn("Notes", expense.note, i);
+    return ExpenseWidgets.detail.buildNotesKeyValColumn(
+      "Notes",
+      expense.note,
+      i,
+      context,
+    );
   }
 
   Container _buildExpenseItemsColumn(Expense expense, int i) {
-    return ExpenseWidgets.detail
-        .buildExpenseItemsColumn(expense, _refreshExpenseItems, i);
+    return ExpenseWidgets.detail.buildExpenseItemsColumn(
+      expense,
+      _refreshExpenseItems,
+      i,
+      context,
+    );
   }
 
   Future<List<ExpenseItemFormModel>> _refreshExpenseItems(int expenseId) async {
     await expenseItemsProvider.fetchExpenseItems(expenseId: expenseId);
-    // await Future.delayed(const Duration(milliseconds: 300));
     return expenseItemsProvider.expenseItems;
   }
 

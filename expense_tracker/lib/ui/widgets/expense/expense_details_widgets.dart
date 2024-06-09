@@ -17,20 +17,21 @@ class ExpenseDetailsWidgets {
         right: paddingHorizontal);
   }
 
-  Color _getColor(int i) {
-    // Brightness brightness = Theme.of(context).brightness;
-    Brightness brightness = Brightness.dark;
-    double opacity0 = (brightness == Brightness.dark) ? .05 : 9;
-    double opacity1 = .1;
+  Color _getColor(int i, BuildContext context) {
+    ThemeData theme = Theme.of(context);
+    Brightness brightness = theme.brightness;
+    double opacity0 = (brightness == Brightness.dark) ? .05 : .1;
+    double opacity1 = (brightness == Brightness.dark) ? .1 : .3;
     Color rowColor = (i == 1)
         ? Colors.white10.withOpacity(opacity1)
         : Colors.white10.withOpacity(opacity0);
     return rowColor;
   }
 
-  Container buildKeyValRow(String key, String value, int i,
+  Container buildKeyValRow(
+      String key, String value, int i, BuildContext context,
       {Color? valueColor}) {
-    Color rowColor = _getColor(i);
+    Color rowColor = _getColor(i, context);
     return Container(
       color: rowColor,
       padding: _buildPadding(),
@@ -49,8 +50,13 @@ class ExpenseDetailsWidgets {
     );
   }
 
-  Container buildNotesKeyValColumn(String key, String? value, int i) {
-    Color rowColor = _getColor(i);
+  Container buildNotesKeyValColumn(
+    String key,
+    String? value,
+    int i,
+    BuildContext context,
+  ) {
+    Color rowColor = _getColor(i, context);
     return Container(
       width: double.infinity,
       color: rowColor,
@@ -75,9 +81,12 @@ class ExpenseDetailsWidgets {
   }
 
   Container buildExpenseItemsColumn(
-      Expense expense, Function(int exenseId) fetchMethod, int i) {
-    Color rowColor = Colors.white10.withOpacity(.1);
-    if (i == 1) rowColor = Colors.white10.withOpacity(.05);
+    Expense expense,
+    Function(int exenseId) fetchMethod,
+    int i,
+    BuildContext context,
+  ) {
+    Color rowColor = _getColor(i, context);
     return Container(
       width: double.infinity,
       color: rowColor,
