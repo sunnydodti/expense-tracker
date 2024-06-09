@@ -46,7 +46,7 @@ class _ExpensePopupState extends State<ExpensePopup> {
         BlurScreen(
             onTap: widget.onOutsideTap ?? defaultOnTap,
             color: getBlurColor(),
-            colorOpacity: (brightness == Brightness.dark) ? .1 : .15),
+            colorOpacity: (brightness == Brightness.dark) ? .03 : .15),
         ScaleUp(child: buildExpensePopup(context)),
       ],
     );
