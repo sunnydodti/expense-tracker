@@ -4,6 +4,7 @@ import 'package:logger/logger.dart';
 import '../data/constants/form_constants.dart';
 import '../data/constants/shared_preferences_constants.dart';
 import '../data/helpers/shared_preferences_helper.dart';
+import '../models/enums/app_theme.dart';
 import '../models/enums/sort_criteria.dart';
 
 class SharedPreferencesService {
@@ -48,6 +49,7 @@ class SharedPreferencesService {
       await initializeFilterPreferences();
       await initializeSettingsPreferences();
       await initializeSummaryPreferences();
+      await initializeThemePreferences();
     }
   }
 
@@ -74,5 +76,10 @@ class SharedPreferencesService {
 
   Future<void> initializeSummaryPreferences() async {
     setBoolPreference(SharedPreferencesConstants.summary.HIDE_TOTAL_KEY, false);
+  }
+
+  Future<void> initializeThemePreferences() async {
+    setStringPreference(
+        SharedPreferencesConstants.theme.APP_THEME_KEY, AppTheme.black.name);
   }
 }

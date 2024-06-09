@@ -20,12 +20,26 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await SharedPreferencesService().initializeSharedPreferences();
-
+  bool refreshTheme = true;
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool refreshTheme = true;
+
+  refreshAppTheme(ThemeProvider themeProvider) async {
+    if (refreshTheme) {
+      await themeProvider.refreshTheme();
+      refreshTheme = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,15 +55,24 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {
-          return MaterialApp(
-            key: navigatorKey,
-            theme: themeProvider.themeData,
-            home: Consumer<ThemeProvider>(
-                builder: (context, themeProvider, child) =>
-                    const ResponsiveLayout(
-                        mobileScaffold: MobileScaffold(),
-                        tabletScaffold: TabletScaffold(),
-                        desktopScaffold: DesktopScaffold())),
+          return FutureBuilder<void>(
+            future: refreshAppTheme(themeProvider),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                return MaterialApp(
+                  key: navigatorKey,
+                  theme: themeProvider.themeData,
+                  home: const ResponsiveLayout(
+                      mobileScaffold: MobileScaffold(),
+                      tabletScaffold: TabletScaffold(),
+                      desktopScaffold: DesktopScaffold()),
+                );
+              }
+            },
           );
         },
       ),

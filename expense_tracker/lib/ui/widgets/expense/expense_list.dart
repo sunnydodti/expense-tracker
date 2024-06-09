@@ -61,15 +61,6 @@ class ExpenseList extends StatelessWidget {
                           left: 0,
                           right: 0,
                           child: ExpenseSwipeInfoWidget()),
-                    // if (expenseProvider.showPopup)
-                    //   OverflowBox(
-                    //     minWidth: 150,
-                    //     minHeight: 150,
-                    //     maxWidth: 300,
-                    //     maxHeight: MediaQuery.of(context).size.height,
-                    //     child: ExpensePopup(
-                    //         expense: expenseProvider.popUpExpense!),
-                    //   ),
                   ],
                 ),
               );

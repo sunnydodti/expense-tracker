@@ -4,6 +4,7 @@ class SharedPreferencesConstants {
   static FilterPreferencesConstants filter = FilterPreferencesConstants();
   static SettingsPreferencesConstants settings = SettingsPreferencesConstants();
   static SummaryPreferencesConstants summary = SummaryPreferencesConstants();
+  static AppThemeConstants theme = AppThemeConstants();
 }
 
 class SortPreferencesConstants {
@@ -25,4 +26,8 @@ class SettingsPreferencesConstants {
 
 class SummaryPreferencesConstants {
   final String HIDE_TOTAL_KEY = "hide_total";
+}
+
+class AppThemeConstants {
+  final String APP_THEME_KEY = "app_theme";
 }
