@@ -55,11 +55,16 @@ final ThemeData blackTheme = ThemeData(
     seedColor: Colors.black,
     primary: Colors.black,
     brightness: Brightness.dark,
-    secondary: Colors.black87,
-    tertiary: Colors.black54,
-    background: Colors.black,
   ),
-);
+    textSelectionTheme: const TextSelectionThemeData(
+      cursorColor: Colors.white,
+      selectionColor: Colors.white54,
+      selectionHandleColor: Colors.white,
+    ),
+    expansionTileTheme: const ExpansionTileThemeData(
+      textColor: Colors.white,
+      iconColor: Colors.white,
+    ));
 
 final ThemeData customTheme = ThemeData(
   colorScheme: const ColorScheme.light(
