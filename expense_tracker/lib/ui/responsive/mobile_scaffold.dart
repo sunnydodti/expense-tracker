@@ -22,7 +22,7 @@ class MobileScaffold extends StatelessWidget {
         children: const [
           ExpenseSummary(),
           SortFilterTile(),
-          Expanded(child: ExpenseList())
+          Expanded(child: ExpenseList()),
         ],
       ),
       floatingActionButton: const AddExpenseFAB(),

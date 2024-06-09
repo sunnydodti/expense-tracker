@@ -5,7 +5,6 @@ import '../../../providers/expense_provider.dart';
 import '../empty_list_widget.dart';
 import '../expense_swipe_info_widget.dart';
 import 'dismissible_expense_tile.dart';
-import 'expense_popup.dart';
 
 class ExpenseList extends StatelessWidget {
   const ExpenseList({Key? key}) : super(key: key);
@@ -62,8 +61,15 @@ class ExpenseList extends StatelessWidget {
                           left: 0,
                           right: 0,
                           child: ExpenseSwipeInfoWidget()),
-                    if (expenseProvider.showPopup)
-                      ExpensePopup(expense: expenseProvider.popUpExpense!),
+                    // if (expenseProvider.showPopup)
+                    //   OverflowBox(
+                    //     minWidth: 150,
+                    //     minHeight: 150,
+                    //     maxWidth: 300,
+                    //     maxHeight: MediaQuery.of(context).size.height,
+                    //     child: ExpensePopup(
+                    //         expense: expenseProvider.popUpExpense!),
+                    //   ),
                   ],
                 ),
               );

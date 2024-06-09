@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/helpers/color_helper.dart';
 import '../../../models/enums/transaction_type.dart';
 import '../../../models/expense.dart';
 import '../../../models/expense_item.dart';
@@ -27,40 +28,42 @@ class _ExpensePopupState extends State<ExpensePopup> {
 
   defaultOnTap() {}
 
+  Color getBlurColor() {
+    if (widget.expense.transactionType == TransactionType.expense.name) {
+      return Colors.red;
+    }
+    if (widget.expense.transactionType == TransactionType.income.name) {
+      return Colors.green;
+    }
+    return Colors.blue;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        BlurScreen(onTap: widget.onOutsideTap ?? defaultOnTap),
-        ScaleUp(child: buildExpensePopup()),
+        BlurScreen(
+            onTap: widget.onOutsideTap ?? defaultOnTap,
+            color: getBlurColor(),
+            colorOpacity: .1),
+        ScaleUp(child: buildExpensePopup(context)),
       ],
     );
   }
 
-  Container buildExpensePopup() {
-    return Container(
-      margin: const EdgeInsets.only(left: 40, right: 40, top: 75),
+  Center buildExpensePopup(BuildContext context) {
+    return Center(
       child: Card(
-        color: getBorderColor(),
-        child: Container(
+        color: ColorHelper.getBackgroundColor(Theme.of(context)),
+        margin: const EdgeInsets.all(10),
+        child: Card(
           margin: const EdgeInsets.all(10),
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-          color: Colors.grey.shade800,
+          // padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+          color: ColorHelper.getTileColor(Theme.of(context)),
           child: buildExpensePopUpContent(widget.expense),
         ),
       ),
     );
-  }
-
-  Color getBorderColor() {
-    Color color = Colors.grey.shade700;
-    if (widget.expense.transactionType == TransactionType.expense.name) {
-      return color.withRed(130);
-    }
-    if (widget.expense.transactionType == TransactionType.income.name) {
-      return color.withGreen(110);
-    }
-    return color.withBlue(110);
   }
 
   Column buildExpensePopUpContent(Expense expense) {

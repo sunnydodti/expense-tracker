@@ -18,8 +18,13 @@ class ExpenseDetailsWidgets {
   }
 
   Color _getColor(int i) {
-    Color rowColor = Colors.white10.withOpacity(.1);
-    if (i == 1) rowColor = Colors.white10.withOpacity(.05);
+    // Brightness brightness = Theme.of(context).brightness;
+    Brightness brightness = Brightness.dark;
+    double opacity0 = (brightness == Brightness.dark) ? .05 : 1;
+    double opacity1 = .1;
+    Color rowColor = (i == 1)
+        ? Colors.white10.withOpacity(opacity1)
+        : Colors.white10.withOpacity(opacity0);
     return rowColor;
   }
 

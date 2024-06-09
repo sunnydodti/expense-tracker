@@ -28,13 +28,28 @@ class ExpenseTile extends StatefulWidget {
 
 class _ExpenseTileState extends State<ExpenseTile> {
   bool showPopup = false;
+  OverlayEntry? overlayEntry;
+
+  void showOverlay() {
+    overlayEntry = OverlayEntry(
+      builder: (context) => ExpensePopup(expense: widget.expense),
+    );
+    Overlay.of(context)?.insert(overlayEntry!);
+  }
+
+  void hideOverlay() {
+    overlayEntry?.remove();
+    overlayEntry = null;
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPressStart: (details) =>
-          expenseProvider.showExpensePopup(widget.expense),
+          // expenseProvider.showExpensePopup(widget.expense),
+          showOverlay(),
       onLongPressEnd: (details) {
+        hideOverlay();
         expenseItemsProvider.clear();
         expenseProvider.hideExpensePopup();
       },
