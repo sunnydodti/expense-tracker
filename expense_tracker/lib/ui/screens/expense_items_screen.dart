@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/helpers/color_helper.dart';
 import '../../data/helpers/navigation_helper.dart';
 import '../../models/expense_item.dart';
 import '../../providers/expense_items_provider.dart';
@@ -34,14 +35,15 @@ class _ExpenseItemsScreenState extends State<ExpenseItemsScreen> {
     );
   }
 
-  Container buildExpenseItemsScreen() {
+  Card buildExpenseItemsScreen() {
     String title = "Expense Items";
     if (widget.expenseTitle.isNotEmpty) title += " for ${widget.expenseTitle}";
-    return Container(
-      color: Colors.grey.shade800,
+    return Card(
+      color: ColorHelper.getTileColor(Theme.of(context)),
       margin: const EdgeInsets.only(left: 40, right: 40, top: 90),
-      padding: const EdgeInsets.all(10),
       child: Card(
+        color: ColorHelper.getBackgroundColor(Theme.of(context)),
+        margin: const EdgeInsets.all(10),
         child: ListView(
           shrinkWrap: true,
           children: <Widget>[
