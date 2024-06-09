@@ -98,7 +98,7 @@ class _ExpensePopupState extends State<ExpensePopup> {
       getExpenseAmountText(expense),
       i,
       context,
-      valueColor: getAmountColor(expense.transactionType),
+      valueColor: getAmountColor(expense.transactionType, context),
     );
   }
 

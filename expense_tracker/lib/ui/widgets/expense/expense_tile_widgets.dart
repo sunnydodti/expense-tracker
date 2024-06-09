@@ -88,11 +88,11 @@ class ExpenseTileWidgets {
     );
   }
 
-  Padding amountWidget(Expense expense) {
-    return _getAmount(expense);
+  Padding amountWidget(Expense expense, BuildContext context) {
+    return _getAmount(expense, context);
   }
 
-  Padding _getAmount(Expense expense) {
+  Padding _getAmount(Expense expense, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 20),
       child: Text(
@@ -101,7 +101,7 @@ class ExpenseTileWidgets {
         textAlign: TextAlign.end,
         style: TextStyle(
           fontWeight: FontWeight.w500,
-          color: getAmountColor(expense.transactionType),
+          color: getAmountColor(expense.transactionType, context),
         ),
       ),
     );

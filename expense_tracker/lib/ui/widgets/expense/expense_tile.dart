@@ -102,7 +102,7 @@ class _ExpenseTileState extends State<ExpenseTile> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               ExpenseWidgets.tile.noteWidget(widget.expense),
-              ExpenseWidgets.tile.amountWidget(widget.expense),
+              ExpenseWidgets.tile.amountWidget(widget.expense, context),
             ],
           ),
         ],

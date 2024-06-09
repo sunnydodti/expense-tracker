@@ -112,13 +112,13 @@ class ExpenseDetailsWidgets {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
-            return buildExpenseItemsList(snapshot.data, expense);
+            return buildExpenseItemsList(snapshot.data, expense, context);
           }
         });
   }
 
-  Container buildExpenseItemsList(
-      List<ExpenseItemFormModel> expenseItems, Expense expense) {
+  Container buildExpenseItemsList(List<ExpenseItemFormModel> expenseItems,
+      Expense expense, BuildContext context) {
     return Container(
       constraints: const BoxConstraints(maxHeight: 250),
       child: SingleChildScrollView(
@@ -135,7 +135,7 @@ class ExpenseDetailsWidgets {
           ],
           rows: [
             ..._buildDataRows(expenseItems),
-            _buildTotalRow(expenseItems, expense),
+            _buildTotalRow(expenseItems, expense, context),
           ],
         ),
       ),
@@ -155,11 +155,11 @@ class ExpenseDetailsWidgets {
     return dataRows.toList();
   }
 
-  DataRow _buildTotalRow(
-      List<ExpenseItemFormModel> expenseItems, Expense expense) {
+  DataRow _buildTotalRow(List<ExpenseItemFormModel> expenseItems,
+      Expense expense, BuildContext context) {
     double overallTotal =
         expenseItems.fold(0, (prev, curr) => prev + curr.total);
-    Color color = getAmountColor(expense.transactionType);
+    Color color = getAmountColor(expense.transactionType, context);
     return DataRow(cells: [
       const DataCell(
           Text('Total', style: TextStyle(fontWeight: FontWeight.bold))),

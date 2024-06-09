@@ -32,12 +32,14 @@ String getExpenseAmountWithSign(Expense expense) {
   return amountText;
 }
 
-Color getAmountColor(String transactionType) {
+Color getAmountColor(String transactionType, context) {
+  bool isBrightnessDark = Theme.of(context).brightness == Brightness.dark;
+  int shade = isBrightnessDark ? 300 : 800;
   if (transactionType == TransactionType.expense.name) {
-    return Colors.red.shade300;
+    return Colors.red[shade]!;
   }
   if (transactionType == TransactionType.income.name) {
-    return Colors.green.shade300;
+    return Colors.green[shade]!;
   }
-  return Colors.white;
+  return isBrightnessDark ? Colors.white : Colors.black;
 }
