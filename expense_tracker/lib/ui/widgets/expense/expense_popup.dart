@@ -53,14 +53,20 @@ class _ExpensePopupState extends State<ExpensePopup> {
 
   Center buildExpensePopup(BuildContext context) {
     return Center(
-      child: Card(
-        color: ColorHelper.getBackgroundColor(Theme.of(context)),
-        margin: const EdgeInsets.all(10),
-        child: Card(
-          margin: const EdgeInsets.all(10),
-          // padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-          color: ColorHelper.getTileColor(Theme.of(context)),
-          child: buildExpensePopUpContent(widget.expense),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 550),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Card(
+            color: ColorHelper.getBackgroundColor(Theme.of(context)),
+            margin: const EdgeInsets.all(10),
+            child: Card(
+              margin: const EdgeInsets.all(10),
+              // padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+              color: ColorHelper.getTileColor(Theme.of(context)),
+              child: buildExpensePopUpContent(widget.expense),
+            ),
+          ),
         ),
       ),
     );

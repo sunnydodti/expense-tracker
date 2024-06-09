@@ -20,7 +20,7 @@ class ExpenseDetailsWidgets {
   Color _getColor(int i) {
     // Brightness brightness = Theme.of(context).brightness;
     Brightness brightness = Brightness.dark;
-    double opacity0 = (brightness == Brightness.dark) ? .05 : 1;
+    double opacity0 = (brightness == Brightness.dark) ? .05 : 9;
     double opacity1 = .1;
     Color rowColor = (i == 1)
         ? Colors.white10.withOpacity(opacity1)
@@ -111,7 +111,7 @@ class ExpenseDetailsWidgets {
   Container buildExpenseItemsList(
       List<ExpenseItemFormModel> expenseItems, Expense expense) {
     return Container(
-      constraints: const BoxConstraints(maxHeight: 200),
+      constraints: const BoxConstraints(maxHeight: 250),
       child: SingleChildScrollView(
         child: DataTable(
           columnSpacing: 15,
@@ -120,8 +120,8 @@ class ExpenseDetailsWidgets {
             DataColumn(
               label: Text('Name'),
             ),
-            DataColumn(label: Text('Amount')),
-            DataColumn(label: Text('Quantity')),
+            DataColumn(label: Text('Amt')),
+            DataColumn(label: Text('Qty')),
             DataColumn(label: Text('Total')),
           ],
           rows: [
