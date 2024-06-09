@@ -23,6 +23,8 @@ class _BlurScreenState extends State<BlurScreen> {
   late double blurSigmaX;
   late double blurSigmaY;
 
+  double colorOpacity = 0;
+
   @override
   void initState() {
     super.initState();
@@ -33,10 +35,11 @@ class _BlurScreenState extends State<BlurScreen> {
   @override
   Widget build(BuildContext context) {
     if (widget.animate) animateBlur();
+    animateColor();
     return GestureDetector(
       onTap: widget.onTap,
       child: Container(
-        color: widget.color.withOpacity(widget.colorOpacity),
+        color: widget.color.withOpacity(colorOpacity),
         child: BackdropFilter(
           filter: ImageFilter.blur(
             sigmaX: blurSigmaX,
@@ -55,6 +58,17 @@ class _BlurScreenState extends State<BlurScreen> {
         setState(() {
           blurSigmaX += .01;
           blurSigmaY += .01;
+        });
+      }
+    }
+  }
+
+  void animateColor() async {
+    while (colorOpacity < widget.colorOpacity) {
+      await Future.delayed(const Duration(milliseconds: 50));
+      if (mounted) {
+        setState(() {
+          colorOpacity += .001;
         });
       }
     }
