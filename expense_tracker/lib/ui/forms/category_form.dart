@@ -44,15 +44,15 @@ class _CategoryFormState extends State<CategoryForm> {
             decoration: InputDecoration(
                 hintText: "Add Category Name",
                 labelStyle: TextStyle(
-                  color: Colors.green.shade300,
+                  color: getColor(context),
                 ),
                 focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                  color: Colors.green.shade500,
+                  color: getColor(context),
                 )),
                 enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                  color: Colors.green.shade300,
+                  color: getColor(context),
                 )),
                 label: const Text("New Category", textScaleFactor: .9)),
             validator: _validateNewCategory,
@@ -63,13 +63,20 @@ class _CategoryFormState extends State<CategoryForm> {
           ),
         ),
         trailing: IconButton(
-          icon: const Icon(Icons.add, color: Colors.green),
+          icon: Icon(Icons.add, color: getColor(context)),
           onPressed: () {
             if (_formKey.currentState!.validate()) {
               _formKey.currentState!.save();
             }
           },
         ));
+  }
+
+  Color getColor(BuildContext context) {
+    Brightness brightness = Theme.of(context).brightness;
+    return (brightness == Brightness.dark
+        ? Colors.green.shade300
+        : Colors.green.shade700);
   }
 
   void submitCategory(newValue) async {

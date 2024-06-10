@@ -43,15 +43,15 @@ class _TagFormState extends State<TagForm> {
           decoration: InputDecoration(
               hintText: "Add Tag Name",
               labelStyle: TextStyle(
-                color: Colors.green.shade300,
+                color: getColor(context),
               ),
               focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                color: Colors.green.shade500,
+                color: getColor(context),
               )),
               enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                color: Colors.green.shade300,
+                color: getColor(context),
               )),
               label: const Text("New Tag")),
           validator: _validateNewTag,
@@ -62,7 +62,7 @@ class _TagFormState extends State<TagForm> {
         ),
       ),
       trailing: IconButton(
-        icon: const Icon(Icons.add, color: Colors.green),
+        icon: Icon(Icons.add, color: getColor(context)),
         onPressed: () {
           if (_formKey.currentState!.validate()) {
             _formKey.currentState!.save();
@@ -70,6 +70,13 @@ class _TagFormState extends State<TagForm> {
         },
       ),
     );
+  }
+
+  Color getColor(BuildContext context) {
+    Brightness brightness = Theme.of(context).brightness;
+    return (brightness == Brightness.dark
+        ? Colors.green.shade300
+        : Colors.green.shade700);
   }
 
   void submitTag(newValue) async {
