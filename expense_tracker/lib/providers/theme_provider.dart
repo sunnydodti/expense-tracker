@@ -30,7 +30,6 @@ class ThemeProvider with ChangeNotifier {
         .getStringPreference(SharedPreferencesConstants.theme.APP_THEME_KEY);
     AppTheme appTheme =
         (themeName == null) ? _theme : AppTheme.values.byName(themeName);
-
     _theme = appTheme;
   }
 

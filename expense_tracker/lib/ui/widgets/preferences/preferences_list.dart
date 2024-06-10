@@ -43,6 +43,7 @@ class PreferencesList extends StatelessWidget {
         alignment: Alignment.centerRight,
         onChanged: (value) => _setDefaultCurrency(value, settingsProvider),
         underline: Container(),
+        focusColor: Colors.transparent,
       ),
     );
   }

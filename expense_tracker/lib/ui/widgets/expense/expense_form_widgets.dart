@@ -93,6 +93,7 @@ class ExpenseFormWidgets {
         validator: (value) =>
             _validateTextField(value, "select transaction type"),
         onChanged: (value) => controller.text = value!,
+        focusColor: Colors.transparent,
       ),
     );
   }
@@ -128,6 +129,7 @@ class ExpenseFormWidgets {
         ),
         validator: (value) => _validateCategory(value, "select category"),
         onChanged: onChanged,
+        focusColor: Colors.transparent,
       ),
     );
   }
@@ -146,6 +148,7 @@ class ExpenseFormWidgets {
         ),
         validator: (value) => _validateTag(value, "select tags"),
         onChanged: onChanged,
+        focusColor: Colors.transparent,
       ),
     );
   }

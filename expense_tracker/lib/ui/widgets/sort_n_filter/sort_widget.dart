@@ -66,6 +66,7 @@ class _SortWidgetState extends State<SortWidget> {
       onChanged: (criteria) {
         updateSortCriteria(sortFilterProvider, criteria);
       },
+      focusColor: Colors.transparent,
       items: SortCriteria.values
           .map<DropdownMenuItem<SortCriteria>>(
             (criteria) => DropdownMenuItem<SortCriteria>(
