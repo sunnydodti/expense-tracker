@@ -136,6 +136,7 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
 
   Text _getSummaryAmount(double amount) {
     String sign = amount > 0 ? '+' : (amount < 0 ? '-' : '');
+
     return Text(
       '$sign ₹ ${amount.abs().round()}',
       textScaleFactor: 1.1,
@@ -143,7 +144,7 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
         fontWeight: FontWeight.bold,
         color: amount > 0
             ? Colors.green.shade400
-            : (amount < 0 ? Colors.red.shade400 : Colors.white70),
+            : (amount < 0 ? Colors.red.shade400 : null),
       ),
     );
   }
