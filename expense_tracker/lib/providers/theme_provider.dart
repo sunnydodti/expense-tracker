@@ -16,11 +16,8 @@ class ThemeProvider with ChangeNotifier {
         SharedPreferencesConstants.theme.APP_THEME_KEY, appTheme.name);
 
     _theme = appTheme;
-    ColorHelper.isThemeChanged = true;
+    refreshThemeColors();
     notifyListeners();
-
-    await Future.delayed(const Duration(seconds: 1));
-    ColorHelper.isThemeChanged = false;
   }
 
   ThemeData get themeData => appThemeMap[_theme]!;
@@ -31,6 +28,10 @@ class ThemeProvider with ChangeNotifier {
     AppTheme appTheme =
         (themeName == null) ? _theme : AppTheme.values.byName(themeName);
     _theme = appTheme;
+  }
+
+  refreshThemeColors() {
+    ColorHelper.resetColors();
   }
 
 // void createCustomTheme(Color primaryColor, Color secondaryColor) {
