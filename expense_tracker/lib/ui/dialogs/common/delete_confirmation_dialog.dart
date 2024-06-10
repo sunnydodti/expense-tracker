@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../data/helpers/color_helper.dart';
 import '../../../models/delete_input.dart';
 
 class DeleteConfirmationDialog extends StatefulWidget {
@@ -34,7 +35,10 @@ class _DeleteConfirmationDialogState extends State<DeleteConfirmationDialog> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
+    Color? activeColor = ColorHelper.getToggleColor(theme);
     return AlertDialog(
+      backgroundColor: ColorHelper.getTileColor(theme),
       title: const Text("Confirm Deletion"),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -42,6 +46,7 @@ class _DeleteConfirmationDialogState extends State<DeleteConfirmationDialog> {
         children: <Widget>[
           const Text("Please select what's to be deleted"),
           CheckboxListTile(
+            activeColor: activeColor,
             title: const Text("Expenses"),
             value: deleteExpenses,
             onChanged: (value) => setState(() {
@@ -49,6 +54,7 @@ class _DeleteConfirmationDialogState extends State<DeleteConfirmationDialog> {
             }),
           ),
           CheckboxListTile(
+            activeColor: activeColor,
             title: const Text("Expense Items"),
             value: deleteExpenseItems,
             onChanged: (value) => setState(() {
@@ -56,6 +62,7 @@ class _DeleteConfirmationDialogState extends State<DeleteConfirmationDialog> {
             }),
           ),
           CheckboxListTile(
+            activeColor: activeColor,
             title: const Text("Categories"),
             value: deleteCategories,
             onChanged: (value) => setState(() {
@@ -63,6 +70,7 @@ class _DeleteConfirmationDialogState extends State<DeleteConfirmationDialog> {
             }),
           ),
           CheckboxListTile(
+            activeColor: activeColor,
             title: const Text("Tags"),
             value: deleteTags,
             onChanged: (value) => setState(() {
@@ -70,6 +78,7 @@ class _DeleteConfirmationDialogState extends State<DeleteConfirmationDialog> {
             }),
           ),
           CheckboxListTile(
+            activeColor: activeColor,
             title: const Text("Delete All"),
             value: deleteEverything,
             onChanged: handleDeleteAll,

@@ -6,6 +6,7 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/constants/response_constants.dart';
+import '../../data/helpers/color_helper.dart';
 import '../../models/import_result.dart';
 import '../../providers/expense_provider.dart';
 import '../../service/export_service.dart';
@@ -54,18 +55,19 @@ class _ImportFormState extends State<ImportForm> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return Form(
         key: _formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // getPathToggle(),
             getDefaultStoragePathFile(),
             const SizedBox(height: 20),
-            getFileNameField(),
+            getFileNameField(theme),
             if (isError) getErrorMessage(),
             if (isError) const SizedBox(height: 20),
-            getImportButton()
+            getImportButton(theme),
+            const SizedBox(height: 10)
           ],
         ));
   }
@@ -75,7 +77,7 @@ class _ImportFormState extends State<ImportForm> {
         style: const TextStyle(color: Colors.red),
       );
 
-  Row getImportButton() {
+  Row getImportButton(ThemeData theme) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -86,7 +88,10 @@ class _ImportFormState extends State<ImportForm> {
                 submit();
               }
             },
-            child: const Text('Import'))
+            child: Text(
+              'Import',
+              style: TextStyle(color: ColorHelper.getButtonTextColor(theme)),
+            ))
       ],
     );
   }
@@ -196,14 +201,14 @@ class _ImportFormState extends State<ImportForm> {
     return true;
   }
 
-  getFileNameField() {
+  getFileNameField(ThemeData theme) {
+    Color color = ColorHelper.getIconColor(theme);
     return ListTile(
       title: TextFormField(
         controller: selectedFileController,
         maxLines: 1,
         maxLength: 30,
         decoration: InputDecoration(
-          focusColor: Colors.green,
           labelText: 'Selected File',
           hintText: "click icon to select a file -->",
           suffixIcon: IconButton(
@@ -222,7 +227,7 @@ class _ImportFormState extends State<ImportForm> {
       ),
       trailing: IconButton(
         onPressed: _selectFile,
-        icon: const Icon(Icons.file_open_outlined, size: 30),
+        icon: Icon(Icons.file_open_outlined, size: 30, color: color),
       ),
     );
   }

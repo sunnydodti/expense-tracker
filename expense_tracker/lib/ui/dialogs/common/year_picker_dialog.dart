@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../../../data/helpers/color_helper.dart';
+
 class YearPickerDialog {
   static Future<int?> show(BuildContext context) async {
     return showDialog<int>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: ColorHelper.getTileColor(Theme.of(context)),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

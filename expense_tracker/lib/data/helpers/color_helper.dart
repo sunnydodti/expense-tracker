@@ -6,11 +6,18 @@ class ColorHelper {
   static Color? _backgroundColor;
   static Color? _tileColor;
   static Color? _iconColor;
+  static Color? _toggleColor;
+  static Color? _buttonTextColor;
+  static Color? _dropDownTextColor;
+
   static void resetColors() {
     _appBarColor = null;
     _backgroundColor = null;
     _tileColor = null;
     _iconColor = null;
+    _toggleColor = null;
+    _buttonTextColor = null;
+    _dropDownTextColor = null;
   }
 
   static Color getAppBarColor(ThemeData theme) {
@@ -48,5 +55,31 @@ class ColorHelper {
     _iconColor = Color.lerp(theme.colorScheme.primary, Colors.white, lerpT);
 
     return _iconColor!;
+  }
+
+  static Color? getToggleColor(ThemeData theme) {
+    if (_toggleColor != null) return _toggleColor;
+
+    _toggleColor = theme.colorScheme.brightness == Brightness.light
+        ? getIconColor(theme)
+        : Colors.grey.shade800;
+
+    return _toggleColor;
+  }
+
+  static Color? getButtonTextColor(ThemeData theme) {
+    if (_buttonTextColor != null) return _buttonTextColor;
+    _buttonTextColor =
+        (theme.brightness == Brightness.dark) ? Colors.white : null;
+
+    return _buttonTextColor;
+  }
+
+  static Color? getDropdownTextColor(ThemeData theme) {
+    if (_dropDownTextColor != null) return _dropDownTextColor;
+    _dropDownTextColor =
+        (theme.brightness == Brightness.dark) ? null : Colors.black;
+
+    return _dropDownTextColor;
   }
 }

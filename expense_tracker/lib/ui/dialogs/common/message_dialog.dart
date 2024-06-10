@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../data/helpers/color_helper.dart';
+
 class MessageDialog extends StatelessWidget {
   final String title;
   final String message;
@@ -9,13 +11,21 @@ class MessageDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return AlertDialog(
+      backgroundColor: ColorHelper.getTileColor(theme),
       title: Text(title),
       content: Text(message),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('OK'),
+          child: Text(
+            'OK',
+            style: TextStyle(
+                color: (theme.brightness == Brightness.dark)
+                    ? Colors.white
+                    : null),
+          ),
         ),
       ],
     );

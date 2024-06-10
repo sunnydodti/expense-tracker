@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../data/helpers/color_helper.dart';
+
 class MonthPickerDialog {
   static Future<String?> show(BuildContext context) async {
     return showDialog<String>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: ColorHelper.getTileColor(Theme.of(context)),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

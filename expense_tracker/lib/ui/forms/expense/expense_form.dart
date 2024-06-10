@@ -4,6 +4,7 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/constants/form_constants.dart';
+import '../../../data/helpers/color_helper.dart';
 import '../../../models/enums/form_modes.dart';
 import '../../../models/expense.dart';
 import '../../../models/expense_category.dart';
@@ -214,6 +215,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
   Widget _buildExpenseItemsToggle() {
     return SwitchListTile(
+      activeColor: ColorHelper.getToggleColor(Theme.of(context)),
       dense: true,
       visualDensity: const VisualDensity(vertical: -2),
       contentPadding: const EdgeInsets.symmetric(horizontal: 20),

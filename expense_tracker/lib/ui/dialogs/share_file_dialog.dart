@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:share/share.dart';
 
+import '../../data/helpers/color_helper.dart';
+
 class ShareFileDialog {
   static Future<void> show(BuildContext context,
       {String title = 'Share File',
@@ -11,10 +13,14 @@ class ShareFileDialog {
 
     await showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
+      builder: (context) {
+        ThemeData theme = Theme.of(context);
+        Color? actionColor = ColorHelper.getButtonTextColor(theme);
+        return AlertDialog(
+          backgroundColor: ColorHelper.getTileColor(theme),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
             Text(title.toString()),
             IconButton(
                 onPressed: () => Navigator.pop(context),
@@ -33,19 +39,26 @@ class ShareFileDialog {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: actionColor),
+              ),
+            ),
+            TextButton(
             onPressed: () {
               Share.shareFiles([filePath]);
               if (Navigator.canPop(context)) {
                 Navigator.pop(context);
               }
             },
-            child: const Text('Share'),
-          ),
-        ],
-      ),
+              child: Text(
+                'Share',
+                style: TextStyle(color: actionColor),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

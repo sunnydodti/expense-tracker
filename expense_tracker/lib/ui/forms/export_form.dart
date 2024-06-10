@@ -5,6 +5,7 @@ import 'package:logger/logger.dart';
 
 import '../../data/constants/file_name_constants.dart';
 import '../../data/constants/response_constants.dart';
+import '../../data/helpers/color_helper.dart';
 import '../../models/export_result.dart';
 import '../../service/export_service.dart';
 import '../../service/path_service.dart';
@@ -51,18 +52,20 @@ class _ExportFormState extends State<ExportForm> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return Form(
         key: _formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            getPathToggle(),
+            getPathToggle(theme),
             getStoragePathFile(),
             const SizedBox(height: 20),
             if (isError) getErrorMessage(),
             if (isError) const SizedBox(height: 20),
             getFileNameField(),
-            getExportButton()
+            getExportButton(theme),
+            const SizedBox(height: 10)
           ],
         ));
   }
@@ -72,7 +75,7 @@ class _ExportFormState extends State<ExportForm> {
         style: const TextStyle(color: Colors.red),
       );
 
-  Row getExportButton() {
+  Row getExportButton(ThemeData theme) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -83,13 +86,17 @@ class _ExportFormState extends State<ExportForm> {
                 submit();
               }
             },
-            child: const Text('Export'))
+            child: Text(
+              'Export',
+              style: TextStyle(color: ColorHelper.getButtonTextColor(theme)),
+            ))
       ],
     );
   }
 
-  SwitchListTile getPathToggle() {
+  SwitchListTile getPathToggle(ThemeData theme) {
     return SwitchListTile(
+      activeColor: ColorHelper.getToggleColor(theme),
       title: const Text("Use Custom Storage Location"),
       value: isExternalStoragePath,
       onChanged: (bool newValue) {
@@ -118,7 +125,7 @@ class _ExportFormState extends State<ExportForm> {
       title: Text(path),
       trailing: IconButton(
         onPressed: onPressed,
-        icon: Icon(icon),
+        icon: Icon(icon, color: ColorHelper.getIconColor(Theme.of(context))),
       ),
     );
   }

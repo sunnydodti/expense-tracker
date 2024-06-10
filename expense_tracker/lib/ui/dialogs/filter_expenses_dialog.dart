@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../data/helpers/color_helper.dart';
 import '../../models/expense_filters.dart';
 
 class FilterExpensesDialog extends StatefulWidget {
@@ -27,7 +28,9 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return AlertDialog(
+      backgroundColor: ColorHelper.getTileColor(theme),
       title: buildDialogTitle(),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -35,15 +38,15 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildMonthCheckbox(),
-              if (_expenseFilters.filterByMonth) _buildMonthDropdown(),
+              _buildMonthCheckbox(theme),
+              if (_expenseFilters.filterByMonth) _buildMonthDropdown(theme),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildYearCheckbox(),
-              if (_expenseFilters.filterByYear) _buildYearDropdown(),
+              _buildYearCheckbox(theme),
+              if (_expenseFilters.filterByYear) _buildYearDropdown(theme),
             ],
           ),
         ],
@@ -51,7 +54,10 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
       actions: <Widget>[
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [_buildClearFiltersButton(), _buildApplyFiltersButton()],
+          children: [
+            _buildClearFiltersButton(theme),
+            _buildApplyFiltersButton(theme)
+          ],
         )
       ],
     );
@@ -68,22 +74,28 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
     );
   }
 
-  ElevatedButton _buildClearFiltersButton() {
+  ElevatedButton _buildClearFiltersButton(ThemeData theme) {
     return ElevatedButton(
       onPressed: () {
         _clearAllFilters();
         _closeFilterDialog();
       },
-      child: const Text('Clear Filter'),
+      child: Text(
+        'Clear Filter',
+        style: TextStyle(color: ColorHelper.getButtonTextColor(theme)),
+      ),
     );
   }
 
-  ElevatedButton _buildApplyFiltersButton() {
+  ElevatedButton _buildApplyFiltersButton(ThemeData theme) {
     return ElevatedButton(
       onPressed: () {
         _closeFilterDialog();
       },
-      child: const Text('Apply Filter'),
+      child: Text(
+        'Apply Filter',
+        style: TextStyle(color: ColorHelper.getButtonTextColor(theme)),
+      ),
     );
   }
 
@@ -91,7 +103,7 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
     Navigator.pop(context, _expenseFilters);
   }
 
-  Expanded _buildMonthDropdown() {
+  Expanded _buildMonthDropdown(ThemeData theme) {
     return Expanded(
       flex: 2,
       child: DropdownButton<String>(
@@ -100,7 +112,8 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
         isExpanded: true,
         isDense: true,
         menuMaxHeight: 300,
-        style: const TextStyle(fontSize: 14),
+        style: TextStyle(
+            fontSize: 14, color: ColorHelper.getDropdownTextColor(theme)),
         value: _expenseFilters.selectedMonth,
         onChanged: (newValue) {
           setState(() {
@@ -108,6 +121,7 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
           });
           _expenseFilters.isChanged = true;
         },
+        focusColor: Colors.transparent,
         items: [
           for (int i = 1; i <= 12; i++)
             DropdownMenuItem(
@@ -120,16 +134,16 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
     );
   }
 
-  Expanded _buildYearDropdown() {
+  Expanded _buildYearDropdown(ThemeData theme) {
     return Expanded(
       flex: 1,
       child: DropdownButton<String>(
         underline: const SizedBox(),
-        dropdownColor: Colors.grey.shade800,
         isExpanded: true,
         isDense: true,
         menuMaxHeight: 300,
-        style: const TextStyle(fontSize: 14),
+        style: TextStyle(
+            fontSize: 14, color: ColorHelper.getDropdownTextColor(theme)),
         value: _expenseFilters.selectedYear,
         onChanged: (newValue) {
           setState(() {
@@ -137,25 +151,28 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
           });
           _expenseFilters.isChanged = true;
         },
+        focusColor: Colors.transparent,
         items: [
           for (int year = 2000; year <= DateTime.now().year; year++)
             DropdownMenuItem(
               alignment: AlignmentDirectional.centerEnd,
               value: year.toString(),
-              child: Text(year.toString()),
+              child: Text(
+                year.toString(),
+              ),
             ),
         ],
       ),
     );
   }
 
-  Expanded _buildMonthCheckbox() {
+  Expanded _buildMonthCheckbox(ThemeData theme) {
     return Expanded(
       flex: 2,
       child: CheckboxListTile(
         contentPadding: EdgeInsets.zero,
         visualDensity: const VisualDensity(horizontal: -4, vertical: -1),
-        activeColor: Colors.blue,
+        activeColor: ColorHelper.getToggleColor(theme),
         controlAffinity: ListTileControlAffinity.leading,
         title: const Text(
           'Month Filter',
@@ -174,13 +191,13 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
     );
   }
 
-  Expanded _buildYearCheckbox() {
+  Expanded _buildYearCheckbox(ThemeData theme) {
     return Expanded(
       flex: 2,
       child: CheckboxListTile(
         contentPadding: EdgeInsets.zero,
         visualDensity: const VisualDensity(horizontal: -4, vertical: -1),
-        activeColor: Colors.blue,
+        activeColor: ColorHelper.getToggleColor(theme),
         controlAffinity: ListTileControlAffinity.leading,
         title: const Text(
           'Year Filter',
