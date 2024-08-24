@@ -170,7 +170,8 @@ class ChartsState extends State<ChartsScreen> {
                   child: Stack(children: <Widget>[
                     (snapshot.connectionState == ConnectionState.waiting)
                         ? buildLoadingWidget()
-                        : WeeklyExpenseLineChart(chartData: snapshot.data!),
+                        : WeeklyExpenseLineChart(
+                            chartData: snapshot.data!, currency: currency),
                     buildChartToggleIcon()
                   ]),
                 ),

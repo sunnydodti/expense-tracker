@@ -13,10 +13,12 @@ import '../../../../service/chart_service.dart';
 class WeeklyExpenseLineChart extends StatefulWidget {
   final ChartData chartData;
   final ChartRange chartRange;
+  final String currency;
 
   const WeeklyExpenseLineChart(
       {super.key,
       required this.chartData,
+      this.currency = "",
       this.chartRange = ChartRange.weekly});
 
   @override
@@ -161,7 +163,7 @@ class _WeeklyExpenseLineChartState extends State<WeeklyExpenseLineChart> {
               ),
             ),
           ),
-          lineTouchData: buildBarTouchData(),
+          lineTouchData: buildLineTouchData(),
         ),
         swapAnimationCurve: Curves.linear,
         swapAnimationDuration: const Duration(milliseconds: 250),
@@ -175,13 +177,33 @@ class _WeeklyExpenseLineChartState extends State<WeeklyExpenseLineChart> {
     return Text(text, textScaleFactor: .85, textAlign: TextAlign.center);
   }
 
-  LineTouchData buildBarTouchData() {
+  LineTouchData buildLineTouchData() {
     return LineTouchData(
-        touchTooltipData: LineTouchTooltipData(
-      fitInsideHorizontally: true,
-      fitInsideVertically: true,
-      tooltipMargin: 50,
-    ));
+      touchTooltipData: LineTouchTooltipData(
+        fitInsideHorizontally: true,
+        fitInsideVertically: true,
+        tooltipMargin: 50,
+        getTooltipItems: (List<LineBarSpot> touchedSpots) {
+          return touchedSpots.map((spot) {
+            double value = spot.y;
+            String text = '';
+
+            if (value < 0) text += '- ';
+            if (widget.currency.isNotEmpty) text += '${widget.currency} ';
+
+            text += value.abs().round().toString();
+            TextStyle textStyle = TextStyle(
+              color: spot.bar.color,
+            );
+
+            return LineTooltipItem(
+              text,
+              textStyle,
+            );
+          }).toList();
+        },
+      ),
+    );
   }
 
   Map<int, ChartRecord> _getDailySumForWeek() {
