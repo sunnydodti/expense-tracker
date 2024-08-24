@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/constants/form_constants.dart';
+import '../../data/constants/shared_preferences_constants.dart';
 import '../../data/helpers/color_helper.dart';
+import '../../data/helpers/shared_preferences_helper.dart';
 import '../../models/chart_data.dart';
 import '../../models/enums/chart_range.dart';
 import '../../models/enums/chart_type.dart';
@@ -15,16 +18,15 @@ class ChartsScreen extends StatefulWidget {
   const ChartsScreen({super.key});
 
   @override
-  ExpenseVisualizationScreenState createState() =>
-      ExpenseVisualizationScreenState();
+  ChartsState createState() => ChartsState();
 }
 
-class ExpenseVisualizationScreenState extends State<ChartsScreen> {
+class ChartsState extends State<ChartsScreen> {
   late ChartType _chartType;
   late ChartRange _chartRange;
   late List<Expense> _expenses;
   late ChartData _chartData;
-
+  late String currency;
   bool splitBarChart = false;
 
   @override
@@ -35,6 +37,7 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
     // _chartService = ChartService(widget.expenses);
     _chartType = ChartType.bar;
     _chartRange = ChartRange.weekly;
+    _getCurrency();
   }
 
   ExpenseProvider get expenseProvider =>
@@ -112,7 +115,10 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
                   child: Stack(children: <Widget>[
                     (snapshot.connectionState == ConnectionState.waiting)
                         ? buildLoadingWidget()
-                        : WeeklyExpenseBarChart(chartData: snapshot.data!),
+                        : WeeklyExpenseBarChart(
+                            chartData: snapshot.data!,
+                            currency: currency,
+                          ),
                     buildChartToggleIcon()
                   ]),
                 ),
@@ -269,5 +275,13 @@ class ExpenseVisualizationScreenState extends State<ChartsScreen> {
         ],
       ),
     );
+  }
+
+  void _getCurrency() async {
+    String? currencyPreference = await SharedPreferencesHelper()
+        .getString(SharedPreferencesConstants.settings.DEFAULT_CURRENCY);
+    setState(() {
+      currency = FormConstants.expense.currencies[currencyPreference!]!;
+    });
   }
 }

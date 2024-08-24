@@ -13,10 +13,12 @@ import '../../../../service/chart_service.dart';
 class WeeklyExpenseBarChart extends StatefulWidget {
   final ChartData chartData;
   final ChartRange chartRange;
+  final String currency;
 
   const WeeklyExpenseBarChart(
       {super.key,
       required this.chartData,
+      this.currency = "",
       this.chartRange = ChartRange.weekly});
 
   @override
@@ -198,16 +200,19 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
           getTooltipItem: (barChartType == BarChartType.split)
               ? null
               : (group, groupIndex, rod, rodIndex) {
+                  String text =
+                      widget.currency == "" ? "" : "${widget.currency} ";
+                  text += (rod.toY - widget.chartData.barHeight * .05)
+                      .round()
+                      .toString();
                   return BarTooltipItem(
                     '${ChartService.getWeekDay(group.x)}\n',
                     const TextStyle(),
                     children: <TextSpan>[
                       TextSpan(
-                        text: (rod.toY - widget.chartData.barHeight * .05)
-                      .round()
-                      .toString(),
-                  style: const TextStyle(),
-                ),
+                        text: text,
+                        style: const TextStyle(),
+                      ),
               ],
                   );
                 },
