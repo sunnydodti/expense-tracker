@@ -197,26 +197,27 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
               : FLHorizontalAlignment.left,
           tooltipHorizontalOffset: touchedIndex < 3 ? 10 : -10,
           tooltipMargin: 50,
-          getTooltipItem: (barChartType == BarChartType.split)
-              ? null
-              : (group, groupIndex, rod, rodIndex) {
-                  String text =
-                      widget.currency == "" ? "" : "${widget.currency} ";
-                  text += (rod.toY - widget.chartData.barHeight * .05)
-                      .round()
-                      .toString();
-                  return BarTooltipItem(
-                    '${ChartService.getWeekDay(group.x)}\n',
-                    const TextStyle(),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: text,
-                        style: const TextStyle(),
-                      ),
-              ],
-                  );
-                },
-        ));
+        getTooltipItem: (group, groupIndex, rod, rodIndex) {
+          bool isSplit = barChartType == BarChartType.split;
+
+          String text = "";
+          if (widget.currency.isNotEmpty) text += '${widget.currency} ';
+          text += isSplit
+              ? rod.toY.round().toString()
+              : (rod.toY - widget.chartData.barHeight * .05).round().toString();
+
+          return BarTooltipItem(
+            '${ChartService.getWeekDay(group.x)}\n',
+            const TextStyle(color: Colors.white),
+            children: <TextSpan>[
+              TextSpan(
+                  text: text,
+                  style: isSplit ? TextStyle(color: rod.color) : null),
+            ],
+          );
+        },
+      ),
+    );
   }
 
   Map<int, ChartRecord> _getDailySumForWeek() {
