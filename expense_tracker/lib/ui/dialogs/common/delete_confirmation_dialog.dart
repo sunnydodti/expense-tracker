@@ -87,16 +87,28 @@ class _DeleteConfirmationDialogState extends State<DeleteConfirmationDialog> {
         ],
       ),
       actions: <Widget>[
-        TextButton(
-            child: Text(cancelAction),
-            onPressed: () {
-              if (widget.onCancel != null) widget.onCancel!();
-              defaultOnTap();
-            }),
-        TextButton(
-          onPressed: handleConfirmation,
-          child: Text(confirmAction),
-        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            ElevatedButton(
+                child: Text(
+                  cancelAction,
+                  style:
+                      TextStyle(color: ColorHelper.getButtonTextColor(theme)),
+                ),
+                onPressed: () {
+                  if (widget.onCancel != null) widget.onCancel!();
+                  defaultOnTap();
+                }),
+            ElevatedButton(
+              onPressed: handleConfirmation,
+              child: Text(
+                confirmAction,
+                style: TextStyle(color: ColorHelper.getButtonTextColor(theme)),
+              ),
+            ),
+          ],
+        )
       ],
     );
   }
