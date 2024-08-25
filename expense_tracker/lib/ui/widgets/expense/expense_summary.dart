@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/constants/form_constants.dart';
 import '../../../data/constants/shared_preferences_constants.dart';
 import '../../../data/helpers/color_helper.dart';
 import '../../../data/helpers/navigation_helper.dart';
+import '../../../data/helpers/shared_preferences_helper.dart';
 import '../../../providers/expense_provider.dart';
+import '../../../providers/settings_provider.dart';
 import '../../../service/shared_preferences_service.dart';
 import '../../animations/blur_widget.dart';
 import '../../screens/charts_screen.dart';
@@ -28,6 +31,12 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
     setState(() {
       hideTotal = isTotalHidden ?? false;
     });
+  }
+
+  Future<String> _getCurrency() async {
+    String? currencyPreference = await SharedPreferencesHelper()
+        .getString(SharedPreferencesConstants.settings.DEFAULT_CURRENCY);
+    return FormConstants.expense.currencies[currencyPreference!]!;
   }
 
   @override
@@ -126,27 +135,31 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
             _getSummaryText(summaryText),
             const SizedBox(height: 5),
             hideTotal
-                ? BlurWidget(widget: _getSummaryAmount(amount))
-                : _getSummaryAmount(amount),
+                ? BlurWidget(widget: _getSummaryAmountConsumer(amount))
+                : _getSummaryAmountConsumer(amount),
           ],
         ),
       ),
     );
   }
 
-  Text _getSummaryAmount(double amount) {
+  Consumer<SettingsProvider> _getSummaryAmountConsumer(double amount) {
     String sign = amount > 0 ? '+' : (amount < 0 ? '-' : '');
-
-    return Text(
-      '$sign ₹ ${amount.abs().round()}',
-      textScaleFactor: 1.1,
-      style: TextStyle(
-        fontWeight: FontWeight.bold,
-        color: amount > 0
-            ? Colors.green.shade400
-            : (amount < 0 ? Colors.red.shade400 : null),
-      ),
-    );
+    return Consumer<SettingsProvider>(
+        builder: (context, settingsProvider, child) {
+      String currency =
+          FormConstants.expense.currencies[settingsProvider.defaultCurrency]!;
+      return Text(
+        '$sign $currency ${amount.abs().round()}',
+        textScaleFactor: 1.1,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          color: amount > 0
+              ? Colors.green.shade400
+              : (amount < 0 ? Colors.red.shade400 : null),
+        ),
+      );
+    });
   }
 
   Text _getSummaryText(String summaryText) {
