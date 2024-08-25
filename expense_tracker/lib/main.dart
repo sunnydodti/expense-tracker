@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'providers/ChartDataProvider.dart';
 import 'providers/category_provider.dart';
 import 'providers/expense_items_provider.dart';
 import 'providers/expense_provider.dart';
@@ -52,6 +53,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => TagProvider()),
         ChangeNotifierProvider(create: (context) => SortFilterProvider()),
         ChangeNotifierProvider(create: (context) => SettingsProvider()),
+        ChangeNotifierProvider(create: (context) => ChartDataProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {
