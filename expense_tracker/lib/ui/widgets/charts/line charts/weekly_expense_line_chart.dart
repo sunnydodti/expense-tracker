@@ -7,8 +7,7 @@ import '../../../../data/helpers/color_helper.dart';
 import '../../../../models/chart_data.dart';
 import '../../../../models/chart_record.dart';
 import '../../../../models/enums/chart_range.dart';
-import '../../../../models/enums/line_chart_type.dart';
-import '../../../../service/chart_service.dart';
+import '../chart_options.dart';
 
 class WeeklyExpenseLineChart extends StatefulWidget {
   final ChartData chartData;
@@ -48,7 +47,7 @@ class _WeeklyExpenseLineChartState extends State<WeeklyExpenseLineChart> {
         Expanded(
           child: _buildWeeklyLineChart(),
         ),
-        buildChartOptions(),
+        const ChartOptions()
       ],
     );
   }

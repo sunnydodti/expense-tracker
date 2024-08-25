@@ -9,6 +9,7 @@ import '../../../../models/chart_record.dart';
 import '../../../../models/enums/bar_chart_type.dart';
 import '../../../../models/enums/chart_range.dart';
 import '../../../../service/chart_service.dart';
+import '../chart_options.dart';
 
 class WeeklyExpenseBarChart extends StatefulWidget {
   final ChartData chartData;
@@ -50,7 +51,7 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
         Expanded(
           child: _buildWeeklyBarChart(),
         ),
-        buildChartOptions(),
+            const ChartOptions(),
       ],
     );
   }
