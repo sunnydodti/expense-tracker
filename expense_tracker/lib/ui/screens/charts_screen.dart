@@ -5,7 +5,6 @@ import '../../data/constants/form_constants.dart';
 import '../../data/constants/shared_preferences_constants.dart';
 import '../../data/helpers/color_helper.dart';
 import '../../data/helpers/shared_preferences_helper.dart';
-import '../../models/chart_data.dart';
 import '../../models/enums/chart_range.dart';
 import '../../models/enums/chart_type.dart';
 import '../../models/expense.dart';
@@ -23,27 +22,12 @@ class ChartsScreen extends StatefulWidget {
 }
 
 class ChartsState extends State<ChartsScreen> {
-  late String currency;
-
-  @override
-  void initState() {
-    super.initState();
-    _getCurrency();
-  }
 
   ExpenseProvider get expenseProvider =>
       Provider.of<ExpenseProvider>(context, listen: false);
 
   ChartDataProvider get chartDataProvider =>
       Provider.of<ChartDataProvider>(context, listen: false);
-
-  Future<ChartData> _getChartData() async {
-    if (chartDataProvider.expenses.isNotEmpty) {
-      return chartDataProvider.chartData;
-    }
-    List<Expense> allExpenses = await expenseProvider.fetchAllExpenses();
-    return chartDataProvider.createChartData(allExpenses);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,109 +56,70 @@ class ChartsState extends State<ChartsScreen> {
     );
   }
 
-  FutureBuilder<ChartData> _buildChart(ChartDataProvider chartDataProvider) {
+  FutureBuilder<bool> _buildChart(ChartDataProvider chartDataProvider) {
+    return FutureBuilder<bool>(
+        future: _prepareChartData(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) return Text('Error: ${snapshot.error}');
+
+          Widget chart = _getChart(chartDataProvider);
+          return SizedBox(
+            height: MediaQuery.of(context).size.height * .4,
+            child: Column(
+              children: [
+                Expanded(
+                  flex: 9,
+                  child: Stack(children: <Widget>[
+                    (snapshot.connectionState == ConnectionState.waiting)
+                        ? buildLoadingWidget()
+                        : chart,
+                    buildChartToggleIcon()
+                  ]),
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+  Widget _getChart(ChartDataProvider provider) {
+    Widget chart;
+
     switch (chartDataProvider.chartType) {
       case ChartType.bar:
-        return _buildBarChart();
+        chart = _buildBarChart();
+        break;
       case ChartType.pie:
-        return _buildPieChart();
+        chart = _buildPieChart();
+        break;
       case ChartType.line:
-        return _buildLineChart();
+        chart = _buildLineChart();
+        break;
     }
+
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * .4,
+      child: Column(
+        children: [
+          Expanded(
+            flex: 9,
+            child: chart,
+          ),
+        ],
+      ),
+    );
   }
 
-  FutureBuilder<ChartData> _buildBarChart() {
-    return _buildWeeklyExpenseBarChart();
+  WeeklyExpenseBarChart _buildBarChart() {
+    return const WeeklyExpenseBarChart();
   }
 
-  FutureBuilder<ChartData> _buildPieChart() {
-    return _buildWeeklyExpensePieChart();
+  WeeklyExpensePieChart _buildPieChart() {
+    return const WeeklyExpensePieChart();
   }
 
-  FutureBuilder<ChartData> _buildLineChart() {
-    return _buildWeeklyExpenseLineChart();
-  }
-
-  FutureBuilder<ChartData> _buildWeeklyExpenseBarChart() {
-    return FutureBuilder<ChartData>(
-        future: _getChartData(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) return Text('Error: ${snapshot.error}');
-
-          Widget widget = SizedBox(
-            height: MediaQuery.of(context).size.height * .4,
-            child: Column(
-              children: [
-                Expanded(
-                  flex: 9,
-                  child: Stack(children: <Widget>[
-                    (snapshot.connectionState == ConnectionState.waiting)
-                        ? buildLoadingWidget()
-                        : WeeklyExpenseBarChart(
-                            chartData: snapshot.data!,
-                            currency: currency,
-                          ),
-                    buildChartToggleIcon()
-                  ]),
-                ),
-              ],
-            ),
-          );
-          return widget;
-        });
-  }
-
-  FutureBuilder<ChartData> _buildWeeklyExpensePieChart() {
-    return FutureBuilder<ChartData>(
-        future: _getChartData(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) return Text('Error: ${snapshot.error}');
-
-          Widget widget = SizedBox(
-            height: MediaQuery.of(context).size.height * .4,
-            child: Column(
-              children: [
-                Expanded(
-                  flex: 9,
-                  child: Stack(children: <Widget>[
-                    (snapshot.connectionState == ConnectionState.waiting)
-                        ? buildLoadingWidget()
-                        : const WeeklyExpensePieChart(),
-                    buildChartToggleIcon()
-                  ]),
-                ),
-              ],
-            ),
-          );
-          return widget;
-        });
-  }
-
-  FutureBuilder<ChartData> _buildWeeklyExpenseLineChart() {
-    return FutureBuilder<ChartData>(
-        future: _getChartData(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) return Text('Error: ${snapshot.error}');
-
-          Widget widget = SizedBox(
-            height: MediaQuery.of(context).size.height * .4,
-            child: Column(
-              children: [
-                Expanded(
-                  flex: 9,
-                  child: Stack(children: <Widget>[
-                    (snapshot.connectionState == ConnectionState.waiting)
-                        ? buildLoadingWidget()
-                        : WeeklyExpenseLineChart(
-                            chartData: snapshot.data!, currency: currency),
-                    buildChartToggleIcon()
-                  ]),
-                ),
-              ],
-            ),
-          );
-          return widget;
-        });
+  WeeklyExpenseLineChart _buildLineChart() {
+    return const WeeklyExpenseLineChart();
   }
 
   Center buildLoadingWidget() => const Center(child: Text("Loading ..."));
@@ -281,11 +226,25 @@ class ChartsState extends State<ChartsScreen> {
     );
   }
 
-  void _getCurrency() async {
+  Future<bool> _prepareChartData() async {
+    await _getCurrency();
+    await _getChartData();
+    return true;
+  }
+
+  Future<bool> _getCurrency() async {
     String? currencyPreference = await SharedPreferencesHelper()
         .getString(SharedPreferencesConstants.settings.DEFAULT_CURRENCY);
-    setState(() {
-      currency = FormConstants.expense.currencies[currencyPreference!]!;
-    });
+    String currency = FormConstants.expense.currencies[currencyPreference!]!;
+    chartDataProvider.currency = currency;
+    return true;
+  }
+
+  Future<bool> _getChartData() async {
+    if (chartDataProvider.expenses.isEmpty) {
+      List<Expense> allExpenses = await expenseProvider.fetchAllExpenses();
+      chartDataProvider.createChartData(allExpenses);
+    }
+    return true;
   }
 }

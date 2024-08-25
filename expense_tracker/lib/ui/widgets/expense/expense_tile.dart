@@ -34,7 +34,7 @@ class _ExpenseTileState extends State<ExpenseTile> {
     overlayEntry = OverlayEntry(
       builder: (context) => ExpensePopup(expense: widget.expense),
     );
-    Overlay.of(context)?.insert(overlayEntry!);
+    Overlay.of(context).insert(overlayEntry!);
   }
 
   void hideOverlay() {

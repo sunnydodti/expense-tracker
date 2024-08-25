@@ -3,23 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../data/constants/chart_constants.dart';
-import '../../../../models/chart_data.dart';
 import '../../../../models/chart_record.dart';
-import '../../../../models/enums/chart_range.dart';
 import '../../../../providers/ChartDataProvider.dart';
 import '../chart_options.dart';
 import '../chart_widgets.dart';
 
 class WeeklyExpenseLineChart extends StatefulWidget {
-  final ChartData chartData;
-  final ChartRange chartRange;
-  final String currency;
-
-  const WeeklyExpenseLineChart(
-      {super.key,
-      required this.chartData,
-      this.currency = "",
-      this.chartRange = ChartRange.weekly});
+  const WeeklyExpenseLineChart({super.key});
 
   @override
   State<WeeklyExpenseLineChart> createState() => _WeeklyExpenseLineChartState();
@@ -81,7 +71,7 @@ class _WeeklyExpenseLineChartState extends State<WeeklyExpenseLineChart> {
                           ChartWidgets.leftTitleWidgets(value, meta)),
                 ),
               ),
-              lineTouchData: buildLineTouchData(),
+              lineTouchData: buildLineTouchData(provider.currency),
             ),
             swapAnimationCurve: Curves.linear,
             swapAnimationDuration: const Duration(milliseconds: 250),
@@ -91,7 +81,7 @@ class _WeeklyExpenseLineChartState extends State<WeeklyExpenseLineChart> {
     );
   }
 
-  LineTouchData buildLineTouchData() {
+  LineTouchData buildLineTouchData(String currency) {
     return LineTouchData(
       touchTooltipData: LineTouchTooltipData(
         fitInsideHorizontally: true,
@@ -103,7 +93,7 @@ class _WeeklyExpenseLineChartState extends State<WeeklyExpenseLineChart> {
             String text = '';
 
             if (value < 0) text += '- ';
-            if (widget.currency.isNotEmpty) text += '${widget.currency} ';
+            if (currency.isNotEmpty) text += '$currency ';
 
             text += value.abs().round().toString();
             TextStyle textStyle = TextStyle(
@@ -121,7 +111,7 @@ class _WeeklyExpenseLineChartState extends State<WeeklyExpenseLineChart> {
   }
 
   Map<int, ChartRecord> _getDailySumForWeek(ChartDataProvider provider) {
-    return widget.chartData.calculateDailySumForWeek(provider.splitChart,
+    return provider.chartData.calculateDailySumForWeek(provider.splitChart,
         week: provider.selectedWeek);
   }
 

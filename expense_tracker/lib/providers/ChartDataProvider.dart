@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../data/constants/form_constants.dart';
-import '../data/constants/shared_preferences_constants.dart';
-import '../data/constants/theme_constants.dart';
-import '../data/helpers/color_helper.dart';
 import '../models/chart_data.dart';
-import '../models/enums/app_theme.dart';
 import '../models/enums/chart_range.dart';
 import '../models/enums/chart_type.dart';
 import '../models/expense.dart';
 import '../service/chart_service.dart';
-import '../service/shared_preferences_service.dart';
 
 class ChartDataProvider with ChangeNotifier {
   late ChartType _chartType;
@@ -19,7 +14,7 @@ class ChartDataProvider with ChangeNotifier {
   List<Expense> _expenses = [];
   late ChartData _chartData;
 
-  late String _currency;
+  String _currency = "";
 
   bool splitChart = false;
 
@@ -53,15 +48,19 @@ class ChartDataProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  String get currency => _currency;
+
+  set currency(String currency) {
+    _currency = currency;
+  }
+
   List<Expense> get expenses => _expenses;
 
   ChartData get chartData => _chartData;
 
-  ChartData createChartData(List<Expense> expenses) {
+  createChartData(List<Expense> expenses) {
     _expenses = expenses;
     _chartData = ChartData(expenses: expenses);
-    notifyListeners();
-    return _chartData;
   }
 
   int get currentWeek => _currentWeek;
