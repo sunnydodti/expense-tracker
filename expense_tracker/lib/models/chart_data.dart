@@ -2,8 +2,6 @@ import 'dart:math';
 
 import '../service/chart_service.dart';
 import 'chart_record.dart';
-import 'enums/bar_chart_type.dart';
-import 'enums/line_chart_type.dart';
 import 'expense.dart';
 
 class ChartData {
@@ -181,7 +179,7 @@ class ChartData {
     _minDailyAmount = minTotalAmount;
   }
 
-  Map<int, ChartRecord> calculateDailySumForWeekBar(BarChartType chartType,
+  Map<int, ChartRecord> calculateDailySumForWeek(bool iSplitChart,
       {int week = 0}) {
     List<Expense> expenses = getExpensesForCurrentWeek();
     if (week > 0 && week < 52) {
@@ -201,39 +199,9 @@ class ChartData {
       dailySum[expense.date.weekday]!.add(expense);
     }
 
-    if (chartType == BarChartType.split) {
+    if (iSplitChart) {
       calculateDaysWithHighestAndLowestAmountsForSplit(dailySum);
-    }
-    if (chartType == BarChartType.total) {
-      calculateDaysWithHighestAndLowestAmountsForTotal(dailySum);
-    }
-    return dailySum;
-  }
-
-  Map<int, ChartRecord> calculateDailySumForWeekLine(LineChartType chartType,
-      {int week = 0}) {
-    List<Expense> expenses = getExpensesForCurrentWeek();
-    if (week > 0 && week < 52) {
-      expenses = getExpensesForWeek(week);
-    }
-    Map<int, ChartRecord> dailySum = {
-      DateTime.monday: ChartRecord(),
-      DateTime.tuesday: ChartRecord(),
-      DateTime.wednesday: ChartRecord(),
-      DateTime.thursday: ChartRecord(),
-      DateTime.friday: ChartRecord(),
-      DateTime.saturday: ChartRecord(),
-      DateTime.sunday: ChartRecord(),
-    };
-
-    for (var expense in expenses) {
-      dailySum[expense.date.weekday]!.add(expense);
-    }
-
-    if (chartType == LineChartType.split) {
-      calculateDaysWithHighestAndLowestAmountsForSplit(dailySum);
-    }
-    if (chartType == LineChartType.total) {
+    } else {
       calculateDaysWithHighestAndLowestAmountsForTotal(dailySum);
     }
     return dailySum;
