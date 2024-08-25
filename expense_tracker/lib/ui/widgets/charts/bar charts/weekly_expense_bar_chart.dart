@@ -1,15 +1,15 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../data/constants/chart_constants.dart';
-import '../../../../data/helpers/color_helper.dart';
 import '../../../../models/chart_data.dart';
 import '../../../../models/chart_record.dart';
-import '../../../../models/enums/bar_chart_type.dart';
 import '../../../../models/enums/chart_range.dart';
+import '../../../../providers/ChartDataProvider.dart';
 import '../../../../service/chart_service.dart';
 import '../chart_options.dart';
+import '../chart_widgets.dart';
 
 class WeeklyExpenseBarChart extends StatefulWidget {
   final ChartData chartData;
@@ -27,157 +27,78 @@ class WeeklyExpenseBarChart extends StatefulWidget {
 }
 
 class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
-  late int currentWeek;
-  int selectedWeek = 0;
-
-  late DateTime startDate;
-  late DateTime endDate;
-
-  bool splitBarChart = false;
-  BarChartType barChartType = BarChartType.total;
-
   int touchedIndex = -1;
 
   @override
   void initState() {
     super.initState();
-    currentWeek = ChartService.currentWeek;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: _buildWeeklyBarChart(),
-        ),
+    return Consumer<ChartDataProvider>(
+      builder: (context, provider, child) {
+        return Column(
+          children: [
+            Expanded(
+              child: _buildWeeklyBarChart(),
+            ),
             const ChartOptions(),
-      ],
+          ],
+        );
+      },
     );
   }
 
-  Container buildChartOptions() {
-    Map<String, DateTime> dates = ChartService.getWeekStartAndEnd(
-        selectedWeek == 0 ? currentWeek : selectedWeek);
-    return Container(
-      color: ColorHelper.getTileColor(Theme.of(context)),
-      padding: const EdgeInsets.only(top: 5),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          const SizedBox(height: 5),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Text(
-                  textScaleFactor: .9,
-                  DateFormat('d MMM y').format(dates["start"]!)),
-              const Text(textScaleFactor: .9, "-"),
-              Text(
-                  textScaleFactor: .9,
-                  DateFormat('d MMM y').format(dates["end"]!)),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  IconButton(
-                      onPressed: decrementWeek,
-                      icon: const Icon(Icons.chevron_left)),
-                  Text(
-                      textScaleFactor: .9,
-                      "Week ${selectedWeek == 0 ? currentWeek : selectedWeek}"),
-                  IconButton(
-                      onPressed: incrementWeek,
-                      icon: const Icon(Icons.chevron_right)),
-                ],
+  Consumer<ChartDataProvider> _buildWeeklyBarChart() {
+    return Consumer<ChartDataProvider>(
+      builder: (context, provider, child) {
+        Map<int, ChartRecord> dailySum = _getDailySumForWeek(provider);
+        List<BarChartGroupData> barGroups = (provider.splitChart)
+            ? _buildBarGroupsForSplit(dailySum)
+            : _buildBarGroupsForTotal(dailySum);
+
+        return Container(
+          padding: const EdgeInsets.only(top: 20, bottom: 5, left: 10),
+          child: BarChart(
+            BarChartData(
+              barGroups: barGroups,
+              gridData: FlGridData(show: false),
+              borderData: FlBorderData(show: false),
+              titlesData: FlTitlesData(
+                show: true,
+                rightTitles:
+                    AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                topTitles:
+                    AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    getTitlesWidget: (value, meta) =>
+                        ChartWidgets.getTitles(context, value, meta),
+                    reservedSize: 35,
+                  ),
+                ),
+                leftTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 35,
+                    getTitlesWidget: (value, meta) =>
+                        ChartWidgets.leftTitleWidgets(value, meta),
+                  ),
+                ),
               ),
-              Row(
-                children: [
-                  const Text(textScaleFactor: .9, "Split"),
-                  Checkbox(value: splitBarChart, onChanged: toggleBarChartType)
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  void toggleBarChartType(value) {
-    BarChartType chartType = BarChartType.total;
-    if (value!) chartType = BarChartType.split;
-    setState(() {
-      splitBarChart = value!;
-      barChartType = chartType;
-    });
-  }
-
-  void decrementWeek() {
-    int week = selectedWeek == 0 ? currentWeek - 1 : selectedWeek - 1;
-    if (week < 1) week = 52;
-    setState(() {
-      selectedWeek = week;
-    });
-  }
-
-  void incrementWeek() {
-    int week = selectedWeek == 0 ? currentWeek + 1 : selectedWeek + 1;
-    if (week > 52) week = 1;
-    setState(() {
-      selectedWeek = week;
-    });
-  }
-
-  Container _buildWeeklyBarChart() {
-    Map<int, ChartRecord> dailySum = _getDailySumForWeek();
-    List<BarChartGroupData> barGroups = (barChartType == BarChartType.split)
-        ? _buildBarGroupsForSplit(dailySum)
-        : _buildBarGroupsForTotal(dailySum);
-    return Container(
-      padding: const EdgeInsets.only(top: 20, bottom: 5, left: 10),
-      child: BarChart(
-        BarChartData(
-          barGroups: barGroups,
-          gridData: FlGridData(show: false),
-          borderData: FlBorderData(show: false),
-          titlesData: FlTitlesData(
-            show: true,
-            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: getTitles,
-                reservedSize: 35,
-              ),
+              barTouchData: buildBarTouchData(provider),
             ),
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                reservedSize: 35,
-                getTitlesWidget: (value, meta) => leftTitleWidgets(value, meta),
-              ),
-            ),
+            swapAnimationCurve: Curves.linear,
+            swapAnimationDuration: const Duration(milliseconds: 250),
           ),
-          barTouchData: buildBarTouchData(),
-        ),
-        swapAnimationCurve: Curves.linear,
-        swapAnimationDuration: const Duration(milliseconds: 250),
-      ),
+        );
+      },
     );
   }
 
-  Widget leftTitleWidgets(double value, TitleMeta meta) {
-    String text = meta.formattedValue;
-    if (value % meta.appliedInterval != 0) text = "";
-    return Text(text, textScaleFactor: .85, textAlign: TextAlign.center);
-  }
-
-  BarTouchData buildBarTouchData() {
+  BarTouchData buildBarTouchData(ChartDataProvider provider) {
     return BarTouchData(
         touchCallback: (FlTouchEvent event, barTouchResponse) {
           setState(() {
@@ -199,11 +120,9 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
           tooltipHorizontalOffset: touchedIndex < 3 ? 10 : -10,
           tooltipMargin: 50,
         getTooltipItem: (group, groupIndex, rod, rodIndex) {
-          bool isSplit = barChartType == BarChartType.split;
-
           String text = "";
           if (widget.currency.isNotEmpty) text += '${widget.currency} ';
-          text += isSplit
+          text += provider.splitChart
               ? rod.toY.round().toString()
               : (rod.toY - widget.chartData.barHeight * .05).round().toString();
 
@@ -213,7 +132,8 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
             children: <TextSpan>[
               TextSpan(
                   text: text,
-                  style: isSplit ? TextStyle(color: rod.color) : null),
+                  style:
+                      provider.splitChart ? TextStyle(color: rod.color) : null),
             ],
           );
         },
@@ -221,52 +141,13 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
     );
   }
 
-  Map<int, ChartRecord> _getDailySumForWeek() {
-    return widget.chartData
-        .calculateDailySumForWeekBar(barChartType, week: selectedWeek);
+  Map<int, ChartRecord> _getDailySumForWeek(ChartDataProvider provider) {
+    return widget.chartData.calculateDailySumForWeek(provider.splitChart,
+        week: provider.selectedWeek);
   }
 
-  Widget getTitles(double value, TitleMeta meta) {
-    TextStyle style = TextStyle(
-      color: ColorHelper.getIconColor(Theme.of(context)),
-      fontWeight: FontWeight.bold,
-      fontSize: 14,
-    );
-    Widget text;
-    switch (value.toInt()) {
-      case 1:
-        text = Text('M', style: style);
-        break;
-      case 2:
-        text = Text('T', style: style);
-        break;
-      case 3:
-        text = Text('W', style: style);
-        break;
-      case 4:
-        text = Text('T', style: style);
-        break;
-      case 5:
-        text = Text('F', style: style);
-        break;
-      case 6:
-        text = Text('S', style: style);
-        break;
-      case 7:
-        text = Text('S', style: style);
-        break;
-      default:
-        text = Text('', style: style);
-        break;
-    }
-    return SideTitleWidget(
-      axisSide: meta.axisSide,
-      space: 16,
-      child: text,
-    );
-  }
-
-  _buildBarGroupsForTotal(Map<int, ChartRecord> dailySum) {
+  List<BarChartGroupData> _buildBarGroupsForTotal(
+      Map<int, ChartRecord> dailySum) {
     List<BarChartGroupData> barGroups = [];
 
     dailySum.forEach((day, record) {
@@ -308,7 +189,8 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
     return barGroups;
   }
 
-  _buildBarGroupsForSplit(Map<int, ChartRecord> dailySum) {
+  List<BarChartGroupData> _buildBarGroupsForSplit(
+      Map<int, ChartRecord> dailySum) {
     List<BarChartGroupData> barGroups = [];
 
     dailySum.forEach((day, record) {
@@ -321,22 +203,21 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
           x: day,
           barRods: [
             if (isIncomeAmount)
-              buildSplitBarRod(
+              _buildSplitBarRod(
                 record.incomeAmount,
                 ChartConstants.bar.colorIncome,
               ),
             if (isExpenseAmount)
-              buildSplitBarRod(
+              _buildSplitBarRod(
                 record.expenseAmount,
                 ChartConstants.bar.colorExpense,
               ),
             if (isReimbursementAmount)
-              buildSplitBarRod(
+              _buildSplitBarRod(
                 record.reimbursementAmount,
                 ChartConstants.bar.colorReimbursement,
               ),
           ],
-          // showingTooltipIndicators: [0],
         ),
       );
     });
@@ -344,7 +225,7 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
     return barGroups;
   }
 
-  BarChartRodData buildSplitBarRod(double amount, Color color) {
+  BarChartRodData _buildSplitBarRod(double amount, Color color) {
     return BarChartRodData(
       toY: amount.abs(),
       width: ChartConstants.bar.barWidthSplit,
