@@ -9,6 +9,7 @@ import '../../models/chart_data.dart';
 import '../../models/enums/chart_range.dart';
 import '../../models/enums/chart_type.dart';
 import '../../models/expense.dart';
+import '../../providers/ChartDataProvider.dart';
 import '../../providers/expense_provider.dart';
 import '../widgets/charts/bar charts/weekly_expense_bar_chart.dart';
 import '../widgets/charts/line charts/weekly_expense_line_chart.dart';
@@ -22,36 +23,26 @@ class ChartsScreen extends StatefulWidget {
 }
 
 class ChartsState extends State<ChartsScreen> {
-  late ChartType _chartType;
-  late ChartRange _chartRange;
-  late List<Expense> _expenses;
-  late ChartData _chartData;
   late String currency;
-  bool splitBarChart = false;
 
   @override
   void initState() {
     super.initState();
-    _expenses = [];
-    _chartData = ChartData(expenses: _expenses);
-    // _chartService = ChartService(widget.expenses);
-    _chartType = ChartType.bar;
-    _chartRange = ChartRange.weekly;
     _getCurrency();
   }
 
   ExpenseProvider get expenseProvider =>
       Provider.of<ExpenseProvider>(context, listen: false);
 
+  ChartDataProvider get chartDataProvider =>
+      Provider.of<ChartDataProvider>(context, listen: false);
+
   Future<ChartData> _getChartData() async {
-    // await Future.delayed(const Duration(milliseconds: 200));
-    if (_expenses.isNotEmpty) return _chartData;
-    // await Future.delayed(const Duration(milliseconds: 300));
+    if (chartDataProvider.expenses.isNotEmpty) {
+      return chartDataProvider.chartData;
+    }
     List<Expense> allExpenses = await expenseProvider.fetchAllExpenses();
-    ChartData expenseChartData = ChartData(expenses: allExpenses);
-    _expenses = allExpenses;
-    _chartData = expenseChartData;
-    return expenseChartData;
+    return chartDataProvider.createChartData(allExpenses);
   }
 
   @override
@@ -67,18 +58,22 @@ class ChartsState extends State<ChartsScreen> {
         centerTitle: true,
         backgroundColor: ColorHelper.getAppBarColor(Theme.of(context)),
       ),
-      body: ListView(
-        children: [
-          _buildChart(),
-          _buildChartRangeDropdown(),
-          _buildChartTypeDropdown(),
-        ],
+      body: Consumer<ChartDataProvider>(
+        builder: (context, chartDataProvider, child) {
+          return ListView(
+            children: [
+              _buildChart(chartDataProvider),
+              _buildChartRangeDropdown(),
+              _buildChartTypeDropdown(),
+            ],
+          );
+        },
       ),
     );
   }
 
-  FutureBuilder<ChartData> _buildChart() {
-    switch (_chartType) {
+  FutureBuilder<ChartData> _buildChart(ChartDataProvider chartDataProvider) {
+    switch (chartDataProvider.chartType) {
       case ChartType.bar:
         return _buildBarChart();
       case ChartType.pie:
@@ -184,25 +179,28 @@ class ChartsState extends State<ChartsScreen> {
 
   Center buildLoadingWidget() => const Center(child: Text("Loading ..."));
 
-  Container buildChartToggleIcon() {
-    return Container(
-        padding: const EdgeInsets.only(bottom: 65),
-        alignment: Alignment.bottomLeft,
-        child: IconButton(
+  Consumer<ChartDataProvider> buildChartToggleIcon() {
+    return Consumer<ChartDataProvider>(
+      builder: (context, chartDataProvider, child) => Container(
+          padding: const EdgeInsets.only(bottom: 65),
+          alignment: Alignment.bottomLeft,
+          child: IconButton(
             onPressed: () {
-              ChartType newType = ChartType
-                  .values[(_chartType.index + 1) % ChartType.values.length];
-              setState(() => _chartType = newType);
+              ChartType newType = ChartType.values[
+                  (chartDataProvider.chartType.index + 1) %
+                      ChartType.values.length];
+              setState(() => chartDataProvider.chartType = newType);
             },
-          icon: Icon(getChartIcon()),
-          color: ColorHelper.getIconColor(
-            Theme.of(context),
-          ),
-        ));
+            icon: Icon(getChartIcon(chartDataProvider.chartType)),
+            color: ColorHelper.getIconColor(
+              Theme.of(context),
+            ),
+          )),
+    );
   }
 
-  IconData getChartIcon() {
-    switch (_chartType) {
+  IconData getChartIcon(ChartType chartType) {
+    switch (chartType) {
       case ChartType.bar:
         return Icons.bar_chart_outlined;
       case ChartType.pie:
@@ -222,21 +220,25 @@ class ChartsState extends State<ChartsScreen> {
             "Chart Range",
             textScaleFactor: .9,
           ),
-          DropdownButton<ChartRange>(
-            value: _chartRange,
-            onChanged: (chartRange) {
-              //updateChartRange(chartRange);
+          Consumer<ChartDataProvider>(
+            builder: (context, chartDataProvider, child) {
+              return DropdownButton<ChartRange>(
+                value: chartDataProvider.chartRange,
+                onChanged: (chartRange) {
+                  chartDataProvider.chartRange = chartRange!;
+                },
+                items: ChartRange.values
+                    .map<DropdownMenuItem<ChartRange>>(
+                      (chartRange) => DropdownMenuItem<ChartRange>(
+                        value: chartRange,
+                        child: Text(
+                            textScaleFactor: .8, getChartRangeText(chartRange)),
+                      ),
+                    )
+                    .toList(),
+                underline: Container(),
+              );
             },
-            items: ChartRange.values
-                .map<DropdownMenuItem<ChartRange>>(
-                  (chartRange) => DropdownMenuItem<ChartRange>(
-                    value: chartRange,
-                    child: Text(
-                        textScaleFactor: .8, getChartRangeText(chartRange)),
-                  ),
-                )
-                .toList(),
-            underline: Container(),
           ),
         ],
       ),
@@ -254,24 +256,25 @@ class ChartsState extends State<ChartsScreen> {
             textScaleFactor: .9,
             overflow: TextOverflow.fade,
           ),
-          DropdownButton<ChartType>(
-            value: _chartType,
-            onChanged: (chartType) {
-              setState(() {
-                _chartType = chartType!;
-              });
-            },
-            items: ChartType.values
-                .map<DropdownMenuItem<ChartType>>(
-                  (chartType) => DropdownMenuItem<ChartType>(
-                    value: chartType,
-                    child: Text(
-                        textScaleFactor: .8,
-                        ChartTypeHelper.getChartTypeText(chartType)),
-                  ),
-                )
-                .toList(),
-            underline: Container(),
+          Consumer<ChartDataProvider>(
+            builder: (context, chartDataProvider, child) =>
+                DropdownButton<ChartType>(
+              value: chartDataProvider.chartType,
+              onChanged: (chartType) {
+                chartDataProvider.chartType = chartType!;
+              },
+              items: ChartType.values
+                  .map<DropdownMenuItem<ChartType>>(
+                    (chartType) => DropdownMenuItem<ChartType>(
+                      value: chartType,
+                      child: Text(
+                          textScaleFactor: .8,
+                          ChartTypeHelper.getChartTypeText(chartType)),
+                    ),
+                  )
+                  .toList(),
+              underline: Container(),
+            ),
           ),
         ],
       ),
