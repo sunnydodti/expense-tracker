@@ -5,7 +5,7 @@ import '../../../data/helpers/color_helper.dart';
 
 class ChartWidgets {
 
-  static Widget getTitles(BuildContext context, double value, TitleMeta meta) {
+  static Widget getDayTitles(BuildContext context, double value, TitleMeta meta) {
     TextStyle style = TextStyle(
       color: ColorHelper.getIconColor(Theme.of(context)),
       fontWeight: FontWeight.bold,
@@ -42,6 +42,18 @@ class ChartWidgets {
       axisSide: meta.axisSide,
       space: 16,
       child: text,
+    );
+  }
+
+  static Widget getWeekTitlesForMonth(BuildContext context, double value, TitleMeta meta) {
+    final week = value.toInt();
+    return Text(
+      'Week $week',
+      style: const TextStyle(
+        color: Colors.black,
+        fontWeight: FontWeight.bold,
+        fontSize: 12,
+      ),
     );
   }
 

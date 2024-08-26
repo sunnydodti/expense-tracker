@@ -21,6 +21,12 @@ class ChartData {
   double _maxDailyAmount = 0;
   double _minDailyAmount = 0;
 
+  double _maxWeeklyAmount = 0;
+  double _minWeeklyAmount = 0;
+
+  double _maxYearlyAmount = 0;
+  double _minYearlyAmount = 0;
+
   List<int> _daysWithMaxAmount = [];
   List<int> _daysWithMinAmount = [];
 
@@ -98,61 +104,48 @@ class ChartData {
     return getExpensesBetween(weekStart, weekEnd);
   }
 
-  List<Expense> getExpensesForSelectedWeek() {
-    if (week != null) {
-      return expenses
-          .where((expense) => ChartService.currentWeek == week)
-          .toList();
-    } else {
-      throw Exception('Week is not specified.');
-    }
-  }
-
-  List<Expense> getExpensesForSelectedMonth() {
-    if (month != null) {
-      return expenses.where((expense) => expense.date.month == month).toList();
-    } else {
-      throw Exception('Month is not specified.');
-    }
-  }
-
-  List<Expense> getExpensesForSelectedYear() {
-    if (year != null) {
-      return expenses.where((expense) => expense.date.year == year).toList();
-    } else {
-      throw Exception('Year is not specified.');
-    }
-  }
-
-  void goToNextWeek() {
-    final currentWeek = ChartService.currentWeek;
-    week = currentWeek + 1;
-  }
-
-  void goToPreviousWeek() {
-    final currentWeek = ChartService.currentWeek;
-    week = currentWeek - 1;
-  }
-
-  void goToNextMonth() {
+  List<Expense> getExpensesForMonth(int month) {
     final now = DateTime.now();
-    month = now.month + 1;
+    final currentYear = now.year;
+
+    DateTime monthStart = DateTime(currentYear, month, 1);
+    DateTime monthEnd = DateTime(currentYear, month + 1, 1).subtract(
+      const Duration(days: 1),
+    );
+
+    return getExpensesBetween(monthStart, monthEnd);
   }
 
-  void goToPreviousMonth() {
-    final now = DateTime.now();
-    month = now.month - 1;
+  int _getWeekOfMonth(DateTime date) {
+    int day = date.day;
+    return ((day - 1) / 7).floor() + 1;
   }
 
-  void goToNextYear() {
-    final now = DateTime.now();
-    year = now.year + 1;
-  }
-
-  void goToPreviousYear() {
-    final now = DateTime.now();
-    year = now.year - 1;
-  }
+  // List<Expense> getExpensesForSelectedWeek() {
+  //   if (week != null) {
+  //     return expenses
+  //         .where((expense) => ChartService.currentWeek == week)
+  //         .toList();
+  //   } else {
+  //     throw Exception('Week is not specified.');
+  //   }
+  // }
+  //
+  // List<Expense> getExpensesForSelectedMonth() {
+  //   if (month != null) {
+  //     return expenses.where((expense) => expense.date.month == month).toList();
+  //   } else {
+  //     throw Exception('Month is not specified.');
+  //   }
+  // }
+  //
+  // List<Expense> getExpensesForSelectedYear() {
+  //   if (year != null) {
+  //     return expenses.where((expense) => expense.date.year == year).toList();
+  //   } else {
+  //     throw Exception('Year is not specified.');
+  //   }
+  // }
 
   void calculateDaysWithHighestAndLowestAmounts(Map<int, double> dailySums) {
     _maxDailyAmount = dailySums.values.reduce((a, b) => a > b ? a : b);
@@ -162,21 +155,6 @@ class ChartData {
       if (amount == _maxDailyAmount) _daysWithMaxAmount.add(day);
       if (amount == _minDailyAmount) _daysWithMinAmount.add(day);
     });
-  }
-
-  void calculateDaysWithHighestAndLowestAmountsForTotal(
-      Map<int, ChartRecord> dailySums) {
-    double maxTotalAmount = 0.0;
-    double minTotalAmount = 0.0;
-
-    dailySums.forEach((day, record) {
-      double totalAmount = record.totalAmount.abs();
-      maxTotalAmount = max(maxTotalAmount, totalAmount);
-      minTotalAmount = min(minTotalAmount, totalAmount);
-    });
-
-    _maxDailyAmount = maxTotalAmount;
-    _minDailyAmount = minTotalAmount;
   }
 
   Map<int, ChartRecord> calculateDailySumForWeek(bool iSplitChart,
@@ -235,4 +213,96 @@ class ChartData {
     _minDailyAmount =
         min(minExpenseAmount, min(minIncomeAmount, minReimbursementAmount));
   }
+
+  void calculateDaysWithHighestAndLowestAmountsForTotal(
+      Map<int, ChartRecord> dailySums) {
+    double maxTotalAmount = 0.0;
+    double minTotalAmount = 0.0;
+
+    dailySums.forEach((day, record) {
+      double totalAmount = record.totalAmount.abs();
+      maxTotalAmount = max(maxTotalAmount, totalAmount);
+      minTotalAmount = min(minTotalAmount, totalAmount);
+    });
+
+    _maxDailyAmount = maxTotalAmount;
+    _minDailyAmount = minTotalAmount;
+  }
+
+  Map<int, ChartRecord> calculateWeeklySumForMonth(bool iSplitChart,
+      {int month = 0}) {
+    List<Expense> expenses = getExpensesForCurrentMonth();
+    if (month > 0 && month <= 12) {
+      expenses = getExpensesForMonth(month);
+    }
+
+    Map<int, ChartRecord> weeklySum = {
+      1: ChartRecord(),
+      2: ChartRecord(),
+      3: ChartRecord(),
+      4: ChartRecord(),
+      5: ChartRecord(),
+    };
+
+    for (var expense in expenses) {
+      int weekNumber = _getWeekOfMonth(expense.date);
+      weeklySum[weekNumber]!.add(expense);
+    }
+
+    if (iSplitChart) {
+      calculateWeeksWithHighestAndLowestAmountsForSplit(weeklySum);
+    } else {
+      calculateWeeksWithHighestAndLowestAmountsForTotal(weeklySum);
+    }
+
+    return weeklySum;
+  }
+
+  void calculateWeeksWithHighestAndLowestAmountsForSplit(
+      Map<int, ChartRecord> weeklySums) {
+    double maxExpenseAmount = 0.0;
+    double minExpenseAmount = 0.0;
+
+    double maxIncomeAmount = 0.0;
+    double minIncomeAmount = 0.0;
+
+    double maxReimbursementAmount = 0.0;
+    double minReimbursementAmount = 0.0;
+
+    for (var record in weeklySums.values) {
+      maxExpenseAmount = max(record.expenseAmount.abs(), maxExpenseAmount);
+      minExpenseAmount = min(record.expenseAmount.abs(), minExpenseAmount);
+
+      maxIncomeAmount = max(record.incomeAmount.abs(), maxIncomeAmount);
+      minIncomeAmount = min(record.incomeAmount.abs(), minIncomeAmount);
+
+      maxReimbursementAmount =
+          max(record.reimbursementAmount.abs(), maxReimbursementAmount);
+      minReimbursementAmount =
+          min(record.reimbursementAmount.abs(), minReimbursementAmount);
+    }
+
+    _maxWeeklyAmount =
+        max(maxExpenseAmount, max(maxIncomeAmount, maxReimbursementAmount));
+    _minWeeklyAmount =
+        min(minExpenseAmount, min(minIncomeAmount, minReimbursementAmount));
+  }
+
+  void calculateWeeksWithHighestAndLowestAmountsForTotal(
+      Map<int, ChartRecord> weeklySums) {
+    double maxTotalAmount = 0.0;
+    double minTotalAmount = double.infinity;
+
+    weeklySums.forEach((week, record) {
+      double totalAmount = record.totalAmount.abs();
+      maxTotalAmount = max(maxTotalAmount, totalAmount);
+      minTotalAmount = min(minTotalAmount, totalAmount);
+    });
+
+    _maxWeeklyAmount = maxTotalAmount;
+    _minWeeklyAmount = minTotalAmount;
+  }
+
+
+
 }

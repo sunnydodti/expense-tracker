@@ -19,11 +19,14 @@ class ChartDataProvider with ChangeNotifier {
   bool splitChart = false;
 
   int _selectedWeek = 0;
-  int _currentWeek = ChartService.currentWeek;
+  final int _currentWeek = ChartService.currentWeek;
+  int _selectedMonth = 0;
+  final int _currentMonth = ChartService.currentMonth;
+  int _selectedYear = 0;
+  final int _currentYear = ChartService.currentYear;
 
   ChartDataProvider() {
     _chartData = ChartData(expenses: _expenses);
-    // _currentWeek = ChartService.currentWeek;
     _chartType = ChartType.bar;
     _chartRange = ChartRange.weekly;
     _currency = FormConstants.expense.currencies.values.first;
@@ -64,7 +67,11 @@ class ChartDataProvider with ChangeNotifier {
   }
 
   int get currentWeek => _currentWeek;
-  int get selectedWeek => _selectedWeek;
+
+  int get selectedWeek {
+    if (_selectedWeek != 0) return _selectedWeek;
+    return _currentWeek;
+  }
 
   set selectedWeek(int selectedWeek){
     _selectedWeek = selectedWeek;
@@ -81,5 +88,51 @@ class ChartDataProvider with ChangeNotifier {
     int week = selectedWeek == 0 ? currentWeek + 1 : selectedWeek + 1;
     if (week > 52) week = 1;
     selectedWeek = week;
+  }
+
+  int get currentMonth => _currentMonth;
+
+  int get selectedMonth {
+    if (_selectedMonth != 0) return _selectedMonth;
+    return _currentMonth;
+  }
+
+  set selectedMonth(int selectedMonth) {
+    _selectedMonth = selectedMonth;
+    notifyListeners();
+  }
+
+  void decrementMonth() {
+    int month = selectedMonth == 0 ? currentMonth - 1 : selectedMonth - 1;
+    if (month < 1) month = 12;
+    selectedMonth = month;
+  }
+
+  void incrementMonth() {
+    int month = selectedMonth == 0 ? currentMonth + 1 : selectedMonth + 1;
+    if (month > 12) month = 1;
+    selectedMonth = month;
+  }
+
+  int get currentYear => _currentYear;
+
+  int get selectedYear {
+    if (_selectedYear != 0) return _selectedYear;
+    return _currentYear;
+  }
+
+  set selectedYear(int selectedYear) {
+    _selectedYear = selectedYear;
+    notifyListeners();
+  }
+
+  void decrementYear() {
+    int year = selectedYear == 0 ? currentYear - 1 : selectedYear - 1;
+    selectedYear = year;
+  }
+
+  void incrementYear() {
+    int year = selectedYear == 0 ? currentYear + 1 : selectedYear + 1;
+    selectedYear = year;
   }
 }

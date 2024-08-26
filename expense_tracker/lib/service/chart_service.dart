@@ -16,6 +16,8 @@ class ChartService {
   static const double barWidth = 10.0;
 
   static int _currentWeek = 0;
+  static int _currentMonth = 0;
+  static int _currentYear = 0;
 
   static int get currentWeek {
     if (_currentWeek != 0) return _currentWeek;
@@ -34,6 +36,20 @@ class ChartService {
 
     _currentWeek = weekNumber;
     return _currentWeek;
+  }
+
+  static int get currentMonth {
+    if (_currentMonth == 0) {
+      _currentMonth = DateTime.now().month;
+    }
+    return _currentMonth;
+  }
+
+  static int get currentYear {
+    if (_currentYear == 0) {
+      _currentYear = DateTime.now().year;
+    }
+    return _currentYear;
   }
 
   static String getWeekDay(int weekDayNumber) {
@@ -67,10 +83,46 @@ class ChartService {
     return weekDay;
   }
 
-  static Map<String, DateTime> getWeekStartAndEnd(int week) {
-    final currentYear = DateTime.now().year;
+  static String getWeekRange(int weekIndex, int year, int month) {
+    DateTime firstDayOfMonth = DateTime(year, month, 1);
 
-    DateTime weekStart = DateTime(currentYear);
+    DateTime weekStart =
+        firstDayOfMonth.add(Duration(days: (weekIndex - 1) * 7));
+    DateTime weekEnd = weekStart.add(const Duration(days: 6));
+
+    DateTime lastDayOfMonth = DateTime(year, month + 1, 0);
+    if (weekEnd.isAfter(lastDayOfMonth)) {
+      weekEnd = lastDayOfMonth;
+    }
+
+    String weekStartFormatted = "${weekStart.day}";
+    String weekEndFormatted = "${weekEnd.day}";
+
+    return "Week $weekIndex ($weekStartFormatted - $weekEndFormatted)";
+  }
+
+  static String _getMonthName(int month) {
+    const List<String> monthNames = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ];
+    return monthNames[month - 1];
+  }
+
+  static Map<String, DateTime> getWeekStartAndEnd(int week, {int year = 0}) {
+    if (year == 0) year = DateTime.now().year;
+
+    DateTime weekStart = DateTime(year);
     weekStart = weekStart.subtract(
       const Duration(days: DateTime.monday - 1),
     );
@@ -82,6 +134,30 @@ class ChartService {
     return {
       "start": weekStart,
       "end": weekEnd,
+    };
+  }
+
+  static Map<String, DateTime> getMonthStartAndEnd(int month, {int year = 0}) {
+    if (year == 0) year = DateTime.now().year;
+
+    DateTime monthStart = DateTime(year, month, 1);
+    DateTime monthEnd =
+        DateTime(year, month + 1, 1).subtract(const Duration(days: 1));
+
+    return {
+      "start": monthStart,
+      "end": monthEnd,
+    };
+  }
+
+  static Map<String, DateTime> getYearStartAndEnd(int year) {
+    DateTime yearStart = DateTime(year, 1, 1);
+    DateTime yearEnd =
+        DateTime(year + 1, 1, 1).subtract(const Duration(days: 1));
+
+    return {
+      "start": yearStart,
+      "end": yearEnd,
     };
   }
 }
