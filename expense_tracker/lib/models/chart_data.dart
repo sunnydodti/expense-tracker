@@ -91,6 +91,12 @@ class ChartData {
     return getExpensesBetween(yearStart, yearEnd);
   }
 
+  List<Expense> getExpensesForYear(int year) {
+    final DateTime yearStart = DateTime(year, 1, 1);
+    final DateTime yearEnd = DateTime(year, 12, 31);
+    return getExpensesBetween(yearStart, yearEnd);
+  }
+
   List<Expense> getExpensesForWeek(int week) {
     final now = DateTime.now();
     final currentYear = now.year;
@@ -305,5 +311,75 @@ class ChartData {
 
     _maxWeeklyAmount = maxTotalAmount;
     _minWeeklyAmount = minTotalAmount;
+  }
+
+  Map<int, ChartRecord> calculateMonthlySumForYear(bool iSplitChart,
+      {int year = 0}) {
+    List<Expense> expenses = getExpensesForCurrentYear();
+    if (year != 0) {
+      expenses = getExpensesForYear(year);
+    }
+
+    Map<int, ChartRecord> monthlySum = {
+      for (int i = 1; i <= 12; i++) i: ChartRecord(),
+    };
+
+    for (var expense in expenses) {
+      int month = expense.date.month;
+      monthlySum[month]!.add(expense);
+    }
+
+    if (iSplitChart) {
+      calculateMonthsWithHighestAndLowestAmountsForSplit(monthlySum);
+    } else {
+      calculateMonthsWithHighestAndLowestAmountsForTotal(monthlySum);
+    }
+
+    return monthlySum;
+  }
+
+  void calculateMonthsWithHighestAndLowestAmountsForSplit(
+      Map<int, ChartRecord> monthlySums) {
+    double maxExpenseAmount = 0.0;
+    double minExpenseAmount = double.infinity;
+
+    double maxIncomeAmount = 0.0;
+    double minIncomeAmount = double.infinity;
+
+    double maxReimbursementAmount = 0.0;
+    double minReimbursementAmount = double.infinity;
+
+    for (var record in monthlySums.values) {
+      maxExpenseAmount = max(record.expenseAmount.abs(), maxExpenseAmount);
+      minExpenseAmount = min(record.expenseAmount.abs(), minExpenseAmount);
+
+      maxIncomeAmount = max(record.incomeAmount.abs(), maxIncomeAmount);
+      minIncomeAmount = min(record.incomeAmount.abs(), minIncomeAmount);
+
+      maxReimbursementAmount =
+          max(record.reimbursementAmount.abs(), maxReimbursementAmount);
+      minReimbursementAmount =
+          min(record.reimbursementAmount.abs(), minReimbursementAmount);
+    }
+
+    _maxMonthlyAmount =
+        max(maxExpenseAmount, max(maxIncomeAmount, maxReimbursementAmount));
+    _minMonthlyAmount =
+        min(minExpenseAmount, min(minIncomeAmount, minReimbursementAmount));
+  }
+
+  void calculateMonthsWithHighestAndLowestAmountsForTotal(
+      Map<int, ChartRecord> monthlySums) {
+    double maxTotalAmount = 0.0;
+    double minTotalAmount = double.infinity;
+
+    monthlySums.forEach((month, record) {
+      double totalAmount = record.totalAmount.abs();
+      maxTotalAmount = max(maxTotalAmount, totalAmount);
+      minTotalAmount = min(minTotalAmount, totalAmount);
+    });
+
+    _maxMonthlyAmount = maxTotalAmount;
+    _minMonthlyAmount = minTotalAmount;
   }
 }

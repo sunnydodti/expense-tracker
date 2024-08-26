@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -47,13 +49,85 @@ class ChartWidgets {
 
   static Widget getWeekTitlesForMonth(BuildContext context, double value, TitleMeta meta) {
     final week = value.toInt();
-    return Text(
+
+    Widget text = Text(
       'Week $week',
-      style: const TextStyle(
-        color: Colors.black,
+      style: TextStyle(
+        color: ColorHelper.getIconColor(Theme.of(context)),
         fontWeight: FontWeight.bold,
-        fontSize: 12,
+        fontSize: 14,
       ),
+    );
+
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      space: 16,
+      child: text,
+    );
+  }
+
+  static Widget getMonthTitles(
+      BuildContext context, double value, TitleMeta meta) {
+    final int monthIndex = value.toInt();
+    String monthName;
+
+    switch (monthIndex) {
+      case 1:
+        monthName = 'Jan';
+        break;
+      case 2:
+        monthName = 'Feb';
+        break;
+      case 3:
+        monthName = 'Mar';
+        break;
+      case 4:
+        monthName = 'Apr';
+        break;
+      case 5:
+        monthName = 'May';
+        break;
+      case 6:
+        monthName = 'Jun';
+        break;
+      case 7:
+        monthName = 'Jul';
+        break;
+      case 8:
+        monthName = 'Aug';
+        break;
+      case 9:
+        monthName = 'Sep';
+        break;
+      case 10:
+        monthName = 'Oct';
+        break;
+      case 11:
+        monthName = 'Nov';
+        break;
+      case 12:
+        monthName = 'Dec';
+        break;
+      default:
+        monthName = '';
+    }
+    if (Platform.isAndroid || Platform.isIOS) {
+      monthName = monthName.substring(0, 2);
+    }
+
+    Widget text = Text(
+      monthName,
+      style: TextStyle(
+        color: ColorHelper.getIconColor(Theme.of(context)),
+        fontWeight: FontWeight.bold,
+        fontSize: 14,
+      ),
+    );
+
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      space: 16,
+      child: text,
     );
   }
 
