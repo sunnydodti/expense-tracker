@@ -108,7 +108,7 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
           if (provider.currency.isNotEmpty) text += '${provider.currency} ';
           text += provider.splitChart
               ? rod.toY.round().toString()
-              : (rod.toY - provider.chartData.barHeight * .05)
+              : (rod.toY - provider.chartData.barHeightDay * .05)
                   .round()
                   .toString();
 
@@ -137,11 +137,12 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
     List<BarChartGroupData> barGroups = [];
 
     dailySum.forEach((day, record) {
-      double maxHeight = chartData.barHeight;
+      double maxHeight = chartData.barHeightDay;
       bool isTouched = touchedIndex == day - 1;
 
       double total = record.totalAmount;
-      double touchTotal = record.totalAmount.abs() + chartData.barHeight * .05;
+      double touchTotal =
+          record.totalAmount.abs() + chartData.barHeightDay * .05;
 
       final Color color =
           total > 0 ? Colors.green.shade400 : Colors.red.shade400;
@@ -215,7 +216,7 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
       borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
       backDrawRodData: BackgroundBarChartRodData(
         show: true,
-        toY: chartData.barHeight,
+        toY: chartData.barHeightDay,
         color: color.withOpacity(.1),
       ),
     );

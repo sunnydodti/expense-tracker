@@ -108,8 +108,8 @@ class _MonthlyExpenseBarChartState extends State<MonthlyExpenseBarChart> {
           if (provider.currency.isNotEmpty) text += '${provider.currency} ';
           text += provider.splitChart
               ? rod.toY.round().toString()
-              : (rod.toY - provider.chartData.barHeight * .05)
-              .round()
+              : (rod.toY - provider.chartData.barHeightWeek * .05)
+                  .round()
               .toString();
 
           return BarTooltipItem(
@@ -137,11 +137,12 @@ class _MonthlyExpenseBarChartState extends State<MonthlyExpenseBarChart> {
     List<BarChartGroupData> barGroups = [];
 
     weeklySum.forEach((week, record) {
-      double maxHeight = chartData.barHeight;
+      double maxHeight = chartData.barHeightWeek;
       bool isTouched = touchedIndex == week - 1;
 
       double total = record.totalAmount;
-      double touchTotal = record.totalAmount.abs() + chartData.barHeight * .05;
+      double touchTotal =
+          record.totalAmount.abs() + chartData.barHeightWeek * .05;
 
       final Color color =
       total > 0 ? Colors.green.shade400 : Colors.red.shade400;
@@ -219,7 +220,7 @@ class _MonthlyExpenseBarChartState extends State<MonthlyExpenseBarChart> {
       borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
       backDrawRodData: BackgroundBarChartRodData(
         show: true,
-        toY: chartData.barHeight,
+        toY: chartData.barHeightWeek,
         color: color.withOpacity(.1),
       ),
     );

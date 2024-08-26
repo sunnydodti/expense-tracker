@@ -24,11 +24,11 @@ class ChartData {
   double _maxWeeklyAmount = 0;
   double _minWeeklyAmount = 0;
 
-  double _maxYearlyAmount = 0;
-  double _minYearlyAmount = 0;
+  double _maxMonthlyAmount = 0;
+  double _minMonthlyAmount = 0;
 
-  List<int> _daysWithMaxAmount = [];
-  List<int> _daysWithMinAmount = [];
+  final List<int> _daysWithMaxAmount = [];
+  final List<int> _daysWithMinAmount = [];
 
   double get maxDailyAmount => _maxDailyAmount;
 
@@ -39,7 +39,11 @@ class ChartData {
   List<int> get daysWithMinAmount => _daysWithMinAmount;
 
   // chart ui data
-  double get barHeight => _maxDailyAmount + _maxDailyAmount * 0.30;
+  double get barHeightDay => _maxDailyAmount + _maxDailyAmount * 0.30;
+
+  double get barHeightWeek => _maxWeeklyAmount + _maxWeeklyAmount * 0.30;
+
+  double get barHeightMonth => _maxMonthlyAmount + _maxMonthlyAmount * 0.30;
 
   List<Expense> filterExpenses() {
     return expenses.where((expense) {
@@ -302,7 +306,4 @@ class ChartData {
     _maxWeeklyAmount = maxTotalAmount;
     _minWeeklyAmount = minTotalAmount;
   }
-
-
-
 }
