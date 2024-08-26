@@ -112,7 +112,7 @@ class ChartWidgets {
         monthName = '';
     }
     if (Platform.isAndroid || Platform.isIOS) {
-      monthName = monthName.substring(0, 2);
+      monthName = monthName.substring(0, 1);
     }
 
     Widget text = Text(
@@ -120,7 +120,7 @@ class ChartWidgets {
       style: TextStyle(
         color: ColorHelper.getIconColor(Theme.of(context)),
         fontWeight: FontWeight.bold,
-        fontSize: 14,
+        fontSize: 10,
       ),
     );
 

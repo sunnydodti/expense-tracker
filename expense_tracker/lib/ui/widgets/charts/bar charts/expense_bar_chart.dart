@@ -5,6 +5,7 @@ import '../../../../models/enums/chart_range.dart';
 import '../../../../providers/ChartDataProvider.dart';
 import 'monthly_expense_bar_chart.dart';
 import 'weekly_expense_bar_chart.dart';
+import 'yearly_expense_bar_chart.dart';
 
 class ExpenseBarChart extends StatefulWidget {
   const ExpenseBarChart({super.key});
@@ -32,20 +33,12 @@ class _ExpenseBarChartState extends State<ExpenseBarChart> {
       case ChartRange.monthly:
         return const MonthlyExpenseBarChart();
       case ChartRange.yearly:
-        return _buildYearlyBarChart(provider);
+        return const YearlyExpenseBarChart();
       case ChartRange.custom:
         return _buildCustomBarChart(provider);
       default:
         return const WeeklyExpenseBarChart();
     }
-  }
-
-  Widget _buildMonthlyBarChart(ChartDataProvider provider) {
-    return const Text("Monthly");
-  }
-
-  Widget _buildYearlyBarChart(ChartDataProvider provider) {
-    return const Text("Yearly");
   }
 
   Widget _buildCustomBarChart(ChartDataProvider provider) {

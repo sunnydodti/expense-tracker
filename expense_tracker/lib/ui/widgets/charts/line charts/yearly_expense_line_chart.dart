@@ -112,8 +112,8 @@ class _YearlyExpenseLineChartState extends State<YearlyExpenseLineChart> {
   }
 
   Map<int, ChartRecord> _getMonthlySumForYear(ChartDataProvider provider) {
-    return provider.chartData.calculateMonthlySumForYear(provider.splitChart,
-        year: provider.selectedYear);
+    return provider.chartData.calculateMonthlySumForYear(
+        iSplitChart: provider.splitChart, year: provider.selectedYear);
   }
 
   List<LineChartBarData> _buildLineBarsForTotal(

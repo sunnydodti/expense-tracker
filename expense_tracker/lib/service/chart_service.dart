@@ -101,7 +101,7 @@ class ChartService {
     return "Week $weekIndex ($weekStartFormatted - $weekEndFormatted)";
   }
 
-  static String _getMonthName(int month) {
+  static String getMonthName(int month) {
     const List<String> monthNames = [
       'Jan',
       'Feb',

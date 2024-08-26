@@ -313,8 +313,8 @@ class ChartData {
     _minWeeklyAmount = minTotalAmount;
   }
 
-  Map<int, ChartRecord> calculateMonthlySumForYear(bool iSplitChart,
-      {int year = 0}) {
+  Map<int, ChartRecord> calculateMonthlySumForYear(
+      {bool iSplitChart = false, int year = 0}) {
     List<Expense> expenses = getExpensesForCurrentYear();
     if (year != 0) {
       expenses = getExpensesForYear(year);
