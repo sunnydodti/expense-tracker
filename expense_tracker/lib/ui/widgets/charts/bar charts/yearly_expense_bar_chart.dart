@@ -136,8 +136,6 @@ class _YearlyExpenseBarChartState extends State<YearlyExpenseBarChart> {
       barGroups.add(
         BarChartGroupData(
           x: month,
-          barsSpace: 1,
-          // groupVertically: true,
           barRods: [
             if (isIncomeAmount)
               _buildSplitBarRod(

@@ -9,7 +9,7 @@ class BarChartConstants {
   final double barWidth = 15;
   final double barWidthMonth = 13;
   final double barWidthSplit = 8;
-  final double barWidthSplitMonth = 3;
+  final double barWidthSplitMonth = 5;
 
   final Color color = Colors.blue.shade400;
   final Color colorExpense = Colors.red.shade400;
