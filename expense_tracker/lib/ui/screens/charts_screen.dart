@@ -10,6 +10,7 @@ import '../../models/enums/chart_type.dart';
 import '../../models/expense.dart';
 import '../../providers/ChartDataProvider.dart';
 import '../../providers/expense_provider.dart';
+import '../widgets/charts/bar charts/expense_bar_chart.dart';
 import '../widgets/charts/bar charts/weekly_expense_bar_chart.dart';
 import '../widgets/charts/line charts/weekly_expense_line_chart.dart';
 import '../widgets/charts/pie charts/weekly_expense_pie_chart.dart';
@@ -87,7 +88,7 @@ class ChartsState extends State<ChartsScreen> {
 
     switch (chartDataProvider.chartType) {
       case ChartType.bar:
-        chart = _buildBarChart();
+        chart = const ExpenseBarChart();
         break;
       case ChartType.pie:
         chart = _buildPieChart();

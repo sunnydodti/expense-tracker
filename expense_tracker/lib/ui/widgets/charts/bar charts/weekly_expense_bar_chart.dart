@@ -29,59 +29,56 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Expanded(
-          child: _buildWeeklyBarChart(),
-        ),
+        Expanded(child: Consumer<ChartDataProvider>(
+          builder: (context, provider, child) {
+            return _buildWeeklyBarChart(provider);
+          },
+        )),
         const ChartOptions(),
       ],
     );
   }
 
-  Consumer<ChartDataProvider> _buildWeeklyBarChart() {
-    return Consumer<ChartDataProvider>(
-      builder: (context, provider, child) {
-        Map<int, ChartRecord> dailySum = _getDailySumForWeek(provider);
-        List<BarChartGroupData> barGroups = (provider.splitChart)
-            ? _buildBarGroupsForSplit(dailySum, provider.chartData)
-            : _buildBarGroupsForTotal(dailySum, provider.chartData);
+  Container _buildWeeklyBarChart(ChartDataProvider provider) {
+    Map<int, ChartRecord> dailySum = _getDailySumForWeek(provider);
 
-        return Container(
-          padding: const EdgeInsets.only(top: 20, bottom: 5, left: 10),
-          child: BarChart(
-            BarChartData(
-              barGroups: barGroups,
-              gridData: FlGridData(show: false),
-              borderData: FlBorderData(show: false),
-              titlesData: FlTitlesData(
-                show: true,
-                rightTitles:
-                    AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                topTitles:
-                    AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    getTitlesWidget: (value, meta) =>
-                        ChartWidgets.getTitles(context, value, meta),
-                    reservedSize: 35,
-                  ),
-                ),
-                leftTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    reservedSize: 35,
-                    getTitlesWidget: (value, meta) =>
-                        ChartWidgets.leftTitleWidgets(value, meta),
-                  ),
-                ),
+    List<BarChartGroupData> barGroups = (provider.splitChart)
+        ? _buildBarGroupsForSplit(dailySum, provider.chartData)
+        : _buildBarGroupsForTotal(dailySum, provider.chartData);
+
+    return Container(
+      padding: const EdgeInsets.only(top: 20, bottom: 5, left: 10),
+      child: BarChart(
+        BarChartData(
+          barGroups: barGroups,
+          gridData: FlGridData(show: false),
+          borderData: FlBorderData(show: false),
+          titlesData: FlTitlesData(
+            show: true,
+            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                getTitlesWidget: (value, meta) =>
+                    ChartWidgets.getDayTitles(context, value, meta),
+                reservedSize: 35,
               ),
-              barTouchData: buildBarTouchData(provider),
             ),
-            swapAnimationCurve: Curves.linear,
-            swapAnimationDuration: const Duration(milliseconds: 250),
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 35,
+                getTitlesWidget: (value, meta) =>
+                    ChartWidgets.leftTitleWidgets(value, meta),
+              ),
+            ),
           ),
-        );
-      },
+          barTouchData: buildBarTouchData(provider),
+        ),
+        swapAnimationCurve: Curves.linear,
+        swapAnimationDuration: const Duration(milliseconds: 250),
+      ),
     );
   }
 

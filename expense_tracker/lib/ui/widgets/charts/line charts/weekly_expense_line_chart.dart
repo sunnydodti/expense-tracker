@@ -59,7 +59,7 @@ class _WeeklyExpenseLineChartState extends State<WeeklyExpenseLineChart> {
                   sideTitles: SideTitles(
                       showTitles: true,
                       getTitlesWidget: (value, meta) =>
-                          ChartWidgets.getTitles(context, value, meta),
+                          ChartWidgets.getDayTitles(context, value, meta),
                       reservedSize: 35,
                       interval: 1),
                 ),
