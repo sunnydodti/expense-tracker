@@ -12,7 +12,7 @@ import '../../providers/ChartDataProvider.dart';
 import '../../providers/expense_provider.dart';
 import '../widgets/charts/bar charts/expense_bar_chart.dart';
 import '../widgets/charts/line charts/expense_line_chart.dart';
-import '../widgets/charts/pie charts/weekly_expense_pie_chart.dart';
+import '../widgets/charts/pie charts/expense_pie_chart.dart';
 
 class ChartsScreen extends StatefulWidget {
   const ChartsScreen({super.key});
@@ -90,7 +90,7 @@ class ChartsState extends State<ChartsScreen> {
         chart = const ExpenseBarChart();
         break;
       case ChartType.pie:
-        chart = _buildPieChart();
+        chart = const ExpensePieChart();
         break;
       case ChartType.line:
         chart = const ExpenseLineChart();
@@ -108,10 +108,6 @@ class ChartsState extends State<ChartsScreen> {
         ],
       ),
     );
-  }
-
-  WeeklyExpensePieChart _buildPieChart() {
-    return const WeeklyExpensePieChart();
   }
 
   Center buildLoadingWidget() => const Center(child: Text("Loading ..."));
