@@ -174,13 +174,13 @@ class ChartData {
       expenses = getExpensesForWeek(week);
     }
     Map<int, ChartRecord> dailySum = {
-      DateTime.monday: ChartRecord(),
-      DateTime.tuesday: ChartRecord(),
-      DateTime.wednesday: ChartRecord(),
-      DateTime.thursday: ChartRecord(),
-      DateTime.friday: ChartRecord(),
-      DateTime.saturday: ChartRecord(),
-      DateTime.sunday: ChartRecord(),
+      DateTime.monday: ChartRecord(DateTime.monday),
+      DateTime.tuesday: ChartRecord(DateTime.tuesday),
+      DateTime.wednesday: ChartRecord(DateTime.wednesday),
+      DateTime.thursday: ChartRecord(DateTime.thursday),
+      DateTime.friday: ChartRecord(DateTime.friday),
+      DateTime.saturday: ChartRecord(DateTime.saturday),
+      DateTime.sunday: ChartRecord(DateTime.sunday),
     };
 
     for (var expense in expenses) {
@@ -247,11 +247,11 @@ class ChartData {
     }
 
     Map<int, ChartRecord> weeklySum = {
-      1: ChartRecord(),
-      2: ChartRecord(),
-      3: ChartRecord(),
-      4: ChartRecord(),
-      5: ChartRecord(),
+      1: ChartRecord(1),
+      2: ChartRecord(2),
+      3: ChartRecord(3),
+      4: ChartRecord(4),
+      5: ChartRecord(5),
     };
 
     for (var expense in expenses) {
@@ -321,7 +321,7 @@ class ChartData {
     }
 
     Map<int, ChartRecord> monthlySum = {
-      for (int i = 1; i <= 12; i++) i: ChartRecord(),
+      for (int i = 1; i <= 12; i++) i: ChartRecord(i),
     };
 
     for (var expense in expenses) {

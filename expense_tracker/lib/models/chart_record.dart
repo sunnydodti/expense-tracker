@@ -2,11 +2,14 @@ import 'enums/transaction_type.dart';
 import 'expense.dart';
 
 class ChartRecord {
+  int value = -999;
   List<Expense> expenses = [];
 
   double expenseAmount = 0.0;
   double incomeAmount = 0.0;
   double reimbursementAmount = 0.0;
+
+  ChartRecord(this.value);
 
   double get totalAmount {
     double sum = 0;
