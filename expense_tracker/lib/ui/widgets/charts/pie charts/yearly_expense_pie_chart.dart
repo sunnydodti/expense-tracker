@@ -7,14 +7,14 @@ import '../../../../models/chart_record.dart';
 import '../../../../providers/ChartDataProvider.dart';
 import '../chart_options.dart';
 
-class WeeklyExpensePieChart extends StatefulWidget {
-  const WeeklyExpensePieChart({super.key});
+class YearlyExpensePieChart extends StatefulWidget {
+  const YearlyExpensePieChart({super.key});
 
   @override
-  State<WeeklyExpensePieChart> createState() => _WeeklyExpensePieChartState();
+  State<YearlyExpensePieChart> createState() => _YearlyExpensePieChartState();
 }
 
-class _WeeklyExpensePieChartState extends State<WeeklyExpensePieChart> {
+class _YearlyExpensePieChartState extends State<YearlyExpensePieChart> {
   int touchedIndex = -1;
 
   @override
@@ -23,7 +23,7 @@ class _WeeklyExpensePieChartState extends State<WeeklyExpensePieChart> {
       children: [
         Expanded(child: Consumer<ChartDataProvider>(
           builder: (context, provider, child) {
-            return _buildWeeklyPieChart(provider);
+            return _buildYearlyPieChart(provider);
           },
         )),
         const ChartOptions(),
@@ -31,12 +31,12 @@ class _WeeklyExpensePieChartState extends State<WeeklyExpensePieChart> {
     );
   }
 
-  Widget _buildWeeklyPieChart(ChartDataProvider provider) {
-    Map<int, ChartRecord> dailySum = _getDailySumForWeek(provider);
+  Widget _buildYearlyPieChart(ChartDataProvider provider) {
+    Map<int, ChartRecord> yearlySum = _getYearlySum(provider);
 
     List<PieChartSectionData> pieSections = provider.splitChart
-        ? _buildPieSectionsForSplit(dailySum)
-        : _buildPieSectionsForTotal(dailySum);
+        ? _buildPieSectionsForSplit(yearlySum)
+        : _buildPieSectionsForTotal(yearlySum);
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -67,26 +67,27 @@ class _WeeklyExpensePieChartState extends State<WeeklyExpensePieChart> {
     );
   }
 
-  Map<int, ChartRecord> _getDailySumForWeek(ChartDataProvider provider) {
-    Map<int, ChartRecord> dailySum = provider.chartData
-        .calculateDailySumForWeek(provider.splitChart,
-            week: provider.selectedWeek);
-    dailySum.removeWhere((key, record) => record.totalAmount == 0);
-    Map<int, ChartRecord> updatedDailySum = {};
+  Map<int, ChartRecord> _getYearlySum(ChartDataProvider provider) {
+    Map<int, ChartRecord> yearlySum = provider.chartData
+        .calculateMonthlySumForYear(
+            iSplitChart: provider.splitChart, year: provider.selectedYear);
+    yearlySum.removeWhere((key, record) => record.totalAmount == 0);
+
+    Map<int, ChartRecord> updatedYearlySum = {};
     int newIndex = 0;
 
-    dailySum.forEach((key, record) {
-      updatedDailySum[newIndex] = record;
+    yearlySum.forEach((key, record) {
+      updatedYearlySum[newIndex] = record;
       newIndex++;
     });
-    return updatedDailySum;
+    return updatedYearlySum;
   }
 
   List<PieChartSectionData> _buildPieSectionsForTotal(
-      Map<int, ChartRecord> dailySum) {
-    double totalSum = dailySum.values.fold(
+      Map<int, ChartRecord> yearlySum) {
+    double totalSum = yearlySum.values.fold(
         0, (previousValue, record) => previousValue + record.totalAmount.abs());
-    return dailySum.entries.map((entry) {
+    return yearlySum.entries.map((entry) {
       final isTouched = touchedIndex == entry.key;
       final double fontSize = isTouched ? 18.0 : 12.0;
       final double radius = isTouched ? 60.0 : 50.0;
@@ -111,12 +112,12 @@ class _WeeklyExpensePieChartState extends State<WeeklyExpensePieChart> {
   }
 
   List<PieChartSectionData> _buildPieSectionsForSplit(
-      Map<int, ChartRecord> dailySum) {
-    double incomeSum = dailySum.values.fold(0,
+      Map<int, ChartRecord> yearlySum) {
+    double incomeSum = yearlySum.values.fold(0,
         (previousValue, record) => previousValue + record.incomeAmount.abs());
-    double expenseSum = dailySum.values.fold(0,
+    double expenseSum = yearlySum.values.fold(0,
         (previousValue, record) => previousValue + record.expenseAmount.abs());
-    double reimbursementSum = dailySum.values.fold(
+    double reimbursementSum = yearlySum.values.fold(
         0,
         (previousValue, record) =>
             previousValue + record.reimbursementAmount.abs());
