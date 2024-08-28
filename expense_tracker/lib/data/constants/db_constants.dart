@@ -9,18 +9,21 @@ class DBConstants {
   static ExpenseItemConstants expenseItem = ExpenseItemConstants();
   static CategoryConstants category = CategoryConstants();
   static TagConstants tag = TagConstants();
+  static UserConstants user = UserConstants();
+  static ProfileConstants profile = ProfileConstants();
 }
 
 class CommonConstants {
   final String createdAt = "created_at";
   final String modifiedAt = "modified_at";
+  static String id = "id";
 }
 
 class ExpenseConstants {
   final String table = "expenses";
   final String triggerModifiedAt = "update_modified_at_expenses";
 
-  final String id = "id";
+  final String id = CommonConstants.id;
   final String title = "title";
   final String currency = "currency";
   final String amount = "amount";
@@ -38,7 +41,7 @@ class ExpenseItemConstants {
   final String table = "expense_items";
   final String triggerModifiedAt = "update_modified_at_expense_items";
 
-  final String id = "id";
+  final String id = CommonConstants.id;
   final String expenseId = "expense_id";
   final String name = "name";
   final String amount = "amount";
@@ -49,7 +52,7 @@ class CategoryConstants {
   final String table = "categories";
   final String triggerModifiedAt = "update_modified_at_categories";
 
-  final String id = "id";
+  final String id = CommonConstants.id;
   final String name = "name";
 }
 
@@ -57,14 +60,14 @@ class TagConstants {
   final String table = "tags";
   final String triggerModifiedAt = "update_modified_at_tags";
 
-  final String id = "id";
+  final String id = CommonConstants.id;
   final String name = "name";
 }
 
 class CurrencyConstants {
   final String table = "currencies";
 
-  final String id = "id";
+  final String id = CommonConstants.id;
   final String name = "name";
   final String symbol = "symbol";
   final String country = "country";
@@ -73,7 +76,7 @@ class CurrencyConstants {
 class TransactionTypeConstants {
   final String table = "transaction_types";
 
-  final String id = "id";
+  final String id = CommonConstants.id;
   final String type = "type";
 }
 
@@ -83,4 +86,16 @@ class DatabaseVersionConstants {
   final String appVersionKey = "app_version";
   final String appVersion = "0.0.7";
   final String createdAt = "created_at";
+}
+
+class UserConstants {
+  final String id = CommonConstants.id;
+  final String name = "name";
+  final String userName = "user_name";
+  final String email = "email";
+}
+
+class ProfileConstants {
+  final String id = CommonConstants.id;
+  final String name = "name";
 }
