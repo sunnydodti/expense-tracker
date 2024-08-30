@@ -5,7 +5,11 @@ import 'package:sqflite/sqflite.dart';
 import '../../../models/enums/sort_criteria.dart';
 import '../../../models/expense.dart';
 import '../../../models/expense_filters.dart';
+import '../../../models/profile.dart';
+import '../../../models/user.dart';
 import '../../constants/db_constants.dart';
+import 'profile_helper.dart';
+import 'user_helper.dart';
 
 class ExpenseHelper {
   final Database _database;
@@ -64,12 +68,32 @@ class ExpenseHelper {
           ALTER TABLE ${DBConstants.expense.table}
           RENAME COLUMN ${DBConstants.expense.containsNestedExpenses} TO ${DBConstants.expense.containsExpenseItems}
         ''');
+    }
+  }
 
-      // _logger.i("\tdropping column ${DBConstants.expense.expenses}");
-      // await transaction.execute('''
-      //     ALTER TABLE ${DBConstants.expense.table}
-      //     DROP COLUMN ${DBConstants.expense.expenses}
-      //   ''');
+  //region db update v3
+  static Future<void> upgradeTableV2toV3(Transaction transaction) async {
+    var result = await transaction.rawQuery(
+        """SELECT name FROM sqlite_master WHERE type = 'table' AND name = '${DBConstants.expense.table}'""");
+    if (result.isNotEmpty) {
+      _logger.i("updating table ${DBConstants.expense.table}");
+      _logger.i(
+          "\tadding ${DBConstants.expense.profileId} column");
+      List<Map<String, dynamic>> defaultProfileMap = await ProfileHelper.getDefaultProfile(transaction);
+      Profile defaultProfile = Profile.fromMap(defaultProfileMap.first);
+      await transaction.execute('''
+          ALTER TABLE ${DBConstants.expense.table}
+          ADD COLUMN ${DBConstants.expense.profileId} INTEGER NOT NULL DEFAULT ${defaultProfile.id}
+        ''');
+
+      _logger.i(
+          "\tadding ${DBConstants.expense.userId} column");
+      List<Map<String, dynamic>> defaultUserMap = await UserHelper.getDefaultUser(transaction);
+      User defaultUser = User.fromMap(defaultProfileMap.first);
+      await transaction.execute('''
+          ALTER TABLE ${DBConstants.expense.table}
+          ADD COLUMN ${DBConstants.expense.profileId} INTEGER NOT NULL DEFAULT ${defaultUser.id}
+        ''');
     }
   }
 

@@ -7,13 +7,14 @@ import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-
 import '../../constants/db_constants.dart';
 import 'category_helper.dart';
 import 'expense_helper.dart';
 import 'expense_item_helper.dart';
 import 'migration_helper.dart';
+import 'profile_helper.dart';
 import 'tag_helper.dart';
+import 'user_helper.dart';
 
 class DatabaseHelper {
   static DatabaseHelper? _databaseHelper;
@@ -58,9 +59,13 @@ class DatabaseHelper {
   FutureOr<void> upgradeDatabase(Database db, int oldVersion, int newVersion) {
     // if upgrading from version 1
     if (oldVersion == 1) {
-      if (newVersion == 2) {
         upgradeFromV1toV2(db);
-      }
+      upgradeFromV2toV3(db);
+    }
+
+    // if upgrading from version 2
+    if (oldVersion == 2) {
+      upgradeFromV2toV3(db);
     }
   }
 
@@ -77,10 +82,20 @@ class DatabaseHelper {
     await TagHelper.populateDefaults(database);
 
     // version 2
+
+    // version3
+    await UserHelper.createTable(database);
+    await UserHelper.populateDefaults(database);
+    await ProfileHelper.createTable(database);
+    await ProfileHelper.populateDefaults(database);
   }
 
   void upgradeFromV1toV2(Database database) async {
     MigrationHelper.migrateV1toV2(database);
+  }
+
+  void upgradeFromV2toV3(Database database) async {
+    MigrationHelper.migrateV2toV3(database);
   }
 
   Future<ExpenseHelper> get expenseHelper async =>
@@ -93,4 +108,9 @@ class DatabaseHelper {
       CategoryHelper(await getDatabase);
 
   Future<TagHelper> get tagHelper async => TagHelper(await getDatabase);
+
+  Future<ProfileHelper> get profileHelper async =>
+      ProfileHelper(await getDatabase);
+
+  Future<UserHelper> get userHelper async => UserHelper(await getDatabase);
 }
