@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../models/enums/chart_range.dart';
-import '../../../../providers/ChartDataProvider.dart';
+import '../../../../providers/chart_data_provider.dart';
 import 'monthly_expense_bar_chart.dart';
 import 'weekly_expense_bar_chart.dart';
 import 'yearly_expense_bar_chart.dart';

@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../data/constants/chart_constants.dart';
 import '../../../../models/chart_record.dart';
-import '../../../../providers/ChartDataProvider.dart';
+import '../../../../providers/chart_data_provider.dart';
 import '../chart_options.dart';
 import '../chart_widgets.dart';
 

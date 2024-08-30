@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'providers/ChartDataProvider.dart';
 import 'providers/category_provider.dart';
+import 'providers/chart_data_provider.dart';
 import 'providers/expense_items_provider.dart';
 import 'providers/expense_provider.dart';
 import 'providers/settings_provider.dart';

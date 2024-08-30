@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../data/helpers/color_helper.dart';
 import '../../../models/enums/chart_range.dart';
-import '../../../providers/ChartDataProvider.dart';
+import '../../../providers/chart_data_provider.dart';
 import '../../../service/chart_service.dart';
 
 class ChartOptions extends StatelessWidget {

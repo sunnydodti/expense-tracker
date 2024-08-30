@@ -8,7 +8,7 @@ import '../../data/helpers/shared_preferences_helper.dart';
 import '../../models/enums/chart_range.dart';
 import '../../models/enums/chart_type.dart';
 import '../../models/expense.dart';
-import '../../providers/ChartDataProvider.dart';
+import '../../providers/chart_data_provider.dart';
 import '../../providers/expense_provider.dart';
 import '../widgets/charts/bar charts/expense_bar_chart.dart';
 import '../widgets/charts/line charts/expense_line_chart.dart';
