@@ -35,6 +35,8 @@ class ExpenseConstants {
   final String containsNestedExpenses = "contains_nested_expenses"; // dropped
   final String containsExpenseItems = "contains_expense_items";
   final String expenses = "expenses"; // dropped
+  final String profileId = "profile_id";
+  final String userId = "user_id";
 }
 
 class ExpenseItemConstants {
@@ -89,6 +91,9 @@ class DatabaseVersionConstants {
 }
 
 class UserConstants {
+  final String table = "users";
+  final String triggerModifiedAt = "update_modified_at_users";
+
   final String id = CommonConstants.id;
   final String name = "name";
   final String userName = "user_name";
@@ -96,6 +101,9 @@ class UserConstants {
 }
 
 class ProfileConstants {
+  final String table = "profiles";
+  final String triggerModifiedAt = "update_modified_at_profiles";
+
   final String id = CommonConstants.id;
   final String name = "name";
 }
