@@ -4,9 +4,10 @@ import 'package:provider/provider.dart';
 import '../../../data/helpers/color_helper.dart';
 import '../../../data/helpers/debug_helper.dart';
 import '../../../data/helpers/navigation_helper.dart';
+import '../../../models/profile.dart';
 import '../../../providers/expense_provider.dart';
+import '../../../providers/profile_provider.dart';
 import '../../../service/expense_service.dart';
-import '../../dialogs/common/message_dialog.dart';
 import '../../screens/settings/settings_screen.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -26,7 +27,8 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    ;
+    ProfileProvider getProfileProvider() =>
+        Provider.of<ProfileProvider>(context, listen: false);
 
     Future refreshExpenses(BuildContext context) async {
       Provider.of<ExpenseProvider>(context, listen: false).refreshExpenses();
@@ -43,15 +45,28 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
       NavigationHelper.navigateToScreen(context, const SettingsScreen());
     }
 
-    void handleProfile() => {
-          showDialog(
-            context: context,
-            builder: (context) => const MessageDialog(
-              title: 'To be added',
-              message: 'Profile will be added soon',
-            ),
-          ),
-        };
+    List<PopupMenuItem<Profile>> buildProfileDropdown(
+        ProfileProvider provider) {
+      return provider.profiles.map((profile) {
+        return PopupMenuItem<Profile>(
+          value: profile,
+          child: Text(profile.name),
+        );
+      }).toList();
+    }
+
+    void handleProfile(BuildContext context, ProfileProvider provider) {
+      showMenu(
+              context: context,
+              position: const RelativeRect.fromLTRB(1000.0, 80.0, 0.0, 0.0),
+              items: buildProfileDropdown(provider),
+              color: ColorHelper.getBackgroundColor(Theme.of(context)))
+          .then((Profile? profile) {
+        if (profile != null) {
+          provider.setCurrentProfile(profile);
+        }
+      });
+    }
 
     return AppBar(
       backgroundColor: ColorHelper.getAppBarColor(Theme.of(context)),
@@ -89,7 +104,13 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
             size: 20,
           ),
           tooltip: "Profile",
-          onPressed: handleProfile,
+          onPressed: () async {
+            ProfileProvider provider = getProfileProvider();
+            provider
+                .refreshProfiles()
+                .then((value) => handleProfile(context, provider));
+          },
+          // onPressed: _buildDropdownMenu,
         ),
       ],
     );
