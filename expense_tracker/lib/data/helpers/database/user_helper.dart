@@ -25,6 +25,8 @@ class UserHelper {
       await database.execute('''CREATE TABLE ${DBConstants.user.table} (
         ${DBConstants.user.id} INTEGER PRIMARY KEY AUTOINCREMENT, 
         ${DBConstants.user.name} TEXT,
+        ${DBConstants.user.userName} TEXT UNIQUE,
+        ${DBConstants.user.email} TEXT,
         ${DBConstants.common.createdAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         ${DBConstants.common.modifiedAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
@@ -50,9 +52,9 @@ class UserHelper {
     try {
       _logger.i("populating default ${DBConstants.user.table}");
       if (result.isNotEmpty) {
-        for (String category in defaultUsers) {
+        for (String userName in defaultUsers) {
           await database.execute(
-              '''insert into ${DBConstants.user.table} (${DBConstants.user.name}) values ('$category')''');
+              '''insert into ${DBConstants.user.table} (${DBConstants.user.userName}) values ('$userName')''');
         }
       }
     } on Exception catch (e, stackTrace) {
@@ -61,7 +63,7 @@ class UserHelper {
   }
 
   Future<int> addUser(Map<String, dynamic> userMap) async {
-    _logger.i("adding user ${userMap[DBConstants.user.name]}");
+    _logger.i("adding user ${userMap[DBConstants.user.userName]}");
     _logger.i(userMap.toString());
     Database database = getDatabase;
     return await database.insert(DBConstants.user.table, userMap);
@@ -73,11 +75,11 @@ class UserHelper {
     return await database.query(DBConstants.user.table);
   }
 
-  Future<List<Map<String, dynamic>>> getUserByName(String userName) async {
+  Future<List<Map<String, dynamic>>> getUserByUserName(String userName) async {
     _logger.i("getting user $userName");
     Database database = getDatabase;
     return await database.query(DBConstants.user.table,
-        where: '${DBConstants.user.name} = ?', whereArgs: [userName]);
+        where: '${DBConstants.user.userName} = ?', whereArgs: [userName]);
   }
 
   Future<int> updateUser(UserFormModel user) async {
@@ -95,11 +97,11 @@ class UserHelper {
         where: '${DBConstants.user.id} = ?', whereArgs: [id]);
   }
 
-  Future<int> deleteUserByName(String userName) async {
+  Future<int> deleteUserByUserName(String userName) async {
     _logger.i("deleting ${DBConstants.user.table} - $userName");
     Database database = getDatabase;
     return await database.delete(DBConstants.user.table,
-        where: '${DBConstants.user.name} = ?', whereArgs: [userName]);
+        where: '${DBConstants.user.userName} = ?', whereArgs: [userName]);
   }
 
   Future<int> deleteAllUsers() async {
@@ -122,7 +124,7 @@ class UserHelper {
     return database.rawQuery(
         """
         SELECT COUNT(*) as count FROM ${DBConstants.user.table} 
-        WHERE ${DBConstants.user.name} = '$userName'
+        WHERE ${DBConstants.user.userName} = '$userName'
         """);
   }
 
@@ -130,7 +132,7 @@ class UserHelper {
     return transaction.rawQuery(
         """
       SELECT * FROM ${DBConstants.user.table} 
-      WHERE ${DBConstants.user.name} = '${defaultUsers.first}'
+      WHERE ${DBConstants.user.userName} = '${defaultUsers.first}'
       """
     );
   }

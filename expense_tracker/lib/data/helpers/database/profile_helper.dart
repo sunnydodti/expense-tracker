@@ -24,7 +24,7 @@ class ProfileHelper {
       _logger.i("creating table ${DBConstants.profile.table}");
       await database.execute('''CREATE TABLE ${DBConstants.profile.table} (
         ${DBConstants.profile.id} INTEGER PRIMARY KEY AUTOINCREMENT, 
-        ${DBConstants.profile.name} TEXT,
+        ${DBConstants.profile.name} TEXT UNIQUE,
         ${DBConstants.common.createdAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         ${DBConstants.common.modifiedAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
