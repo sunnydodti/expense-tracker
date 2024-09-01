@@ -5,6 +5,8 @@ import '../../../data/helpers/color_helper.dart';
 import '../../../models/profile.dart';
 import '../../../providers/profile_provider.dart';
 import '../../../service/profile_service.dart';
+import '../../dialogs/common/confirmation_dialog.dart';
+import '../../dialogs/common/message_dialog.dart';
 import '../../forms/profile_form.dart';
 import '../empty_list_widget.dart';
 import 'profile_tile.dart';
@@ -35,7 +37,7 @@ class ProfileList extends StatelessWidget {
                                 return ProfileTile(
                                   profileName: profile.name,
                                   onDelete: () =>
-                                      _deleteProfile(context, profile),
+                                      _handelDelete(context, profile),
                                 );
                               },
                             ),
@@ -46,6 +48,20 @@ class ProfileList extends StatelessWidget {
             ));
   }
 
+  _handelDelete(BuildContext context, Profile profile) {
+    if (profile.id == 1) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return MessageDialog(
+                title: "Action Not allowed",
+                message: "Profile '${profile.name}' can't be deleted");
+          });
+      return;
+    }
+    _deleteProfileDialog(context, profile);
+  }
+
   _deleteProfile(BuildContext context, Profile profile) async {
     ProfileService profileService = await ProfileService.create();
     profileService.deleteProfile(profile.id).then((value) {
@@ -53,6 +69,21 @@ class ProfileList extends StatelessWidget {
         _refreshProfile(context);
       }
     });
+  }
+
+  _deleteProfileDialog(BuildContext context, Profile profile) async {
+    showDialog<int>(
+      context: context,
+      builder: (BuildContext context) {
+        Text content = const Text(
+            "Warning\nYou will loose all the expenses in this profile");
+        return ConfirmationDialog(
+          title: "Delete Profile ${profile.name}",
+          content: content,
+          onConfirm: () => _deleteProfile(context, profile),
+        );
+      },
+    );
   }
 
   _refreshProfile(BuildContext context) {
