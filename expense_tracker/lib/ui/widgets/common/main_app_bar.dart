@@ -45,21 +45,29 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
       NavigationHelper.navigateToScreen(context, const SettingsScreen());
     }
 
-    List<PopupMenuItem<Profile>> buildProfileDropdown(
-        ProfileProvider provider) {
+    Future<List<PopupMenuItem<Profile>>> buildProfileDropdown(
+        ProfileProvider provider, ThemeData theme) async {
+      Profile? selectedProfile = await provider.currentProfile;
       return provider.profiles.map((profile) {
         return PopupMenuItem<Profile>(
           value: profile,
-          child: Text(profile.name),
+          enabled: selectedProfile!.id != profile.id,
+          child: Text(
+            profile.name,
+            style: (selectedProfile.id != profile.id)
+                ? null
+                : const TextStyle(
+                    fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+          ),
         );
       }).toList();
     }
 
-    void handleProfile(BuildContext context, ProfileProvider provider) {
+    void handleProfile(BuildContext context, ProfileProvider provider) async {
       showMenu(
               context: context,
               position: const RelativeRect.fromLTRB(1000.0, 80.0, 0.0, 0.0),
-              items: buildProfileDropdown(provider),
+              items: await buildProfileDropdown(provider, Theme.of(context)),
               color: ColorHelper.getBackgroundColor(Theme.of(context)))
           .then((Profile? profile) {
         if (profile != null) {
