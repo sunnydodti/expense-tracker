@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../data/helpers/color_helper.dart';
 import '../../../models/profile.dart';
+import '../../../providers/expense_provider.dart';
 import '../../../providers/profile_provider.dart';
 import '../../../service/profile_service.dart';
 import '../../dialogs/common/confirmation_dialog.dart';
@@ -63,11 +64,22 @@ class ProfileList extends StatelessWidget {
   }
 
   _deleteProfile(BuildContext context, Profile profile) async {
-    ProfileService profileService = await ProfileService.create();
-    profileService.deleteProfile(profile.id).then((value) {
-      if (value > 0) {
-        _refreshProfile(context);
+    Provider.of<ProfileProvider>(context, listen: false)
+        .currentProfile
+        .then((Profile? selectedProfile) async {
+      if (selectedProfile?.id == profile.id) {
+        Provider.of<ProfileProvider>(context, listen: false)
+            .setDefaultProfile();
       }
+      ProfileService profileService = await ProfileService.create();
+
+      profileService.deleteProfile(profile.id).then((value) async {
+        if (value > 0) {
+          Provider.of<ExpenseProvider>(context, listen: false)
+              .refreshExpenses();
+          _refreshProfile(context);
+        }
+      });
     });
   }
 

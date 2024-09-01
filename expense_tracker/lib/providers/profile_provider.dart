@@ -51,6 +51,13 @@ class ProfileProvider extends ChangeNotifier {
     _currentProfile = profile;
   }
 
+  void setDefaultProfile() async {
+    ProfileService profileService = await _profileService;
+    _currentProfile = await profileService.getDefaultProfile();
+    await _sharedPreferencesService.setStringPreference(
+        SharedPreferencesConstants.profile.PROFILE, _currentProfile!.name);
+  }
+
   /// Add a profile. This does not add it to the database
   void addProfile(Profile profile) {
     _profiles.add(profile);
