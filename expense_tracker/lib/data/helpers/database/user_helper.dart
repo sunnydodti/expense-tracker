@@ -13,9 +13,10 @@ class UserHelper {
 
   Database get getDatabase => _database;
 
-  static final List<String> defaultUsers = [
-    'user'
+  static final List<String> _defaultUsers = ['user'
   ];
+
+  static String get defaultUser => _defaultUsers.first;
 
   static Future<void> createTable(Database database) async {
     var result = await database.rawQuery(
@@ -52,7 +53,7 @@ class UserHelper {
     try {
       _logger.i("populating default ${DBConstants.user.table}");
       if (result.isNotEmpty) {
-        for (String userName in defaultUsers) {
+        for (String userName in _defaultUsers) {
           await database.execute(
               '''insert into ${DBConstants.user.table} (${DBConstants.user.userName}) values ('$userName')''');
         }
@@ -132,7 +133,7 @@ class UserHelper {
     return transaction.rawQuery(
         """
       SELECT * FROM ${DBConstants.user.table} 
-      WHERE ${DBConstants.user.userName} = '${defaultUsers.first}'
+      WHERE ${DBConstants.user.userName} = '${_defaultUsers.first}'
       """
     );
   }

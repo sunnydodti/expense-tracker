@@ -5,6 +5,8 @@ class SharedPreferencesConstants {
   static SettingsPreferencesConstants settings = SettingsPreferencesConstants();
   static SummaryPreferencesConstants summary = SummaryPreferencesConstants();
   static AppThemeConstants theme = AppThemeConstants();
+  static UserConstants user = UserConstants();
+  static ProfileConstants profile = ProfileConstants();
 }
 
 class SortPreferencesConstants {
@@ -30,4 +32,12 @@ class SummaryPreferencesConstants {
 
 class AppThemeConstants {
   final String APP_THEME_KEY = "app_theme";
+}
+
+class UserConstants {
+  final String USER = "user";
+}
+
+class ProfileConstants {
+  final String PROFILE = "profile";
 }

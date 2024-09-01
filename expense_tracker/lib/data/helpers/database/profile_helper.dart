@@ -13,9 +13,10 @@ class ProfileHelper {
 
   Database get getDatabase => _database;
 
-  static final List<String> defaultProfiles = [
-    'default'
+  static final List<String> _defaultProfiles = ['default'
   ];
+
+  static String get defaultProfile => _defaultProfiles.first;
 
   static Future<void> createTable(Database database) async {
     var result = await database.rawQuery(
@@ -50,7 +51,7 @@ class ProfileHelper {
     try {
       _logger.i("populating default ${DBConstants.profile.table}");
       if (result.isNotEmpty) {
-        for (String category in defaultProfiles) {
+        for (String category in _defaultProfiles) {
           await database.execute(
               '''insert into ${DBConstants.profile.table} (${DBConstants.profile.name}) values ('$category')''');
         }
@@ -130,7 +131,7 @@ class ProfileHelper {
     return transaction.rawQuery(
       """
       SELECT * FROM ${DBConstants.profile.table} 
-      WHERE ${DBConstants.profile.name} = '${defaultProfiles.first}'
+      WHERE ${DBConstants.profile.name} = '${_defaultProfiles.first}'
       """
     );
   }

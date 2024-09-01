@@ -140,16 +140,25 @@ class ExpenseHelper {
     SortCriteria sortCriteria,
     bool isAscendingSort,
     ExpenseFilters filters,
+    Profile? profile,
   ) async {
-    _logger.i("getting sorted and filtered expenses");
+    profile == null
+        ? _logger.i("getting sorted and filtered expenses")
+        : _logger.i(
+            "getting sorted and filtered expenses for profile - ${profile.name}");
+
     Database database = getDatabase;
     String tableName = DBConstants.expense.table;
 
-    String whereClause = '';
+    String whereClause = '1=1';
     List<dynamic> whereArgs = [];
 
+    if (profile != null) {
+      whereClause += ''' AND ${DBConstants.expense.profileId} = ?''';
+      whereArgs.add(profile.id);
+    }
+
     if (filters.isApplied) {
-      whereClause += '1=1';
       if (filters.filterByYear) {
         whereClause +=
             ''' AND strftime('%Y', ${DBConstants.expense.date}) = ?''';

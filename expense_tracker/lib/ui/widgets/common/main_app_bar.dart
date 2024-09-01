@@ -64,6 +64,8 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
           .then((Profile? profile) {
         if (profile != null) {
           provider.setCurrentProfile(profile);
+          Provider.of<ExpenseProvider>(context, listen: false)
+              .refreshExpenses();
         }
       });
     }
@@ -110,7 +112,6 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                 .refreshProfiles()
                 .then((value) => handleProfile(context, provider));
           },
-          // onPressed: _buildDropdownMenu,
         ),
       ],
     );

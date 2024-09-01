@@ -1,11 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 
+import '../data/constants/shared_preferences_constants.dart';
 import '../models/profile.dart';
 import '../service/profile_service.dart';
+import '../service/shared_preferences_service.dart';
 
 class ProfileProvider extends ChangeNotifier {
   late final Future<ProfileService> _profileService;
+  late final SharedPreferencesService _sharedPreferencesService;
   static final Logger _logger =
   Logger(printer: SimplePrinter(), level: Level.info);
 
@@ -15,6 +18,7 @@ class ProfileProvider extends ChangeNotifier {
 
   Future<void> _init() async {
     _profileService = ProfileService.create();
+    _sharedPreferencesService = SharedPreferencesService();
   }
 
   List<Profile> _profiles = [];
@@ -24,12 +28,28 @@ class ProfileProvider extends ChangeNotifier {
   List<Profile> get profiles => _profiles;
 
   /// Get the current active profile
-  Profile? get currentProfile => _currentProfile;
+  Future<Profile?> get currentProfile async {
+    if (_currentProfile != null) _currentProfile;
+
+    ProfileService profileService = await _profileService;
+    String? profileName = await _sharedPreferencesService
+        .getStringPreference(SharedPreferencesConstants.profile.PROFILE);
+
+    if (profileName == null) {
+      _currentProfile = await profileService.getDefaultProfile();
+      return _currentProfile;
+    }
+
+    _currentProfile = await profileService.getProfileByName(profileName);
+    return _currentProfile;
+  }
 
   /// Set the current active profile
-  void setCurrentProfile(Profile profile) {
+  void setCurrentProfile(Profile profile) async {
+    await _sharedPreferencesService.setStringPreference(
+        SharedPreferencesConstants.profile.PROFILE, profile.name);
     _currentProfile = profile;
-    notifyListeners();
+    // notifyListeners();
   }
 
   /// Add a profile. This does not add it to the database
@@ -56,7 +76,8 @@ class ProfileProvider extends ChangeNotifier {
 
   /// Edit a profile. This does not update it in the database
   void editProfile(Profile editedProfile) {
-    final index = _profiles.indexWhere((profile) => profile.id == editedProfile.id);
+    final index =
+        _profiles.indexWhere((profile) => profile.id == editedProfile.id);
     if (index != -1) {
       _profiles[index] = editedProfile;
       notifyListeners();

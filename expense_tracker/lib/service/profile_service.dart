@@ -31,6 +31,18 @@ class ProfileService {
     }
   }
 
+  Future<Profile?> getDefaultProfile() async {
+    try {
+      String profileName = ProfileHelper.defaultProfile;
+      final List<Map<String, dynamic>> profile =
+          await _profileHelper.getProfileByName(profileName);
+      return Profile.fromMap(profile.first);
+    } catch (e, stackTrace) {
+      _logger.e("Error getting profiles: $e - \n$stackTrace");
+      return null;
+    }
+  }
+
   Future<List<Map<String, dynamic>>> getProfileMaps() async {
     try {
       return await _profileHelper.getProfiles();

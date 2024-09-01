@@ -2,22 +2,31 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
+import '../data/constants/shared_preferences_constants.dart';
 import '../models/enums/transaction_type.dart';
 import '../models/expense.dart';
+import '../models/profile.dart';
 import '../service/expense_service.dart';
+import '../service/profile_service.dart';
+import '../service/shared_preferences_service.dart';
 
 class ExpenseProvider extends ChangeNotifier {
   late final Future<ExpenseService> _expenseService;
+  late final Future<ProfileService> _profileService;
+
+  late final SharedPreferencesService _sharedPreferencesService;
 
   static final Logger _logger =
       Logger(printer: SimplePrinter(), level: Level.info);
 
   ExpenseProvider() {
+    _sharedPreferencesService = SharedPreferencesService();
     _init();
   }
 
   Future<void> _init() async {
     _expenseService = ExpenseService.create();
+    _profileService = ProfileService.create();
   }
 
   List<Expense> _expenses = [];
@@ -134,8 +143,8 @@ class ExpenseProvider extends ChangeNotifier {
   /// refresh expenses from db
   Future<void> refreshExpenses({bool notify = true}) async {
     try {
-      // await Future.delayed(const Duration(seconds: 1));
-      _expenses = await _fetchExpenses();
+      Profile? profile = await _getProfile();
+      _expenses = await _fetchExpenses(profile);
 
       if (notify) notifyListeners();
     } catch (e, stackTrace) {
@@ -144,10 +153,10 @@ class ExpenseProvider extends ChangeNotifier {
   }
 
   /// fetch updated expenses from db
-  Future<List<Expense>> _fetchExpenses() async {
+  Future<List<Expense>> _fetchExpenses(Profile? profile) async {
     ExpenseService expenseService = await _expenseService;
     // return await expenseService.getExpenses();
-    return await expenseService.getSortedAndFilteredExpenses();
+    return await expenseService.getSortedAndFilteredExpenses(profile);
   }
 
   Future<List<Expense>> fetchAllExpenses() async {
@@ -173,5 +182,12 @@ class ExpenseProvider extends ChangeNotifier {
     _showPopup = false;
     _popUpExpense = null;
     notifyListeners();
+  }
+
+  Future<Profile?> _getProfile() async {
+    ProfileService profileService = await _profileService;
+    String? profileName = await _sharedPreferencesService
+        .getStringPreference(SharedPreferencesConstants.profile.PROFILE);
+    return await profileService.getProfileByName(profileName!);
   }
 }

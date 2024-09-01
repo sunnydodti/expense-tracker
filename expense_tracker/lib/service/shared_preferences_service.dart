@@ -3,6 +3,8 @@ import 'package:logger/logger.dart';
 
 import '../data/constants/form_constants.dart';
 import '../data/constants/shared_preferences_constants.dart';
+import '../data/helpers/database/profile_helper.dart';
+import '../data/helpers/database/user_helper.dart';
 import '../data/helpers/shared_preferences_helper.dart';
 import '../models/enums/app_theme.dart';
 import '../models/enums/sort_criteria.dart';
@@ -50,6 +52,8 @@ class SharedPreferencesService {
       await initializeSettingsPreferences();
       await initializeSummaryPreferences();
       await initializeThemePreferences();
+      await initializeUserPreferences();
+      await initializeProfilePreferences();
     }
   }
 
@@ -81,5 +85,15 @@ class SharedPreferencesService {
   Future<void> initializeThemePreferences() async {
     setStringPreference(
         SharedPreferencesConstants.theme.APP_THEME_KEY, AppTheme.black.name);
+  }
+
+  Future<void> initializeUserPreferences() async {
+    setStringPreference(
+        SharedPreferencesConstants.user.USER, UserHelper.defaultUser);
+  }
+
+  Future<void> initializeProfilePreferences() async {
+    setStringPreference(SharedPreferencesConstants.profile.PROFILE,
+        ProfileHelper.defaultProfile);
   }
 }

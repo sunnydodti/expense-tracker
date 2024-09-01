@@ -8,6 +8,7 @@ import '../models/enums/sort_criteria.dart';
 import '../models/expense.dart';
 import '../models/expense_filters.dart';
 import '../models/expense_item.dart';
+import '../models/profile.dart';
 import '../providers/expense_items_provider.dart';
 import 'expense_item_service.dart';
 import 'sort_filter_service.dart';
@@ -101,7 +102,7 @@ class ExpenseService {
         .toList();
   }
 
-  Future<List<Expense>> getSortedAndFilteredExpenses() async {
+  Future<List<Expense>> getSortedAndFilteredExpenses(Profile? profile) async {
     SortCriteria? sortCriteria =
         await sortFilterService.getPreferenceSortCriteria();
     bool? isAscendingSort =
@@ -109,7 +110,7 @@ class ExpenseService {
     ExpenseFilters expenseFilters = await sortFilterService.getExpenseFilters();
     List<Map<String, dynamic>> expenseMapList =
         await _expenseHelper.getSortedAndFilteredExpenses(
-            sortCriteria!, isAscendingSort!, expenseFilters);
+            sortCriteria!, isAscendingSort!, expenseFilters, profile);
 
     List<Expense> expenses = expenseMapList
         .map((expenseMap) => Expense.fromMap(expenseMap))
