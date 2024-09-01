@@ -1,0 +1,74 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../../data/helpers/color_helper.dart';
+import '../../../models/profile.dart';
+import '../../../providers/profile_provider.dart';
+import '../../../service/profile_service.dart';
+import '../../forms/profile_form.dart';
+import '../empty_list_widget.dart';
+import 'profile_tile.dart';
+
+class ProfileList extends StatelessWidget {
+  const ProfileList({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<ProfileProvider>(
+        builder: (context, profileProvider, child) => RefreshIndicator(
+              onRefresh: () => profileProvider.refreshProfiles(),
+              color: Colors.blue.shade500,
+              child: Column(
+                children: [
+                  getProfileForm(profileProvider.profiles, context),
+                  Expanded(
+                    child: profileProvider.profiles.isEmpty
+                        ? const EmptyListWidget(listName: 'Profile')
+                        : Scrollbar(
+                            interactive: true,
+                            radius: const Radius.circular(5),
+                            child: ListView.builder(
+                              itemCount: profileProvider.profiles.length,
+                              itemBuilder: (context, index) {
+                                final profile =
+                                    profileProvider.profiles[index];
+                                return ProfileTile(
+                                  profileName: profile.name,
+                                  onDelete: () =>
+                                      _deleteProfile(context, profile),
+                                );
+                              },
+                            ),
+                          ),
+                  )
+                ],
+              ),
+            ));
+  }
+
+  _deleteProfile(BuildContext context, Profile profile) async {
+    ProfileService profileService = await ProfileService.create();
+    profileService.deleteProfile(profile.id).then((value) {
+      if (value > 0) {
+        _refreshProfile(context);
+      }
+    });
+  }
+
+  _refreshProfile(BuildContext context) {
+    final profileProvider =
+        Provider.of<ProfileProvider>(context, listen: false);
+    profileProvider.refreshProfiles();
+  }
+
+  Container getProfileForm(
+      List<Profile> profiles, BuildContext context) {
+    return Container(
+        decoration: BoxDecoration(
+          color: ColorHelper.getTileColor(Theme.of(context)),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
+        margin: const EdgeInsets.only(top: 5, bottom: 2.5),
+        child: ProfileForm(profiles: profiles));
+  }
+}

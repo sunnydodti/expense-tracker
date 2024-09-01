@@ -35,7 +35,7 @@ class ProfileFormModel {
   ProfileFormModel({required this.name});
 
   Map<String, dynamic> toMap() {
-    return {DBConstants.profile.id: id, DBConstants.profile.id: name};
+    return {DBConstants.profile.id: id, DBConstants.profile.name: name};
   }
 
   factory ProfileFormModel.fromMap(Map<String, dynamic> map) {

@@ -58,7 +58,7 @@ class _CategoryFormState extends State<CategoryForm> {
             validator: _validateNewCategory,
             onSaved: submitCategory,
             onChanged: (value) {
-              _logger.i("tag: $value");
+              _logger.i("category: $value");
             },
           ),
         ),
