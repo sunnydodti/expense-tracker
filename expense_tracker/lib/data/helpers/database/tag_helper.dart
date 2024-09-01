@@ -59,7 +59,7 @@ class TagHelper {
               '''insert into ${DBConstants.tag.table} (${DBConstants.tag.name}) values ('$category')''');
         }
       }
-    } on Exception catch (e, stackTrace) {
+    } catch (e, stackTrace) {
       _logger.e("Error at populating default tags $e - \n$stackTrace");
     }
   }

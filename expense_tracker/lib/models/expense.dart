@@ -4,6 +4,8 @@ import '../data/constants/db_constants.dart';
 
 class Expense {
   int id;
+  int userId;
+  int profileId;
   String title;
   String currency;
   double amount;
@@ -19,6 +21,8 @@ class Expense {
 
   Expense(
       this.id,
+      this.userId,
+      this.profileId,
       this.title,
       this.currency,
       this.amount,
@@ -63,6 +67,8 @@ class Expense {
   static Expense fromMap(Map<String, dynamic> map) {
     Expense expense = Expense(
         map[DBConstants.expense.id],
+        map[DBConstants.expense.userId],
+        map[DBConstants.expense.profileId],
         map[DBConstants.expense.title],
         map[DBConstants.expense.currency],
         map[DBConstants.expense.amount],
@@ -122,6 +128,8 @@ int _parseBoolAsInt(bool value) {
 
 class ExpenseFormModel {
   int? id;
+  int? userId;
+  int? profileId;
   String title;
   String currency;
   double amount;
@@ -156,6 +164,8 @@ class ExpenseFormModel {
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = <String, dynamic>{};
     if (id != null) map[DBConstants.expense.id] = id;
+    map[DBConstants.expense.userId] = userId;
+    map[DBConstants.expense.profileId] = profileId;
     map[DBConstants.expense.title] = title;
     map[DBConstants.expense.currency] = currency;
     map[DBConstants.expense.amount] = amount;

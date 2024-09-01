@@ -54,8 +54,15 @@ class UserHelper {
       _logger.i("populating default ${DBConstants.user.table}");
       if (result.isNotEmpty) {
         for (String userName in _defaultUsers) {
-          await database.execute(
-              '''insert into ${DBConstants.user.table} (${DBConstants.user.userName}) values ('$userName')''');
+          await database.execute('''insert into ${DBConstants.user.table} (
+                  ${DBConstants.user.userName},
+                  ${DBConstants.user.name},
+                  ${DBConstants.user.email}
+                  ) values (
+                  '$userName',
+                  '$userName',
+                  '',
+                  )''');
         }
       }
     } on Exception catch (e, stackTrace) {

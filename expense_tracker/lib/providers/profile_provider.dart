@@ -49,7 +49,6 @@ class ProfileProvider extends ChangeNotifier {
     await _sharedPreferencesService.setStringPreference(
         SharedPreferencesConstants.profile.PROFILE, profile.name);
     _currentProfile = profile;
-    // notifyListeners();
   }
 
   /// Add a profile. This does not add it to the database

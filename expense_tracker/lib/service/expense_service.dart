@@ -9,13 +9,18 @@ import '../models/expense.dart';
 import '../models/expense_filters.dart';
 import '../models/expense_item.dart';
 import '../models/profile.dart';
+import '../models/user.dart';
 import '../providers/expense_items_provider.dart';
 import 'expense_item_service.dart';
+import 'profile_service.dart';
 import 'sort_filter_service.dart';
+import 'user_service.dart';
 
 class ExpenseService {
   late final ExpenseHelper _expenseHelper;
   late final Future<ExpenseItemService> _expenseItemService;
+  late final Future<ProfileService> _profileService;
+  late final Future<UserService> _userService;
 
   static final Logger _logger =
       Logger(printer: SimplePrinter(), level: Level.info);
@@ -23,6 +28,8 @@ class ExpenseService {
 
   ExpenseService._(this._expenseHelper) {
     _expenseItemService = ExpenseItemService.create();
+    _profileService = ProfileService.create();
+    _userService = UserService.create();
   }
 
   static Future<ExpenseService> create() async {
@@ -35,6 +42,10 @@ class ExpenseService {
   Future<bool> addExpense(ExpenseFormModel expense,
       ExpenseItemsProvider expenseItemProvider) async {
     try {
+      int? userId = await getUserId();
+      int? profileId = await getProfileId();
+      expense.userId = userId;
+      expense.profileId = profileId;
       int id = await _expenseHelper.addExpense(expense.toMap());
       if (expense.containsExpenseItems) {
         if (expenseItemProvider.expenseItems.isNotEmpty) {
@@ -48,9 +59,33 @@ class ExpenseService {
         }
       }
       return id > 0 ? true : false;
-    } on Exception catch (e, stackTrace) {
+    } catch (e, stackTrace) {
       _logger.e("Error adding expense (${expense.title}): $e - \n$stackTrace");
       return false;
+    }
+  }
+
+  Future<int?> getProfileId() async {
+    int? id;
+    try {
+      ProfileService profileService = await _profileService;
+      Profile? profile = await profileService.getSelectedProfile();
+      id = profile!.id;
+    } catch (e, stackTrace) {
+      _logger.e("Error getting profile: $e - \n$stackTrace");
+      return 0;
+    }
+    return id;
+  }
+
+  Future<int> getUserId() async {
+    try {
+      UserService userService = await _userService;
+      User? user = await userService.getSelectedUser();
+      return user!.id;
+    } catch (e, stackTrace) {
+      _logger.e("Error getting user: $e - \n$stackTrace");
+      return 0;
     }
   }
 
@@ -87,7 +122,7 @@ class ExpenseService {
         }
       }
       return result > 0 ? true : false;
-    } on Exception catch (e, stackTrace) {
+    } catch (e, stackTrace) {
       _logger
           .e("Error updating expense (${expense.title}): $e - \n$stackTrace");
       return false;
@@ -121,7 +156,7 @@ class ExpenseService {
   Future<List<Map<String, dynamic>>> getExpenseMaps() async {
     try {
       return await _expenseHelper.getExpenses();
-    } on Exception catch (e, stackTrace) {
+    } catch (e, stackTrace) {
       _logger.e("Error getting expenses: $e - \n$stackTrace");
       return [];
     }
@@ -130,7 +165,7 @@ class ExpenseService {
   Future<int> deleteExpense(int id) async {
     try {
       return _expenseHelper.deleteExpense(id);
-    } on Exception catch (e, stackTrace) {
+    } catch (e, stackTrace) {
       _logger.e("Error deleting expense($id): $e - \n$stackTrace");
       return -1;
     }
@@ -139,7 +174,7 @@ class ExpenseService {
   Future<int> deleteAllExpenses() async {
     try {
       return _expenseHelper.deleteAllExpenses();
-    } on Exception catch (e, stackTrace) {
+    } catch (e, stackTrace) {
       _logger.e("Error deleting expenses: $e - \n$stackTrace");
       return -1;
     }
@@ -155,7 +190,7 @@ class ExpenseService {
       await _expenseHelper.populateExpense(
         expenseMapList,
       );
-    } on Exception catch (e, stackTrace) {
+    } catch (e, stackTrace) {
       _logger.e("Error populating expense: $e - \n$stackTrace");
     }
   }
@@ -185,7 +220,7 @@ class ExpenseService {
   Future<bool> importExpense(Map<String, dynamic> expense) async {
     try {
       if (await _expenseHelper.addExpense(expense) > 0) return true;
-    } on Exception catch (e, stackTrace) {
+    } catch (e, stackTrace) {
       _logger.e(
           "Error importing expense (${expense[DBConstants.expense.title]}): $e - \n$stackTrace");
     }
@@ -208,7 +243,7 @@ class ExpenseService {
         _logger.i("imported expense ${expenseI.title}");
         return true;
       }
-    } on Exception catch (e, stackTrace) {
+    } catch (e, stackTrace) {
       _logger.e(
           "Error importing expense (${expense[DBConstants.expense.title]}): $e - \n$stackTrace");
     }

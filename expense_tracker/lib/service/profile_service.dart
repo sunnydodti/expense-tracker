@@ -2,12 +2,15 @@ import 'package:logger/logger.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../data/constants/db_constants.dart';
+import '../data/constants/shared_preferences_constants.dart';
 import '../data/helpers/database/database_helper.dart';
 import '../data/helpers/database/profile_helper.dart';
 import '../models/profile.dart';
+import 'shared_preferences_service.dart';
 
 class ProfileService {
   late final ProfileHelper _profileHelper;
+  static late SharedPreferencesService _sharedPreferencesService;
   static final Logger _logger =
   Logger(printer: SimplePrinter(), level: Level.info);
 
@@ -17,6 +20,8 @@ class ProfileService {
     final databaseHelper = DatabaseHelper();
     await databaseHelper.initializeDatabase();
     final profileHelper = await databaseHelper.profileHelper;
+    _sharedPreferencesService = SharedPreferencesService();
+
     return ProfileService._(profileHelper);
   }
 
@@ -36,11 +41,35 @@ class ProfileService {
       String profileName = ProfileHelper.defaultProfile;
       final List<Map<String, dynamic>> profile =
           await _profileHelper.getProfileByName(profileName);
+      _sharedPreferencesService.initializeProfilePreferences();
       return Profile.fromMap(profile.first);
     } catch (e, stackTrace) {
       _logger.e("Error getting profiles: $e - \n$stackTrace");
       return null;
     }
+  }
+
+  Future<Profile?> getSelectedProfile() async {
+    try {
+      String? profileName = await _getProfileNameOrDefault();
+      final List<Map<String, dynamic>> profile =
+          await _profileHelper.getProfileByName(profileName!);
+      return Profile.fromMap(profile.first);
+    } catch (e, stackTrace) {
+      _logger.e("Error getting profiles: $e - \n$stackTrace");
+      return null;
+    }
+  }
+
+  Future<String?> _getProfileNameOrDefault() async {
+    String? profileName = await _sharedPreferencesService
+        .getStringPreference(SharedPreferencesConstants.profile.PROFILE);
+    if (profileName == null) {
+      _sharedPreferencesService.initializeProfilePreferences();
+      profileName = await _sharedPreferencesService
+          .getStringPreference(SharedPreferencesConstants.profile.PROFILE);
+    }
+    return profileName;
   }
 
   Future<List<Map<String, dynamic>>> getProfileMaps() async {
