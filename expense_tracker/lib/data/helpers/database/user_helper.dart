@@ -61,12 +61,13 @@ class UserHelper {
                   ) values (
                   '$userName',
                   '$userName',
-                  '',
+                  ''
                   )''');
         }
       }
     } on Exception catch (e, stackTrace) {
       _logger.e("Error at populating default users $e - \n$stackTrace");
+      rethrow;
     }
   }
 

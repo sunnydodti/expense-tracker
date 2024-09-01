@@ -3,8 +3,6 @@ import 'dart:io';
 
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../../constants/db_constants.dart';
@@ -59,7 +57,7 @@ class DatabaseHelper {
   FutureOr<void> upgradeDatabase(Database db, int oldVersion, int newVersion) {
     // if upgrading from version 1
     if (oldVersion == 1) {
-        upgradeFromV1toV2(db);
+      upgradeFromV1toV2(db);
       upgradeFromV2toV3(db);
     }
 

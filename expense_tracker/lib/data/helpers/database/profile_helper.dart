@@ -58,6 +58,7 @@ class ProfileHelper {
       }
     } on Exception catch (e, stackTrace) {
       _logger.e("Error at populating default profiles $e - \n$stackTrace");
+      rethrow;
     }
   }
 

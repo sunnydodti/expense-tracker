@@ -1,6 +1,6 @@
 class DBConstants {
   static String databaseName = "expense_tracker.db";
-  static int databaseVersion = 2;
+  static int databaseVersion = 3;
 
   static DatabaseVersionConstants version = DatabaseVersionConstants();
 
@@ -84,7 +84,7 @@ class TransactionTypeConstants {
 
 class DatabaseVersionConstants {
   final String databaseVersionKey = "database_version";
-  final int databaseVersion = 2;
+  final int databaseVersion = 3;
   final String appVersionKey = "app_version";
   final String appVersion = "0.0.7";
   final String createdAt = "created_at";

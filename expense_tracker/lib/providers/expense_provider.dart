@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
-import '../data/constants/shared_preferences_constants.dart';
 import '../models/enums/transaction_type.dart';
 import '../models/expense.dart';
 import '../models/profile.dart';
@@ -186,8 +185,6 @@ class ExpenseProvider extends ChangeNotifier {
 
   Future<Profile?> _getProfile() async {
     ProfileService profileService = await _profileService;
-    String? profileName = await _sharedPreferencesService
-        .getStringPreference(SharedPreferencesConstants.profile.PROFILE);
-    return await profileService.getProfileByName(profileName!);
+    return await profileService.getSelectedProfile();
   }
 }

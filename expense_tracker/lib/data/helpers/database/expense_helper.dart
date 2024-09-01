@@ -89,10 +89,10 @@ class ExpenseHelper {
       _logger.i(
           "\tadding ${DBConstants.expense.userId} column");
       List<Map<String, dynamic>> defaultUserMap = await UserHelper.getDefaultUser(transaction);
-      User defaultUser = User.fromMap(defaultProfileMap.first);
+      User defaultUser = User.fromMap(defaultUserMap.first);
       await transaction.execute('''
           ALTER TABLE ${DBConstants.expense.table}
-          ADD COLUMN ${DBConstants.expense.profileId} INTEGER NOT NULL DEFAULT ${defaultUser.id}
+          ADD COLUMN ${DBConstants.expense.userId} INTEGER NOT NULL DEFAULT ${defaultUser.id}
         ''');
     }
   }
