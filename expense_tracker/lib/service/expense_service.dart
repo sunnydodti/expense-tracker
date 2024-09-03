@@ -137,6 +137,17 @@ class ExpenseService {
         .toList();
   }
 
+  Future<List<Expense>> getExpensesForProfile() async {
+    ProfileService profileService = await _profileService;
+    Profile? profile = await profileService.getSelectedProfile();
+
+    List<Map<String, dynamic>> expenseMapList =
+        await _expenseHelper.getExpensesForProfile(profile!.id);
+    return expenseMapList
+        .map((expenseMap) => Expense.fromMap(expenseMap))
+        .toList();
+  }
+
   Future<List<Expense>> getSortedAndFilteredExpenses(Profile? profile) async {
     SortCriteria? sortCriteria =
         await sortFilterService.getPreferenceSortCriteria();

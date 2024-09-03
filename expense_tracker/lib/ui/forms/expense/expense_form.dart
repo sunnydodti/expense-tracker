@@ -11,6 +11,7 @@ import '../../../models/expense_category.dart';
 import '../../../models/expense_item.dart';
 import '../../../models/tag.dart';
 import '../../../providers/expense_items_provider.dart';
+import '../../../providers/expense_provider.dart';
 import '../../../providers/settings_provider.dart';
 import '../../../service/category_service.dart';
 import '../../../service/expense_service.dart';
@@ -340,6 +341,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
           if (value) {
             _logger.i("Expense updated successfully");
             _expenseItemsProvider.clear();
+            _expenseProvider.isChanged = true;
             Navigator.pop(context, value);
           } else {
             _logger.i("Failed to update expense");
@@ -350,6 +352,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
           if (value) {
             _logger.i("inserted");
             _expenseItemsProvider.clear();
+            _expenseProvider.isChanged = true;
             Navigator.pop(context, value);
           }
         });
@@ -375,6 +378,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
   ExpenseItemsProvider get _expenseItemsProvider =>
       Provider.of<ExpenseItemsProvider>(context, listen: false);
+
+  ExpenseProvider get _expenseProvider =>
+      Provider.of<ExpenseProvider>(context, listen: false);
 
   void _toggleExpenseItems(value) {
     setState(() {

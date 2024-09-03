@@ -7,6 +7,7 @@ import '../../../data/helpers/color_helper.dart';
 import '../../../data/helpers/navigation_helper.dart';
 import '../../../data/helpers/shared_preferences_helper.dart';
 import '../../../providers/expense_provider.dart';
+import '../../../providers/profile_provider.dart';
 import '../../../providers/settings_provider.dart';
 import '../../../service/shared_preferences_service.dart';
 import '../../animations/blur_widget.dart';
@@ -23,6 +24,12 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
   late bool hideTotal = false;
   SharedPreferencesService sharedPreferencesService =
       SharedPreferencesService();
+
+  ExpenseProvider get expenseProvider =>
+      Provider.of<ExpenseProvider>(context, listen: false);
+
+  ProfileProvider get profileProvider =>
+      Provider.of<ProfileProvider>(context, listen: false);
 
   void getHideTotalPreference() async {
     bool? isTotalHidden = await sharedPreferencesService
@@ -55,8 +62,20 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
     );
   }
 
-  void navigateToChartsScreen(BuildContext context) =>
-      NavigationHelper.navigateToScreen(context, const ChartsScreen());
+  void navigateToChartsScreen(BuildContext context) {
+    bool refreshData = false;
+    if (profileProvider.isChanged) {
+      refreshData = true;
+      profileProvider.isChanged = false;
+    }
+
+    if (expenseProvider.isChanged) {
+      refreshData = true;
+      expenseProvider.isChanged = false;
+    }
+    NavigationHelper.navigateToScreen(
+        context, ChartsScreen(refreshData: refreshData));
+  }
 
   Consumer<ExpenseProvider> _buildSummary(ThemeData theme) {
     return Consumer<ExpenseProvider>(

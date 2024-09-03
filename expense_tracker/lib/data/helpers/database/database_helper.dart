@@ -54,7 +54,7 @@ class DatabaseHelper {
     );
   }
 
-  FutureOr<void> upgradeDatabase(
+  Future<void> upgradeDatabase(
       Database db, int oldVersion, int newVersion) async {
     // if upgrading from version 1
     if (oldVersion == 1) {

@@ -33,6 +33,8 @@ class ExpenseProvider extends ChangeNotifier {
   /// get list of all expenses
   List<Expense> get expenses => _expenses;
 
+  bool isChanged = false;
+
   /// returns the total balance after all expenses
   double getTotalBalance() {
     double totalIncome = 0;
@@ -128,6 +130,7 @@ class ExpenseProvider extends ChangeNotifier {
     }
     ExpenseService expenseService = await _expenseService;
     int result = await expenseService.deleteExpense(id);
+    isChanged = true;
     return result;
   }
 
@@ -136,6 +139,7 @@ class ExpenseProvider extends ChangeNotifier {
     ExpenseService expenseService = await _expenseService;
     expenseService.deleteAllExpenses();
     _expenses = [];
+    isChanged = true;
     notifyListeners();
   }
 
@@ -161,6 +165,11 @@ class ExpenseProvider extends ChangeNotifier {
   Future<List<Expense>> fetchAllExpenses() async {
     ExpenseService expenseService = await _expenseService;
     return await expenseService.getExpenses();
+  }
+
+  Future<List<Expense>> fetchAllExpensesForProfile() async {
+    ExpenseService expenseService = await _expenseService;
+    return await expenseService.getExpensesForProfile();
   }
 
   bool _showPopup = false;

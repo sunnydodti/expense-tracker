@@ -136,6 +136,23 @@ class ExpenseHelper {
     return await database.query(DBConstants.expense.table);
   }
 
+  Future<List<Map<String, dynamic>>> getExpensesForProfile(
+      int profileId) async {
+    _logger.i("getting expenses");
+    String whereClause = '1=1';
+    List<dynamic> whereArgs = [];
+
+    whereClause += ''' AND ${DBConstants.expense.profileId} = ?''';
+    whereArgs.add(profileId);
+
+    Database database = getDatabase;
+    return await database.query(
+      DBConstants.expense.table,
+      where: whereClause.isEmpty ? null : whereClause,
+      whereArgs: whereClause.isEmpty ? null : whereArgs,
+    );
+  }
+
   Future<List<Map<String, dynamic>>> getSortedAndFilteredExpenses(
     SortCriteria sortCriteria,
     bool isAscendingSort,

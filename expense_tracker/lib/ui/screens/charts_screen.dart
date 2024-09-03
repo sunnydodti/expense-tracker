@@ -15,13 +15,20 @@ import '../widgets/charts/line charts/expense_line_chart.dart';
 import '../widgets/charts/pie charts/expense_pie_chart.dart';
 
 class ChartsScreen extends StatefulWidget {
-  const ChartsScreen({super.key});
+  final bool refreshData;
+
+  const ChartsScreen({super.key, required this.refreshData});
 
   @override
   ChartsState createState() => ChartsState();
 }
 
 class ChartsState extends State<ChartsScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   ExpenseProvider get expenseProvider =>
       Provider.of<ExpenseProvider>(context, listen: false);
@@ -229,8 +236,9 @@ class ChartsState extends State<ChartsScreen> {
   }
 
   Future<bool> _getChartData() async {
-    if (chartDataProvider.expenses.isEmpty) {
-      List<Expense> allExpenses = await expenseProvider.fetchAllExpenses();
+    if (widget.refreshData) {
+      List<Expense> allExpenses =
+          await expenseProvider.fetchAllExpensesForProfile();
       chartDataProvider.createChartData(allExpenses);
     }
     return true;
