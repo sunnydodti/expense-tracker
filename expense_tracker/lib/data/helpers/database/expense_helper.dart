@@ -25,6 +25,13 @@ class ExpenseHelper {
         """SELECT name FROM sqlite_master WHERE type = 'table' AND name = '${DBConstants.expense.table}'""");
 
     if (result.isEmpty) {
+      List<Map<String, dynamic>> defaultProfileMap =
+          await ProfileHelper.getDefaultProfileMap(database);
+      Profile defaultProfile = Profile.fromMap(defaultProfileMap.first);
+      List<Map<String, dynamic>> defaultUserMap =
+          await UserHelper.getDefaultUserMap(database);
+      User defaultUser = User.fromMap(defaultUserMap.first);
+
       _logger.i("creating table ${DBConstants.expense.table}");
       await database.execute('''
           CREATE TABLE ${DBConstants.expense.table}(
@@ -37,6 +44,8 @@ class ExpenseHelper {
             ${DBConstants.expense.category} TEXT,
             ${DBConstants.expense.tags} TEXT,
             ${DBConstants.expense.note} TEXT,
+            ${DBConstants.expense.userId} INTEGER NOT NULL DEFAULT ${defaultProfile.id},
+            ${DBConstants.expense.profileId} INTEGER NOT NULL DEFAULT ${defaultUser.id},
             ${DBConstants.expense.containsExpenseItems} INTEGER DEFAULT 0,
             ${DBConstants.common.createdAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             ${DBConstants.common.modifiedAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP

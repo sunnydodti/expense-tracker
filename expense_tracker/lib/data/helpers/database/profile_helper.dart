@@ -136,4 +136,12 @@ class ProfileHelper {
       """
     );
   }
+
+  static Future<List<Map<String, dynamic>>> getDefaultProfileMap(
+      Database database) {
+    return database.rawQuery("""
+      SELECT * FROM ${DBConstants.profile.table} 
+      WHERE ${DBConstants.profile.name} = '${_defaultProfiles.first}'
+      """);
+  }
 }

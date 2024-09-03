@@ -145,4 +145,12 @@ class UserHelper {
       """
     );
   }
+
+  static Future<List<Map<String, dynamic>>> getDefaultUserMap(
+      Database database) {
+    return database.rawQuery("""
+      SELECT * FROM ${DBConstants.user.table} 
+      WHERE ${DBConstants.user.userName} = '${_defaultUsers.first}'
+      """);
+  }
 }

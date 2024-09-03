@@ -69,6 +69,12 @@ class DatabaseHelper {
   }
 
   void createDatabase(Database database, int newVersion) async {
+    // version3
+    await UserHelper.createTable(database);
+    await UserHelper.populateDefaults(database);
+    await ProfileHelper.createTable(database);
+    await ProfileHelper.populateDefaults(database);
+
     // version 1
     await ExpenseHelper.createTable(database);
 
@@ -81,12 +87,6 @@ class DatabaseHelper {
     await TagHelper.populateDefaults(database);
 
     // version 2
-
-    // version3
-    await UserHelper.createTable(database);
-    await UserHelper.populateDefaults(database);
-    await ProfileHelper.createTable(database);
-    await ProfileHelper.populateDefaults(database);
   }
 
   Future upgradeFromV1toV2(Database database) async {
