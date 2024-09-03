@@ -42,7 +42,7 @@ class DatabaseHelper {
       databaseFactory = databaseFactoryFfi;
     }
 
-    return openDatabase(
+    return await openDatabase(
       path,
       version: DBConstants.databaseVersion,
       onCreate: createDatabase,
@@ -54,16 +54,17 @@ class DatabaseHelper {
     );
   }
 
-  FutureOr<void> upgradeDatabase(Database db, int oldVersion, int newVersion) {
+  FutureOr<void> upgradeDatabase(
+      Database db, int oldVersion, int newVersion) async {
     // if upgrading from version 1
     if (oldVersion == 1) {
-      upgradeFromV1toV2(db);
-      upgradeFromV2toV3(db);
+      await upgradeFromV1toV2(db);
+      await upgradeFromV2toV3(db);
     }
 
     // if upgrading from version 2
     if (oldVersion == 2) {
-      upgradeFromV2toV3(db);
+      await upgradeFromV2toV3(db);
     }
   }
 
@@ -88,11 +89,11 @@ class DatabaseHelper {
     await ProfileHelper.populateDefaults(database);
   }
 
-  void upgradeFromV1toV2(Database database) async {
+  Future upgradeFromV1toV2(Database database) async {
     MigrationHelper.migrateV1toV2(database);
   }
 
-  void upgradeFromV2toV3(Database database) async {
+  Future upgradeFromV2toV3(Database database) async {
     MigrationHelper.migrateV2toV3(database);
   }
 
