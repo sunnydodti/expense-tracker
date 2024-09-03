@@ -334,6 +334,8 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
       if (widget.formMode == FormMode.edit) {
         expense.id = widget.expense!.id;
+        expense.userId = widget.expense!.userId;
+        expense.profileId = widget.expense!.profileId;
         updateExpense(expense).then((value) {
           if (value) {
             _logger.i("Expense updated successfully");
