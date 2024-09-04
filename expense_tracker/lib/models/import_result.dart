@@ -7,6 +7,8 @@ class ImportResult {
   ImportExpenseItemsResult expenseItems = ImportExpenseItemsResult();
   ImportCategoriesResult category = ImportCategoriesResult();
   ImportTagResult tag = ImportTagResult();
+  ImportUserResult user = ImportUserResult();
+  ImportProfileResult profile = ImportProfileResult();
 
   ImportResult();
 
@@ -35,6 +37,20 @@ class ImportCategoriesResult {
 }
 
 class ImportTagResult {
+  int total = 0;
+  int successCount = 0;
+
+  int get failCount => total - successCount;
+}
+
+class ImportUserResult {
+  int total = 0;
+  int successCount = 0;
+
+  int get failCount => total - successCount;
+}
+
+class ImportProfileResult {
   int total = 0;
   int successCount = 0;
 

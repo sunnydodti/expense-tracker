@@ -11,13 +11,17 @@ import '../models/import_result.dart';
 import 'category_service.dart';
 import 'expense_item_service.dart';
 import 'expense_service.dart';
+import 'profile_service.dart';
 import 'tag_service.dart';
+import 'user_service.dart';
 
 class ImportService {
   late final Future<ExpenseService> _expenseService;
   late final Future<ExpenseItemService> _expenseItemService;
   late final Future<CategoryService> _categoryService;
   late final Future<TagService> _tagService;
+  late final Future<UserService> _userService;
+  late final Future<ProfileService> _profileService;
 
   static final Logger _logger =
       Logger(printer: SimplePrinter(), level: Level.info);
@@ -31,6 +35,8 @@ class ImportService {
     _expenseItemService = ExpenseItemService.create();
     _categoryService = CategoryService.create();
     _tagService = TagService.create();
+    _userService = UserService.create();
+    _profileService = ProfileService.create();
   }
 
   static Future<PlatformFile?> getJsonFileFromUser() async {
@@ -88,6 +94,14 @@ class ImportService {
             _logger.i("importing ${DBConstants.tag.table}");
             result = await importTags(jsonData, result);
           }
+          if (file.name == FileConstants.export.users) {
+            _logger.i("importing ${DBConstants.user.table}");
+            result = await importUsers(jsonData, result);
+          }
+          if (file.name == FileConstants.export.profiles) {
+            _logger.i("importing ${DBConstants.profile.table}");
+            result = await importProfiles(jsonData, result);
+          }
         }
       }
     } catch (e, stackTrace) {
@@ -104,7 +118,7 @@ class ImportService {
     try {
       jsonDecode(utf8.decode(content));
       return true;
-    } on FormatException catch (e) {
+    } catch (e) {
       return false;
     }
   }
@@ -179,6 +193,38 @@ class ImportService {
 
     result.tag.total = totalTags;
     result.tag.successCount = successCount;
+    return result;
+  }
+
+  dynamic importUsers(List<dynamic> jsonData, ImportResult result) async {
+    int totalUsers = jsonData.length;
+    int successCount = 0;
+
+    UserService service = await _userService;
+
+    for (Map<String, dynamic> tag in jsonData) {
+      bool isInserted = await service.importUser(tag);
+      if (isInserted) successCount++;
+    }
+
+    result.user.total = totalUsers;
+    result.user.successCount = successCount;
+    return result;
+  }
+
+  dynamic importProfiles(List<dynamic> jsonData, ImportResult result) async {
+    int totalProfiles = jsonData.length;
+    int successCount = 0;
+
+    ProfileService service = await _profileService;
+
+    for (Map<String, dynamic> tag in jsonData) {
+      bool isInserted = await service.importProfile(tag);
+      if (isInserted) successCount++;
+    }
+
+    result.profile.total = totalProfiles;
+    result.profile.successCount = successCount;
     return result;
   }
 }

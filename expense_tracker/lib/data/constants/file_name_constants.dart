@@ -12,6 +12,8 @@ class ExportConstants {
   final String expenseItems = "expenseItems.json";
   final String categories = "categories.json";
   final String tags = "tags.json";
+  final String users = "users.json";
+  final String profiles = "profiles.json";
   final String version = "version.json";
 }
 

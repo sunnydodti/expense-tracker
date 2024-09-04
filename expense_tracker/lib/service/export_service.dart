@@ -15,13 +15,17 @@ import 'expense_item_service.dart';
 import 'expense_service.dart';
 import 'path_service.dart';
 import 'permission_service.dart';
+import 'profile_service.dart';
 import 'tag_service.dart';
+import 'user_service.dart';
 
 class ExportService {
   late final Future<ExpenseService> _expenseService;
   late final Future<ExpenseItemService> _expenseItemService;
   late final Future<CategoryService> _categoryService;
   late final Future<TagService> _tagService;
+  late final Future<UserService> _userService;
+  late final Future<ProfileService> _profileService;
 
   static final Logger _logger =
       Logger(printer: SimplePrinter(), level: Level.info);
@@ -35,6 +39,8 @@ class ExportService {
     _expenseItemService = ExpenseItemService.create();
     _categoryService = CategoryService.create();
     _tagService = TagService.create();
+    _userService = UserService.create();
+    _profileService = ProfileService.create();
   }
 
   void exportToJson(Map<String, dynamic> data, String filePath) {
@@ -54,6 +60,10 @@ class ExportService {
     File categoriesJSON =
         File("${await tempJSONPath}/${FileConstants.export.categories}");
     File tagsJSON = File("${await tempJSONPath}/${FileConstants.export.tags}");
+    File usersJSON =
+        File("${await tempJSONPath}/${FileConstants.export.users}");
+    File profilesJSON =
+        File("${await tempJSONPath}/${FileConstants.export.profiles}");
     File versionJSON =
         File("${await tempJSONPath}/${FileConstants.export.version}");
 
@@ -63,11 +73,13 @@ class ExportService {
         expenseItemsJSON,
         categoriesJSON,
         tagsJSON,
+        usersJSON,
+        profilesJSON,
         versionJSON,
       );
 
       Archive archive = _getExportArchive(expensesJSON, expenseItemsJSON,
-          categoriesJSON, tagsJSON, versionJSON);
+          categoriesJSON, tagsJSON, usersJSON, profilesJSON, versionJSON);
 
       final zipEncoder = ZipEncoder();
       List<int>? encodedZip = zipEncoder.encode(archive);
@@ -103,6 +115,8 @@ class ExportService {
       if (await expenseItemsJSON.exists()) expenseItemsJSON.delete();
       if (await categoriesJSON.exists()) categoriesJSON.delete();
       if (await tagsJSON.exists()) tagsJSON.delete();
+      if (await usersJSON.exists()) usersJSON.delete();
+      if (await profilesJSON.exists()) profilesJSON.delete();
       if (await versionJSON.exists()) versionJSON.delete();
     }
 
@@ -110,12 +124,20 @@ class ExportService {
     return result;
   }
 
-  Future<void> _saveJSONFiles(File expensesJSON, File expenseItemsJSON,
-      File categoriesJSON, File tagsJSON, File versionJSON) async {
+  Future<void> _saveJSONFiles(
+      File expensesJSON,
+      File expenseItemsJSON,
+      File categoriesJSON,
+      File tagsJSON,
+      File usersJSON,
+      File profilesJSON,
+      File versionJSON) async {
     ExpenseService expenseService = await _expenseService;
     ExpenseItemService expenseItemService = await _expenseItemService;
     CategoryService categoryService = await _categoryService;
     TagService tagService = await _tagService;
+    UserService userService = await _userService;
+    ProfileService profileService = await _profileService;
 
     try {
       bool status = await PermissionService.requestStoragePermission();
@@ -137,6 +159,14 @@ class ExportService {
           tagsJSON.writeAsStringSync(
               getFormattedJSONString(await tagService.getTagMaps()));
 
+          _logger.i("exporting users to ${usersJSON.path}");
+          usersJSON.writeAsStringSync(
+              getFormattedJSONString(await userService.getUserMaps()));
+
+          _logger.i("exporting profiles to ${profilesJSON.path}");
+          profilesJSON.writeAsStringSync(
+              getFormattedJSONString(await profileService.getProfileMaps()));
+
           _logger.i("exporting version info to ${versionJSON.path}");
           versionJSON
               .writeAsStringSync(getFormattedJSONString(await getVersionMap()));
@@ -144,14 +174,20 @@ class ExportService {
           throw Exception("storage permission denied");
         }
       }
-    } on Exception catch (e) {
+    } catch (e) {
       _logger.i("unable to save json files $e");
       rethrow;
     }
   }
 
-  Archive _getExportArchive(File expensesJSON, File expenseItemsJSON,
-      File categoriesJSON, File tagsJSON, File versionJSON) {
+  Archive _getExportArchive(
+      File expensesJSON,
+      File expenseItemsJSON,
+      File categoriesJSON,
+      File tagsJSON,
+      File usersJSON,
+      File profilesJSON,
+      File versionJSON) {
     Archive archive = Archive();
 
     archive.addFile(ArchiveFile(FileConstants.export.expenses,
@@ -162,6 +198,10 @@ class ExportService {
         categoriesJSON.lengthSync(), categoriesJSON.readAsBytesSync()));
     archive.addFile(ArchiveFile(FileConstants.export.tags,
         tagsJSON.lengthSync(), tagsJSON.readAsBytesSync()));
+    archive.addFile(ArchiveFile(FileConstants.export.users,
+        usersJSON.lengthSync(), usersJSON.readAsBytesSync()));
+    archive.addFile(ArchiveFile(FileConstants.export.profiles,
+        profilesJSON.lengthSync(), profilesJSON.readAsBytesSync()));
     archive.addFile(ArchiveFile(FileConstants.export.version,
         versionJSON.lengthSync(), versionJSON.readAsBytesSync()));
 
@@ -195,7 +235,6 @@ class ExportService {
     if (result != null) {
       return result;
     } else {
-      // Handle selection cancellation
       return '';
     }
   }

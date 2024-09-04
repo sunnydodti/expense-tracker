@@ -187,11 +187,33 @@ class _ImportFormState extends State<ImportForm> {
       _logger.i(result.toString());
       if (result.result) {
         _refreshExpenses();
-        String message = "Import complete"
-            "\nExpenses:        ${result.expense.successCount}/${result.expense.total}"
-            "\nExpenseItems:    ${result.expenseItems.successCount}/${result.expenseItems.total}"
-            "\nCategories:      ${result.category.successCount}/${result.category.total}"
-            "\nTags:             ${result.tag.successCount}/${result.tag.total}\n";
+        String message = "Import complete";
+
+        if (result.expense.total > 0) {
+          message +=
+              "\nExpenses:        ${result.expense.successCount}/${result.expense.total}";
+        }
+        if (result.expenseItems.total > 0) {
+          message +=
+              "\nExpenseItems:    ${result.expenseItems.successCount}/${result.expenseItems.total}";
+        }
+        if (result.category.total > 0) {
+          message +=
+              "\nCategories:      ${result.category.successCount}/${result.category.total}";
+        }
+        if (result.tag.total > 0) {
+          message +=
+              "\nTags:             ${result.tag.successCount}/${result.tag.total}";
+        }
+        if (result.user.total > 0) {
+          message +=
+              "\nUsers:           ${result.user.successCount}/${result.user.total}";
+        }
+        if (result.profile.total > 0) {
+          message +=
+              "\nProfiles:        ${result.profile.successCount}/${result.profile.total}";
+        }
+
         SnackBarService.showSuccessSnackBarWithContext(context, message,
             duration: 5);
       } else {
