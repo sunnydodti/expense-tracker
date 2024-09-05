@@ -15,44 +15,21 @@ class ImportResult {
   String? get outputPath => path!.substring('/storage/emulated/0'.length);
 }
 
-class ImportExpenseResult {
+class ImportResultBase {
   int total = 0;
   int successCount = 0;
 
   int get failCount => total - successCount;
 }
 
-class ImportExpenseItemsResult {
-  int total = 0;
-  int successCount = 0;
+class ImportExpenseResult extends ImportResultBase {}
 
-  int get failCount => total - successCount;
-}
+class ImportExpenseItemsResult extends ImportResultBase {}
 
-class ImportCategoriesResult {
-  int total = 0;
-  int successCount = 0;
+class ImportCategoriesResult extends ImportResultBase {}
 
-  int get failCount => total - successCount;
-}
+class ImportTagResult extends ImportResultBase {}
 
-class ImportTagResult {
-  int total = 0;
-  int successCount = 0;
+class ImportUserResult extends ImportResultBase {}
 
-  int get failCount => total - successCount;
-}
-
-class ImportUserResult {
-  int total = 0;
-  int successCount = 0;
-
-  int get failCount => total - successCount;
-}
-
-class ImportProfileResult {
-  int total = 0;
-  int successCount = 0;
-
-  int get failCount => total - successCount;
-}
+class ImportProfileResult extends ImportResultBase {}
