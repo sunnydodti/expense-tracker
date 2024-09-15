@@ -90,13 +90,11 @@ class DismissibleExpenseTile extends StatelessWidget {
       ExpenseProvider expenseProvider, Expense expense, BuildContext context) {
     if (index + 1 == expenseLength) {
       _logger.i("adding at end $index");
-      expenseProvider.addExpense(expense);
     } else {
       _logger.i("adding at $index");
-      expenseProvider.insertExpense(index, expense);
     }
-    SnackBarService.showSuccessSnackBarWithContext(
-        context, "Restored - ${expense.title}");
+    expenseProvider.insertExpense(index, expense);
+    SnackBarService.showSuccessSnackBar(context, "Restored - ${expense.title}");
   }
 
   completeExpenseDeletion(Expense expense, int index, int expenseLength,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'globals.dart';
 import 'providers/category_provider.dart';
 import 'providers/chart_data_provider.dart';
 import 'providers/expense_items_provider.dart';
@@ -69,6 +70,7 @@ class _MyAppState extends State<MyApp> {
               } else {
                 return MaterialApp(
                   key: navigatorKey,
+                  scaffoldMessengerKey: snackbarKey,
                   theme: themeProvider.themeData,
                   home: const ResponsiveLayout(
                       mobileScaffold: MobileScaffold(),
