@@ -195,7 +195,7 @@ class ExpenseService {
     try {
       List<Map<String, dynamic>> expenseMapList = [];
       for (int i = 0; i <= count - 1; i++) {
-        var expense = generateRandomExpense();
+        var expense = await generateRandomExpense();
         expenseMapList.add(expense);
       }
       await _expenseHelper.populateExpense(
@@ -206,19 +206,22 @@ class ExpenseService {
     }
   }
 
-  Map<String, dynamic> generateRandomExpense() {
+  Future<Map<String, dynamic>> generateRandomExpense(
+      {int defaultProfile = 2,
+      String category = 'Debug',
+      String tag = 'auto generated'}) async {
     double amount = faker.randomGenerator.decimal() * (1000.0 - 1.0) + 1.0;
+    int? profile = await getProfileId();
     var expense = {
       DBConstants.expense.title: faker.food.dish(),
       DBConstants.expense.currency: "INR",
+      DBConstants.expense.profileId: profile ?? defaultProfile,
       DBConstants.expense.amount: double.parse(amount.toStringAsFixed(2)),
       DBConstants.expense.transactionType:
           faker.randomGenerator.boolean() ? 'income' : 'expense',
       DBConstants.expense.date: faker.date.dateTime().toIso8601String(),
-      DBConstants.expense.category:
-          faker.randomGenerator.boolean() ? 'Food' : 'Shopping',
-      DBConstants.expense.tags:
-          faker.randomGenerator.boolean() ? 'home' : 'work',
+      DBConstants.expense.category: category,
+      DBConstants.expense.tags: tag,
       DBConstants.expense.note: faker.lorem.sentence(),
       DBConstants.expense.containsExpenseItems:
           faker.randomGenerator.boolean() ? 1 : 0,
