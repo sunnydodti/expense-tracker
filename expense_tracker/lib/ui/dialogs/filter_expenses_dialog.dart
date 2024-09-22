@@ -108,7 +108,7 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
       flex: 2,
       child: DropdownButton<String>(
         underline: const SizedBox(),
-        dropdownColor: Colors.grey.shade800,
+        dropdownColor: ColorHelper.getTileColor(Theme.of(context)),
         isExpanded: true,
         isDense: true,
         menuMaxHeight: 300,
@@ -139,6 +139,7 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
       flex: 1,
       child: DropdownButton<String>(
         underline: const SizedBox(),
+        dropdownColor: ColorHelper.getTileColor(Theme.of(context)),
         isExpanded: true,
         isDense: true,
         menuMaxHeight: 300,

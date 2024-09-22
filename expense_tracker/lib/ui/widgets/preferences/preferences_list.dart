@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/helpers/color_helper.dart';
 import '../../../providers/settings_provider.dart';
 import '../form_widgets.dart';
 
@@ -23,7 +24,7 @@ class PreferencesList extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text('Default Currency'),
-                _buildDefaultCurrencySelector(settingsProvider),
+                _buildDefaultCurrencySelector(settingsProvider, context),
               ],
             ),
           ),
@@ -32,10 +33,12 @@ class PreferencesList extends StatelessWidget {
     );
   }
 
-  SizedBox _buildDefaultCurrencySelector(SettingsProvider settingsProvider) {
+  SizedBox _buildDefaultCurrencySelector(
+      SettingsProvider settingsProvider, BuildContext context) {
     return SizedBox(
       width: 90,
       child: DropdownButton(
+        dropdownColor: ColorHelper.getTileColor(Theme.of(context)),
         isExpanded: true,
         value: settingsProvider.defaultCurrency,
         items: FormWidgets.getCurrencyDropdownItems(),

@@ -163,6 +163,7 @@ class ChartsState extends State<ChartsScreen> {
           Consumer<ChartDataProvider>(
             builder: (context, chartDataProvider, child) {
               return DropdownButton<ChartRange>(
+                dropdownColor: ColorHelper.getTileColor(Theme.of(context)),
                 value: chartDataProvider.chartRange,
                 onChanged: (chartRange) {
                   chartDataProvider.chartRange = chartRange!;
@@ -197,11 +198,12 @@ class ChartsState extends State<ChartsScreen> {
             overflow: TextOverflow.fade,
           ),
           Consumer<ChartDataProvider>(
-            builder: (context, chartDataProvider, child) =>
-                DropdownButton<ChartType>(
-              value: chartDataProvider.chartType,
-              onChanged: (chartType) {
-                chartDataProvider.chartType = chartType!;
+            builder: (context, chartDataProvider, child) {
+              return DropdownButton<ChartType>(
+                dropdownColor: ColorHelper.getTileColor(Theme.of(context)),
+                value: chartDataProvider.chartType,
+                onChanged: (chartType) {
+                  chartDataProvider.chartType = chartType!;
               },
               items: ChartType.values
                   .map<DropdownMenuItem<ChartType>>(
@@ -214,7 +216,8 @@ class ChartsState extends State<ChartsScreen> {
                   )
                   .toList(),
               underline: Container(),
-            ),
+              );
+            },
           ),
         ],
       ),

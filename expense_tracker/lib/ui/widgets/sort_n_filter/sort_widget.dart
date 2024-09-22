@@ -61,11 +61,11 @@ class _SortWidgetState extends State<SortWidget> {
   DropdownButton<SortCriteria> _buildSortCriteriaDropdown(
       SortFilterProvider sortFilterProvider) {
     return DropdownButton<SortCriteria>(
-      // icon: SizedBox.shrink(),
       value: sortFilterProvider.sortCriteria,
       onChanged: (criteria) {
         updateSortCriteria(sortFilterProvider, criteria);
       },
+      dropdownColor: ColorHelper.getTileColor(Theme.of(context)),
       focusColor: Colors.transparent,
       items: SortCriteria.values
           .map<DropdownMenuItem<SortCriteria>>(

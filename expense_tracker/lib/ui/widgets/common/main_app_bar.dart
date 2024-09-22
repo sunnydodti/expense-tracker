@@ -68,7 +68,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
               context: context,
               position: const RelativeRect.fromLTRB(1000.0, 80.0, 0.0, 0.0),
               items: await buildProfileDropdown(provider, Theme.of(context)),
-              color: ColorHelper.getBackgroundColor(Theme.of(context)))
+              color: ColorHelper.getTileColor(Theme.of(context)))
           .then((Profile? profile) {
         if (profile != null) {
           provider.setCurrentProfile(profile);

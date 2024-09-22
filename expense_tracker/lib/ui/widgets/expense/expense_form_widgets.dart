@@ -77,10 +77,12 @@ class ExpenseFormWidgets {
     );
   }
 
-  Container buildTransactionTypeField(TextEditingController controller) {
+  Container buildTransactionTypeField(
+      TextEditingController controller, Color color) {
     return Container(
       padding: _getFieldPadding(),
       child: DropdownButtonFormField(
+        dropdownColor: color,
         isExpanded: true,
         isDense: true,
         value: controller.text,
@@ -115,10 +117,13 @@ class ExpenseFormWidgets {
   }
 
   Container buildCategoryField(ExpenseCategory? initialValue,
-      List<ExpenseCategory> categories, Function(ExpenseCategory?) onChanged) {
+      List<ExpenseCategory> categories,
+      Function(ExpenseCategory?) onChanged,
+      Color color) {
     return Container(
       padding: _getFieldPadding(),
       child: DropdownButtonFormField<ExpenseCategory>(
+        dropdownColor: color,
         isExpanded: true,
         value: initialValue,
         items: FormWidgets.getDropdownItems(
@@ -134,11 +139,12 @@ class ExpenseFormWidgets {
     );
   }
 
-  Container buildTagsField(
-      Tag? initialValue, List<Tag> tags, Function(Tag?) onChanged) {
+  Container buildTagsField(Tag? initialValue, List<Tag> tags,
+      Function(Tag?) onChanged, Color color) {
     return Container(
       padding: _getFieldPadding(),
       child: DropdownButtonFormField<Tag>(
+        dropdownColor: color,
         isExpanded: true,
         value: initialValue,
         items: FormWidgets.getDropdownItems(tags, (tag) => tag.name),

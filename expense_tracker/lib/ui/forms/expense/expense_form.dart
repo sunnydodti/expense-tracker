@@ -187,16 +187,18 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
   //region Section 5: formFields
   Form _buildExpenseFormFields(BuildContext context) {
+    ThemeData theme = Theme.of(context);
+    Color color = ColorHelper.getTileColor(theme);
     return Form(
       key: _formKey,
       child: ListView(
         children: [
           _buildTitleField(),
           _buildAmountField(),
-          _buildTransactionTypeField(),
+          _buildTransactionTypeField(color),
           _buildDateField(),
-          _buildCategoryField(),
-          _buildTagsField(),
+          _buildCategoryField(color),
+          _buildTagsField(color),
           _buildNotesField(),
           _buildExpenseItemsToggle(),
           if (_containsExpenseItems) _buildExpenseItemForm(),
@@ -263,9 +265,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
     }
   }
 
-  Container _buildTransactionTypeField() {
+  Container _buildTransactionTypeField(Color color) {
     return ExpenseWidgets.form
-        .buildTransactionTypeField(transactionTypeController);
+        .buildTransactionTypeField(transactionTypeController, color);
   }
 
   Container _buildDateField() {
@@ -273,16 +275,17 @@ class _ExpenseFormState extends State<ExpenseForm> {
         .buildDateField(context, dateController, showDatePickerDialog);
   }
 
-  Container _buildCategoryField() {
+  Container _buildCategoryField(Color color) {
     return ExpenseWidgets.form
-        .buildCategoryField(_selectedCategory, _categories, setCategory);
+        .buildCategoryField(_selectedCategory, _categories, setCategory, color);
   }
 
   void setCategory(ExpenseCategory? selectedCategory) =>
       _selectedCategory = selectedCategory;
 
-  Container _buildTagsField() {
-    return ExpenseWidgets.form.buildTagsField(_selectedTag, _tags, setTag);
+  Container _buildTagsField(Color color) {
+    return ExpenseWidgets.form
+        .buildTagsField(_selectedTag, _tags, setTag, color);
   }
 
   void setTag(Tag? tag) => _selectedTag = tag;
