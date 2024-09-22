@@ -212,6 +212,7 @@ class ExpenseService {
       String tag = 'auto generated'}) async {
     double amount = faker.randomGenerator.decimal() * (1000.0 - 1.0) + 1.0;
     int? profile = await getProfileId();
+    String date = getDateInCurrentMonthUpToToday().toIso8601String();
     var expense = {
       DBConstants.expense.title: faker.food.dish(),
       DBConstants.expense.currency: "INR",
@@ -219,16 +220,25 @@ class ExpenseService {
       DBConstants.expense.amount: double.parse(amount.toStringAsFixed(2)),
       DBConstants.expense.transactionType:
           faker.randomGenerator.boolean() ? 'income' : 'expense',
-      DBConstants.expense.date: faker.date.dateTime().toIso8601String(),
+      DBConstants.expense.date: date,
       DBConstants.expense.category: category,
       DBConstants.expense.tags: tag,
       DBConstants.expense.note: faker.lorem.sentence(),
       DBConstants.expense.containsExpenseItems:
           faker.randomGenerator.boolean() ? 1 : 0,
-      DBConstants.common.createdAt: faker.date.dateTime().toIso8601String(),
-      DBConstants.common.modifiedAt: faker.date.dateTime().toIso8601String(),
     };
     return expense;
+  }
+
+  DateTime getDateInCurrentMonthUpToToday() {
+    final now = DateTime.now();
+
+    final firstDay = DateTime(now.year, now.month, 1);
+
+    final randomDays =
+        faker.randomGenerator.integer(now.day - firstDay.day + 1, min: 1);
+
+    return firstDay.add(Duration(days: randomDays));
   }
 
   Future<bool> importExpense(Map<String, dynamic> expense) async {
