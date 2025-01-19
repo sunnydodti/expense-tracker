@@ -74,8 +74,8 @@ class _YearlyExpenseLineChartState extends State<YearlyExpenseLineChart> {
               ),
               lineTouchData: buildLineTouchData(provider.currency),
             ),
-            swapAnimationCurve: Curves.linear,
-            swapAnimationDuration: const Duration(milliseconds: 250),
+            // swapAnimationCurve: Curves.linear,
+            // swapAnimationDuration: const Duration(milliseconds: 250),
           ),
         );
       },

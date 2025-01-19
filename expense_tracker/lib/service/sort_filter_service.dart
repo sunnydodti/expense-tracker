@@ -180,6 +180,8 @@ class SortFilterService extends SharedPreferencesService {
           return compareValue * (isAscending ? 1 : -1);
         });
         break;
+      case _:
+        break;
     }
     return expenses;
   }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../data/helpers/color_helper.dart';
 import '../../data/helpers/navigation_helper.dart';

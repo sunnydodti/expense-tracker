@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../data/helpers/color_helper.dart';
 
@@ -46,7 +46,8 @@ class ShareFileDialog {
             ),
             TextButton(
             onPressed: () {
-              Share.shareFiles([filePath]);
+              XFile file = XFile(filePath);
+              Share.shareXFiles([file]);
               if (Navigator.canPop(context)) {
                 Navigator.pop(context);
               }
