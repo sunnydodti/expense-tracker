@@ -7,11 +7,13 @@ import '../models/profile.dart';
 import '../models/search.dart';
 import '../service/expense_service.dart';
 import '../service/profile_service.dart';
+import '../service/search_service.dart';
 import '../service/shared_preferences_service.dart';
 
 class SearchProvider extends ChangeNotifier {
   late final Future<ExpenseService> _expenseService;
   late final Future<ProfileService> _profileService;
+  late final Future<SearchService> _searchService;
 
   late final SharedPreferencesService _sharedPreferencesService;
 
@@ -26,6 +28,7 @@ class SearchProvider extends ChangeNotifier {
   Future<void> _init() async {
     _expenseService = ExpenseService.create();
     _profileService = ProfileService.create();
+    _searchService = SearchService.create();
   }
 
   List<Expense> _searchExpenses = [];
@@ -35,7 +38,14 @@ class SearchProvider extends ChangeNotifier {
   List<Search> get searchHistory => _searchHistory;
 
   bool isSearching = true;
-  bool isTyping = true;
+  bool _isTyping = true;
+
+  bool get isTyping => _isTyping;
+
+  void setIsTyping(bool value, {bool notify = true}) {
+    _isTyping = value;
+    if (notify) notifyListeners();
+  }
 
   /// get expense by id. this does not get from db
   Expense? getExpense(int id) {
@@ -111,7 +121,12 @@ class SearchProvider extends ChangeNotifier {
     if (notify) notifyListeners();
   }
 
-  void search({bool notify = true}) async {
+  void search(String? searchKey, {bool notify = true}) async {
+    await Future.delayed(const Duration(milliseconds: 200));
     ExpenseService expenseService = await _expenseService;
+    ProfileService profileService = await _profileService;
+    Profile? profile = await profileService.getSelectedProfile();
+    _searchExpenses = await expenseService.searchExpenses(searchKey, profile);
+    notifyListeners();
   }
 }

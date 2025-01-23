@@ -278,7 +278,32 @@ class ExpenseService {
     Expense? existingExpense = await getExpense(expense.id);
     if (existingExpense == null) return false;
     if (existingExpense.title == expense.title &&
-        existingExpense.amount == expense.amount) return true;
+        existingExpense.amount == expense.amount) {
+      return true;
+    }
     return false;
+  }
+
+  Future<List<Expense>> searchExpenses(
+      String? searchKey, Profile? profile) async {
+    List<Expense> expenses = [];
+    if (searchKey != null) {
+      try {
+        // SortCriteria? sortCriteria =
+        //     await sortFilterService.getPreferenceSortCriteria();
+        // bool? isAscendingSort =
+        //     await sortFilterService.getPreferenceIsAscendingSort();
+        // ExpenseFilters expenseFilters = await sortFilterService.getExpenseFilters();
+        List<Map<String, dynamic>> expenseMapList =
+            await _expenseHelper.searchExpenses(searchKey, profile);
+
+        expenses = expenseMapList
+            .map((expenseMap) => Expense.fromMap(expenseMap))
+            .toList();
+      } catch (e, stackTrace) {
+        _logger.e("Error searching expenses ($searchKey): $e - \n$stackTrace");
+      }
+    }
+    return expenses;
   }
 }

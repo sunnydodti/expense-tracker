@@ -258,16 +258,16 @@ class ExpenseHelper {
   String getOrderByCriteria(SortCriteria sortCriteria, String orderBy) {
     switch (sortCriteria) {
       case SortCriteria.createdDate:
-        orderBy = 'created_at';
+        orderBy = DBConstants.common.createdAt;
         break;
       case SortCriteria.modifiedDate:
-        orderBy = 'modified_at';
+        orderBy = DBConstants.common.modifiedAt;
         break;
       case SortCriteria.expenseDate:
-        orderBy = 'date';
+        orderBy = DBConstants.expense.date;
         break;
       case SortCriteria.expenseAmount:
-        orderBy = 'amount';
+        orderBy = DBConstants.expense.amount;
         break;
     }
     return orderBy;
@@ -283,5 +283,29 @@ class ExpenseHelper {
       return isAscendingSort ? ' DESC' : ' ASC';
     }
     return isAscendingSort ? ' ASC' : ' DESC';
+  }
+
+  searchExpenses(String searchKey, Profile? profile) async {
+    String tableName = DBConstants.expense.table;
+
+    String whereClause = '1=1';
+    List<dynamic> whereArgs = [];
+    String orderBy = '${DBConstants.expense.date} DESC';
+
+    whereClause += """ AND ${DBConstants.expense.title} like ?""";
+    whereArgs.add("%$searchKey%");
+
+    if (profile != null) {
+      whereClause += ''' AND ${DBConstants.expense.profileId} = ?''';
+      whereArgs.add(profile.id);
+    }
+
+    Database database = getDatabase;
+    return await database.query(
+      tableName,
+      where: whereClause.isEmpty ? null : whereClause,
+      whereArgs: whereClause.isEmpty ? null : whereArgs,
+      orderBy: orderBy,
+    );
   }
 }

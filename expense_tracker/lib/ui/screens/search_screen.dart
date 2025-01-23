@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/helpers/color_helper.dart';
 import '../../providers/search_provider.dart';
 import '../widgets/search/search_app_bar.dart';
+import '../widgets/search/search_results.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -20,8 +22,10 @@ class _SearchScreenState extends State<SearchScreen> {
     return FutureBuilder(
       future: _initializeSearch(),
       builder: (BuildContext context, snapshot) {
-        return const Scaffold(
-          appBar: SearchAppBar(),
+        return Scaffold(
+          backgroundColor: ColorHelper.getAppBarColor(Theme.of(context)),
+          appBar: const SearchAppBar(),
+          body: const SearchResults(),
         );
       },
     );
