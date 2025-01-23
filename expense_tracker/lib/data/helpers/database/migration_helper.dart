@@ -5,6 +5,7 @@ import '../../constants/db_constants.dart';
 import 'expense_helper.dart';
 import 'expense_item_helper.dart';
 import 'profile_helper.dart';
+import 'search_helper.dart';
 import 'user_helper.dart';
 
 class MigrationHelper {
@@ -47,7 +48,19 @@ class MigrationHelper {
         await ExpenseHelper.upgradeTableV2toV3(txn);
 
       } catch (e, stackTrace) {
-        _logger.e("Error migrating for v1 to v2 - $e - \n$stackTrace");
+        _logger.e("Error migrating for v2 to v3 - $e - \n$stackTrace");
+      }
+    });
+  }
+
+  static Future<void> migrateV3toV4(Database database) async {
+    _logger.i("migrating database from v3 to v4");
+    database.transaction((Transaction txn) async {
+      try {
+        await SearchHelper.createTable(database);
+
+      } catch (e, stackTrace) {
+        _logger.e("Error migrating for v3 to v4 - $e - \n$stackTrace");
       }
     });
   }

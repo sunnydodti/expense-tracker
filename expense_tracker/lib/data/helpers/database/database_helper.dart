@@ -11,6 +11,7 @@ import 'expense_helper.dart';
 import 'expense_item_helper.dart';
 import 'migration_helper.dart';
 import 'profile_helper.dart';
+import 'search_helper.dart';
 import 'tag_helper.dart';
 import 'user_helper.dart';
 
@@ -60,11 +61,18 @@ class DatabaseHelper {
     if (oldVersion == 1) {
       await upgradeFromV1toV2(db);
       await upgradeFromV2toV3(db);
+      await upgradeFromV3toV4(db);
     }
 
     // if upgrading from version 2
     if (oldVersion == 2) {
       await upgradeFromV2toV3(db);
+      await upgradeFromV3toV4(db);
+    }
+
+    // if upgrading from version 3
+    if (oldVersion == 3) {
+      await upgradeFromV3toV4(db);
     }
   }
 
@@ -87,6 +95,9 @@ class DatabaseHelper {
     await TagHelper.populateDefaults(database);
 
     // version 2
+
+    // version 4
+    await SearchHelper.createTable(database);
   }
 
   Future upgradeFromV1toV2(Database database) async {
@@ -95,6 +106,10 @@ class DatabaseHelper {
 
   Future upgradeFromV2toV3(Database database) async {
     MigrationHelper.migrateV2toV3(database);
+  }
+
+  Future upgradeFromV3toV4(Database database) async {
+    MigrationHelper.migrateV3toV4(database);
   }
 
   Future<ExpenseHelper> get expenseHelper async =>
@@ -112,4 +127,5 @@ class DatabaseHelper {
       ProfileHelper(await getDatabase);
 
   Future<UserHelper> get userHelper async => UserHelper(await getDatabase);
+  Future<SearchHelper> get searchHelper async => SearchHelper(await getDatabase);
 }

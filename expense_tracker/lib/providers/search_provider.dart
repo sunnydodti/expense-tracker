@@ -4,6 +4,7 @@ import 'package:logger/logger.dart';
 
 import '../models/expense.dart';
 import '../models/profile.dart';
+import '../models/search.dart';
 import '../service/expense_service.dart';
 import '../service/profile_service.dart';
 import '../service/shared_preferences_service.dart';
@@ -28,11 +29,13 @@ class SearchProvider extends ChangeNotifier {
   }
 
   List<Expense> _searchExpenses = [];
+  List<Search> _searchHistory = [];
 
-  /// get list of all expenses
   List<Expense> get expenses => _searchExpenses;
+  List<Search> get searchHistory => _searchHistory;
 
   bool isSearching = true;
+  bool isTyping = true;
 
   /// get expense by id. this does not get from db
   Expense? getExpense(int id) {

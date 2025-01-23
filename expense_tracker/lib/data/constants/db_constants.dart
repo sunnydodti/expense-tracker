@@ -11,6 +11,7 @@ class DBConstants {
   static TagConstants tag = TagConstants();
   static UserConstants user = UserConstants();
   static ProfileConstants profile = ProfileConstants();
+  static SearchConstants search = SearchConstants();
 }
 
 class CommonConstants {
@@ -106,4 +107,13 @@ class ProfileConstants {
 
   final String id = CommonConstants.id;
   final String name = "name";
+}
+
+class SearchConstants {
+  final String table = "search";
+  final String triggerModifiedAt = "update_modified_at_search";
+
+  final String id = CommonConstants.id;
+  final String title = "name";
+  final String amount = "amount";
 }
