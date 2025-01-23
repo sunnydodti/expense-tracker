@@ -7,6 +7,7 @@ import 'providers/chart_data_provider.dart';
 import 'providers/expense_items_provider.dart';
 import 'providers/expense_provider.dart';
 import 'providers/profile_provider.dart';
+import 'providers/search_provider.dart';
 import 'providers/settings_provider.dart';
 import 'providers/sort_filter_provider.dart';
 import 'providers/tag_provider.dart';
@@ -57,6 +58,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (context) => SettingsProvider()),
         ChangeNotifierProvider(create: (context) => ChartDataProvider()),
         ChangeNotifierProvider(create: (context) => ProfileProvider()),
+        ChangeNotifierProvider(create: (context) => SearchProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {

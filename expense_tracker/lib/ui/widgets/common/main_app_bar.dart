@@ -8,9 +8,10 @@ import '../../../models/profile.dart';
 import '../../../providers/expense_provider.dart';
 import '../../../providers/profile_provider.dart';
 import '../../../service/expense_service.dart';
+import '../../screens/search_screen.dart';
 import '../../screens/settings/settings_screen.dart';
 
-class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
+class MainAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
   final bool centerTitle;
 
@@ -23,105 +24,121 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   });
 
   @override
+  State<MainAppBar> createState() => _MainAppBarState();
+
+  @override
+  // TODO: implement preferredSize
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+}
+
+class _MainAppBarState extends State<MainAppBar> {
+  ProfileProvider get profileProvider =>
+      Provider.of<ProfileProvider>(context, listen: false);
+
+  ExpenseProvider get expenseProvider => Provider.of(context, listen: false);
+
+  Color get titleColor => ColorHelper.getTileColor(Theme.of(context));
+
+  Future refreshExpenses() async => expenseProvider.refreshExpenses();
+
+  void populateExpense() async {
+    ExpenseService service = await MainAppBar._expenseService;
+    await service.populateExpense(count: 1);
+    refreshExpenses();
+  }
+
+  navigateToScreen() {
+    NavigationHelper.navigateToScreen(context, const SettingsScreen());
+  }
+
+  Future<List<PopupMenuItem<Profile>>> buildProfileDropdown(
+      ProfileProvider provider, ThemeData theme) async {
+    Profile? selectedProfile = await provider.currentProfile;
+    return provider.profiles.map((profile) {
+      return PopupMenuItem<Profile>(
+        value: profile,
+        enabled: selectedProfile!.id != profile.id,
+        child: Text(
+          profile.name,
+          style: (selectedProfile.id != profile.id)
+              ? null
+              : const TextStyle(
+                  fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+        ),
+      );
+    }).toList();
+  }
+
+  void handleProfile() async {
+    Profile? profile = await showMenu(
+        context: context,
+        position: const RelativeRect.fromLTRB(1000.0, 80.0, 0.0, 0.0),
+        items: await buildProfileDropdown(profileProvider, Theme.of(context)),
+        color: titleColor);
+
+    if (profile != null) {
+      profileProvider.setCurrentProfile(profile);
+      expenseProvider.refreshExpenses();
+    }
+  }
+
+  @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   @override
   Widget build(BuildContext context) {
-    ProfileProvider getProfileProvider() =>
-        Provider.of<ProfileProvider>(context, listen: false);
-
-    Future refreshExpenses(BuildContext context) async {
-      Provider.of<ExpenseProvider>(context, listen: false).refreshExpenses();
-    }
-
-    void populateExpense() async {
-      ExpenseService service = await _expenseService;
-      service
-          .populateExpense(count: 1)
-          .then((value) => refreshExpenses(context));
-    }
-
-    navigateToScreen() {
-      NavigationHelper.navigateToScreen(context, const SettingsScreen());
-    }
-
-    Future<List<PopupMenuItem<Profile>>> buildProfileDropdown(
-        ProfileProvider provider, ThemeData theme) async {
-      Profile? selectedProfile = await provider.currentProfile;
-      return provider.profiles.map((profile) {
-        return PopupMenuItem<Profile>(
-          value: profile,
-          enabled: selectedProfile!.id != profile.id,
-          child: Text(
-            profile.name,
-            style: (selectedProfile.id != profile.id)
-                ? null
-                : const TextStyle(
-                    fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
-          ),
-        );
-      }).toList();
-    }
-
-    void handleProfile(BuildContext context, ProfileProvider provider) async {
-      showMenu(
-              context: context,
-              position: const RelativeRect.fromLTRB(1000.0, 80.0, 0.0, 0.0),
-              items: await buildProfileDropdown(provider, Theme.of(context)),
-              color: ColorHelper.getTileColor(Theme.of(context)))
-          .then((Profile? profile) {
-        if (profile != null) {
-          provider.setCurrentProfile(profile);
-          Provider.of<ExpenseProvider>(context, listen: false)
-              .refreshExpenses();
-        }
-      });
-    }
-
     return AppBar(
       backgroundColor: ColorHelper.getAppBarColor(Theme.of(context)),
-      centerTitle: centerTitle,
+      centerTitle: widget.centerTitle,
       title: Text(
-        title,
-        textScaleFactor: .85,
+        widget.title,
+        textScaler: const TextScaler.linear(.85),
         overflow: TextOverflow.fade,
         style: const TextStyle(
           fontWeight: FontWeight.w600,
         ),
       ),
-      actions: [
-        if (DebugHelper.isDebugMode)
-          IconButton(
-            icon: const Icon(
-              Icons.add,
-              size: 20,
-            ),
-            tooltip: "Add random expense",
-            onPressed: populateExpense,
-          ),
-        if (DebugHelper.isDebugMode)
-          IconButton(
-            icon: const Icon(
-              Icons.add_to_home_screen_outlined,
-              size: 20,
-            ),
-            tooltip: "Navigate to screen",
-            onPressed: navigateToScreen,
-          ),
+      actions: buildAppBarActions(),
+    );
+  }
+
+  List<Widget> buildAppBarActions() {
+    return [
+      if (DebugHelper.isDebugMode)
         IconButton(
           icon: const Icon(
-            Icons.person,
+            Icons.add,
             size: 20,
           ),
-          tooltip: "Profile",
-          onPressed: () async {
-            ProfileProvider provider = getProfileProvider();
-            provider
-                .refreshProfiles()
-                .then((value) => handleProfile(context, provider));
-          },
+          tooltip: "Add random expense",
+          onPressed: populateExpense,
         ),
-      ],
-    );
+      if (DebugHelper.isDebugMode)
+        IconButton(
+          icon: const Icon(
+            Icons.add_to_home_screen_outlined,
+            size: 20,
+          ),
+          tooltip: "Navigate to screen",
+          onPressed: navigateToScreen,
+        ),
+      IconButton(
+          onPressed: () {
+            // setState(() => isSearching = true);
+            NavigationHelper.navigateToScreen(context, const SearchScreen());
+          },
+          icon: const Icon(Icons.search_outlined)),
+      IconButton(
+        icon: const Icon(
+          Icons.person,
+          size: 20,
+        ),
+        tooltip: "Profile",
+        onPressed: () async {
+          await profileProvider.refreshProfiles();
+          handleProfile();
+        },
+      ),
+    ];
   }
 }

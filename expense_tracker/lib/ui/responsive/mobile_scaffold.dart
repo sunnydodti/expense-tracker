@@ -17,9 +17,9 @@ class MobileScaffold extends StatelessWidget {
       drawer: const SafeArea(child: HomeDrawer()),
       appBar: const MainAppBar(),
       backgroundColor: ColorHelper.getBackgroundColor(Theme.of(context)),
-      body: Column(
+      body: const Column(
         mainAxisSize: MainAxisSize.min,
-        children: const [
+        children: [
           ExpenseSummary(),
           SortFilterTile(),
           Expanded(child: ExpenseList()),
