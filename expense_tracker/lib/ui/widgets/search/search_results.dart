@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/helpers/color_helper.dart';
 import '../../../providers/search_provider.dart';
 
 class SearchResults extends StatelessWidget {
@@ -28,10 +29,14 @@ class SearchResults extends StatelessWidget {
     return ListView.builder(
       itemCount: provider.expenses.length,
       itemBuilder: (context, index) {
-        return ListTile(
-          dense: true,
-          title: Text(provider.expenses[index].title),
-          subtitle: const Text("title"),
+        if (index > provider.expenses.length) return null;
+        return Card(
+          color: ColorHelper.getTileColor(Theme.of(context)),
+          child: ListTile(
+            dense: true,
+            title: Text(provider.expenses[index].title),
+            subtitle: const Text("title"),
+          ),
         );
     },);
   }
@@ -48,10 +53,25 @@ class SearchResults extends StatelessWidget {
         }
         return ListView.builder(
           itemCount: provider.searchHistory.length,
+          shrinkWrap: true,
           itemBuilder: (context, index) {
-            return ListTile(
-              title: Text("${provider.searchHistory[index].title}"),
-              subtitle: const Text("title"),
+            return Card(
+              color: ColorHelper.getTileColor(Theme.of(context)),
+              child: ListTile(
+                leading: const Icon(Icons.history_outlined),
+                trailing: IconButton(
+                  onPressed: () {
+                    provider.deleteSearch(provider.searchHistory[index]);
+                  },
+                  icon: const Icon(Icons.delete_outline),
+                ),
+                title: Text("${provider.searchHistory[index].title}"),
+                dense: true,
+                onTap: () {
+                  provider.setIsTyping(false);
+                  provider.searchFromHistory(provider.searchHistory[index].title!);
+                },
+              ),
             );
           },
         );

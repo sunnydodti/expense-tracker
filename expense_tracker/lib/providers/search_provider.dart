@@ -18,7 +18,7 @@ class SearchProvider extends ChangeNotifier {
   late final SharedPreferencesService _sharedPreferencesService;
 
   static final Logger _logger =
-  Logger(printer: SimplePrinter(), level: Level.info);
+      Logger(printer: SimplePrinter(), level: Level.info);
 
   SearchProvider() {
     _sharedPreferencesService = SharedPreferencesService();
@@ -37,73 +37,17 @@ class SearchProvider extends ChangeNotifier {
   List<Expense> get expenses => _searchExpenses;
   List<Search> get searchHistory => _searchHistory;
 
+  String key = "";
+
   bool isSearching = true;
   bool _isTyping = true;
 
   bool get isTyping => _isTyping;
 
   void setIsTyping(bool value, {bool notify = true}) {
+    key = "";
     _isTyping = value;
     if (notify) notifyListeners();
-  }
-
-  /// get expense by id. this does not get from db
-  Expense? getExpense(int id) {
-    try {
-      return _searchExpenses.firstWhere((expense) => expense.id == id);
-    } catch (e, stackTrace) {
-      _logger.e('Error getting expense ($id): $e - \n$stackTrace');
-      return null;
-    }
-  }
-
-  /// refresh expenses from db
-  Future<void> refreshExpenses({bool notify = true}) async {
-    try {
-      Profile? profile = await _getProfile();
-      _searchExpenses = await _fetchExpenses(profile);
-
-      if (notify) notifyListeners();
-    } catch (e, stackTrace) {
-      _logger.e('Error refreshing expenses: $e - \n$stackTrace');
-    }
-  }
-
-  /// fetch updated expenses from db
-  Future<List<Expense>> _fetchExpenses(Profile? profile) async {
-    ExpenseService expenseService = await _expenseService;
-    // return await expenseService.getExpenses();
-    return await expenseService.getSortedAndFilteredExpenses(profile);
-  }
-
-  Future<List<Expense>> fetchAllExpenses() async {
-    ExpenseService expenseService = await _expenseService;
-    return await expenseService.getExpenses();
-  }
-
-  Future<List<Expense>> fetchAllExpensesForProfile() async {
-    ExpenseService expenseService = await _expenseService;
-    return await expenseService.getExpensesForProfile();
-  }
-
-  bool _showPopup = false;
-
-  bool get showPopup => _showPopup;
-
-  Expense? _popUpExpense;
-
-  Expense? get popUpExpense => _popUpExpense;
-
-  void showExpensePopup(Expense expense) {
-    _showPopup = true;
-    _popUpExpense = expense;
-    notifyListeners();
-  }
-
-  void hideExpensePopup() {
-    _showPopup = false;
-    _popUpExpense = null;
-    notifyListeners();
   }
 
   Future<Profile?> _getProfile() async {
@@ -123,22 +67,40 @@ class SearchProvider extends ChangeNotifier {
 
   void search(String searchKey, {bool notify = true}) async {
     ExpenseService expenseService = await _expenseService;
-    ProfileService profileService = await _profileService;
     SearchService searchService = await _searchService;
 
-    Profile? profile = await profileService.getSelectedProfile();
+    Profile? profile = await _getProfile();
     _searchExpenses = await expenseService.searchExpenses(searchKey, profile);
     notifyListeners();
 
     if (_searchExpenses.isNotEmpty) {
-      searchService.addSearchKey(searchKey!);
+      searchService.addSearchKey(searchKey);
     }
+  }
+
+  void searchFromHistory(String searchKey, {bool notify = true}) async {
+    key = searchKey;
+    search(key);
   }
 
   Future<void> getSearchHistory({int limit = 10, bool notify = false}) async {
     SearchService searchService = await _searchService;
     List<Search> searches = await searchService.getLatestSearches(limit: limit);
     _searchHistory = searches;
+    if (notify) notifyListeners();
+  }
+
+  void clear() {
+    _searchHistory.clear();
+    _searchExpenses.clear();
+    key = "";
+    isSearching = true;
+    _isTyping = true;
+  }
+
+  void deleteSearch(Search searchHistory, {bool notify = true}) async {
+    SearchService searchService = await _searchService;
+    searchService.deleteSearch(searchHistory.id);
     if (notify) notifyListeners();
   }
 }

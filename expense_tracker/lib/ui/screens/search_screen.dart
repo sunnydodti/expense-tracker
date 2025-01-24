@@ -23,7 +23,7 @@ class _SearchScreenState extends State<SearchScreen> {
       future: _initializeSearch(),
       builder: (BuildContext context, snapshot) {
         return Scaffold(
-          backgroundColor: ColorHelper.getAppBarColor(Theme.of(context)),
+          backgroundColor: ColorHelper.getBackgroundColor(Theme.of(context)),
           appBar: const SearchAppBar(),
           body: const SearchResults(),
         );

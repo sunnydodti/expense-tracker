@@ -58,7 +58,7 @@ class SearchHelper {
     Database database = getDatabase;
     return await database.query(
       DBConstants.search.table,
-      orderBy: DBConstants.common.createdAt,
+      orderBy: "${DBConstants.common.createdAt} DESC",
       limit: 10,
     );
   }
