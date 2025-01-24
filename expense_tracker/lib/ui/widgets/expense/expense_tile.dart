@@ -14,12 +14,14 @@ class ExpenseTile extends StatefulWidget {
   final Expense expense;
   final VoidCallback editCallBack;
   final Future<int> Function() deleteCallBack;
+  final bool isReadonly;
 
   const ExpenseTile({
     Key? key,
     required this.expense,
     required this.editCallBack,
     required this.deleteCallBack,
+    required this.isReadonly,
   }) : super(key: key);
 
   @override
@@ -53,7 +55,7 @@ class _ExpenseTileState extends State<ExpenseTile> {
         expenseItemsProvider.clear();
         expenseProvider.hideExpensePopup();
       },
-      onTap: _buildBottomSheet,
+      onTap: () => _buildBottomSheet(readonly: widget.isReadonly),
       onDoubleTap: widget.editCallBack,
       child: Card(
         color: ColorHelper.getTileColor(Theme.of(context)),
@@ -63,11 +65,15 @@ class _ExpenseTileState extends State<ExpenseTile> {
     );
   }
 
-  void _buildBottomSheet() {
-    ExpenseBottomSheet.show(context, widget.expense,
-        deleteCallBack: widget.deleteCallBack,
-        editCallBack: widget.editCallBack,
-        viewCallBack: viewExpense);
+  void _buildBottomSheet({required bool readonly}) {
+    ExpenseBottomSheet.show(
+      context,
+      widget.expense,
+      deleteCallBack: widget.deleteCallBack,
+      editCallBack: widget.editCallBack,
+      viewCallBack: viewExpense,
+      readonly: readonly,
+    );
   }
 
   void viewExpense() {

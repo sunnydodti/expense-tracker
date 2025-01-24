@@ -6,10 +6,12 @@ import '../../data/helpers/navigation_helper.dart';
 import '../../models/expense.dart';
 
 class ExpenseBottomSheet {
-  static void show(BuildContext context, Expense expense,
-      {required VoidCallback viewCallBack,
-      required VoidCallback editCallBack,
-      required VoidCallback deleteCallBack}) {
+  static void show(BuildContext context, Expense expense, {
+    required VoidCallback viewCallBack,
+    required VoidCallback editCallBack,
+    required VoidCallback deleteCallBack,
+    required bool readonly,
+  }) {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -21,7 +23,7 @@ class ExpenseBottomSheet {
           expense,
           viewCallBack,
           editCallBack,
-          deleteCallBack,
+          deleteCallBack, readonly: readonly,
         );
       },
     );
@@ -32,7 +34,8 @@ class ExpenseBottomSheet {
       Expense expense,
       VoidCallback viewCallBack,
       VoidCallback editCallBack,
-      VoidCallback deleteCallBack) {
+      VoidCallback deleteCallBack,
+      {required bool readonly}) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
@@ -45,7 +48,8 @@ class ExpenseBottomSheet {
           Text(expense.title),
           const Divider(),
           _buildOptionList(
-              context, viewCallBack, editCallBack, deleteCallBack, expense),
+              context, viewCallBack, editCallBack, deleteCallBack, expense,
+              readonly: readonly),
         ],
       ),
     );
@@ -69,7 +73,8 @@ class ExpenseBottomSheet {
       VoidCallback viewCallBack,
       VoidCallback editCallBack,
       VoidCallback deleteCallBack,
-      Expense expense) {
+      Expense expense,
+      {required bool readonly}) {
     return ListView(
       shrinkWrap: true,
       children: [
@@ -85,14 +90,16 @@ class ExpenseBottomSheet {
           trailing: const Icon(Icons.notes_outlined),
           onTap: () => handleCallBack(context, viewCallBack),
         ),
-        ListTile(
-          iconColor: Colors.orange.shade800,
+        if (!readonly)
+          ListTile(
+            iconColor: Colors.orange.shade800,
           title: const Text("Edit"),
           trailing: const Icon(Icons.edit_outlined),
           onTap: () => handleCallBack(context, editCallBack),
         ),
-        ListTile(
-          iconColor: Colors.red.shade800,
+        if (!readonly)
+          ListTile(
+            iconColor: Colors.red.shade800,
           title: const Text("Delete"),
           trailing: const Icon(Icons.delete_outline),
           onTap: () => handleCallBack(context, deleteCallBack, pop: true),

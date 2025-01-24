@@ -66,7 +66,7 @@ class DismissibleExpenseTile extends StatelessWidget {
         expense: expense,
         editCallBack: () => _editExpense(context, expense, expenseProvider),
         deleteCallBack: () =>
-            _deleteExpenseFromDatabase(expense, expenseProvider, notify: true),
+            _deleteExpenseFromDatabase(expense, expenseProvider, notify: true), isReadonly: false,
       ),
     );
   }

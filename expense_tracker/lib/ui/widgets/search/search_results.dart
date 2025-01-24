@@ -32,7 +32,8 @@ class SearchResults extends StatelessWidget {
       itemBuilder: (context, index) {
         if (index > provider.expenses.length) return null;
         return _buildSearchResultTile(context, provider, index);
-      },);
+      },
+    );
   }
 
   Widget _buildSearchResultTile(
@@ -48,9 +49,7 @@ class SearchResults extends StatelessWidget {
     Widget a2 = ExpenseTile(
         expense: provider.expenses[index],
         editCallBack: () {},
-        deleteCallBack: () async {
-          return -1;
-        });
+        deleteCallBack: () async => -1, isReadonly: true,);
     return a2;
   }
 
