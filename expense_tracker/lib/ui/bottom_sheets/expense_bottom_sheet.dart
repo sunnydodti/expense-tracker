@@ -6,7 +6,9 @@ import '../../data/helpers/navigation_helper.dart';
 import '../../models/expense.dart';
 
 class ExpenseBottomSheet {
-  static void show(BuildContext context, Expense expense, {
+  static void show(
+    BuildContext context,
+    Expense expense, {
     required VoidCallback viewCallBack,
     required VoidCallback editCallBack,
     required VoidCallback deleteCallBack,
@@ -23,7 +25,8 @@ class ExpenseBottomSheet {
           expense,
           viewCallBack,
           editCallBack,
-          deleteCallBack, readonly: readonly,
+          deleteCallBack,
+          readonly: readonly,
         );
       },
     );
@@ -93,14 +96,14 @@ class ExpenseBottomSheet {
         if (!readonly)
           ListTile(
             iconColor: Colors.orange.shade800,
-          title: const Text("Edit"),
+            title: const Text("Edit"),
           trailing: const Icon(Icons.edit_outlined),
           onTap: () => handleCallBack(context, editCallBack),
         ),
         if (!readonly)
           ListTile(
             iconColor: Colors.red.shade800,
-          title: const Text("Delete"),
+            title: const Text("Delete"),
           trailing: const Icon(Icons.delete_outline),
           onTap: () => handleCallBack(context, deleteCallBack, pop: true),
         ),

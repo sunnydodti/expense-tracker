@@ -80,19 +80,21 @@ class _SearchAppBarState extends State<SearchAppBar> {
 
   List<Widget> _buildActions(SearchProvider provider, BuildContext context) {
     List<Widget> actions = [];
-    Widget searchIcon = IconButton(
+    Widget clearIcon = IconButton(
       onPressed: () {
         provider.stopSearch();
       },
       icon: const Icon(Icons.close_outlined),
     );
-    Widget clearIcon = IconButton(
+    Widget searchIcon = IconButton(
       onPressed: () {
-        provider.search(_searchController.text);
+        if (_searchController.text.isNotEmpty) {
+          provider.search(_searchController.text);
+        }
       },
       icon: const Icon(Icons.search_outlined),
     );
-    (provider.isSearching) ? actions.add(clearIcon) : searchIcon;
+    (provider.isSearching) ? actions.add(searchIcon) : clearIcon;
     return actions;
   }
 

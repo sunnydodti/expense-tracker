@@ -38,19 +38,12 @@ class SearchResults extends StatelessWidget {
 
   Widget _buildSearchResultTile(
       BuildContext context, SearchProvider provider, int index) {
-    Widget a1 = Card(
-      color: ColorHelper.getTileColor(Theme.of(context)),
-      child: ListTile(
-        dense: true,
-        title: Text(provider.expenses[index].title),
-        subtitle: const Text("title"),
-      ),
-    );
-    Widget a2 = ExpenseTile(
+    return ExpenseTile(
         expense: provider.expenses[index],
         editCallBack: () {},
-        deleteCallBack: () async => -1, isReadonly: true,);
-    return a2;
+      deleteCallBack: () async => -1,
+      isReadonly: true,
+    );
   }
 
   Widget _buildRecentSearchHistory(SearchProvider provider) {
