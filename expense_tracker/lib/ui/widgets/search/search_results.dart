@@ -19,6 +19,12 @@ class SearchResults extends StatelessWidget {
   }
 
   Widget _buildSearchResults(SearchProvider provider) {
+    if (provider.expenses.isEmpty) {
+      return const Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [Text("No matching results")],
+      );
+    }
     return ListView.builder(
       itemCount: provider.expenses.length,
       itemBuilder: (context, index) {
@@ -32,7 +38,7 @@ class SearchResults extends StatelessWidget {
 
   Widget _buildRecentSearchHistory(SearchProvider provider) {
     return FutureBuilder<void>(
-      future: _getSearchHistory(),
+      future: _getSearchHistory(provider),
       builder: (context, snapshot) {
         if (provider.searchHistory.isEmpty) {
           return const Row(
@@ -54,5 +60,7 @@ class SearchResults extends StatelessWidget {
     );
   }
 
-  _getSearchHistory() async {}
+  _getSearchHistory(SearchProvider provider) async {
+    await provider.getSearchHistory(limit: 10);
+  }
 }

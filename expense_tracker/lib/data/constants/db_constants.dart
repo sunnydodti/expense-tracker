@@ -1,6 +1,6 @@
 class DBConstants {
   static String databaseName = "expense_tracker.db";
-  static int databaseVersion = 3;
+  static int databaseVersion = 4;
 
   static DatabaseVersionConstants version = DatabaseVersionConstants();
 

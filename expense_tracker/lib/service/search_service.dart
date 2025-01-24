@@ -23,8 +23,22 @@ class SearchService {
   Future<List<Search>> getSearches() async {
     try {
       final List<Map<String, dynamic>> searches = await _searchHelper.getSearches();
-      List<Search> tgs = searches.map((searchMap) => Search.fromMap(searchMap)).toList();
-      return tgs;
+      List<Search> searchResults =
+          searches.map((searchMap) => Search.fromMap(searchMap)).toList();
+      return searchResults;
+    } catch (e, stackTrace) {
+      _logger.e("Error getting searches: $e - \n$stackTrace");
+      return [];
+    }
+  }
+
+  Future<List<Search>> getLatestSearches({int limit = 10}) async {
+    try {
+      final List<Map<String, dynamic>> searches =
+          await _searchHelper.getLatestSearches(limit: limit);
+      List<Search> searchResults =
+          searches.map((searchMap) => Search.fromMap(searchMap)).toList();
+      return searchResults;
     } catch (e, stackTrace) {
       _logger.e("Error getting searches: $e - \n$stackTrace");
       return [];
@@ -54,6 +68,17 @@ class SearchService {
   Future<int> addSearch(SearchFormModel search) async {
     try {
       final result = await _searchHelper.addSearch(search.toMap());
+      return result;
+    } catch (e, stackTrace) {
+      _logger.e("Error adding search: $e - \n$stackTrace");
+      return -1;
+    }
+  }
+
+  Future<int> addSearchKey(String key) async {
+    try {
+      SearchFormModel searchFormModel = SearchFormModel(title: key);
+      final result = await _searchHelper.addSearch(searchFormModel.toMap());
       return result;
     } catch (e, stackTrace) {
       _logger.e("Error adding search: $e - \n$stackTrace");

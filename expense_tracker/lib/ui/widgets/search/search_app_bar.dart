@@ -21,8 +21,14 @@ class SearchAppBar extends StatefulWidget implements PreferredSizeWidget {
 
 class _SearchAppBarState extends State<SearchAppBar> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   Timer? _debounce;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,17 +48,18 @@ class _SearchAppBarState extends State<SearchAppBar> {
     return Form(
         key: _formKey,
         child: TextFormField(
-          controller: searchController,
+          controller: _searchController,
           onChanged: (value) => _triggerDebouncedSearch(value, provider),
         ));
   }
 
   void _triggerDebouncedSearch(String? searchKey, SearchProvider provider) {
     provider.setIsTyping(true);
+    if (_searchController.text.isEmpty) return;
     if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(const Duration(milliseconds: 1000), () {
+    _debounce = Timer(const Duration(milliseconds: 500), () {
       provider.setIsTyping(false);
-      provider.search(searchKey);
+      provider.search(searchKey!);
     });
   }
 
@@ -66,7 +73,7 @@ class _SearchAppBarState extends State<SearchAppBar> {
     );
     Widget clearIcon = IconButton(
       onPressed: () {
-        provider.search(searchController.text);
+        provider.search(_searchController.text);
       },
       icon: const Icon(Icons.search_outlined),
     );

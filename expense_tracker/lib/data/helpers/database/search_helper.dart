@@ -15,7 +15,7 @@ class SearchHelper {
 
   static Future<void> createTable(Database database) async {
     var result = await database.rawQuery(
-        """SELECT title FROM sqlite_master WHERE type = 'table' AND title = '${DBConstants.search.table}'""");
+        """SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = '${DBConstants.search.table}'""");
     if (result.isEmpty) {
       _logger.i("creating table ${DBConstants.search.table}");
       await database.execute('''CREATE TABLE ${DBConstants.search.table} (
@@ -51,6 +51,16 @@ class SearchHelper {
     _logger.i("getting searches");
     Database database = getDatabase;
     return await database.query(DBConstants.search.table);
+  }
+
+  Future<List<Map<String, dynamic>>> getLatestSearches({int limit = 10}) async {
+    _logger.i("getting latest searches");
+    Database database = getDatabase;
+    return await database.query(
+      DBConstants.search.table,
+      orderBy: DBConstants.common.createdAt,
+      limit: 10,
+    );
   }
 
   Future<List<Map<String, dynamic>>> getSearchByTitle(String searchTitle) async {
