@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../data/helpers/color_helper.dart';
 import '../../../providers/search_provider.dart';
+import '../expense/expense_tile.dart';
 
 class SearchResults extends StatelessWidget {
   const SearchResults({super.key});
@@ -30,15 +31,27 @@ class SearchResults extends StatelessWidget {
       itemCount: provider.expenses.length,
       itemBuilder: (context, index) {
         if (index > provider.expenses.length) return null;
-        return Card(
-          color: ColorHelper.getTileColor(Theme.of(context)),
-          child: ListTile(
-            dense: true,
-            title: Text(provider.expenses[index].title),
-            subtitle: const Text("title"),
-          ),
-        );
-    },);
+        return _buildSearchResultTile(context, provider, index);
+      },);
+  }
+
+  Widget _buildSearchResultTile(
+      BuildContext context, SearchProvider provider, int index) {
+    Widget a1 = Card(
+      color: ColorHelper.getTileColor(Theme.of(context)),
+      child: ListTile(
+        dense: true,
+        title: Text(provider.expenses[index].title),
+        subtitle: const Text("title"),
+      ),
+    );
+    Widget a2 = ExpenseTile(
+        expense: provider.expenses[index],
+        editCallBack: () {},
+        deleteCallBack: () async {
+          return -1;
+        });
+    return a2;
   }
 
   Widget _buildRecentSearchHistory(SearchProvider provider) {
@@ -48,35 +61,40 @@ class SearchResults extends StatelessWidget {
         if (provider.searchHistory.isEmpty) {
           return const Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [Text("Recent Suggestions")],
+            children: [Text("Start Typing")],
           );
         }
         return ListView.builder(
           itemCount: provider.searchHistory.length,
           shrinkWrap: true,
           itemBuilder: (context, index) {
-            return Card(
-              color: ColorHelper.getTileColor(Theme.of(context)),
-              child: ListTile(
-                leading: const Icon(Icons.history_outlined),
-                trailing: IconButton(
-                  onPressed: () {
-                    provider.deleteSearch(provider.searchHistory[index]);
-                  },
-                  icon: const Icon(Icons.delete_outline),
-                ),
-                title: Text("${provider.searchHistory[index].title}"),
-                dense: true,
-                onTap: () {
-                  provider.setIsTyping(false);
-                  provider.searchFromHistory(provider.searchHistory[index].title!);
-                },
-              ),
-            );
+            return _buildSearchHistoryTile(context, provider, index);
           },
         );
         // return const Text("results");
       },
+    );
+  }
+
+  Card _buildSearchHistoryTile(
+      BuildContext context, SearchProvider provider, int index) {
+    return Card(
+      color: ColorHelper.getTileColor(Theme.of(context)),
+      child: ListTile(
+        leading: const Icon(Icons.history_outlined),
+        trailing: IconButton(
+          onPressed: () {
+            provider.deleteSearch(provider.searchHistory[index]);
+          },
+          icon: const Icon(Icons.delete_outline),
+        ),
+        title: Text("${provider.searchHistory[index].title}"),
+        dense: true,
+        onTap: () {
+          provider.setIsTyping(false);
+          provider.searchFromHistory(provider.searchHistory[index].title!);
+        },
+      ),
     );
   }
 
