@@ -82,7 +82,8 @@ class _SearchAppBarState extends State<SearchAppBar> {
     List<Widget> actions = [];
     Widget clearIcon = IconButton(
       onPressed: () {
-        provider.stopSearch();
+        _searchController.clear();
+        provider.clearSearch();
       },
       icon: const Icon(Icons.close_outlined),
     );
@@ -94,7 +95,8 @@ class _SearchAppBarState extends State<SearchAppBar> {
       },
       icon: const Icon(Icons.search_outlined),
     );
-    (provider.isSearching) ? actions.add(searchIcon) : clearIcon;
+    actions.add(searchIcon);
+    if (_searchController.text.isNotEmpty) actions.add(clearIcon);
     return actions;
   }
 
@@ -108,6 +110,6 @@ class _SearchAppBarState extends State<SearchAppBar> {
   void _exitSearch() async {
     NavigationHelper.navigateBack(context);
     _searchController.clear();
-    searchProvider.clear();
+    searchProvider.closeSearch();
   }
 }

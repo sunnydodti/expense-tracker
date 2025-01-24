@@ -32,7 +32,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> _initializeSearch() async {
-    searchProvider.initializeSearch( notify: false);
+    // searchProvider.initializeSearch( notify: false);
     return;
   }
 }

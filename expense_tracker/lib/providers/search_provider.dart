@@ -39,7 +39,6 @@ class SearchProvider extends ChangeNotifier {
 
   String key = "";
 
-  bool isSearching = true;
   bool _isTyping = true;
 
   bool get isTyping => _isTyping;
@@ -53,16 +52,6 @@ class SearchProvider extends ChangeNotifier {
   Future<Profile?> _getProfile() async {
     ProfileService profileService = await _profileService;
     return await profileService.getSelectedProfile();
-  }
-
-  void initializeSearch({bool notify = true}) {
-    isSearching = true;
-    if (notify) notifyListeners();
-  }
-
-  void stopSearch({bool notify = true}) {
-    isSearching = false;
-    if (notify) notifyListeners();
   }
 
   void search(String searchKey, {bool notify = true}) async {
@@ -90,11 +79,10 @@ class SearchProvider extends ChangeNotifier {
     if (notify) notifyListeners();
   }
 
-  void clear() {
+  void closeSearch() {
     _searchHistory.clear();
     _searchExpenses.clear();
     key = "";
-    isSearching = true;
     _isTyping = true;
   }
 
@@ -102,5 +90,12 @@ class SearchProvider extends ChangeNotifier {
     SearchService searchService = await _searchService;
     searchService.deleteSearch(searchHistory.id);
     if (notify) notifyListeners();
+  }
+
+  void clearSearch() {
+    key = "";
+    _searchHistory.clear();
+    notifyListeners();
+    _isTyping = true;
   }
 }
