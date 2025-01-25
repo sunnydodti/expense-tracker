@@ -84,7 +84,7 @@ class SearchResults extends StatelessWidget {
         dense: true,
         onTap: () {
           provider.setIsTyping(false);
-          provider.searchFromHistory(provider.searchHistory[index].title!);
+          provider.searchFromHistory(provider.searchHistory[index]);
         },
       ),
     );

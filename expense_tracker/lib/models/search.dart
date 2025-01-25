@@ -39,13 +39,13 @@ class SearchFormModel {
   String? title;
   double? amount;
 
-  SearchFormModel({this.title, this.amount});
+  SearchFormModel({this.id, this.title, this.amount});
 
   Map<String, dynamic> toMap() {
     return {
       DBConstants.search.id: id,
-      DBConstants.search.title: title,
-      DBConstants.search.amount: amount
+      if (title != null) DBConstants.search.title: title,
+      if (amount != null) DBConstants.search.amount: amount
     };
   }
 
@@ -53,5 +53,13 @@ class SearchFormModel {
     return SearchFormModel(
         title: map[DBConstants.search.title],
         amount: map[DBConstants.search.amount]);
+  }
+
+  factory SearchFormModel.fromSearch(Search search) {
+    return SearchFormModel(
+      id: search.id,
+      title: search.title,
+      amount: search.amount,
+    );
   }
 }

@@ -65,6 +65,17 @@ class SearchService {
     }
   }
 
+  Future<Search?> getSearchById(int id) async {
+    try {
+      final List<Map<String, dynamic>> search =
+          await _searchHelper.getSearchById(id);
+      return Search.fromMap(search.first);
+    } catch (e, stackTrace) {
+      _logger.e("Error getting search by id ($id): $e - \n$stackTrace");
+      return null;
+    }
+  }
+
   Future<int> addSearch(SearchFormModel search) async {
     try {
       final result = await _searchHelper.addSearch(search.toMap());
@@ -161,5 +172,19 @@ class SearchService {
     int? count = Sqflite.firstIntValue(result);
     if (count == null) return 0;
     return count;
+  }
+
+  void addOrUpdateSearchKey(Search previousSearch) async {
+    try {
+      Search? search = await getSearchById(previousSearch.id);
+      if (search == null) {
+        addSearch(SearchFormModel.fromSearch(previousSearch));
+        return;
+      }
+      updateSearch(SearchFormModel.fromSearch(previousSearch));
+    } on Exception catch (e, stackTrace) {
+      _logger.e(
+          "Error at addOrUpdateSearchKey (${previousSearch.title}): $e - \n$stackTrace");
+    }
   }
 }

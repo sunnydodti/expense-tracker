@@ -13,8 +13,7 @@ class ProfileHelper {
 
   Database get getDatabase => _database;
 
-  static final List<String> _defaultProfiles = ['default'
-  ];
+  static final List<String> _defaultProfiles = ['default'];
 
   static String get defaultProfile => _defaultProfiles.first;
 

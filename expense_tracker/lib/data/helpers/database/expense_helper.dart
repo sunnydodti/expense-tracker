@@ -44,8 +44,8 @@ class ExpenseHelper {
             ${DBConstants.expense.category} TEXT,
             ${DBConstants.expense.tags} TEXT,
             ${DBConstants.expense.note} TEXT,
-            ${DBConstants.expense.userId} INTEGER NOT NULL DEFAULT ${defaultProfile.id},
-            ${DBConstants.expense.profileId} INTEGER NOT NULL DEFAULT ${defaultUser.id},
+            ${DBConstants.expense.userId} INTEGER NOT NULL DEFAULT ${defaultUser.id},
+            ${DBConstants.expense.profileId} INTEGER NOT NULL DEFAULT ${defaultProfile.id},
             ${DBConstants.expense.containsExpenseItems} INTEGER DEFAULT 0,
             ${DBConstants.common.createdAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             ${DBConstants.common.modifiedAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP

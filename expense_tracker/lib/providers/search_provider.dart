@@ -54,7 +54,8 @@ class SearchProvider extends ChangeNotifier {
     return await profileService.getSelectedProfile();
   }
 
-  void search(String searchKey, {bool notify = true}) async {
+  void search(String searchKey, {bool notify = true, bool isNew = true}) async {
+    if (searchKey.isEmpty) return;
     ExpenseService expenseService = await _expenseService;
     SearchService searchService = await _searchService;
 
@@ -62,14 +63,17 @@ class SearchProvider extends ChangeNotifier {
     _searchExpenses = await expenseService.searchExpenses(searchKey, profile);
     notifyListeners();
 
-    if (_searchExpenses.isNotEmpty) {
+    if (_searchExpenses.isNotEmpty && isNew) {
       searchService.addSearchKey(searchKey);
     }
   }
 
-  void searchFromHistory(String searchKey, {bool notify = true}) async {
-    key = searchKey;
-    search(key);
+  void searchFromHistory(Search previousSearch, {bool notify = true}) async {
+    key = previousSearch.title!;
+    search(key, isNew: false);
+
+    SearchService searchService = await _searchService;
+    searchService.addOrUpdateSearchKey(previousSearch);
   }
 
   Future<void> getSearchHistory({int limit = 10, bool notify = false}) async {
