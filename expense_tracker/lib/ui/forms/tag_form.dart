@@ -27,14 +27,9 @@ class _TagFormState extends State<TagForm> {
   }
 
   @override
-  void dispose() {
-    _tagController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return ListTile(
+      visualDensity: const VisualDensity(vertical: 4),
       dense: true, // Compact spacing
       title: Form(
         key: _formKey,
@@ -61,15 +56,28 @@ class _TagFormState extends State<TagForm> {
           },
         ),
       ),
-      trailing: IconButton(
-        icon: Icon(Icons.add, color: getColor(context)),
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            _formKey.currentState!.save();
-          }
-        },
+      trailing: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            icon: Icon(Icons.add, color: getColor(context)),
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                _formKey.currentState!.save();
+              }
+            },
+          tooltip: "Save Tag",
+          ),
+        const Expanded(child: Text("Add"))
+        ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _tagController.dispose();
+    super.dispose();
   }
 
   Color getColor(BuildContext context) {

@@ -37,6 +37,7 @@ class _ProfileFormState extends State<ProfileForm> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      visualDensity: const VisualDensity(vertical: 4),
         title: Form(
           key: _formKey,
           child: TextFormField(
@@ -62,13 +63,20 @@ class _ProfileFormState extends State<ProfileForm> {
             },
           ),
         ),
-        trailing: IconButton(
-          icon: Icon(Icons.add, color: getColor(context)),
-          onPressed: () {
-            if (_formKey.currentState!.validate()) {
-              _formKey.currentState!.save();
-            }
-          },
+        trailing: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: Icon(Icons.add, color: getColor(context)),
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
+                }
+              },
+              tooltip: "Save Profile",
+            ),
+            const Expanded(child: Text("Add"))
+          ],
         ));
   }
 
