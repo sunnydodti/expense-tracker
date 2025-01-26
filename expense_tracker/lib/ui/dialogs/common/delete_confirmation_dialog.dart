@@ -39,7 +39,7 @@ class _DeleteConfirmationDialogState extends State<DeleteConfirmationDialog> {
     Color? activeColor = ColorHelper.getToggleColor(theme);
     return AlertDialog(
       backgroundColor: ColorHelper.getTileColor(theme),
-      title: const Text("Confirm Deletion"),
+      title: _buildDialogTitle(),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,6 +112,21 @@ class _DeleteConfirmationDialogState extends State<DeleteConfirmationDialog> {
       ],
     );
   }
+
+  Row _buildDialogTitle() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text('Confirm Deletion'),
+        IconButton(
+          onPressed: _closeFilterDialog,
+          icon: const Icon(Icons.clear),
+        )
+      ],
+    );
+  }
+
+  void _closeFilterDialog() => Navigator.pop(context);
 
   void handleDeleteAll(value) => setState(() {
         deleteEverything = value!;

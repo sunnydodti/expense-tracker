@@ -69,7 +69,12 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
       children: [
         const Text('Expense Filters'),
         const SizedBox(width: 70),
-        Expanded(child: IconButton(onPressed: _closeFilterDialog, icon: const Icon(Icons.clear)))
+        Expanded(
+          child: IconButton(
+            onPressed: _closeFilterDialog,
+            icon: const Icon(Icons.clear),
+          ),
+        )
       ],
     );
   }
