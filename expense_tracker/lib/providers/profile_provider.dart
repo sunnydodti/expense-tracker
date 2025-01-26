@@ -24,8 +24,6 @@ class ProfileProvider extends ChangeNotifier {
   List<Profile> _profiles = [];
   Profile? _currentProfile;
 
-  bool isChanged = false;
-
   /// Get list of all profiles
   List<Profile> get profiles => _profiles;
 
@@ -51,7 +49,6 @@ class ProfileProvider extends ChangeNotifier {
     if (_currentProfile != null && _currentProfile!.id != profile.id) {
       await _sharedPreferencesService.setStringPreference(
           SharedPreferencesConstants.profile.PROFILE, profile.name);
-      isChanged = true;
     }
     _currentProfile = profile;
   }

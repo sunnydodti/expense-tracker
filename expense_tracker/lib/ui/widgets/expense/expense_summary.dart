@@ -63,16 +63,7 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
   }
 
   void navigateToChartsScreen(BuildContext context) {
-    bool refreshData = false;
-    if (profileProvider.isChanged) {
-      refreshData = true;
-      profileProvider.isChanged = false;
-    }
-
-    if (expenseProvider.isChanged) {
-      refreshData = true;
-      expenseProvider.isChanged = false;
-    }
+    bool refreshData = true;
     NavigationHelper.navigateToScreen(
         context, ChartsScreen(refreshData: refreshData));
   }
