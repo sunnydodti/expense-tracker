@@ -22,6 +22,7 @@ class SearchAppBar extends StatefulWidget implements PreferredSizeWidget {
 class _SearchAppBarState extends State<SearchAppBar> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _searchController;
+  late final FocusNode _focusNode;
 
   SearchProvider get searchProvider =>
       Provider.of<SearchProvider>(context, listen: false);
@@ -32,14 +33,20 @@ class _SearchAppBarState extends State<SearchAppBar> {
   void initState() {
     super.initState();
     _searchController = TextEditingController();
+    _focusNode = FocusNode();
     if (searchProvider.key.isNotEmpty) {
       _searchController.text = searchProvider.key;
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _focusNode.requestFocus();
+      });
     }
   }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -63,9 +70,21 @@ class _SearchAppBarState extends State<SearchAppBar> {
     return Form(
         key: _formKey,
         child: TextFormField(
+          decoration: const InputDecoration(
+            hintText: "Search",
+          ),
+          focusNode: _focusNode,
           controller: _searchController,
           onChanged: (value) => _triggerDebouncedSearch(value, provider),
         ));
+  }
+
+  void _focusTextField() {
+    if (MediaQuery.of(context).viewInsets.bottom > 0) return;
+    FocusScope.of(context).unfocus();
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (mounted) FocusScope.of(context).requestFocus(_focusNode);
+    });
   }
 
   void _triggerDebouncedSearch(String? searchKey, SearchProvider provider) {
@@ -84,6 +103,7 @@ class _SearchAppBarState extends State<SearchAppBar> {
       onPressed: () {
         _searchController.clear();
         provider.clearSearch();
+        _focusTextField();
       },
       icon: const Icon(Icons.close_outlined),
     );
