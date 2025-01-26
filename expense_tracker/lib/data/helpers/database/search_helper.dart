@@ -28,7 +28,7 @@ class SearchHelper {
         ${DBConstants.search.id} INTEGER PRIMARY KEY AUTOINCREMENT, 
         ${DBConstants.search.title} TEXT,
         ${DBConstants.search.amount} REAL,
-        ${DBConstants.expense.profileId} INTEGER NOT NULL DEFAULT ${defaultProfile.id},
+        ${DBConstants.search.profileId} INTEGER NOT NULL DEFAULT ${defaultProfile.id},
         ${DBConstants.common.createdAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         ${DBConstants.common.modifiedAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
@@ -60,11 +60,14 @@ class SearchHelper {
     return await database.query(DBConstants.search.table);
   }
 
-  Future<List<Map<String, dynamic>>> getLatestSearches({int limit = 10}) async {
-    _logger.i("getting latest searches");
+  Future<List<Map<String, dynamic>>> getLatestSearches(
+      {required int profileId, int limit = 10}) async {
+    _logger.i("getting latest searches for profile $profileId");
     Database database = getDatabase;
     return await database.query(
       DBConstants.search.table,
+      where: "${DBConstants.search.profileId} = ?",
+      whereArgs: [profileId],
       orderBy: "${DBConstants.common.modifiedAt} DESC",
       limit: limit,
     );

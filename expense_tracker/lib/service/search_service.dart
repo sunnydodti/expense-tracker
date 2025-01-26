@@ -32,10 +32,11 @@ class SearchService {
     }
   }
 
-  Future<List<Search>> getLatestSearches({int limit = 10}) async {
+  Future<List<Search>> getLatestSearches(
+      {required int profileId, int limit = 10}) async {
     try {
-      final List<Map<String, dynamic>> searches =
-          await _searchHelper.getLatestSearches(limit: limit);
+      final List<Map<String, dynamic>> searches = await _searchHelper
+          .getLatestSearches(profileId: profileId, limit: limit);
       List<Search> searchResults =
           searches.map((searchMap) => Search.fromMap(searchMap)).toList();
       return searchResults;
@@ -86,9 +87,10 @@ class SearchService {
     }
   }
 
-  Future<int> addSearchKey(String key) async {
+  Future<int> addSearchKey(String key, {required int profileId}) async {
     try {
-      SearchFormModel searchFormModel = SearchFormModel(title: key);
+      SearchFormModel searchFormModel =
+          SearchFormModel(title: key, profileId: profileId);
       final result = await _searchHelper.addSearch(searchFormModel.toMap());
       return result;
     } catch (e, stackTrace) {

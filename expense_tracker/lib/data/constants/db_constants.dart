@@ -116,4 +116,5 @@ class SearchConstants {
   final String id = CommonConstants.id;
   final String title = "name";
   final String amount = "amount";
+  final String profileId = "profile_id";
 }
