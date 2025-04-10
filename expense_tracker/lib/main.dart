@@ -12,7 +12,6 @@ import 'providers/settings_provider.dart';
 import 'providers/sort_filter_provider.dart';
 import 'providers/tag_provider.dart';
 import 'providers/theme_provider.dart';
-import 'service/shared_preferences_service.dart';
 import 'ui/responsive/desktop_scaffold.dart';
 import 'ui/responsive/mobile_scaffold.dart';
 import 'ui/responsive/responsive_layout.dart';
@@ -22,9 +21,6 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await SharedPreferencesService().initializeSharedPreferences();
-  bool refreshTheme = true;
   runApp(const MyApp());
 }
 
