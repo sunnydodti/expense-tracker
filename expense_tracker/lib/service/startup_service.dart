@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:pwa_install/pwa_install.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
+// import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+
 
 import 'shared_preferences_service.dart';
 
@@ -32,11 +34,11 @@ class StartUpService {
   static Future _initSqflite() async {
     // web
     if (kIsWeb) {
-      // databaseFactory = databaseFactoryFfiWeb;
       databaseFactoryOrNull = databaseFactoryFfiWeb;
+      databaseFactory = databaseFactoryFfiWeb;
     } else if (Platform.isLinux || Platform.isWindows) {
       // sqfliteFfiInit();
-      // databaseFactoryOrNull = databaseFactoryFfi;
+      // databaseFactory = databaseFactoryFfi;
     }
     //desktop
 

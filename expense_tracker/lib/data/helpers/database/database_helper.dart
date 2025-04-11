@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
 import '../../constants/db_constants.dart';
 import 'category_helper.dart';
@@ -30,18 +32,26 @@ class DatabaseHelper {
   }
 
   Future<Database> get getDatabase async {
+    if (kIsWeb) {
+      databaseFactory = databaseFactoryFfiWeb;
+      databaseFactoryOrNull = databaseFactoryFfiWeb;
+    }
     return _database ??= await initializeDatabase();
   }
 
   Future<Database> initializeDatabase() async {
-    final Directory directory = await getApplicationDocumentsDirectory();
-    String path = '${directory.path}/${DBConstants.databaseName}';
-
-    if (Platform.isWindows | Platform.isLinux){
-      sqfliteFfiInit();
-      path = inMemoryDatabasePath;
-      databaseFactory = databaseFactoryFfi;
+    String path = "";
+    if (kIsWeb) {
+      path = "/assets/db/${DBConstants.databaseName}";
+    } else {
+      final Directory directory = await getApplicationDocumentsDirectory();
+      path = '${directory.path}/${DBConstants.databaseName}';
     }
+    // if (Platform.isWindows | Platform.isLinux){
+    //   sqfliteFfiInit();
+    //   path = inMemoryDatabasePath;
+    //   databaseFactory = databaseFactoryFfi;
+    // }
 
     return await openDatabase(
       path,
@@ -127,5 +137,6 @@ class DatabaseHelper {
       ProfileHelper(await getDatabase);
 
   Future<UserHelper> get userHelper async => UserHelper(await getDatabase);
-  Future<SearchHelper> get searchHelper async => SearchHelper(await getDatabase);
+  Future<SearchHelper> get searchHelper async =>
+      SearchHelper(await getDatabase);
 }
