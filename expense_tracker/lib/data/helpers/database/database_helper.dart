@@ -43,15 +43,15 @@ class DatabaseHelper {
     String path = "";
     if (kIsWeb) {
       path = "/assets/db/${DBConstants.databaseName}";
+    } else if (Platform.isWindows | Platform.isLinux) {
+      final Directory directory = await getApplicationDocumentsDirectory();
+      String pSeparator = Platform.pathSeparator;
+      path =
+          '${directory.path}${pSeparator}databases$pSeparator${DBConstants.databaseName}';
     } else {
       final Directory directory = await getApplicationDocumentsDirectory();
       path = '${directory.path}/${DBConstants.databaseName}';
     }
-    // if (Platform.isWindows | Platform.isLinux){
-    //   sqfliteFfiInit();
-    //   path = inMemoryDatabasePath;
-    //   databaseFactory = databaseFactoryFfi;
-    // }
 
     return await openDatabase(
       path,

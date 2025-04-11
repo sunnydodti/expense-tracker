@@ -23,13 +23,12 @@ dependencies:
   share_plus: ^10.1.4
   shared_preferences: ^2.3.5
   sqflite: ^2.4.1
+  sqflite_common_ffi: ^2.3.4+4
   sqflite_common_ffi_web: ^0.4.5+4
 
 dev_dependencies:
   flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
-  # sqflite_common_ffi: ^2.2.5
-
 flutter:
   uses-material-design: true

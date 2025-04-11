@@ -6,8 +6,8 @@ import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 // import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-
 import 'shared_preferences_service.dart';
+import 'sqflite_service.dart';
 
 class StartUpService {
   static Future initialize() async {
@@ -37,12 +37,8 @@ class StartUpService {
       databaseFactoryOrNull = databaseFactoryFfiWeb;
       databaseFactory = databaseFactoryFfiWeb;
     } else if (Platform.isLinux || Platform.isWindows) {
-      // sqfliteFfiInit();
-      // databaseFactory = databaseFactoryFfi;
+      await SqfliteWindowsService.init();
     }
-    //desktop
-
-    //mobile
   }
 
   static Future _initSharedPreferences() async {
