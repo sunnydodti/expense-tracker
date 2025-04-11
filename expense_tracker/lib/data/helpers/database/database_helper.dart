@@ -44,10 +44,9 @@ class DatabaseHelper {
     if (kIsWeb) {
       path = "/assets/db/${DBConstants.databaseName}";
     } else if (Platform.isWindows | Platform.isLinux) {
-      final Directory directory = await getApplicationDocumentsDirectory();
+      final String directory = await getDatabasesPath();
       String pSeparator = Platform.pathSeparator;
-      path =
-          '${directory.path}${pSeparator}databases$pSeparator${DBConstants.databaseName}';
+      path = '$directory$pSeparator${DBConstants.databaseName}';
     } else {
       final Directory directory = await getApplicationDocumentsDirectory();
       path = '${directory.path}/${DBConstants.databaseName}';
