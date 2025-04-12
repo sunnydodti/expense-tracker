@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
@@ -31,10 +32,11 @@ class _ImportFormState extends State<ImportForm> {
   String _defaultStoragePath = '';
   String _lastStoragePath = '';
 
-  bool isError = false;
   String isErrorMessage = "";
+  bool get isError => isErrorMessage.isNotEmpty;
 
-  bool isFileSelected = false;
+  PlatformFile? selectedFile;
+  bool get isFileSelected => selectedFile != null;
   String selectedFilePath = "";
 
   final selectedFileController = TextEditingController();
@@ -46,6 +48,7 @@ class _ImportFormState extends State<ImportForm> {
   }
 
   Future<void> _getPaths() async {
+    if (kIsWeb) return;
     String defaultPath = await PathService.fileExportPathForView();
     setState(() {
       _defaultStoragePath = defaultPath;
@@ -61,7 +64,7 @@ class _ImportFormState extends State<ImportForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            getDefaultStoragePathFile(),
+            if (!kIsWeb) getDefaultStoragePathFile(),
             const SizedBox(height: 20),
             getFileNameField(theme),
             if (isError) getErrorMessage(),
@@ -72,53 +75,47 @@ class _ImportFormState extends State<ImportForm> {
         ));
   }
 
-  Text getErrorMessage() => Text(
-        isErrorMessage,
-        style: const TextStyle(color: Colors.red),
-      );
+  Text getErrorMessage() =>
+      Text(isErrorMessage, style: const TextStyle(color: Colors.red));
 
   Row getImportButton(ThemeData theme) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ElevatedButton(
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                _formKey.currentState!.save();
-                submit();
-              }
-            },
-            child: Text(
-              'Import',
-              style: TextStyle(color: ColorHelper.getButtonTextColor(theme)),
-            ))
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              _formKey.currentState!.save();
+              submit();
+            }
+          },
+          child: Text(
+            'Import',
+            style: TextStyle(color: ColorHelper.getButtonTextColor(theme)),
+          ),
+        )
       ],
     );
   }
 
   Future<void> _selectFile() async {
-    if (!await PermissionService.isStoragePermission) {
-      if (!await PermissionService.requestStoragePermission()) {
-        setState(() {
-          isError = true;
-          isErrorMessage = ResponseConstants.export.storagePermissionDenied;
-        });
-      }
+    bool storagePermission = await _requestStoragePermission();
+    if (!storagePermission) {
+      setState(() =>
+          isErrorMessage = ResponseConstants.export.storagePermissionDenied);
       return;
     }
 
-    setState(() {
-      isError = false;
-    });
+    setState(() => isErrorMessage = '');
 
     PlatformFile? file = await ImportService.getJsonFileFromUser();
-    if (file != null) {
-      setState(() {
-        isFileSelected = true;
-        selectedFileController.text = file.name;
-        selectedFilePath = file.path!;
-      });
-    }
+    if (file == null) return;
+
+    if (!kIsWeb) selectedFilePath = file.path!;
+    selectedFile = file;
+    selectedFileController.text = file.name;
+    _formKey.currentState!.validate();
+    setState(() {});
   }
 
   getDefaultStoragePathFile() {
@@ -145,25 +142,19 @@ class _ImportFormState extends State<ImportForm> {
   }
 
   void submit() async {
-    if (isFileSelected) {
-      if (!File(selectedFilePath).existsSync()) {
-        setState(() {
-          isError = true;
-          isErrorMessage = ResponseConstants.import.fileNotFound;
-        });
-        return;
-      }
-
-      setState(() {
-        isError = false;
-        isErrorMessage = ResponseConstants.import.unableToImport;
-      });
-    } else {
-      setState(() {
-        isError = true;
-        isErrorMessage = ResponseConstants.import.unableToImport;
-      });
+    if (!isFileSelected) {
+      setState(() => isErrorMessage = ResponseConstants.import.fileNotSelected);
+      return;
     }
+
+    // TODO: change
+    if (!kIsWeb && !File(selectedFile!.path!).existsSync()) {
+      isErrorMessage = ResponseConstants.import.fileNotFound;
+      setState(() {});
+      return;
+    }
+
+    setState(() => isErrorMessage = '');
 
     await _importExpenses();
     // if (!result.result) {
@@ -174,52 +165,26 @@ class _ImportFormState extends State<ImportForm> {
     //   return;
     // }
     selectedFileController.clear();
-    setState(() {
-      isError = false;
-    });
+    setState(() => isErrorMessage = '');
   }
 
   Future<bool> _importExpenses() async {
     SnackBarService.showSnackBarWithContext(context, "imported started",
         duration: 1);
     ImportService importService = ImportService();
-    importService.importFile(selectedFilePath).then((ImportResult result) {
-      _logger.i(result.toString());
-      if (result.result) {
-        _refreshExpenses();
-        String message = "Import complete";
+    ImportResult result = await importService.importFile(selectedFile!);
+    if (!result.result) {
+      setState(() => isErrorMessage = result.message);
+      SnackBarService.showErrorSnackBar(result.message);
+      return false;
+    }
+    _logger.i(result.toString());
 
-        if (result.expense.total > 0) {
-          message +=
-              "\nExpenses:        ${result.expense.successCount}/${result.expense.total}";
-        }
-        if (result.expenseItems.total > 0) {
-          message +=
-              "\nExpenseItems:    ${result.expenseItems.successCount}/${result.expenseItems.total}";
-        }
-        if (result.category.total > 0) {
-          message +=
-              "\nCategories:      ${result.category.successCount}/${result.category.total}";
-        }
-        if (result.tag.total > 0) {
-          message +=
-              "\nTags:             ${result.tag.successCount}/${result.tag.total}";
-        }
-        if (result.user.total > 0) {
-          message +=
-              "\nUsers:           ${result.user.successCount}/${result.user.total}";
-        }
-        if (result.profile.total > 0) {
-          message +=
-              "\nProfiles:        ${result.profile.successCount}/${result.profile.total}";
-        }
+    _refreshExpenses();
+    String message = result.importSuccessMessage();
 
-        SnackBarService.showSuccessSnackBarWithContext(context, message,
-            duration: 5);
-      } else {
-        SnackBarService.showErrorSnackBarWithContext(context, result.message);
-      }
-    });
+    SnackBarService.showSuccessSnackBarWithContext(context, message,
+        duration: 5);
     return true;
   }
 
@@ -236,7 +201,7 @@ class _ImportFormState extends State<ImportForm> {
           suffixIcon: IconButton(
             onPressed: () {
               selectedFileController.clear();
-              isFileSelected = false;
+              selectedFile = null;
             },
             icon: const Icon(Icons.clear, size: 20),
           ),
@@ -256,7 +221,7 @@ class _ImportFormState extends State<ImportForm> {
 
   String? validateTextField(var value, String errorMessage) {
     if (!isFileSelected) return "Select a file";
-    if (!File(selectedFilePath).existsSync()) {
+    if (!kIsWeb && !File(selectedFilePath).existsSync()) {
       return ResponseConstants.import.fileNotFound;
     }
     return null; // Return null if the input is valid
@@ -266,5 +231,17 @@ class _ImportFormState extends State<ImportForm> {
     final expenseProvider =
         Provider.of<ExpenseProvider>(context, listen: false);
     expenseProvider.refreshExpenses();
+  }
+
+  Future<bool> _requestStoragePermission() async {
+    if (kIsWeb) return true;
+    if (!await PermissionService.isStoragePermission) {
+      if (!await PermissionService.requestStoragePermission()) {
+        setState(() =>
+            isErrorMessage = ResponseConstants.export.storagePermissionDenied);
+      }
+      return false;
+    }
+    return true;
   }
 }

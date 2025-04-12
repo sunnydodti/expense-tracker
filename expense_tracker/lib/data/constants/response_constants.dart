@@ -43,6 +43,7 @@ class ImportResponse {
   final String externalStoragePermissionDenied =
       "No Permission: allow All Files permission in settings or use default storage";
   final String fileNotFound = "file not found";
+  final String fileNotSelected = "No file selected";
   final String unableToImport = "Unable to Import file";
 
   final String importSuccessful = "Successfully Imported";

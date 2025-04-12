@@ -110,7 +110,7 @@ class SnackBarService {
     snackbarKey.currentState!.showSnackBar(snackBar);
   }
 
-  static showErrorSnackBar(BuildContext context, String message,
+  static showErrorSnackBar(String message,
       {bool removeCurrent = false, int duration = 2}) {
     SnackBar snackBar = SnackBar(
       content: Text(message),

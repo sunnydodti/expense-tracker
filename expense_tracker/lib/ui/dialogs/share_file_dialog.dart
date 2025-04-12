@@ -21,37 +21,37 @@ class ShareFileDialog {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-            Text(title.toString()),
-            IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.clear))
-          ],
-        ),
-        content: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(content),
-            if (showFileName) const SizedBox(height: 10),
-            if (showFileName) Text(fileName),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
+              Text(title.toString()),
+              IconButton(
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.clear))
+            ],
+          ),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(content),
+              if (showFileName) const SizedBox(height: 10),
+              if (showFileName) Text(fileName),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
               child: Text(
                 'Cancel',
                 style: TextStyle(color: actionColor),
               ),
             ),
             TextButton(
-            onPressed: () {
-              XFile file = XFile(filePath);
-              Share.shareXFiles([file]);
-              if (Navigator.canPop(context)) {
-                Navigator.pop(context);
-              }
-            },
+              onPressed: () {
+                XFile file = XFile(filePath);
+                Share.shareXFiles([file]);
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                }
+              },
               child: Text(
                 'Share',
                 style: TextStyle(color: actionColor),

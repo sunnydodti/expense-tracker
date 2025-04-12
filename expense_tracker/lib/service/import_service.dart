@@ -52,19 +52,19 @@ class ImportService {
     return null;
   }
 
-  Future<ImportResult> importFile(String filepath) async {
-    _logger.i("importing file ${filepath.split("/").last}");
-    _logger.i("filepath:  $filepath");
+  Future<ImportResult> importFile(PlatformFile importFile) async {
+    _logger.i("importing file ${importFile.name}");
+    _logger.i("filepath:  $importFile");
     ImportResult result = ImportResult();
     try {
-      File file = File(filepath);
-      if (!await file.exists()) {
-        _logger.i("File not found");
-        result.message = "File not found";
-        return result;
-      }
-      final fileBytes = file.readAsBytesSync();
-      final archive = ZipDecoder().decodeBytes(fileBytes);
+      // File file = File(importFile);
+      // if (!await file.exists()) {
+      //   _logger.i("File not found");
+      //   result.message = "File not found";
+      //   return result;
+      // }
+      final fileBytes = importFile.bytes;
+      final archive = ZipDecoder().decodeBytes(fileBytes!.toList());
 
       for (ArchiveFile file in archive.files) {
         _logger.i('File: ${file.name}');
