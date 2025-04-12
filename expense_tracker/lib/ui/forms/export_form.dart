@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
@@ -58,8 +59,8 @@ class _ExportFormState extends State<ExportForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            getPathToggle(theme),
-            getStoragePathFile(),
+            if (!kIsWeb) getPathToggle(theme),
+            if (!kIsWeb) getStoragePathFile(),
             const SizedBox(height: 20),
             if (isError) getErrorMessage(),
             if (isError) const SizedBox(height: 20),
@@ -140,58 +141,25 @@ class _ExportFormState extends State<ExportForm> {
   }
 
   void submit() async {
-    String storagePath = _defaultStoragePath;
-    if (isExternalStoragePath) {
-      if (!Directory(_externalStoragePath).existsSync()) {
-        setState(() {
-          isError = true;
-          isErrorMessage = ResponseConstants.export.folderNotFound;
-        });
+    try {
+      if (kIsWeb) {
+        await _exportAllData("", "");
+        // _triggerExportForWeb();
+        return;
+      } else if (Platform.isAndroid || Platform.isIOS) {
+        _triggerExportForMobile();
+        return;
+      } else if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
+        _triggerExportForDesktop();
         return;
       }
-
-      if (!await PermissionService.isExternalStoragePermission) {
-        if (!await PermissionService.requestExternalPermission()) {
-          setState(() {
-            isError = true;
-            isErrorMessage =
-                ResponseConstants.export.externalStoragePermissionDenied;
-          });
-        }
-        return;
-      }
-      storagePath = _externalStoragePath;
-    } else {
-      if (!await PermissionService.isStoragePermission) {
-        if (!await PermissionService.requestStoragePermission()) {
-          setState(() {
-            isError = true;
-            isErrorMessage = ResponseConstants.export.storagePermissionDenied;
-          });
-          return;
-        }
-      }
-      storagePath = '';
-    }
-
-    String fileName = fileNameController.text.trim();
-    if (fileName.isNotEmpty || fileName != "") {
-      if (!fileName.endsWith(FileConstants.export.extension)) {
-        fileName += FileConstants.export.extension;
-      }
-    }
-    ExportResult result = await _exportAllData(storagePath, fileName);
-    if (!result.result) {
+    } catch (e) {
+      _logger.e("Error: $e");
       setState(() {
         isError = true;
-        isErrorMessage = result.message;
+        isErrorMessage = ResponseConstants.export.exportFailed;
       });
-      return;
     }
-    fileNameController.clear();
-    setState(() {
-      isError = false;
-    });
   }
 
   Future<ExportResult> _exportAllData(String filePath, String fileName) async {
@@ -250,4 +218,82 @@ class _ExportFormState extends State<ExportForm> {
     if (fileNameController.text.length > 30) return 'max length is 30';
     return null;
   }
+
+  void _triggerExportForWeb() async {
+    String fileName = _getExportFileName();
+    ExportResult result = await _exportAllData('', fileName);
+    if (!result.result) {
+      setState(() {
+        isError = true;
+        isErrorMessage = result.message;
+      });
+      return;
+    }
+    fileNameController.clear();
+    setState(() {
+      isError = false;
+    });
+  }
+
+  Future _triggerExportForMobile() async {
+    String storagePath = _defaultStoragePath;
+    if (isExternalStoragePath) {
+      if (!Directory(_externalStoragePath).existsSync()) {
+        setState(() {
+          isError = true;
+          isErrorMessage = ResponseConstants.export.folderNotFound;
+        });
+        return;
+      }
+
+      if (!await PermissionService.isExternalStoragePermission) {
+        if (!await PermissionService.requestExternalPermission()) {
+          setState(() {
+            isError = true;
+            isErrorMessage =
+                ResponseConstants.export.externalStoragePermissionDenied;
+          });
+        }
+        return;
+      }
+      storagePath = _externalStoragePath;
+    } else {
+      if (!await PermissionService.isStoragePermission) {
+        if (!await PermissionService.requestStoragePermission()) {
+          setState(() {
+            isError = true;
+            isErrorMessage = ResponseConstants.export.storagePermissionDenied;
+          });
+          return;
+        }
+      }
+      storagePath = '';
+    }
+
+    String fileName = _getExportFileName();
+    ExportResult result = await _exportAllData(storagePath, fileName);
+    if (!result.result) {
+      setState(() {
+        isError = true;
+        isErrorMessage = result.message;
+      });
+      return;
+    }
+    fileNameController.clear();
+    setState(() {
+      isError = false;
+    });
+  }
+
+  String _getExportFileName() {
+    String fileName = fileNameController.text.trim();
+    if (fileName.isNotEmpty || fileName != "") {
+      if (!fileName.endsWith(FileConstants.export.extension)) {
+        fileName += FileConstants.export.extension;
+      }
+    }
+    return fileName;
+  }
+
+  void _triggerExportForDesktop() async {}
 }

@@ -7,6 +7,9 @@ class PathService {
   static final Logger _logger =
       Logger(printer: SimplePrinter(), level: Level.info);
 
+  static Future<String> get desktopExportPath async =>
+      await _getAppStoragePath(folderName: "export");
+
   /// returns the path to the export folder)
   static Future<String> get fileExportPath async =>
       await _getAppStoragePath(folderName: "export");
@@ -75,6 +78,15 @@ class PathService {
       // return '/storage/emulated/0/Download';
       final Directory? directory = await getExternalStorageDirectory();
       return directory!.path;
+    }
+    if (Platform.isIOS) {
+      final Directory directory = await getApplicationDocumentsDirectory();
+      return directory.path;
+    }
+    if (Platform.isMacOS || Platform.isLinux || Platform.isWindows) {
+      final Directory directory = await getApplicationDocumentsDirectory();
+      // final Directory directory = await getApplicationSupportDirectory();
+      return directory.path;
     }
     final Directory? directory = await getExternalStorageDirectory();
     return directory!.path;

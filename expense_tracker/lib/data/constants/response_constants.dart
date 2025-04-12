@@ -34,6 +34,7 @@ class ExportResponse {
   final String unableToZip = "Unable to zip files";
 
   final String exportSuccessful = "Successfully Exported";
+  final String exportFailed = "Export Failed";
 }
 
 class ImportResponse {
