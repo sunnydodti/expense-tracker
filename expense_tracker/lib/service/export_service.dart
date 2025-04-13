@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'dart:html' if (dart.library.io) 'dart:io' as platform;
 
 import 'package:archive/archive.dart';
 import 'package:file_picker/file_picker.dart';
@@ -21,6 +20,7 @@ import 'permission_service.dart';
 import 'profile_service.dart';
 import 'tag_service.dart';
 import 'user_service.dart';
+import 'web/web_service.dart';
 
 class ExportService {
   late final Future<ExpenseService> _expenseService;
@@ -325,7 +325,7 @@ class ExportService {
       }
 
       // Use browser download API
-      _downloadBlobData(encodedZip, zipFileName);
+      WebService.downloadBlobData(encodedZip, zipFileName);
 
       result.result = true;
       result.message = ResponseConstants.export.exportSuccessful;
@@ -344,19 +344,6 @@ class ExportService {
     String jsonStr = getFormattedJSONString(data);
     List<int> jsonBytes = utf8.encode(jsonStr);
     return ArchiveFile(filename, jsonBytes.length, jsonBytes);
-  }
-
-// Web-specific download method
-  void _downloadBlobData(List<int> bytes, String fileName) {
-    if (kIsWeb) {
-      // The following code only works on web
-      final blob = platform.Blob([bytes]);
-      final url = platform.Url.createObjectUrlFromBlob(blob);
-      final anchor = platform.AnchorElement(href: url);
-      anchor.setAttribute('download', fileName);
-      anchor.click();
-      platform.Url.revokeObjectUrl(url);
-    }
   }
 
 // Desktop version of saveJSONFiles without permission checks
