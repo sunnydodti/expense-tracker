@@ -277,7 +277,6 @@ class ExportService {
     ExportResult result = ExportResult();
 
     try {
-      // For web, we need to work with in-memory data
       List<Map<String, dynamic>> expenses =
           await (await _expenseService).getExpenseMaps();
       List<Map<String, dynamic>> expenseItems =
@@ -291,26 +290,31 @@ class ExportService {
           await (await _profileService).getProfileMaps();
       Map<String, dynamic> versionInfo = await getVersionMap();
 
-      // Create archive in memory
       Archive archive = Archive();
 
-      // Add files to archive using string data
       archive.addFile(
-          _createArchiveFileFromJson(FileConstants.export.expenses, expenses));
-      archive.addFile(_createArchiveFileFromJson(
-          FileConstants.export.expenseItems, expenseItems));
-      archive.addFile(_createArchiveFileFromJson(
-          FileConstants.export.categories, categories));
-      archive
-          .addFile(_createArchiveFileFromJson(FileConstants.export.tags, tags));
+        _createArchiveFileFromJson(FileConstants.export.expenses, expenses),
+      );
       archive.addFile(
-          _createArchiveFileFromJson(FileConstants.export.users, users));
+        _createArchiveFileFromJson(
+            FileConstants.export.expenseItems, expenseItems),
+      );
       archive.addFile(
-          _createArchiveFileFromJson(FileConstants.export.profiles, profiles));
-      archive.addFile(_createArchiveFileFromJson(
-          FileConstants.export.version, versionInfo));
+        _createArchiveFileFromJson(FileConstants.export.categories, categories),
+      );
+      archive.addFile(
+        _createArchiveFileFromJson(FileConstants.export.tags, tags),
+      );
+      archive.addFile(
+        _createArchiveFileFromJson(FileConstants.export.users, users),
+      );
+      archive.addFile(
+        _createArchiveFileFromJson(FileConstants.export.profiles, profiles),
+      );
+      archive.addFile(
+        _createArchiveFileFromJson(FileConstants.export.version, versionInfo),
+      );
 
-      // Encode the archive
       final zipEncoder = ZipEncoder();
       List<int>? encodedZip = zipEncoder.encode(archive);
 
@@ -327,7 +331,7 @@ class ExportService {
       result.message = ResponseConstants.export.exportSuccessful;
       result.path = zipFileName; // No real path for web
     } catch (e, stackTrace) {
-      _logger.e('Error at _exportForWeb() $e - \n$stackTrace');
+      _logger.e('Error -  at _exportForWeb() $e - \n$stackTrace');
       result.result = false;
       result.message = "Export failed: ${e.toString()}";
     }
@@ -348,10 +352,10 @@ class ExportService {
       // The following code only works on web
       final blob = platform.Blob([bytes]);
       final url = platform.Url.createObjectUrlFromBlob(blob);
-      final anchor = platform.AnchorElement(href: url)
-        ..setAttribute('download', fileName)
-        ..click();
-      // platform.Url.revokeObjectUrl(url);
+      final anchor = platform.AnchorElement(href: url);
+      anchor.setAttribute('download', fileName);
+      anchor.click();
+      platform.Url.revokeObjectUrl(url);
     }
   }
 

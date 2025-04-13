@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -31,7 +32,7 @@ class ShareFileDialog {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(content),
+              if(!kIsWeb) Text(content),
               if (showFileName) const SizedBox(height: 10),
               if (showFileName) Text(fileName),
             ],
@@ -40,23 +41,24 @@ class ShareFileDialog {
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text(
-                'Cancel',
+                'Close',
                 style: TextStyle(color: actionColor),
               ),
             ),
-            TextButton(
-              onPressed: () {
-                XFile file = XFile(filePath);
-                Share.shareXFiles([file]);
-                if (Navigator.canPop(context)) {
-                  Navigator.pop(context);
-                }
-              },
-              child: Text(
-                'Share',
-                style: TextStyle(color: actionColor),
+            if (!kIsWeb)
+              TextButton(
+                onPressed: () {
+                  XFile file = XFile(filePath);
+                  Share.shareXFiles([file]);
+                  if (Navigator.canPop(context)) {
+                    Navigator.pop(context);
+                  }
+                },
+                child: Text(
+                  'Share',
+                  style: TextStyle(color: actionColor),
+                ),
               ),
-            ),
           ],
         );
       },

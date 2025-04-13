@@ -144,19 +144,10 @@ class _ExportFormState extends State<ExportForm> {
 
   void submit() async {
     try {
-      if (kIsWeb) {
-        await _exportAllData("", "");
-        // _triggerExportForWeb();
-        return;
-      } else if (Platform.isAndroid || Platform.isIOS) {
-        _triggerExportForMobile();
-        return;
-      } else if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
-        _triggerExportForDesktop();
-        return;
-      }
+      await _exportAllData();
+      return;
     } catch (e) {
-      _logger.e("Error: $e");
+      _logger.e("Error - : $e");
       setState(() {
         isError = true;
         isErrorMessage = ResponseConstants.export.exportFailed;
@@ -164,20 +155,22 @@ class _ExportFormState extends State<ExportForm> {
     }
   }
 
-  Future<ExportResult> _exportAllData(String filePath, String fileName) async {
+  Future<ExportResult> _exportAllData({String filePath = ''}) async {
     ExportService exportService = ExportService();
+    String fileName = _getExportFileName();
     ExportResult result = await exportService.exportAllDataToJson(
-        userPath: filePath, fileName: fileName);
-    if (mounted) {
-      if (result.result) {
-        SnackBarService.showSuccessSnackBarWithContext(
-            context, "${result.message}\nPath: ${result.outputPath}",
-            duration: 5);
-      } else {
-        SnackBarService.showErrorSnackBarWithContext(context, result.message);
-      }
-      if (result.result) _showShareDialog(result.path!);
+      userPath: filePath,
+      fileName: fileName,
+    );
+    if (!result.result) {
+      SnackBarService.showErrorSnackBar(result.message);
+      return result;
     }
+    SnackBarService.showSuccessSnackBar(
+      "${result.message}\nPath: ${result.outputPath}",
+      duration: 5,
+    );
+    _showShareDialog(result.path!);
     return result;
   }
 
@@ -221,22 +214,6 @@ class _ExportFormState extends State<ExportForm> {
     return null;
   }
 
-  void _triggerExportForWeb() async {
-    String fileName = _getExportFileName();
-    ExportResult result = await _exportAllData('', fileName);
-    if (!result.result) {
-      setState(() {
-        isError = true;
-        isErrorMessage = result.message;
-      });
-      return;
-    }
-    fileNameController.clear();
-    setState(() {
-      isError = false;
-    });
-  }
-
   Future _triggerExportForMobile() async {
     String storagePath = _defaultStoragePath;
     if (isExternalStoragePath) {
@@ -272,8 +249,7 @@ class _ExportFormState extends State<ExportForm> {
       storagePath = '';
     }
 
-    String fileName = _getExportFileName();
-    ExportResult result = await _exportAllData(storagePath, fileName);
+    ExportResult result = await _exportAllData(filePath: storagePath);
     if (!result.result) {
       setState(() {
         isError = true;
@@ -296,6 +272,4 @@ class _ExportFormState extends State<ExportForm> {
     }
     return fileName;
   }
-
-  void _triggerExportForDesktop() async {}
 }
