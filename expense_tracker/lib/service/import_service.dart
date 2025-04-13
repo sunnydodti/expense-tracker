@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:archive/archive.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart' show Uint8List;
 import 'package:logger/logger.dart';
 
 import '../data/constants/db_constants.dart';
@@ -14,6 +14,7 @@ import 'expense_service.dart';
 import 'profile_service.dart';
 import 'tag_service.dart';
 import 'user_service.dart';
+import 'web/web_service.dart';
 
 class ImportService {
   late final Future<ExpenseService> _expenseService;
@@ -57,13 +58,7 @@ class ImportService {
     _logger.i("filepath:  $importFile");
     ImportResult result = ImportResult();
     try {
-      // File file = File(importFile);
-      // if (!await file.exists()) {
-      //   _logger.i("File not found");
-      //   result.message = "File not found";
-      //   return result;
-      // }
-      final fileBytes = importFile.bytes;
+      Uint8List? fileBytes = WebService.getFileBytes(importFile);
       final archive = ZipDecoder().decodeBytes(fileBytes!.toList());
 
       for (ArchiveFile file in archive.files) {

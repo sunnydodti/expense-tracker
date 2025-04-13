@@ -212,14 +212,19 @@ class ExportService {
       String userPath, String fileName) async {
     ExportResult result = ExportResult();
     String tempJson = await tempJSONPath;
-    File expensesJSON = File("$tempJson/${FileConstants.export.expenses}");
+    File expensesJSON =
+        File("$tempJson$pathSeperator${FileConstants.export.expenses}");
     File expenseItemsJSON =
-        File("$tempJson/${FileConstants.export.expenseItems}");
-    File categoriesJSON = File("$tempJson/${FileConstants.export.categories}");
-    File tagsJSON = File("$tempJson/${FileConstants.export.tags}");
-    File usersJSON = File("$tempJson/${FileConstants.export.users}");
-    File profilesJSON = File("$tempJson/${FileConstants.export.profiles}");
-    File versionJSON = File("$tempJson/${FileConstants.export.version}");
+        File("$tempJson$pathSeperator${FileConstants.export.expenseItems}");
+    File categoriesJSON =
+        File("$tempJson$pathSeperator${FileConstants.export.categories}");
+    File tagsJSON = File("$tempJson$pathSeperator${FileConstants.export.tags}");
+    File usersJSON =
+        File("$tempJson$pathSeperator${FileConstants.export.users}");
+    File profilesJSON =
+        File("$tempJson$pathSeperator${FileConstants.export.profiles}");
+    File versionJSON =
+        File("$tempJson$pathSeperator${FileConstants.export.version}");
 
     try {
       // Desktop doesn't need storage permissions check
@@ -251,9 +256,10 @@ class ExportService {
         zipExportPath = await PathService.desktopExportPath;
       }
 
-      _logger.i("exporting all data to $zipExportPath/$zipFileName");
-      File zipFile =
-          await File("$zipExportPath/$zipFileName").writeAsBytes(encodedZip);
+      _logger
+          .i("exporting all data to $zipExportPath$pathSeperator$zipFileName");
+      File zipFile = await File("$zipExportPath$pathSeperator$zipFileName")
+          .writeAsBytes(encodedZip);
 
       result.result = true;
       result.message = ResponseConstants.export.exportSuccessful;
@@ -521,4 +527,6 @@ class ExportService {
         DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
     return versionInfo;
   }
+
+  String get pathSeperator => PathService.pathSeperator;
 }

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
@@ -157,6 +157,12 @@ class _ExportFormState extends State<ExportForm> {
 
   Future<ExportResult> _exportAllData({String filePath = ''}) async {
     ExportService exportService = ExportService();
+    String filePath = (kIsWeb)
+        ? ''
+        : isExternalStoragePath
+            ? _externalStoragePath
+            : _defaultStoragePath;
+
     String fileName = _getExportFileName();
     ExportResult result = await exportService.exportAllDataToJson(
       userPath: filePath,

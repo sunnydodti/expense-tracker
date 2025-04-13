@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -49,7 +50,7 @@ class PathService {
 
     if (folderName.isEmpty) return appStoragePath;
 
-    String folderPath = "$appStoragePath/$folderName";
+    String folderPath = "$appStoragePath$pathSeperator$folderName";
     if (await _createFolderIfNotExist(folderPath)) {
       return folderPath;
     }
@@ -93,12 +94,21 @@ class PathService {
   }
 
   static Future<String> _getCachePath() async {
-    if (Platform.isAndroid) {
-      // return '/storage/emulated/0/Download';
+    if (Platform.isAndroid || Platform.isIOS) {
       final Directory directory = await getTemporaryDirectory();
+      return directory.path;
+    }
+    if (Platform.isMacOS || Platform.isLinux || Platform.isWindows) {
+      final Directory directory = await getTemporaryDirectory();
+      // final Directory directory = await getApplicationSupportDirectory();
       return directory.path;
     }
     final Directory? directory = await getExternalStorageDirectory();
     return directory!.path;
+  }
+
+  static String get pathSeperator {
+    if (!kIsWeb && Platform.isWindows) return '\\';
+    return '/';
   }
 }
