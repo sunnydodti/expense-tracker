@@ -95,7 +95,7 @@ class DismissibleExpenseTile extends StatelessWidget {
       _logger.i("adding at $index");
     }
     expenseProvider.insertExpense(index, expense);
-    SnackBarService.showSuccessSnackBar(context, "Restored - ${expense.title}");
+    SnackBarService.showSuccessSnackBar("Restored - ${expense.title}");
   }
 
   completeExpenseDeletion(Expense expense, int index, int expenseLength,
@@ -110,7 +110,7 @@ class DismissibleExpenseTile extends StatelessWidget {
           _logger.i("adding at $index");
           expenseProvider.insertExpense(index, expense);
         }
-        SnackBarService.showErrorSnackBarWithContext(context, "Delete Failed");
+        SnackBarService.showErrorSnackBar("Delete Failed");
       }
     });
   }

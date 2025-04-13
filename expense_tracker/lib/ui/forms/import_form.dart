@@ -195,6 +195,7 @@ class _ImportFormState extends State<ImportForm> {
         controller: selectedFileController,
         maxLines: 1,
         maxLength: 30,
+        readOnly: true,
         decoration: InputDecoration(
           labelText: 'Selected File',
           hintText: "click icon to select a file -->",

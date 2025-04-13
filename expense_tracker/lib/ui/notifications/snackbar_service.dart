@@ -103,15 +103,21 @@ class SnackBarService {
 //endregion
 
 //region Section 2: SnackBarWithoutContext
-  static showSnackBar(String message,
-      {bool removeCurrent = false, int duration = 2}) {
+  static showSnackBar(
+    String message, {
+    bool removeCurrent = false,
+    int duration = 2,
+  }) {
     SnackBar snackBar = SnackBar(content: Text(message));
     if (removeCurrent) snackbarKey.currentState!.removeCurrentSnackBar();
     snackbarKey.currentState!.showSnackBar(snackBar);
   }
 
-  static showErrorSnackBar(String message,
-      {bool removeCurrent = false, int duration = 2}) {
+  static showErrorSnackBar(
+    String message, {
+    bool removeCurrent = false,
+    int duration = 2,
+  }) {
     SnackBar snackBar = SnackBar(
       content: Text(message),
       duration: Duration(seconds: duration),
@@ -122,8 +128,11 @@ class SnackBarService {
     snackbarKey.currentState!.showSnackBar(snackBar);
   }
 
-  static showSuccessSnackBar(BuildContext context, String message,
-      {bool removeCurrent = false, int duration = 2}) async {
+  static showSuccessSnackBar(
+    String message, {
+    bool removeCurrent = false,
+    int duration = 2,
+  }) async {
     SnackBar snackBar = SnackBar(
       content: Text(message),
       duration: Duration(seconds: duration),
@@ -134,8 +143,11 @@ class SnackBarService {
     snackbarKey.currentState!.showSnackBar(snackBar);
   }
 
-  static Future<bool> showUndoSnackBar(BuildContext context, String message,
-      {bool removeCurrent = false, int duration = 2}) async {
+  static Future<bool> showUndoSnackBar(
+    String message, {
+    bool removeCurrent = false,
+    int duration = 2,
+  }) async {
     Completer<bool> completer = Completer<bool>();
     SnackBar snackBar = SnackBar(
       content: Text(message),
@@ -158,10 +170,12 @@ class SnackBarService {
   }
 
   static showUndoSnackBarCallback(
-      BuildContext context, String message, Function onUndo,
-      {bool removeCurrent = false,
-      int duration = 2,
-      Function onNotUndo = emptyFunction}) async {
+    String message,
+    Function onUndo, {
+    bool removeCurrent = false,
+    int duration = 2,
+    Function onNotUndo = emptyFunction,
+  }) async {
     bool isUndoPressed = false;
 
     SnackBar snackBar = SnackBar(

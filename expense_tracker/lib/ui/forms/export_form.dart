@@ -44,6 +44,8 @@ class _ExportFormState extends State<ExportForm> {
   }
 
   Future<void> _getPaths() async {
+    if (kIsWeb) return;
+
     String defaultPath = await PathService.fileExportPathForView();
     setState(() {
       _defaultStoragePath = defaultPath;

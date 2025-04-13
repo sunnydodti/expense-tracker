@@ -37,16 +37,13 @@ class _DeleteAllDialogState extends State<DeleteAllDialog> {
         deleteInput,
         refreshMethod: _refreshExpenses);
 
-    if (mounted) {
-      if (deleteOutput.totalDeletedCount > 0) {
-        String message = _getSnackbarMessage(deleteOutput);
-        SnackBarService.showSuccessSnackBarWithContext(context, message,
-            duration: 5);
-      } else if (deleteOutput.totalDeletedCount == 0) {
-        SnackBarService.showSnackBarWithContext(context, "Nothing to Deleted");
-      } else {
-        SnackBarService.showErrorSnackBarWithContext(context, "Delete Failed");
-      }
+    if (deleteOutput.totalDeletedCount > 0) {
+      String message = _getSnackbarMessage(deleteOutput);
+      SnackBarService.showSuccessSnackBar(message, duration: 5);
+    } else if (deleteOutput.totalDeletedCount == 0) {
+      SnackBarService.showSnackBar("Nothing to Deleted");
+    } else {
+      SnackBarService.showErrorSnackBar("Delete Failed");
     }
   }
 
