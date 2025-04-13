@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
@@ -10,7 +8,6 @@ import '../../data/helpers/color_helper.dart';
 import '../../models/export_result.dart';
 import '../../service/export_service.dart';
 import '../../service/path_service.dart';
-import '../../service/permission_service.dart';
 import '../../ui/dialogs/share_file_dialog.dart';
 import '../../ui/notifications/snackbar_service.dart';
 
@@ -155,29 +152,35 @@ class _ExportFormState extends State<ExportForm> {
     }
   }
 
-  Future<ExportResult> _exportAllData({String filePath = ''}) async {
+  Future<ExportResult> _exportAllData() async {
     ExportService exportService = ExportService();
-    String filePath = (kIsWeb)
-        ? ''
-        : isExternalStoragePath
-            ? _externalStoragePath
-            : _defaultStoragePath;
 
     String fileName = _getExportFileName();
     ExportResult result = await exportService.exportAllDataToJson(
-      userPath: filePath,
+      userPath: exportFilePath,
       fileName: fileName,
     );
     if (!result.result) {
       SnackBarService.showErrorSnackBar(result.message);
+      setState(() {
+        isError = true;
+        isErrorMessage = result.message;
+      });
       return result;
     }
+    setState(() => isError = false);
     SnackBarService.showSuccessSnackBar(
       "${result.message}\nPath: ${result.outputPath}",
       duration: 5,
     );
     _showShareDialog(result.path!);
     return result;
+  }
+
+  String get exportFilePath {
+    if (kIsWeb) return '';
+    if (isExternalStoragePath) return _externalStoragePath;
+    return '';
   }
 
   Future<void> _showShareDialog(String filePath) async {
@@ -218,55 +221,6 @@ class _ExportFormState extends State<ExportForm> {
     if (fileNameController.text.isEmpty) return null;
     if (fileNameController.text.length > 30) return 'max length is 30';
     return null;
-  }
-
-  Future _triggerExportForMobile() async {
-    String storagePath = _defaultStoragePath;
-    if (isExternalStoragePath) {
-      if (!Directory(_externalStoragePath).existsSync()) {
-        setState(() {
-          isError = true;
-          isErrorMessage = ResponseConstants.export.folderNotFound;
-        });
-        return;
-      }
-
-      if (!await PermissionService.isExternalStoragePermission) {
-        if (!await PermissionService.requestExternalPermission()) {
-          setState(() {
-            isError = true;
-            isErrorMessage =
-                ResponseConstants.export.externalStoragePermissionDenied;
-          });
-        }
-        return;
-      }
-      storagePath = _externalStoragePath;
-    } else {
-      if (!await PermissionService.isStoragePermission) {
-        if (!await PermissionService.requestStoragePermission()) {
-          setState(() {
-            isError = true;
-            isErrorMessage = ResponseConstants.export.storagePermissionDenied;
-          });
-          return;
-        }
-      }
-      storagePath = '';
-    }
-
-    ExportResult result = await _exportAllData(filePath: storagePath);
-    if (!result.result) {
-      setState(() {
-        isError = true;
-        isErrorMessage = result.message;
-      });
-      return;
-    }
-    fileNameController.clear();
-    setState(() {
-      isError = false;
-    });
   }
 
   String _getExportFileName() {

@@ -186,6 +186,11 @@ class ExportService {
         zipExportPath = await exportPath;
       }
 
+      Directory directory = Directory(zipExportPath);
+      if (!directory.existsSync()) {
+        directory.createSync(recursive: true);
+      }
+
       _logger.i("exporting all data to $zipExportPath/$zipFileName");
       File zipFile =
           await File("$zipExportPath/$zipFileName").writeAsBytes(encodedZip);
@@ -194,6 +199,10 @@ class ExportService {
       result.message = ResponseConstants.export.exportSuccessful;
       result.path = zipFile.path;
       // result.outputPath = zipExportPath;
+    } catch (e, stackTrace) {
+      _logger.e('Error at exportForMobile() $e - \n$stackTrace');
+      result.result = false;
+      result.message = '${ResponseConstants.export.exportFailed} : $e';
     } finally {
       // Clean up temp files
       if (await expensesJSON.exists()) expensesJSON.delete();
@@ -419,39 +428,36 @@ class ExportService {
 
     try {
       bool status = await PermissionService.requestStoragePermission();
-      if (await PermissionService.isStoragePermission) {
-        if (status) {
-          _logger.i("exporting expenses to ${expensesJSON.path}");
-          expensesJSON.writeAsStringSync(
-              getFormattedJSONString(await expenseService.getExpenseMaps()));
-
-          _logger.i("exporting expense items to ${expenseItemsJSON.path}");
-          expenseItemsJSON.writeAsStringSync(getFormattedJSONString(
-              await expenseItemService.getExpenseItemsMaps()));
-
-          _logger.i("exporting categories to ${categoriesJSON.path}");
-          categoriesJSON.writeAsStringSync(
-              getFormattedJSONString(await categoryService.getCategoryMaps()));
-
-          _logger.i("exporting tags to ${tagsJSON.path}");
-          tagsJSON.writeAsStringSync(
-              getFormattedJSONString(await tagService.getTagMaps()));
-
-          _logger.i("exporting users to ${usersJSON.path}");
-          usersJSON.writeAsStringSync(
-              getFormattedJSONString(await userService.getUserMaps()));
-
-          _logger.i("exporting profiles to ${profilesJSON.path}");
-          profilesJSON.writeAsStringSync(
-              getFormattedJSONString(await profileService.getProfileMaps()));
-
-          _logger.i("exporting version info to ${versionJSON.path}");
-          versionJSON
-              .writeAsStringSync(getFormattedJSONString(await getVersionMap()));
-        } else {
-          throw Exception("storage permission denied");
-        }
+      if (!await PermissionService.isStoragePermission || !status) {
+        throw Exception("storage permission denied");
       }
+      _logger.i("exporting expenses to ${expensesJSON.path}");
+      expensesJSON.writeAsStringSync(
+          getFormattedJSONString(await expenseService.getExpenseMaps()));
+
+      _logger.i("exporting expense items to ${expenseItemsJSON.path}");
+      expenseItemsJSON.writeAsStringSync(getFormattedJSONString(
+          await expenseItemService.getExpenseItemsMaps()));
+
+      _logger.i("exporting categories to ${categoriesJSON.path}");
+      categoriesJSON.writeAsStringSync(
+          getFormattedJSONString(await categoryService.getCategoryMaps()));
+
+      _logger.i("exporting tags to ${tagsJSON.path}");
+      tagsJSON.writeAsStringSync(
+          getFormattedJSONString(await tagService.getTagMaps()));
+
+      _logger.i("exporting users to ${usersJSON.path}");
+      usersJSON.writeAsStringSync(
+          getFormattedJSONString(await userService.getUserMaps()));
+
+      _logger.i("exporting profiles to ${profilesJSON.path}");
+      profilesJSON.writeAsStringSync(
+          getFormattedJSONString(await profileService.getProfileMaps()));
+
+      _logger.i("exporting version info to ${versionJSON.path}");
+      versionJSON
+          .writeAsStringSync(getFormattedJSONString(await getVersionMap()));
     } catch (e) {
       _logger.i("unable to save json files $e");
       rethrow;

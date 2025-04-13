@@ -111,4 +111,16 @@ class PathService {
     if (!kIsWeb && Platform.isWindows) return '\\';
     return '/';
   }
+
+  // Add to your ExportService class
+  static Future<String> _getAbsolutePath(String path) async {
+    if (Platform.isAndroid && !path.startsWith('/')) {
+      // Get app's writable directory
+      final appDir = await getApplicationDocumentsDirectory();
+
+      // Return a path inside app documents
+      return '${appDir.path}/exports';
+    }
+    return path;
+  }
 }
