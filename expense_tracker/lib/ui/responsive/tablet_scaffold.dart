@@ -17,12 +17,24 @@ class TabletScaffold extends StatelessWidget {
       drawer: const SafeArea(child: HomeDrawer()),
       appBar: const MainAppBar(),
       backgroundColor: ColorHelper.getBackgroundColor(Theme.of(context)),
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: const [
-          ExpenseSummary(),
-          SortFilterTile(),
-          Expanded(child: ExpenseList())
+      body: Row(
+        children: [
+          const Expanded(
+            flex: 3,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [SortFilterTile(), Expanded(child: ExpenseList())],
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Container(
+              color: ColorHelper.getBackgroundColor(Theme.of(context)),
+              child: const ExpenseSummary(
+                margin: EdgeInsets.only(top: 10, right: 10),
+              ),
+            ),
+          )
         ],
       ),
       floatingActionButton: const AddExpenseFAB(),

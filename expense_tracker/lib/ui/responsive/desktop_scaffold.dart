@@ -20,11 +20,11 @@ class DesktopScaffold extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const HomeDrawer(),
-          Expanded(
+          const Expanded(
               flex: 2,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
+                children: [
                   SortFilterTile(),
                   Expanded(child: ExpenseList()),
                 ],
@@ -32,7 +32,9 @@ class DesktopScaffold extends StatelessWidget {
           Expanded(
             child: Container(
                 color: ColorHelper.getBackgroundColor(Theme.of(context)),
-                child: const ExpenseSummary()),
+                child: const ExpenseSummary(
+                  margin: EdgeInsets.only(top: 10, right: 10),
+                )),
           )
           // ExpenseListDynamic(),
           // ExpenseList(),

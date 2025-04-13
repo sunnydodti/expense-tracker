@@ -14,7 +14,11 @@ import '../../animations/blur_widget.dart';
 import '../../screens/charts_screen.dart';
 
 class ExpenseSummary extends StatefulWidget {
-  const ExpenseSummary({Key? key}) : super(key: key);
+  final EdgeInsets margin;
+  const ExpenseSummary({
+    Key? key,
+    this.margin = const EdgeInsets.only(top: 10, left: 10, right: 10),
+  }) : super(key: key);
 
   @override
   State<ExpenseSummary> createState() => _ExpenseSummaryState();
@@ -73,7 +77,7 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
         builder: (context, expenseProvider, child) {
       return Card(
         color: ColorHelper.getTileColor(Theme.of(context)),
-        margin: const EdgeInsets.only(top: 10, left: 10, right: 10),
+        margin: widget.margin,
         child: Column(
           children: [
             Stack(
@@ -89,11 +93,11 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
                 ),
                 buildIcons(theme)
               ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
                   child: _buildSummaryContainer(
                     "Total Income",
                     expenseProvider.getTotalIncome(),
@@ -116,10 +120,10 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
                   ),
                 ),
               ],
-          ),
-        ],
-      ),
-    );
+            ),
+          ],
+        ),
+      );
     });
   }
 
