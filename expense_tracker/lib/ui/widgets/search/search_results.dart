@@ -27,12 +27,15 @@ class SearchResults extends StatelessWidget {
         children: [Text("No matching results")],
       );
     }
-    return ListView.builder(
-      itemCount: provider.expenses.length,
-      itemBuilder: (context, index) {
-        if (index > provider.expenses.length) return null;
-        return _buildSearchResultTile(context, provider, index);
-      },
+    return Padding(
+      padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+      child: ListView.builder(
+        itemCount: provider.expenses.length,
+        itemBuilder: (context, index) {
+          if (index > provider.expenses.length) return null;
+          return _buildSearchResultTile(context, provider, index);
+        },
+      ),
     );
   }
 

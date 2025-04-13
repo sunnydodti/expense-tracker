@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../../globals.dart';
 
@@ -100,4 +102,117 @@ class NavigationHelper {
 
     return true; // Allow normal back behavior
   }
+
+  // Navigation that returns a result (usually a boolean)
+  static void navigateBackWithResult<T>(BuildContext context, T result) {
+    if (isLargeScreen(context)) {
+      // Try to find and use the inherited result reporter
+      final inherited = InheritedReportResult.of<T>(context);
+      if (inherited != null) {
+        inherited.onResult(result);
+        return;
+      }
+      // If no reporter found (shouldn't happen), fall back to regular navigation
+      navigateBackFromContentArea(context);
+    } else {
+      // Regular navigation for mobile layout
+      Navigator.pop(context, result);
+    }
+  }
+
+  static Future<T?> navigateToScreenWithResult<T>(
+      BuildContext context, Widget screenWidget) async {
+    // For large screens, we need to handle content area navigation with result
+    if (isLargeScreen(context)) {
+      // Create a completer to handle the async result
+      final completer = Completer<T?>();
+      final key = getContentAreaKey(context);
+
+      // Create a wrapper that can report back results
+      final wrappedContent = _resultReportingWrapper<T>(
+        child: screenWidget,
+        onResult: (result) {
+          completer.complete(result);
+          navigateBackFromContentArea(context);
+        },
+      );
+
+      // Push the wrapped content
+      key.currentState?.pushContent(wrappedContent);
+      return completer.future;
+    } else {
+      // For small screens, use regular navigation that already supports results
+      return Navigator.push<T>(
+        context,
+        MaterialPageRoute(
+          builder: (context) => screenWidget,
+        ),
+      );
+    }
+  }
+
+// Wrapper widget that can report results back
+  static Widget _resultReportingWrapper<T>({
+    required Widget child,
+    required Function(T? result) onResult,
+  }) {
+    return Builder(
+      builder: (context) {
+        // Inject the ability to report results into the child's context
+        return InheritedReportResult<T>(
+          onResult: onResult,
+          child: child,
+        );
+      },
+    );
+  }
+
+// Smart navigation with result
+  static Future<T?> smartNavigateWithResult<T>(
+      BuildContext context, Widget content) async {
+    if (isLargeScreen(context)) {
+      // Create a completer to handle the async result
+      final completer = Completer<T?>();
+      final key = getContentAreaKey(context);
+
+      // Create a wrapper that can report back results
+      final wrappedContent = _resultReportingWrapper<T>(
+        child: content,
+        onResult: (result) {
+          completer.complete(result);
+          navigateBackFromContentArea(context);
+        },
+      );
+
+      // Push the wrapped content
+      key.currentState?.pushContent(wrappedContent);
+      return completer.future;
+    } else {
+      // For small screens, use regular navigation that already supports results
+      return Navigator.push<T>(
+        context,
+        MaterialPageRoute(
+          builder: (context) => content,
+        ),
+      );
+    }
+  }
+}
+
+class InheritedReportResult<T> extends InheritedWidget {
+  final Function(T? result) onResult;
+
+  const InheritedReportResult({
+    Key? key,
+    required this.onResult,
+    required Widget child,
+  }) : super(key: key, child: child);
+
+  static InheritedReportResult<T>? of<T>(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<InheritedReportResult<T>>();
+  }
+
+  @override
+  bool updateShouldNotify(InheritedReportResult oldWidget) => true;
 }

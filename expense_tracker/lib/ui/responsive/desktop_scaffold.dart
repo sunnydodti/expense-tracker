@@ -24,7 +24,8 @@ class DesktopScaffold extends StatelessWidget {
         body: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const HomeDrawer(),
+            const Padding(
+                padding: EdgeInsets.only(top: 10.0), child: HomeDrawer()),
             Expanded(
               flex: 2,
               child: ContentAreaNavigation(

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../data/constants/form_constants.dart';
 import '../../data/constants/shared_preferences_constants.dart';
 import '../../data/helpers/color_helper.dart';
+import '../../data/helpers/navigation_helper.dart';
 import '../../data/helpers/shared_preferences_helper.dart';
 import '../../models/enums/chart_range.dart';
 import '../../models/enums/chart_type.dart';
@@ -26,7 +27,6 @@ class ChartsScreen extends StatefulWidget {
 class ChartsState extends State<ChartsScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -46,6 +46,10 @@ class ChartsState extends State<ChartsScreen> {
       backgroundColor: ColorHelper.getBackgroundColor(Theme.of(context)),
       appBar: AppBar(
         title: const Text('Charts'),
+        leading: SafeArea(
+            child: BackButton(
+          onPressed: () => NavigationHelper.navigateBack(context),
+        )),
         centerTitle: true,
         backgroundColor: ColorHelper.getAppBarColor(Theme.of(context)),
       ),
@@ -204,18 +208,18 @@ class ChartsState extends State<ChartsScreen> {
                 value: chartDataProvider.chartType,
                 onChanged: (chartType) {
                   chartDataProvider.chartType = chartType!;
-              },
-              items: ChartType.values
-                  .map<DropdownMenuItem<ChartType>>(
-                    (chartType) => DropdownMenuItem<ChartType>(
-                      value: chartType,
-                      child: Text(
-                          textScaleFactor: .8,
-                          ChartTypeHelper.getChartTypeText(chartType)),
-                    ),
-                  )
-                  .toList(),
-              underline: Container(),
+                },
+                items: ChartType.values
+                    .map<DropdownMenuItem<ChartType>>(
+                      (chartType) => DropdownMenuItem<ChartType>(
+                        value: chartType,
+                        child: Text(
+                            textScaleFactor: .8,
+                            ChartTypeHelper.getChartTypeText(chartType)),
+                      ),
+                    )
+                    .toList(),
+                underline: Container(),
               );
             },
           ),

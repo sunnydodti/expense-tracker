@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/helpers/color_helper.dart';
+import '../../../data/helpers/navigation_helper.dart';
 import '../../../models/enums/form_modes.dart';
 import '../../../providers/expense_provider.dart';
 import '../../screens/expense_screen.dart';
@@ -20,14 +21,13 @@ class AddExpenseFAB extends StatelessWidget {
   }
 
   void _addExpense(BuildContext context) async {
-    Navigator.push(
+    final bool? result =
+        await NavigationHelper.navigateToScreenWithResult<bool>(
       context,
-      MaterialPageRoute(
-        builder: (context) => const ExpensePage(formMode: FormMode.add),
-      ),
-    ).then((result) {
-      if (result) _refreshExpensesHome(context);
-    });
+      const ExpensePage(formMode: FormMode.add),
+    );
+
+    if (result == true) _refreshExpensesHome(context);
   }
 
   Future<void> _refreshExpensesHome(BuildContext context) async {
