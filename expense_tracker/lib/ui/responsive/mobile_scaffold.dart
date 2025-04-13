@@ -21,8 +21,14 @@ class MobileScaffold extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           ExpenseSummary(),
-          SortFilterTile(),
-          Expanded(child: ExpenseList()),
+          Padding(
+            padding: EdgeInsets.all(10),
+            child: SortFilterTile()
+          ),
+          Expanded(child: Padding(
+            padding: EdgeInsets.only(left: 10, right: 10),
+            child: ExpenseList(),
+          )),
         ],
       ),
       floatingActionButton: const AddExpenseFAB(),

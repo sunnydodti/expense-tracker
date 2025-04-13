@@ -33,10 +33,10 @@ class HomeDrawerState extends State<HomeDrawer> {
             decoration: BoxDecoration(
               color: ColorHelper.getTileColor(theme),
             ),
-            child: Column(
+            child: const Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Icon(Icons.attach_money_outlined, size: 30),
                 SizedBox(height: 20),
                 Text("Expense Tracker")

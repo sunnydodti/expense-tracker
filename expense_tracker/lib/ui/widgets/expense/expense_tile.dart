@@ -59,7 +59,7 @@ class _ExpenseTileState extends State<ExpenseTile> {
       onDoubleTap: widget.editCallBack,
       child: Card(
         color: ColorHelper.getTileColor(Theme.of(context)),
-        margin: const EdgeInsets.only(bottom: 10.0, left: 10.0, right: 10.0),
+        margin: const EdgeInsets.only(bottom: 10.0),
         child: _buildExpenseTile(),
       ),
     );

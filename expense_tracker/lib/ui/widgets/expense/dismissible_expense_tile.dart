@@ -31,9 +31,9 @@ class DismissibleExpenseTile extends StatelessWidget {
       background: Card(
         color: Colors.red.shade400,
         margin: const EdgeInsets.only(top: 0.0, bottom: 10.0),
-        child: Row(
+        child: const Row(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: const [
+          children: [
             Padding(
               padding: EdgeInsets.only(left: 20),
               child: Icon(Icons.delete, color: Colors.white),
@@ -43,9 +43,9 @@ class DismissibleExpenseTile extends StatelessWidget {
       ),
       secondaryBackground: Card(
         color: Colors.blue.shade400,
-        child: Row(
+        child: const Row(
           mainAxisAlignment: MainAxisAlignment.end,
-          children: const [
+          children: [
             Padding(
               padding: EdgeInsets.only(right: 20),
               child: Icon(Icons.edit, color: Colors.white),
