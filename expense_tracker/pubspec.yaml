@@ -1,9 +1,9 @@
 name: expense_tracker
 description: Flutter project for Expense tracker
-version: 0.0.9
+version: 0.0.10
 
 environment:
-  sdk: ^3.6.0
+  sdk: 3.6.0
   flutter: 3.27.1
 
 dependencies:

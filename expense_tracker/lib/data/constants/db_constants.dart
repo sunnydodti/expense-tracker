@@ -87,7 +87,7 @@ class DatabaseVersionConstants {
   final String databaseVersionKey = "database_version";
   final int databaseVersion = 3;
   final String appVersionKey = "app_version";
-  final String appVersion = "0.0.9";
+  final String appVersion = "0.0.10";
   final String createdAt = "created_at";
 }
 
