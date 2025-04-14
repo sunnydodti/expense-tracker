@@ -38,7 +38,7 @@ jobs:
         run: echo "app_version=$APP_VERSION-$FLAVOUR" >> $GITHUB_OUTPUT
 
   build-android:
-    if: ${{ github.ref_name == 'main' }}
+    if: ${{ github.ref_name == 'dev' }}
     needs: build-info
     runs-on: ubuntu-latest
     env:
