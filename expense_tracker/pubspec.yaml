@@ -27,6 +27,7 @@ dependencies:
   sqflite_common_ffi_web: ^0.4.5+4
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.14.3
   flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
