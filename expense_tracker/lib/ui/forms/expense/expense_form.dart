@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../data/constants/form_constants.dart';
 import '../../../data/helpers/color_helper.dart';
+import '../../../data/helpers/navigation_helper.dart';
 import '../../../models/enums/form_modes.dart';
 import '../../../models/expense.dart';
 import '../../../models/expense_category.dart';
@@ -345,7 +346,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
             _logger.i("Expense updated successfully");
             _expenseItemsProvider.clear();
             _expenseProvider.isChanged = true;
-            Navigator.pop(context, value);
+            if (mounted) NavigationHelper.navigateBackWithBool(context, value);
           } else {
             _logger.i("Failed to update expense");
           }
@@ -356,7 +357,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
             _logger.i("inserted");
             _expenseItemsProvider.clear();
             _expenseProvider.isChanged = true;
-            Navigator.pop(context, value);
+            if (mounted) NavigationHelper.navigateBackWithBool(context, value);
           }
         });
       }

@@ -81,7 +81,7 @@ class _ExpenseTileState extends State<ExpenseTile> {
         context,
         ExpensePopup(
             expense: widget.expense,
-            onOutsideTap: () => NavigationHelper.navigateBack(context)));
+            onOutsideTap: () => NavigationHelper.justNavigateBack(context)));
   }
 
   Padding _buildExpenseTile() {

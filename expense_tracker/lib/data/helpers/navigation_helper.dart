@@ -19,6 +19,10 @@ class NavigationHelper {
     }
   }
 
+  static void justNavigateBack(BuildContext context) {
+    Navigator.pop(context);
+  }
+
   // Smart "back with result" that handles both navigation modes
   static void navigateBackWithBool(BuildContext context, bool result) {
     if (isLargeScreen(context)) {

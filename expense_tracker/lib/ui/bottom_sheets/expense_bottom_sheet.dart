@@ -97,16 +97,19 @@ class ExpenseBottomSheet {
           ListTile(
             iconColor: Colors.orange.shade800,
             title: const Text("Edit"),
-          trailing: const Icon(Icons.edit_outlined),
-          onTap: () => handleCallBack(context, editCallBack),
-        ),
+            trailing: const Icon(Icons.edit_outlined),
+            onTap: () {
+              NavigationHelper.justNavigateBack(context);
+              handleCallBack(context, editCallBack);
+            },
+          ),
         if (!readonly)
           ListTile(
             iconColor: Colors.red.shade800,
             title: const Text("Delete"),
-          trailing: const Icon(Icons.delete_outline),
-          onTap: () => handleCallBack(context, deleteCallBack, pop: true),
-        ),
+            trailing: const Icon(Icons.delete_outline),
+            onTap: () => handleCallBack(context, deleteCallBack, pop: true),
+          ),
       ],
     );
   }

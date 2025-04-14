@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/helpers/navigation_helper.dart';
 import '../../../models/enums/form_modes.dart';
 import '../../../models/expense.dart';
 import '../../../providers/expense_provider.dart';
@@ -43,6 +44,7 @@ class DismissibleExpenseTile extends StatelessWidget {
       ),
       secondaryBackground: Card(
         color: Colors.blue.shade400,
+        margin: const EdgeInsets.only(top: 0.0, bottom: 10.0),
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -149,13 +151,10 @@ class DismissibleExpenseTile extends StatelessWidget {
   void _editExpense(BuildContext context, Expense expense,
       ExpenseProvider expenseProvider) async {
     _logger.i("editing");
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            ExpensePage(formMode: FormMode.edit, expense: expense),
-      ),
-    ).then((result) => {if (result) _refreshExpenses(context)});
+
+    bool result = await NavigationHelper.navigateToScreenWithResult(
+        context, ExpensePage(expense: expense, formMode: FormMode.edit));
+    if (result) _refreshExpenses(context);
   }
 
   _refreshExpenses(BuildContext context) {
