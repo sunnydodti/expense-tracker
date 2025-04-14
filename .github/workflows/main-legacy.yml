@@ -2,7 +2,7 @@ name: 'Expense Tracker Release CI'
 on:
   push:
     branches:
-      - main
+      - main-legacy
 
 jobs:
   build:

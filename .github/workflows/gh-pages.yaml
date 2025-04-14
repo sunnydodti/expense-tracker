@@ -1,0 +1,51 @@
+name: Deploy to GitHub Pages
+
+on:
+  workflow_run:
+    workflows: ["EXPENSE TRACKER ALPHA CI"]
+    types:
+      - completed
+    branches:
+      - main
+
+jobs:
+  deploy-to-github-pages:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    env:
+      FLUTTER_BASE: "expense_tracker"
+      MAIN_FILE: main.dart
+      FLAVOUR: alpha
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version-file: ${{ env.FLUTTER_BASE }}/pubspec.yaml
+
+      - name: Enable web
+        run: flutter config --enable-web
+
+      - name: Get dependencies
+        working-directory: ${{ env.FLUTTER_BASE }}
+        run: flutter pub get
+
+      - name: Build web
+        working-directory: ${{ env.FLUTTER_BASE }}
+        run: flutter build web --release --base-href "/${{ github.event.repository.name }}/"
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.RELEASE_TOKEN }}
+          publish_dir: ${{ env.FLUTTER_BASE }}/build/web
+          # force_orphan: true
+          user_name: 'sunny[bot]'
+          user_email: '40462053+sunnydodti@users.noreply.github.com'
+          commit_message: 'Deploy to GitHub Pages'
