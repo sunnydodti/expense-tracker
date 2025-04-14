@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/helpers/color_helper.dart';
-import '../../data/helpers/navigation_helper.dart';
 import '../../providers/category_provider.dart';
 import '../widgets/category/category_list.dart';
+import '../widgets/common/screen_app_bar.dart';
 
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({super.key});
@@ -20,15 +20,7 @@ class CategoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorHelper.getBackgroundColor(Theme.of(context)),
-      appBar: AppBar(
-        leading: SafeArea(
-            child: BackButton(
-          onPressed: () => NavigationHelper.navigateBack(context),
-        )),
-        centerTitle: true,
-        title: Text(title, textScaleFactor: 0.9),
-        backgroundColor: ColorHelper.getAppBarColor(Theme.of(context)),
-      ),
+      appBar: const ScreenAppBar(title: 'Catrgories'),
       body: Column(
         children: [
           Expanded(

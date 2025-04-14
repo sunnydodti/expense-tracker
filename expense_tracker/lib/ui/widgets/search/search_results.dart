@@ -24,7 +24,12 @@ class SearchResults extends StatelessWidget {
     if (provider.expenses.isEmpty) {
       return const Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [Text("No matching results")],
+        children: [
+          Padding(
+            padding: EdgeInsets.only(top: 10),
+            child: Text("No matching results"),
+          )
+        ],
       );
     }
     return Padding(
@@ -42,8 +47,8 @@ class SearchResults extends StatelessWidget {
   Widget _buildSearchResultTile(
       BuildContext context, SearchProvider provider, int index) {
     return ExpenseTile(
-        expense: provider.expenses[index],
-        editCallBack: () {},
+      expense: provider.expenses[index],
+      editCallBack: () {},
       deleteCallBack: () async => -1,
       isReadonly: true,
     );
@@ -56,7 +61,12 @@ class SearchResults extends StatelessWidget {
         if (provider.searchHistory.isEmpty) {
           return const Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [Text("Start Typing")],
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: Text("Start Typing"),
+              )
+            ],
           );
         }
         return ListView.builder(

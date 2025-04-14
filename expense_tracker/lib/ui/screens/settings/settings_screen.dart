@@ -5,14 +5,13 @@ import '../../../data/helpers/navigation_helper.dart';
 import '../../dialogs/delete_all_dialog.dart';
 import '../../forms/export_form.dart';
 import '../../forms/import_form.dart';
+import '../../widgets/common/screen_app_bar.dart';
 import '../../widgets/expandable_list_tile.dart';
 import '../../widgets/theme_selector.dart';
 import 'preferences_settings_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
-
-  final String title = "Settings";
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -36,15 +35,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorHelper.getBackgroundColor(Theme.of(context)),
-      appBar: AppBar(
-        leading: SafeArea(
-            child: BackButton(
-          onPressed: () => NavigationHelper.navigateBack(context),
-        )),
-        centerTitle: true,
-        title: Text(widget.title, textScaleFactor: 0.9),
-        backgroundColor: ColorHelper.getAppBarColor(Theme.of(context)),
-      ),
+      appBar: const ScreenAppBar(title: 'Settings'),
       body: Column(
         children: [
           Expanded(

@@ -27,7 +27,6 @@ class MainAppBar extends StatefulWidget implements PreferredSizeWidget {
   State<MainAppBar> createState() => _MainAppBarState();
 
   @override
-  // TODO: implement preferredSize
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
@@ -123,8 +122,8 @@ class _MainAppBarState extends State<MainAppBar> {
           onPressed: navigateToScreen,
         ),
       IconButton(
+          tooltip: "Search",
           onPressed: () {
-            // setState(() => isSearching = true);
             NavigationHelper.navigateToScreen(context, const SearchScreen());
           },
           icon: const Icon(Icons.search_outlined)),

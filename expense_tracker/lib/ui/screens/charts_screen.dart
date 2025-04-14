@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../../data/constants/form_constants.dart';
 import '../../data/constants/shared_preferences_constants.dart';
 import '../../data/helpers/color_helper.dart';
-import '../../data/helpers/navigation_helper.dart';
 import '../../data/helpers/shared_preferences_helper.dart';
 import '../../models/enums/chart_range.dart';
 import '../../models/enums/chart_type.dart';
@@ -14,6 +13,7 @@ import '../../providers/expense_provider.dart';
 import '../widgets/charts/bar charts/expense_bar_chart.dart';
 import '../widgets/charts/line charts/expense_line_chart.dart';
 import '../widgets/charts/pie charts/expense_pie_chart.dart';
+import '../widgets/common/screen_app_bar.dart';
 
 class ChartsScreen extends StatefulWidget {
   final bool refreshData;
@@ -44,15 +44,7 @@ class ChartsState extends State<ChartsScreen> {
   Scaffold _buildChartScreen(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorHelper.getBackgroundColor(Theme.of(context)),
-      appBar: AppBar(
-        title: const Text('Charts'),
-        leading: SafeArea(
-            child: BackButton(
-          onPressed: () => NavigationHelper.navigateBack(context),
-        )),
-        centerTitle: true,
-        backgroundColor: ColorHelper.getAppBarColor(Theme.of(context)),
-      ),
+      appBar: const ScreenAppBar(title: 'Charts'),
       body: Consumer<ChartDataProvider>(
         builder: (context, chartDataProvider, child) {
           return ListView(

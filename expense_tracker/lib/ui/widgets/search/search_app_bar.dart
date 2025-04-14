@@ -55,7 +55,7 @@ class _SearchAppBarState extends State<SearchAppBar> {
     return Consumer<SearchProvider>(
       builder: (BuildContext context, provider, Widget? child) {
         return AppBar(
-          backgroundColor: ColorHelper.getAppBarColor(Theme.of(context)),
+          backgroundColor: ColorHelper.getScreenAppBarColor(Theme.of(context)),
           title: buildSearchField(provider),
           leading: _buildBackButton(context),
           actions: _buildActions(provider, context),
@@ -89,8 +89,8 @@ class _SearchAppBarState extends State<SearchAppBar> {
 
   void _triggerDebouncedSearch(String? searchKey, SearchProvider provider) {
     provider.setIsTyping(true);
-    if (_searchController.text.isEmpty) return;
     if (_debounce?.isActive ?? false) _debounce!.cancel();
+    if (_searchController.text.isEmpty) return;
     _debounce = Timer(const Duration(milliseconds: 500), () {
       provider.setIsTyping(false);
       provider.search(searchKey!);

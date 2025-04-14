@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class ColorHelper {
-
   static Color? _appBarColor;
+  static Color? _screenAppBarColor;
   static Color? _backgroundColor;
   static Color? _tileColor;
   static Color? _iconColor;
@@ -12,6 +12,7 @@ class ColorHelper {
 
   static void resetColors() {
     _appBarColor = null;
+    _screenAppBarColor = null;
     _backgroundColor = null;
     _tileColor = null;
     _iconColor = null;
@@ -21,7 +22,7 @@ class ColorHelper {
   }
 
   static Color getAppBarColor(ThemeData theme) {
-      if (_appBarColor != null) return _appBarColor!;
+    if (_appBarColor != null) return _appBarColor!;
 
     double lerpT = theme.colorScheme.brightness == Brightness.light ? .1 : 0;
     _appBarColor = Color.lerp(theme.colorScheme.primary, Colors.white, lerpT);
@@ -29,8 +30,17 @@ class ColorHelper {
     return _appBarColor!;
   }
 
+  static Color getScreenAppBarColor(ThemeData theme) {
+    if (_screenAppBarColor != null) return _screenAppBarColor!;
+
+    double lerpT = theme.colorScheme.brightness == Brightness.light ? .35 : .03;
+    _screenAppBarColor = Color.lerp(theme.colorScheme.primary, Colors.white, lerpT);
+
+    return _screenAppBarColor!;
+  }
+
   static Color getBackgroundColor(ThemeData theme) {
-      if (_backgroundColor != null) return _backgroundColor!;
+    if (_backgroundColor != null) return _backgroundColor!;
 
     double lerpT = theme.colorScheme.brightness == Brightness.light ? .85 : .05;
     _backgroundColor =
@@ -49,7 +59,7 @@ class ColorHelper {
   }
 
   static Color getIconColor(ThemeData theme) {
-      if (_iconColor != null) return _iconColor!;
+    if (_iconColor != null) return _iconColor!;
 
     double lerpT = theme.colorScheme.brightness == Brightness.light ? .3 : 1;
     _iconColor = Color.lerp(theme.colorScheme.primary, Colors.white, lerpT);
