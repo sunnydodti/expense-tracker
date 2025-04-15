@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../data/helpers/color_helper.dart';
 import '../drawer/home_drawer.dart';
 import '../widgets/common/add_expense_fab.dart';
+import '../widgets/common/install_pwa_button.dart';
 import '../widgets/common/main_app_bar.dart';
 import '../widgets/expense/expense_list.dart';
 import '../widgets/expense/expense_summary.dart';
@@ -21,14 +22,13 @@ class MobileScaffold extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           ExpenseSummary(),
-          Padding(
-            padding: EdgeInsets.all(10),
-            child: SortFilterTile()
-          ),
-          Expanded(child: Padding(
+          Padding(padding: EdgeInsets.all(10), child: SortFilterTile()),
+          Expanded(
+              child: Padding(
             padding: EdgeInsets.only(left: 10, right: 10),
             child: ExpenseList(),
           )),
+          InstallPwaButton(),
         ],
       ),
       floatingActionButton: const AddExpenseFAB(),
