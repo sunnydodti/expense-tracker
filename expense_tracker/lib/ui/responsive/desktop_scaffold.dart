@@ -5,6 +5,7 @@ import '../../data/helpers/navigation_helper.dart';
 import '../../globals.dart';
 import '../drawer/home_drawer.dart';
 import '../widgets/common/add_expense_fab.dart';
+import '../widgets/common/install_pwa_button.dart';
 import '../widgets/common/main_app_bar.dart';
 import '../widgets/content_area_navigation.dart';
 import '../widgets/expense/expense_list.dart';
@@ -40,12 +41,21 @@ class DesktopScaffold extends StatelessWidget {
                 ),
               ),
             ),
-            Expanded(
-              child: Container(
-                color: ColorHelper.getBackgroundColor(Theme.of(context)),
-                child: const ExpenseSummary(
-                  margin: EdgeInsets.only(top: 10, right: 10),
-                ),
+            const Expanded(
+              child: Column(
+                children: [
+                  ExpenseSummary(
+                    margin: EdgeInsets.only(top: 10, right: 10),
+                  ),
+                  InstallPwaButton(
+                    padding: EdgeInsets.only(
+                      top: 10,
+                      bottom: 10,
+                      left: 10,
+                      right: 20,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
