@@ -51,6 +51,7 @@ class DatabaseHelper {
       final Directory directory = await getApplicationDocumentsDirectory();
       path = '${directory.path}/${DBConstants.databaseName}';
     }
+    // await deleteDatabase(path);
 
     return await openDatabase(
       path,

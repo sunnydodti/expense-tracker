@@ -40,8 +40,20 @@ class NavigationHelper {
 
   // Regular forward navigation (only used when content area isn't appropriate)
   static void navigateToScreen(BuildContext context, Widget screenWidget) {
+    //todo:  do not navigate if the screenWidget is already on the stack
+
     // Use smart navigation to automatically pick the right approach
     smartNavigate(context, screenWidget);
+  }
+
+  static void navigateToHomeScreen(BuildContext context) {
+    while (desktopContentAreaKey.currentState?.canPop() ?? false) {
+      desktopContentAreaKey.currentState?.popContent();
+    }
+    while (tabletContentAreaKey.currentState?.canPop() ?? false) {
+      tabletContentAreaKey.currentState?.popContent();
+    }
+    // smartNavigateToHomeScreen(context);
   }
 
   static void navigateToRoute(BuildContext context, Widget widget) {

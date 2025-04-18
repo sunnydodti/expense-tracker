@@ -204,20 +204,26 @@ class _ExpenseFormState extends State<ExpenseForm> {
     Color color = ColorHelper.getTileColor(theme);
     return Form(
       key: _formKey,
-      child: ListView(
+      child: Column(
         children: [
-          _buildTitleField(),
-          _buildAmountField(),
-          _buildTransactionTypeField(color),
-          _buildDateField(),
-          _buildCategoryField(color),
-          _buildTagsField(color),
-          _buildNotesField(),
-          _buildRepeatingExpenseToggle(),
-          if (_isRecurring) _buildRecurringFrequencyField(),
-          _buildExpenseItemsToggle(),
-          if (_containsExpenseItems) _buildExpenseItemForm(),
-          if (_containsExpenseItems) _buildExpenseItemsList(),
+          Expanded(
+            child: ListView(
+              children: [
+                _buildTitleField(),
+                _buildAmountField(),
+                _buildTransactionTypeField(color),
+                _buildDateField(),
+                _buildCategoryField(color),
+                _buildTagsField(color),
+                _buildNotesField(),
+                _buildRepeatingExpenseToggle(),
+                if (_isRecurring) _buildRecurringFrequencyField(),
+                _buildExpenseItemsToggle(),
+                if (_containsExpenseItems) _buildExpenseItemForm(),
+                if (_containsExpenseItems) _buildExpenseItemsList(),
+              ],
+            ),
+          ),
           _buildSubmitButton(),
         ],
       ),
@@ -271,8 +277,12 @@ class _ExpenseFormState extends State<ExpenseForm> {
   }
 
   Container _buildSubmitButton() {
-    return ExpenseWidgets.form
-        .buildSubmitButton(_submitExpense, widget.formMode, _highlightColor);
+    return Container(
+      padding: const EdgeInsets.only(bottom: 10),
+      width: double.infinity,
+      child: ExpenseWidgets.form
+          .buildSubmitButton(_submitExpense, widget.formMode, _highlightColor),
+    );
   }
 
   Container _buildTitleField() {
