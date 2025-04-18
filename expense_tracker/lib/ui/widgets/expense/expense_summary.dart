@@ -204,13 +204,14 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
       child: IconButton(
           onPressed: () => navigateToChartsScreen(context),
+          tooltip: "View Charts",
           icon: Icon(Icons.bar_chart_outlined, color: color)),
     );
   }
 
   Padding buildIHideIcon(Color? color) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: IconButton(
         onPressed: () {
           setState(() {
@@ -218,6 +219,7 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
           });
           setHideTotalPreference();
         },
+        tooltip: hideTotal ? 'Show Total' : 'Hide Total',
         icon: hideTotal
             ? Icon(Icons.visibility_outlined, color: color)
             : Icon(Icons.visibility_off_outlined, color: color),
