@@ -34,13 +34,13 @@ class HomeDrawerState extends State<HomeDrawer> {
             decoration: BoxDecoration(
               color: ColorHelper.getTileColor(theme),
             ),
-            child: const Column(
+            child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.attach_money_outlined, size: 30),
-                SizedBox(height: 20),
-                Text("Expense Tracker")
+                Image.asset('assets/icon/icon-72.png'),
+                const SizedBox(height: 20),
+                const Text("Expense Tracker")
               ],
             ),
           ),
