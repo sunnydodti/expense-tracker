@@ -43,6 +43,11 @@ class HomeDrawerState extends State<HomeDrawer> {
               ],
             ),
           ),
+          if (NavigationHelper.isLargeScreen(context))
+            ListTile(
+              title: const Text('Home'),
+              onTap: () => _navigateToHomeScreen(context),
+            ),
           ListTile(
             title: const Text('Categories'),
             onTap: () => _navigateToCategoryScreen(context),
@@ -63,6 +68,9 @@ class HomeDrawerState extends State<HomeDrawer> {
       ),
     );
   }
+
+  void _navigateToHomeScreen(BuildContext context) =>
+      NavigationHelper.navigateToHomeScreen(context);
 
   void _navigateToSettingsScreen(BuildContext context) =>
       NavigationHelper.navigateToScreen(context, const SettingsScreen());

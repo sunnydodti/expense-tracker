@@ -131,13 +131,9 @@ class DismissibleExpenseTile extends StatelessWidget {
 
     expenseProvider.deleteExpense(expense.id);
 
-    bool result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            ExpensePage(formMode: FormMode.edit, expense: expense),
-      ),
-    );
+    bool result = await NavigationHelper.navigateToScreenWithResult(
+        context, ExpensePage(expense: expense, formMode: FormMode.edit));
+        
     if (index + 1 == expenseLength) {
       _logger.i("adding at end $index");
       expenseProvider.addExpense(expense);
