@@ -47,6 +47,7 @@ class ExpenseHelper {
             ${DBConstants.expense.userId} INTEGER NOT NULL DEFAULT ${defaultUser.id},
             ${DBConstants.expense.profileId} INTEGER NOT NULL DEFAULT ${defaultProfile.id},
             ${DBConstants.expense.containsExpenseItems} INTEGER DEFAULT 0,
+            ${DBConstants.expense.isRecurring} INTEGER DEFAULT 0,
             ${DBConstants.common.createdAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             ${DBConstants.common.modifiedAt} TIMESTAMP DEFAULT CURRENT_TIMESTAMP
           )
@@ -106,6 +107,27 @@ class ExpenseHelper {
     }
   }
 
+  static Future<void> upgradeTableV4toV5(Transaction transaction) async {
+    var result = await transaction.rawQuery(
+        """SELECT name FROM sqlite_master WHERE type = 'table' AND name = '${DBConstants.expense.table}'""");
+    if (result.isNotEmpty) {
+      _logger.i("updating table ${DBConstants.expense.table}");
+      final List<Map<String, dynamic>> columns = await transaction
+          .rawQuery('PRAGMA table_info(${DBConstants.expense.table})');
+      bool columnExists = columns
+          .any((column) => column['name'] == DBConstants.expense.isRecurring);
+      if (columnExists) {
+        _logger.i("\t${DBConstants.expense.isRecurring} column already exists");
+        return;
+      }
+      _logger.i("\tadding ${DBConstants.expense.isRecurring} column");
+      await transaction.execute('''
+          ALTER TABLE ${DBConstants.expense.table}
+          ADD COLUMN ${DBConstants.expense.isRecurring} INTEGER NOT NULL DEFAULT 0
+        ''');
+    }
+  }
+  
   static Future<List<Map<String, dynamic>>> getAllExpenses(
       Database database) async {
     _logger.i("getting expenses");
