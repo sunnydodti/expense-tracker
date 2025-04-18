@@ -15,6 +15,7 @@ class Expense {
   String? tags;
   String? note;
   bool containsExpenseItems;
+  bool isRecurring;
 
   DateTime createdAt;
   DateTime modifiedAt;
@@ -30,6 +31,7 @@ class Expense {
       this.date,
       this.category,
       this.containsExpenseItems,
+      this.isRecurring,
       this.createdAt,
       this.modifiedAt,
       [this.tags,
@@ -50,6 +52,7 @@ class Expense {
     map[DBConstants.expense.note] = note;
     map[DBConstants.expense.containsExpenseItems] =
         _parseBoolAsInt(containsExpenseItems);
+    map[DBConstants.expense.isRecurring] = _parseBoolAsInt(isRecurring);
     map[DBConstants.common.createdAt] = createdAt;
     map[DBConstants.common.modifiedAt] = modifiedAt;
     return map;
@@ -76,6 +79,7 @@ class Expense {
         DateTime.parse(map[DBConstants.expense.date]),
         map[DBConstants.expense.category],
         _parseIntAsBool(map[DBConstants.expense.containsExpenseItems]),
+        _parseIntAsBool(map[DBConstants.expense.isRecurring]),
         DateTime.parse(map[DBConstants.common.createdAt]),
         DateTime.parse(map[DBConstants.common.modifiedAt]));
 
@@ -139,6 +143,7 @@ class ExpenseFormModel {
   String? tags;
   String? note;
   bool containsExpenseItems;
+  bool isRecurring;
   DateTime? createdAt;
   DateTime? modifiedAt;
 
@@ -149,14 +154,25 @@ class ExpenseFormModel {
     this.transactionType,
     this.date,
     this.category,
-    this.containsExpenseItems, [
+    this.containsExpenseItems,
+    this.isRecurring, [
     this.tags,
     this.note,
   ]);
 
-  ExpenseFormModel.withId(this.id, this.title, this.currency, this.amount,
-      this.transactionType, this.date, this.category, this.containsExpenseItems,
-      [this.tags, this.note]);
+  ExpenseFormModel.withId(
+    this.id,
+    this.title,
+    this.currency,
+    this.amount,
+    this.transactionType,
+    this.date,
+    this.category,
+    this.containsExpenseItems,
+    this.isRecurring, [
+    this.tags,
+    this.note,
+  ]);
 
   // Methods
   //  // Expense Object to map
@@ -176,6 +192,8 @@ class ExpenseFormModel {
     map[DBConstants.expense.note] = note;
     map[DBConstants.expense.containsExpenseItems] =
         _parseBoolAsInt(containsExpenseItems);
+    map[DBConstants.expense.isRecurring] =
+        _parseBoolAsInt(isRecurring);
 
     return map;
   }
@@ -193,6 +211,8 @@ class ExpenseFormModel {
         note = map[DBConstants.expense.note],
         containsExpenseItems =
             _parseIntAsBool(map[DBConstants.expense.containsExpenseItems]),
+        isRecurring =
+            _parseIntAsBool(map[DBConstants.expense.isRecurring]),
         createdAt = map[DBConstants.common.createdAt],
         modifiedAt = map[DBConstants.common.modifiedAt];
 }

@@ -7,6 +7,7 @@ import '../../../data/constants/form_constants.dart';
 import '../../../data/helpers/color_helper.dart';
 import '../../../data/helpers/navigation_helper.dart';
 import '../../../models/enums/form_modes.dart';
+import '../../../models/enums/recurring_frequency.dart';
 import '../../../models/expense.dart';
 import '../../../models/expense_category.dart';
 import '../../../models/expense_item.dart';
@@ -29,6 +30,14 @@ class ExpenseForm extends StatefulWidget {
   const ExpenseForm({Key? key, required this.formMode, this.expense})
       : super(key: key);
 
+  factory ExpenseForm.add() {
+    return const ExpenseForm(formMode: FormMode.add);
+  }
+
+  factory ExpenseForm.edit(Expense expense) {
+    return ExpenseForm(formMode: FormMode.edit, expense: expense);
+  }
+
   @override
   State<ExpenseForm> createState() => _ExpenseFormState();
 }
@@ -46,6 +55,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
   late Map<String, String> _currencies;
   late String _defaultCurrency;
   late bool _containsExpenseItems;
+  late bool _isRecurring;
 
   Color _highlightColor = Colors.grey;
   List<ExpenseCategory> _categories = [];
@@ -75,6 +85,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
     _currencies = FormConstants.expense.currencies;
 
     _containsExpenseItems = false;
+    _isRecurring = false;
 
     if (widget.formMode == FormMode.edit) {
       isFirstValidExpenseItemsToggle = false;
@@ -112,6 +123,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
           categoryService.getMatchingCategory(expense.category, _categories);
       _selectedTag = tagService.getMatchingTag(expense.tags ?? "", _tags);
       _containsExpenseItems = expense.containsExpenseItems;
+      _isRecurring = expense.isRecurring;
     });
   }
 
@@ -201,12 +213,26 @@ class _ExpenseFormState extends State<ExpenseForm> {
           _buildCategoryField(color),
           _buildTagsField(color),
           _buildNotesField(),
+          _buildRepeatingExpenseToggle(),
+          if (_isRecurring) _buildRecurringFrequencyField(),
           _buildExpenseItemsToggle(),
           if (_containsExpenseItems) _buildExpenseItemForm(),
           if (_containsExpenseItems) _buildExpenseItemsList(),
           _buildSubmitButton(),
         ],
       ),
+    );
+  }
+
+  ListTile _buildRecurringFrequencyField() {
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+      title: const Text("Recurring Frequency"),
+      subtitle:
+          Text("${RecurringFrequency.monthly.name} on ${dateController.text}"),
+      trailing: const Icon(Icons.edit_outlined),
+      dense: true,
+      visualDensity: const VisualDensity(vertical: -2),
     );
   }
 
@@ -226,6 +252,21 @@ class _ExpenseFormState extends State<ExpenseForm> {
       title: const Text("Add Expense Items"),
       value: _containsExpenseItems,
       onChanged: (value) => _toggleExpenseItems(value),
+    );
+  }
+
+  Widget _buildRepeatingExpenseToggle() {
+    String text =
+        _isRecurring ? "This expense is automated" : "Automate this expense";
+    return SwitchListTile(
+      activeColor: ColorHelper.getToggleColor(Theme.of(context)),
+      dense: true,
+      visualDensity: const VisualDensity(vertical: -2),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+      title: const Text("Recurring Expense"),
+      subtitle: Text(text),
+      value: _isRecurring,
+      onChanged: (value) => _toggleRecurringExpense(value),
     );
   }
 
@@ -323,6 +364,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
       _logger.i('tags: ${_selectedTag?.name}');
       _logger.i('notes: ${notesController.text}');
       _logger.i('contains expense items: $_containsExpenseItems');
+      _logger.i('is recurring: $_isRecurring');
 
       ExpenseFormModel expense = ExpenseFormModel(
         titleController.text.trim(),
@@ -332,6 +374,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
         DateTime.parse(dateController.text.trim()),
         _selectedCategory!.name,
         _containsExpenseItems,
+        _isRecurring,
       );
 
       expense.tags = _selectedTag!.name;
@@ -387,9 +430,11 @@ class _ExpenseFormState extends State<ExpenseForm> {
       Provider.of<ExpenseProvider>(context, listen: false);
 
   void _toggleExpenseItems(value) {
-    setState(() {
-      _containsExpenseItems = value!;
-    });
+    setState(() => _containsExpenseItems = value!);
   }
-//endregion
+
+  void _toggleRecurringExpense(value) {
+    setState(() => _isRecurring = value!);
+  }
+  //endregion
 }

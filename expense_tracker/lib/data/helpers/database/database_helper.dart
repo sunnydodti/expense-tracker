@@ -71,17 +71,24 @@ class DatabaseHelper {
       await upgradeFromV1toV2(db);
       await upgradeFromV2toV3(db);
       await upgradeFromV3toV4(db);
+      await upgradeFromV4toV5(db);
     }
 
     // if upgrading from version 2
     if (oldVersion == 2) {
       await upgradeFromV2toV3(db);
       await upgradeFromV3toV4(db);
+      await upgradeFromV4toV5(db);
     }
 
     // if upgrading from version 3
     if (oldVersion == 3) {
       await upgradeFromV3toV4(db);
+      await upgradeFromV4toV5(db);
+    }
+
+    if (oldVersion == 4) {
+      await upgradeFromV4toV5(db);
     }
   }
 
@@ -107,6 +114,8 @@ class DatabaseHelper {
 
     // version 4
     await SearchHelper.createTable(database);
+
+    // version 5
   }
 
   Future upgradeFromV1toV2(Database database) async {
@@ -119,6 +128,10 @@ class DatabaseHelper {
 
   Future upgradeFromV3toV4(Database database) async {
     MigrationHelper.migrateV3toV4(database);
+  }
+
+  Future upgradeFromV4toV5(Database database) async {
+    MigrationHelper.migrateV4toV5(database);
   }
 
   Future<ExpenseHelper> get expenseHelper async =>

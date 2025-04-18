@@ -37,6 +37,7 @@ class ExpenseConstants {
   final String containsExpenseItems = "contains_expense_items";
   final String expenses = "expenses"; // dropped
   final String profileId = "profile_id";
+  final String isRecurring = "is_recurring";
   final String userId = "user_id";
 }
 

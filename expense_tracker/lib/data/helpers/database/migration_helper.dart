@@ -64,4 +64,15 @@ class MigrationHelper {
       }
     });
   }
+  
+  static Future<void> migrateV4toV5(Database database) async {
+    _logger.i("migrating database from v4 to v5");
+    database.transaction((Transaction txn) async {
+      try {
+        await ExpenseHelper.upgradeTableV4toV5(txn);
+      } catch (e, stackTrace) {
+        _logger.e("Error migrating for v4 to v5 - $e - \n$stackTrace");
+      }
+    });
+  }
 }
