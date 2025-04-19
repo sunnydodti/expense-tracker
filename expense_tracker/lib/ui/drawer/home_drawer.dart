@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/helpers/color_helper.dart';
 import '../../data/helpers/navigation_helper.dart';
+import '../screens/about_screen.dart';
 import '../screens/category_screen.dart';
 import '../screens/charts_screen.dart';
 import '../screens/profile_screen.dart';
@@ -42,7 +43,7 @@ class HomeDrawerState extends State<HomeDrawer> {
                   children: [
                     Image.asset('assets/icon/icon-72.png'),
                     Opacity(
-                      opacity: _getOpacity,
+                      opacity: ColorHelper.getOpacity(theme),
                       child: ColorFiltered(
                         colorFilter: ColorFilter.mode(
                           ColorHelper.getIconColor(theme),
@@ -89,13 +90,14 @@ class HomeDrawerState extends State<HomeDrawer> {
             title: const Text('Charts'),
             onTap: () => _navigateToChartsScreen(context),
           ),
+          ListTile(
+            leading: const Icon(Icons.info_outline),
+            title: const Text('About'),
+            onTap: () => _navigateToAboutScreen(context),
+          ),
         ],
       ),
     );
-  }
-
-  double get _getOpacity {
-    return Theme.of(context).brightness == Brightness.light ? 0.6 : 0;
   }
 
   void _navigateToHomeScreen(BuildContext context) =>
@@ -116,4 +118,7 @@ class HomeDrawerState extends State<HomeDrawer> {
   void _navigateToChartsScreen(BuildContext context) =>
       NavigationHelper.navigateToScreen(
           context, const ChartsScreen(refreshData: true));
+
+  void _navigateToAboutScreen(BuildContext context) =>
+      NavigationHelper.navigateToScreen(context, const AboutScreen());
 }

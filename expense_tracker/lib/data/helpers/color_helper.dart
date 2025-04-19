@@ -34,7 +34,8 @@ class ColorHelper {
     if (_screenAppBarColor != null) return _screenAppBarColor!;
 
     double lerpT = theme.colorScheme.brightness == Brightness.light ? .35 : .03;
-    _screenAppBarColor = Color.lerp(theme.colorScheme.primary, Colors.white, lerpT);
+    _screenAppBarColor =
+        Color.lerp(theme.colorScheme.primary, Colors.white, lerpT);
 
     return _screenAppBarColor!;
   }
@@ -91,5 +92,9 @@ class ColorHelper {
         (theme.brightness == Brightness.dark) ? null : Colors.black;
 
     return _dropDownTextColor;
+  }
+
+  static double getOpacity(ThemeData theme) {
+    return theme.colorScheme.brightness == Brightness.light ? 0.6 : 0;
   }
 }
