@@ -87,18 +87,18 @@ class ExpenseHelper {
         """SELECT name FROM sqlite_master WHERE type = 'table' AND name = '${DBConstants.expense.table}'""");
     if (result.isNotEmpty) {
       _logger.i("updating table ${DBConstants.expense.table}");
-      _logger.i(
-          "\tadding ${DBConstants.expense.profileId} column");
-      List<Map<String, dynamic>> defaultProfileMap = await ProfileHelper.getDefaultProfile(transaction);
+      _logger.i("\tadding ${DBConstants.expense.profileId} column");
+      List<Map<String, dynamic>> defaultProfileMap =
+          await ProfileHelper.getDefaultProfile(transaction);
       Profile defaultProfile = Profile.fromMap(defaultProfileMap.first);
       await transaction.execute('''
           ALTER TABLE ${DBConstants.expense.table}
           ADD COLUMN ${DBConstants.expense.profileId} INTEGER NOT NULL DEFAULT ${defaultProfile.id}
         ''');
 
-      _logger.i(
-          "\tadding ${DBConstants.expense.userId} column");
-      List<Map<String, dynamic>> defaultUserMap = await UserHelper.getDefaultUser(transaction);
+      _logger.i("\tadding ${DBConstants.expense.userId} column");
+      List<Map<String, dynamic>> defaultUserMap =
+          await UserHelper.getDefaultUser(transaction);
       User defaultUser = User.fromMap(defaultUserMap.first);
       await transaction.execute('''
           ALTER TABLE ${DBConstants.expense.table}
@@ -127,7 +127,7 @@ class ExpenseHelper {
         ''');
     }
   }
-  
+
   static Future<List<Map<String, dynamic>>> getAllExpenses(
       Database database) async {
     _logger.i("getting expenses");
@@ -307,15 +307,17 @@ class ExpenseHelper {
     return isAscendingSort ? ' ASC' : ' DESC';
   }
 
-  searchExpenses(String searchKey, Profile? profile) async {
+  searchExpenses(String? searchKey, Profile? profile, {int limit = 10}) async {
     String tableName = DBConstants.expense.table;
 
     String whereClause = '1=1';
     List<dynamic> whereArgs = [];
     String orderBy = '${DBConstants.expense.date} DESC';
 
-    whereClause += """ AND ${DBConstants.expense.title} like ?""";
-    whereArgs.add("%$searchKey%");
+    if (searchKey != null) {
+      whereClause += """ AND ${DBConstants.expense.title} like ?""";
+      whereArgs.add("%$searchKey%");
+    }
 
     if (profile != null) {
       whereClause += ''' AND ${DBConstants.expense.profileId} = ?''';
@@ -328,6 +330,7 @@ class ExpenseHelper {
       where: whereClause.isEmpty ? null : whereClause,
       whereArgs: whereClause.isEmpty ? null : whereArgs,
       orderBy: orderBy,
+      limit: limit,
     );
   }
 }

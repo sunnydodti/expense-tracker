@@ -284,26 +284,33 @@ class ExpenseService {
     return false;
   }
 
-  Future<List<Expense>> searchExpenses(
-      String? searchKey, Profile? profile) async {
+  Future<List<Expense>> searchExpenses(String? searchKey, Profile? profile,
+      {int limit = 10}) async {
     List<Expense> expenses = [];
-    if (searchKey != null) {
-      try {
-        // SortCriteria? sortCriteria =
-        //     await sortFilterService.getPreferenceSortCriteria();
-        // bool? isAscendingSort =
-        //     await sortFilterService.getPreferenceIsAscendingSort();
-        // ExpenseFilters expenseFilters = await sortFilterService.getExpenseFilters();
-        List<Map<String, dynamic>> expenseMapList =
-            await _expenseHelper.searchExpenses(searchKey, profile);
+    try {
+      // SortCriteria? sortCriteria =
+      //     await sortFilterService.getPreferenceSortCriteria();
+      // bool? isAscendingSort =
+      //     await sortFilterService.getPreferenceIsAscendingSort();
+      // ExpenseFilters expenseFilters = await sortFilterService.getExpenseFilters();
+      List<Map<String, dynamic>> expenseMapList =
+          await _expenseHelper.searchExpenses(searchKey, profile, limit: limit);
 
-        expenses = expenseMapList
-            .map((expenseMap) => Expense.fromMap(expenseMap))
-            .toList();
-      } catch (e, stackTrace) {
-        _logger.e("Error searching expenses ($searchKey): $e - \n$stackTrace");
-      }
+      expenses = expenseMapList
+          .map((expenseMap) => Expense.fromMap(expenseMap))
+          .toList();
+    } catch (e, stackTrace) {
+      _logger.e("Error searching expenses ($searchKey): $e - \n$stackTrace");
     }
     return expenses;
+  }
+
+  Future<List<Expense>> getSuggestionsFromTitle(String titleQuery,
+      {int limit = 5}) async {
+    return await searchExpenses(titleQuery, null, limit: limit);
+  }
+
+  Future<List<Expense>> getRecentExpenses({int limit = 5}) async {
+    return await searchExpenses(null, null, limit: limit);
   }
 }

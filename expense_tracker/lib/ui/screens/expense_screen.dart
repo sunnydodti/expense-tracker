@@ -45,7 +45,7 @@ class ExpensePage extends StatelessWidget {
         icon: const Icon(Icons.check),
         tooltip: "Save",
         onPressed: () {
-          SnackBarService.showSnackBar("Coming soon, use the button below",
+          SnackBarService.showSnackBar("Coming soon, use the submit button below",
               duration: 2);
         },
       ),
