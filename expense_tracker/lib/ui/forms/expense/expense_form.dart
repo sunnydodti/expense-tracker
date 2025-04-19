@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
@@ -17,6 +19,7 @@ import '../../../providers/expense_provider.dart';
 import '../../../providers/settings_provider.dart';
 import '../../../service/category_service.dart';
 import '../../../service/expense_service.dart';
+import '../../../service/suggestion_service.dart';
 import '../../../service/tag_service.dart';
 import '../../dialogs/common/date_picker_dialog.dart';
 import '../../widgets/expense/expense_item/expense_item_list.dart';
@@ -47,9 +50,13 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
   static final Logger _logger =
       Logger(printer: SimplePrinter(), level: Level.info);
+  final FocusNode _titleFocusNode = FocusNode();
 
   final Future<CategoryService> _categoryService = CategoryService.create();
   final Future<TagService> _tagService = TagService.create();
+
+  List<Expense> _suggestions = [];
+  Timer? _searchTimer;
 
   //region Section 1: formData
   late Map<String, String> _currencies;
@@ -92,7 +99,25 @@ class _ExpenseFormState extends State<ExpenseForm> {
       _populateFormFieldsForEdit(widget.expense!);
     } else {
       _populateFormFieldsWithDefaults();
+      _loadDefaultSuggestions();
+      titleController.addListener(_onTitleChanged);
     }
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    currencyController.dispose();
+    amountPrefixController.dispose();
+    amountController.dispose();
+    transactionTypeController.dispose();
+    dateController.dispose();
+    notesController.dispose();
+    _searchTimer?.cancel();
+    titleController.removeListener(_onTitleChanged);
+    _titleFocusNode.dispose();
+
+    super.dispose();
   }
 
   //endregion
@@ -209,6 +234,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
           Expanded(
             child: ListView(
               children: [
+                if (_suggestions.isNotEmpty) _buildSuggestionsRow(),
                 _buildTitleField(),
                 _buildAmountField(),
                 _buildTransactionTypeField(color),
@@ -226,6 +252,38 @@ class _ExpenseFormState extends State<ExpenseForm> {
           ),
           _buildSubmitButton(),
         ],
+      ),
+    );
+  }
+
+  Widget _buildSuggestionsRow() {
+    return Container(
+      height: 50,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: _suggestions.length,
+        itemBuilder: (context, index) {
+          final suggestion = _suggestions[index];
+          return Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: ActionChip(
+              backgroundColor: ColorHelper.getTileColor(Theme.of(context)),
+              avatar: Icon(
+                2 > 1 ? Icons.history_outlined : Icons.lightbulb_outline,
+                size: 16,
+                color: _highlightColor,
+              ),
+              label: Text(
+                suggestion.title,
+                style: TextStyle(
+                  color: Theme.of(context).textTheme.bodyMedium?.color,
+                ),
+              ),
+              onPressed: () => _applySuggestion(suggestion),
+            ),
+          );
+        },
       ),
     );
   }
@@ -286,7 +344,8 @@ class _ExpenseFormState extends State<ExpenseForm> {
   }
 
   Container _buildTitleField() {
-    return ExpenseWidgets.form.buildTitleField(titleController);
+    return ExpenseWidgets.form
+        .buildTitleField(titleController, focusNode: _titleFocusNode);
   }
 
   Consumer<ExpenseItemsProvider> _buildAmountField() {
@@ -447,4 +506,71 @@ class _ExpenseFormState extends State<ExpenseForm> {
     setState(() => _isRecurring = value!);
   }
   //endregion
+
+  Future<void> _loadDefaultSuggestions() async {
+    // final frequentSuggestions =
+    //     await SuggestionService.getFrequentSuggestions();
+    final frequentSuggestions = await SuggestionService.getRecentSuggestions();
+    if (frequentSuggestions.isEmpty) return;
+    if (mounted) {
+      setState(() => _suggestions = frequentSuggestions);
+    }
+  }
+
+  void _onTitleChanged() async {
+    if (_searchTimer?.isActive ?? false) _searchTimer!.cancel();
+    _searchTimer = Timer(const Duration(milliseconds: 500), () {
+      _updateSuggestions(titleController.text);
+    });
+  }
+
+  void _focusTitleField() {
+    if (MediaQuery.of(context).viewInsets.bottom > 0) return;
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (mounted) FocusScope.of(context).requestFocus(_titleFocusNode);
+    });
+  }
+
+  Future<void> _updateSuggestions(String query) async {
+    if (query.length < 2) {
+      _loadDefaultSuggestions();
+      return;
+    }
+
+    final titleSuggestions =
+        await SuggestionService.getSuggestionsForTitle(query);
+    if (titleSuggestions.isEmpty) return;
+    if (mounted) {
+      setState(() {
+        _suggestions = titleSuggestions;
+        _focusTitleField();
+      });
+    }
+  }
+
+  void _applySuggestion(Expense suggestion) {
+    setState(() {
+      titleController.text = suggestion.title;
+      amountController.text = _formatAmount(suggestion.amount);
+      transactionTypeController.text = suggestion.transactionType;
+      notesController.text = suggestion.note ?? "";
+      // Find and set the category
+      for (var category in _categories) {
+        if (category.name == suggestion.category) {
+          _selectedCategory = category;
+          break;
+        }
+      }
+
+      // Find and set the tag if it exists
+      if (suggestion.tags != null) {
+        for (var tag in _tags) {
+          if (tag.name == suggestion.tags) {
+            _selectedTag = tag;
+            break;
+          }
+        }
+      }
+    });
+  }
 }

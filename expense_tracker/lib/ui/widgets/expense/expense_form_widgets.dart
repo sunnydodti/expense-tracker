@@ -30,11 +30,13 @@ class ExpenseFormWidgets {
 
 //endregion
 
-  Container buildTitleField(TextEditingController controller) {
+  Container buildTitleField(TextEditingController controller, {FocusNode? focusNode}) {
     return Container(
       padding: _getFieldPadding(),
       child: TextFormField(
         controller: controller,
+        focusNode: focusNode,
+        autofocus: true,
         maxLines: 1,
         decoration: InputDecoration(
           prefixIcon: Icon(Icons.title_outlined, size: _getIconSize()),
