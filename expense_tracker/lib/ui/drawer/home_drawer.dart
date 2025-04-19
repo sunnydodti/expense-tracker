@@ -38,7 +38,21 @@ class HomeDrawerState extends State<HomeDrawer> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Image.asset('assets/icon/icon-72.png'),
+                Stack(
+                  children: [
+                    Image.asset('assets/icon/icon-72.png'),
+                    Opacity(
+                      opacity: _getOpacity,
+                      child: ColorFiltered(
+                        colorFilter: ColorFilter.mode(
+                          ColorHelper.getIconColor(theme),
+                          BlendMode.srcIn,
+                        ),
+                        child: Image.asset('assets/icon/icon-72.png'),
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 20),
                 const Text("Expense Tracker")
               ],
@@ -78,6 +92,10 @@ class HomeDrawerState extends State<HomeDrawer> {
         ],
       ),
     );
+  }
+
+  double get _getOpacity {
+    return Theme.of(context).brightness == Brightness.light ? 0.6 : 0;
   }
 
   void _navigateToHomeScreen(BuildContext context) =>
