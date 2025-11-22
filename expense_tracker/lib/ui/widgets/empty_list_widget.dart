@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../data/constants/ui_constants.dart';
+
 class EmptyListWidget extends StatelessWidget {
   final String listName;
 
@@ -15,20 +17,11 @@ class EmptyListWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Text(
-          'Click',
-          style: TextStyle(color: Colors.grey),
-        ),
-        const SizedBox(width: 8),
-        const Icon(
-          Icons.add,
-          color: Colors.grey,
-        ),
-        const SizedBox(width: 8),
-        Text(
-          message,
-          style: const TextStyle(color: Colors.grey),
-        ),
+        const Text('Click', style: TextStyle(color: Colors.grey)),
+        const SizedBox(width: uiSize),
+        const Icon(Icons.add, color: Colors.grey),
+        const SizedBox(width: uiSize),
+        Text(message, style: const TextStyle(color: Colors.grey)),
       ],
     );
   }

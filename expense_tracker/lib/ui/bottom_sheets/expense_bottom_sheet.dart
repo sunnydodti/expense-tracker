@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../data/constants/ui_constants.dart';
 import '../../data/helpers/color_helper.dart';
 import '../../data/helpers/navigation_helper.dart';
 import '../../models/expense.dart';
@@ -84,20 +85,20 @@ class ExpenseBottomSheet {
         ListTile(
           iconColor: Colors.blue.shade800,
           title: const Text("Share"),
-          trailing: const Icon(Icons.share_outlined),
+          trailing: const Icon(Icons.share_outlined, size: uiIconSize),
           onTap: () => handleShare(expense),
         ),
         ListTile(
           iconColor: Colors.green.shade800,
           title: const Text("View"),
-          trailing: const Icon(Icons.notes_outlined),
+          trailing: const Icon(Icons.notes_outlined, size: uiIconSize),
           onTap: () => handleCallBack(context, viewCallBack),
         ),
         if (!readonly)
           ListTile(
             iconColor: Colors.orange.shade800,
             title: const Text("Edit"),
-            trailing: const Icon(Icons.edit_outlined),
+            trailing: const Icon(Icons.edit_outlined, size: uiIconSize),
             onTap: () {
               NavigationHelper.justNavigateBack(context);
               handleCallBack(context, editCallBack);
@@ -107,7 +108,7 @@ class ExpenseBottomSheet {
           ListTile(
             iconColor: Colors.red.shade800,
             title: const Text("Delete"),
-            trailing: const Icon(Icons.delete_outline),
+            trailing: const Icon(Icons.delete_outline, size: uiIconSize),
             onTap: () => handleCallBack(context, deleteCallBack, pop: true),
           ),
       ],
@@ -120,7 +121,5 @@ class ExpenseBottomSheet {
     if (pop) NavigationHelper.navigateBack(context);
   }
 
-  static handleShare(Expense expense) async {
-    Share.share(expense.shareData());
-  }
+  static handleShare(Expense expense) async => Share.share(expense.shareData());
 }

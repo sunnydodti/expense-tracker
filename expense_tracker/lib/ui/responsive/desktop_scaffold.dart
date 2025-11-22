@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../data/constants/ui_constants.dart';
 import '../../data/helpers/color_helper.dart';
 import '../../data/helpers/navigation_helper.dart';
 import '../../globals.dart';
@@ -26,7 +27,9 @@ class DesktopScaffold extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const Padding(
-                padding: EdgeInsets.only(top: 10.0), child: HomeDrawer()),
+              padding: EdgeInsets.only(top: uiPadding),
+              child: HomeDrawer(),
+            ),
             Expanded(
               flex: 2,
               child: ContentAreaNavigation(
@@ -35,7 +38,7 @@ class DesktopScaffold extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     SortFilterTile(),
-                    SizedBox(height: 10),
+                    SizedBox(height: uiSize),
                     Expanded(child: ExpenseList()),
                   ],
                 ),
@@ -45,14 +48,15 @@ class DesktopScaffold extends StatelessWidget {
               child: Column(
                 children: [
                   ExpenseSummary(
-                    margin: EdgeInsets.only(top: 10, right: 10),
+                    margin: EdgeInsets.only(
+                        top: uiSize, right: uiSize),
                   ),
                   InstallPwaButton(
                     padding: EdgeInsets.only(
-                      top: 10,
-                      bottom: 10,
-                      left: 10,
-                      right: 20,
+                      top: uiPadding,
+                      bottom: uiPadding,
+                      left: uiPadding,
+                      right: uiPaddingX2,
                     ),
                   ),
                 ],

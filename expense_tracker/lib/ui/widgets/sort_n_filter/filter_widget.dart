@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/constants/ui_constants.dart';
 import '../../../data/helpers/color_helper.dart';
 import '../../../models/expense_filters.dart';
 import '../../../providers/expense_provider.dart';
@@ -124,7 +125,7 @@ class FilterWidgetState extends State<FilterWidget> {
 
   Widget _buildMonthText(SortFilterProvider sortFilterProvider) {
     return Padding(
-      padding: const EdgeInsets.only(left: 10),
+      padding: const EdgeInsets.only(left: uiPadding),
       child: Text(
         sortFilterProvider.filterMonth,
         textAlign: TextAlign.center,
@@ -134,7 +135,7 @@ class FilterWidgetState extends State<FilterWidget> {
 
   Widget _buildYearText(SortFilterProvider sortFilterProvider) {
     return Padding(
-      padding: const EdgeInsets.only(left: 10),
+      padding: const EdgeInsets.only(left: uiPadding),
       child: Text(
         sortFilterProvider.filterYear,
         textAlign: TextAlign.center,
@@ -162,7 +163,7 @@ class FilterWidgetState extends State<FilterWidget> {
 
   IconButton _buildFilterButton(SortFilterProvider sortFilterProvider) {
     return IconButton(
-      icon: const Icon(Icons.filter_list),
+      icon: const Icon(Icons.filter_list, size: uiIconSize),
       onPressed: () => _showFilterDialog(sortFilterProvider),
       tooltip: "Filter",
       color: ColorHelper.getIconColor(Theme.of(context)),
@@ -219,12 +220,9 @@ class FilterWidgetState extends State<FilterWidget> {
   Consumer<ExpenseProvider> _buildExpenseCount() {
     return Consumer<ExpenseProvider>(
       builder: (context, provider, _) {
-        int count = provider.expenses.length;
         return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15),
-          child: Text(
-            '$count',
-          ),
+          padding: const EdgeInsets.symmetric(vertical: uiPadding),
+          child: Text('${provider.expenses.length}'),
         );
       },
     );

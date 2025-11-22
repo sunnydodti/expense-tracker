@@ -17,8 +17,7 @@ import 'ui/responsive/desktop_scaffold.dart';
 import 'ui/responsive/mobile_scaffold.dart';
 import 'ui/responsive/responsive_layout.dart';
 import 'ui/responsive/tablet_scaffold.dart';
-
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+import 'ui/screens/widget_constants.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -64,20 +63,20 @@ class _MyAppState extends State<MyApp> {
             future: refreshAppTheme(themeProvider),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else {
-                return MaterialApp(
-                  key: navigatorKey,
-                  scaffoldMessengerKey: snackbarKey,
-                  theme: themeProvider.themeData,
-                  home: const ResponsiveLayout(
-                      mobileScaffold: MobileScaffold(),
-                      tabletScaffold: TabletScaffold(),
-                      desktopScaffold: DesktopScaffold()),
-                );
+                return wcSpinnerDefault;
               }
+              if (snapshot.hasError) {
+                return wcSnapshotErrorText(snapshot.error);
+              }
+              return MaterialApp(
+                key: navigatorKey,
+                scaffoldMessengerKey: snackbarKey,
+                theme: themeProvider.themeData,
+                home: const ResponsiveLayout(
+                    mobileScaffold: MobileScaffold(),
+                    tabletScaffold: TabletScaffold(),
+                    desktopScaffold: DesktopScaffold()),
+              );
             },
           );
         },

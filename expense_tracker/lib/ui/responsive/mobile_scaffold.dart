@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../data/constants/ui_constants.dart';
 import '../../data/helpers/color_helper.dart';
 import '../drawer/home_drawer.dart';
 import '../widgets/common/add_expense_fab.dart';
@@ -22,12 +23,17 @@ class MobileScaffold extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           ExpenseSummary(),
-          Padding(padding: EdgeInsets.all(10), child: SortFilterTile()),
+          Padding(
+            padding: EdgeInsets.all(uiPadding),
+            child: SortFilterTile(),
+          ),
           Expanded(
-              child: Padding(
-            padding: EdgeInsets.only(left: 10, right: 10),
-            child: ExpenseList(),
-          )),
+            child: Padding(
+              padding: EdgeInsets.only(
+                  left: uiPadding, right: uiPadding),
+              child: ExpenseList(),
+            ),
+          ),
           InstallPwaButton(),
         ],
       ),

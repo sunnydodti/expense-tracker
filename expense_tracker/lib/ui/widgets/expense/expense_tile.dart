@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/constants/ui_constants.dart';
 import '../../../data/helpers/color_helper.dart';
 import '../../../data/helpers/navigation_helper.dart';
 import '../../../models/expense.dart';
@@ -47,9 +48,7 @@ class _ExpenseTileState extends State<ExpenseTile> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onLongPressStart: (details) =>
-          // expenseProvider.showExpensePopup(widget.expense),
-          showOverlay(),
+      onLongPressStart: (details) => showOverlay(),
       onLongPressEnd: (details) {
         hideOverlay();
         expenseItemsProvider.clear();
@@ -59,7 +58,7 @@ class _ExpenseTileState extends State<ExpenseTile> {
       onDoubleTap: widget.editCallBack,
       child: Card(
         color: ColorHelper.getTileColor(Theme.of(context)),
-        margin: const EdgeInsets.only(bottom: 10.0),
+        margin: const EdgeInsets.only(bottom: uiMargin),
         child: _buildExpenseTile(),
       ),
     );
@@ -78,15 +77,17 @@ class _ExpenseTileState extends State<ExpenseTile> {
 
   void viewExpense() {
     NavigationHelper.navigateToRoute(
-        context,
-        ExpensePopup(
-            expense: widget.expense,
-            onOutsideTap: () => NavigationHelper.justNavigateBack(context)));
+      context,
+      ExpensePopup(
+        expense: widget.expense,
+        onOutsideTap: () => NavigationHelper.justNavigateBack(context),
+      ),
+    );
   }
 
   Padding _buildExpenseTile() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+      padding: const EdgeInsets.all(uiPadding),
       child: Column(
         children: [
           Row(
@@ -96,14 +97,14 @@ class _ExpenseTileState extends State<ExpenseTile> {
               ExpenseWidgets.tile.getExpenseDate(widget.expense),
             ],
           ),
-          const SizedBox(height: 5.0),
+          const SizedBox(height: uiSizeHalf),
           Row(
             children: [
               ExpenseWidgets.tile.tagsWidget(widget.expense),
             ],
           ),
-          const SizedBox(height: 2),
-          const Divider(height: 5, thickness: 1),
+          const SizedBox(height: uiSizeQuarter),
+          const Divider(height: uiSizeHalf, thickness: uiDividerThickness),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

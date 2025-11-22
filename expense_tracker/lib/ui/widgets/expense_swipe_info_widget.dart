@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../data/constants/ui_constants.dart';
+
 class ExpenseSwipeInfoWidget extends StatelessWidget {
   const ExpenseSwipeInfoWidget({
     super.key,
@@ -10,26 +12,17 @@ class ExpenseSwipeInfoWidget extends StatelessWidget {
     const message = "to edit or delete";
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.only(bottom: 80),
-      child: Center(
+      padding: const EdgeInsets.only(bottom: uiPadding * 10),
+      child: const Center(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: const [
-            Text(
-              'Swipe',
-              style: TextStyle(color: Colors.grey),
-            ),
-            SizedBox(width: 8),
-            Icon(
-              Icons.compare_arrows,
-              color: Colors.grey,
-            ),
-            SizedBox(width: 8),
-            Text(
-              message,
-              style: TextStyle(color: Colors.grey),
-            ),
+          children: [
+            Text('Swipe', style: TextStyle(color: Colors.grey)),
+            SizedBox(width: uiSize),
+            Icon(Icons.compare_arrows, color: Colors.grey),
+            SizedBox(width: uiSize),
+            Text(message, style: TextStyle(color: Colors.grey)),
           ],
         ),
       ),
