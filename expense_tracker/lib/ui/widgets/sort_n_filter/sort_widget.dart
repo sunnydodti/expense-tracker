@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/constants/ui_constants.dart';
 import '../../../data/helpers/color_helper.dart';
 import '../../../models/enums/sort_criteria.dart';
 import '../../../providers/expense_provider.dart';
@@ -17,9 +18,7 @@ class SortWidget extends StatefulWidget {
 
 class _SortWidgetState extends State<SortWidget> {
   _refreshExpenses() {
-    final expenseProvider =
-        Provider.of<ExpenseProvider>(context, listen: false);
-    expenseProvider.refreshExpenses();
+    Provider.of<ExpenseProvider>(context, listen: false).refreshExpenses();
   }
 
   @override
@@ -46,6 +45,7 @@ class _SortWidgetState extends State<SortWidget> {
           child: Transform.rotate(
             angle: math.pi,
             child: Icon(
+              size: uiIconSize,
               Icons.sort_outlined,
               color: ColorHelper.getIconColor(Theme.of(context)),
             ),
@@ -69,11 +69,12 @@ class _SortWidgetState extends State<SortWidget> {
       focusColor: Colors.transparent,
       items: SortCriteria.values
           .map<DropdownMenuItem<SortCriteria>>(
-            (criteria) => DropdownMenuItem<SortCriteria>(
+            (SortCriteria criteria) => DropdownMenuItem<SortCriteria>(
               value: criteria,
               child: Text(
-                  textScaleFactor: .9,
-                  SortCriteriaHelper.getSortCriteriaText(criteria)),
+                SortCriteriaHelper.getSortCriteriaText(criteria),
+                textScaler: const TextScaler.linear(uiTextScaler),
+              ),
             ),
           )
           .toList(),

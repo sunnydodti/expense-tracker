@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/constants/ui_constants.dart';
 import '../../../data/helpers/color_helper.dart';
 import '../../../models/enums/transaction_type.dart';
 import '../../../models/expense.dart';
@@ -10,6 +11,7 @@ import '../../../providers/expense_items_provider.dart';
 import '../../../utils/expense_utils.dart';
 import '../../animations/blur_screen.dart';
 import '../../animations/scale_up.dart';
+import '../../screens/widget_constants.dart';
 import 'expense_widgets.dart';
 
 class ExpensePopup extends StatefulWidget {
@@ -57,13 +59,12 @@ class _ExpensePopupState extends State<ExpensePopup> {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 550),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: uiPaddingX2),
           child: Card(
             color: ColorHelper.getBackgroundColor(Theme.of(context)),
-            margin: const EdgeInsets.all(10),
+            margin: const EdgeInsets.all(uiMargin),
             child: Card(
-              margin: const EdgeInsets.all(10),
-              // padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+              margin: const EdgeInsets.all(uiMargin),
               color: ColorHelper.getTileColor(Theme.of(context)),
               child: buildExpensePopUpContent(widget.expense),
             ),
@@ -78,7 +79,7 @@ class _ExpensePopupState extends State<ExpensePopup> {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         Text(expense.title),
-        _buildDivider(),
+        wcDivider,
         _buildAmountRow(expense, 1),
         _buildDateRow(expense, 0),
         _buildTransactionTypeRow(expense, 1),
@@ -139,7 +140,8 @@ class _ExpensePopupState extends State<ExpensePopup> {
   }
 
   Container _buildCreatedDateRow(Expense expense, int i) {
-    return ExpenseWidgets.detail.buildKeyValRow("Created",
+    return ExpenseWidgets.detail.buildKeyValRow(
+      "Created",
       DateFormat("HH:mm | dd MMM yyy").format(expense.createdAt),
       i,
       context,
@@ -147,7 +149,8 @@ class _ExpensePopupState extends State<ExpensePopup> {
   }
 
   Container _buildModifiedDateRow(Expense expense, int i) {
-    return ExpenseWidgets.detail.buildKeyValRow("Modified",
+    return ExpenseWidgets.detail.buildKeyValRow(
+      "Modified",
       DateFormat("HH:mm | dd MMM yyy").format(expense.modifiedAt),
       i,
       context,
@@ -175,11 +178,5 @@ class _ExpensePopupState extends State<ExpensePopup> {
   Future<List<ExpenseItemFormModel>> _refreshExpenseItems(int expenseId) async {
     await expenseItemsProvider.fetchExpenseItems(expenseId: expenseId);
     return expenseItemsProvider.expenseItems;
-  }
-
-  Divider _buildDivider() {
-    return const Divider(
-      thickness: 1.5,
-    );
   }
 }

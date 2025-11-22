@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/constants/ui_constants.dart';
 import '../../../data/helpers/navigation_helper.dart';
 import '../../../models/enums/form_modes.dart';
 import '../../../models/expense.dart';
@@ -29,32 +30,8 @@ class DismissibleExpenseTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dismissible(
       key: Key(expense.id.toString()),
-      background: Card(
-        color: Colors.red.shade400,
-        margin: const EdgeInsets.only(top: 0.0, bottom: 10.0),
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: 20),
-              child: Icon(Icons.delete, color: Colors.white),
-            ),
-          ],
-        ),
-      ),
-      secondaryBackground: Card(
-        color: Colors.blue.shade400,
-        margin: const EdgeInsets.only(top: 0.0, bottom: 10.0),
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(right: 20),
-              child: Icon(Icons.edit, color: Colors.white),
-            ),
-          ],
-        ),
-      ),
+      background: _buildBackground(),
+      secondaryBackground: _buildBackgroundSecondary(),
       onDismissed: (direction) {
         if (direction == DismissDirection.startToEnd) {
           // Swipe left to delete
@@ -64,12 +41,48 @@ class DismissibleExpenseTile extends StatelessWidget {
           _editItem(context, index, expense, expenseProvider);
         }
       },
-      child: ExpenseTile(
-        expense: expense,
-        editCallBack: () => _editExpense(context, expense, expenseProvider),
-        deleteCallBack: () =>
-            _deleteExpenseFromDatabase(expense, expenseProvider, notify: true),
-        isReadonly: false,
+      child: _buildExpenseTile(context),
+    );
+  }
+
+  ExpenseTile _buildExpenseTile(BuildContext context) {
+    return ExpenseTile(
+      expense: expense,
+      editCallBack: () => _editExpense(context, expense, expenseProvider),
+      deleteCallBack: () =>
+          _deleteExpenseFromDatabase(expense, expenseProvider, notify: true),
+      isReadonly: false,
+    );
+  }
+
+  Card _buildBackgroundSecondary() {
+    return Card(
+      color: Colors.blue.shade400,
+      margin: const EdgeInsets.only(top: 0.0, bottom: uiPadding),
+      child: const Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(right: uiPaddingX2),
+            child: Icon(Icons.edit, color: Colors.white, size: uiIconSize),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Card _buildBackground() {
+    return Card(
+      color: Colors.red.shade400,
+      margin: const EdgeInsets.only(top: 0.0, bottom: uiPadding),
+      child: const Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: uiPaddingX2),
+            child: Icon(Icons.delete, color: Colors.white, size: uiIconSize),
+          ),
+        ],
       ),
     );
   }
@@ -133,7 +146,7 @@ class DismissibleExpenseTile extends StatelessWidget {
 
     bool result = await NavigationHelper.navigateToScreenWithResult(
         context, ExpensePage(expense: expense, formMode: FormMode.edit));
-        
+
     if (index + 1 == expenseLength) {
       _logger.i("adding at end $index");
       expenseProvider.addExpense(expense);

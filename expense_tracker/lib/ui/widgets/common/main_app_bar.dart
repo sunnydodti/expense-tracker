@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/constants/constants.dart';
+import '../../../data/constants/ui_constants.dart';
 import '../../../data/helpers/color_helper.dart';
 import '../../../data/helpers/debug_helper.dart';
 import '../../../data/helpers/navigation_helper.dart';
@@ -15,11 +17,9 @@ class MainAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
   final bool centerTitle;
 
-  static final Future<ExpenseService> _expenseService = ExpenseService.create();
-
   const MainAppBar({
     super.key,
-    this.title = "Expense Tracker",
+    this.title = appName,
     this.centerTitle = true,
   });
 
@@ -31,6 +31,7 @@ class MainAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _MainAppBarState extends State<MainAppBar> {
+  static final Future<ExpenseService> _expenseService = ExpenseService.create();
   ProfileProvider get profileProvider =>
       Provider.of<ProfileProvider>(context, listen: false);
 
@@ -38,12 +39,10 @@ class _MainAppBarState extends State<MainAppBar> {
 
   Color get titleColor => ColorHelper.getTileColor(Theme.of(context));
 
-  Future refreshExpenses() async => expenseProvider.refreshExpenses();
-
   void populateExpense() async {
-    ExpenseService service = await MainAppBar._expenseService;
+    ExpenseService service = await _expenseService;
     await service.populateExpense(count: 1);
-    refreshExpenses();
+    expenseProvider.refreshExpenses();
   }
 
   navigateToScreen() {
@@ -82,16 +81,13 @@ class _MainAppBarState extends State<MainAppBar> {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-
-  @override
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: ColorHelper.getAppBarColor(Theme.of(context)),
       centerTitle: widget.centerTitle,
       title: Text(
         widget.title,
-        textScaler: const TextScaler.linear(.85),
+        textScaler: const TextScaler.linear(uiTextScaler),
         overflow: TextOverflow.fade,
         style: const TextStyle(
           fontWeight: FontWeight.w600,
@@ -105,33 +101,25 @@ class _MainAppBarState extends State<MainAppBar> {
     return [
       if (DebugHelper.isDebugMode)
         IconButton(
-          icon: const Icon(
-            Icons.add,
-            size: 20,
-          ),
+          icon: const Icon(Icons.add, size: uiIconSize),
           tooltip: "Add random expense",
           onPressed: populateExpense,
         ),
       if (DebugHelper.isDebugMode)
         IconButton(
-          icon: const Icon(
-            Icons.add_to_home_screen_outlined,
-            size: 20,
-          ),
+          icon: const Icon(Icons.add_to_home_screen_outlined, size: uiIconSize),
           tooltip: "Navigate to screen",
           onPressed: navigateToScreen,
         ),
       IconButton(
-          tooltip: "Search",
-          onPressed: () {
-            NavigationHelper.navigateToScreen(context, const SearchScreen());
-          },
-          icon: const Icon(Icons.search_outlined)),
+        tooltip: "Search",
+        onPressed: () {
+          NavigationHelper.navigateToScreen(context, const SearchScreen());
+        },
+        icon: const Icon(Icons.search_outlined, size: uiIconSize),
+      ),
       IconButton(
-        icon: const Icon(
-          Icons.person,
-          size: 20,
-        ),
+        icon: const Icon(Icons.person, size: uiIconSize),
         tooltip: "Profile",
         onPressed: () async {
           await profileProvider.refreshProfiles();

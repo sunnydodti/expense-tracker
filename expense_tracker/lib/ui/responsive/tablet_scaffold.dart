@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../data/constants/ui_constants.dart';
 import '../../data/helpers/color_helper.dart';
 import '../../data/helpers/navigation_helper.dart';
 import '../../globals.dart';
@@ -14,7 +15,6 @@ import '../widgets/sort_n_filter/sort_filter_tile.dart';
 
 class TabletScaffold extends StatelessWidget {
   const TabletScaffold({super.key});
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -33,7 +33,7 @@ class TabletScaffold extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     SortFilterTile(),
-                    SizedBox(height: 10),
+                    SizedBox(height: uiSize),
                     Expanded(child: ExpenseList()),
                   ],
                 ),
@@ -44,14 +44,14 @@ class TabletScaffold extends StatelessWidget {
               child: Column(
                 children: [
                   ExpenseSummary(
-                    margin: EdgeInsets.only(top: 10, right: 10),
+                    margin: EdgeInsets.only(top: uiSize, right: uiSize),
                   ),
                   InstallPwaButton(
                     padding: EdgeInsets.only(
-                      top: 10,
-                      bottom: 10,
-                      left: 10,
-                      right: 20,
+                      top: uiSize,
+                      bottom: uiSize,
+                      left: uiSize,
+                      right: uiPaddingX2,
                     ),
                   ),
                 ],

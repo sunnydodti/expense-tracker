@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 class SharedPreferencesConstants {
   static String IS_FIRST_TIME_KEY = "is_first_time";
   static SortPreferencesConstants sort = SortPreferencesConstants();

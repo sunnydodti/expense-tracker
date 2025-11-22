@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
+import '../../../data/constants/ui_constants.dart';
 import '../../../models/expense.dart';
 import '../../../models/expense_item.dart';
 import '../../../utils/expense_utils.dart';
+import '../../screens/widget_constants.dart';
 
 class ExpenseDetailsWidgets {
-  final double paddingTop = 5;
-  final double paddingBottom = 5;
-  final double paddingHorizontal = 5;
+  final double paddingTop = uiPaddingHalf;
+  final double paddingBottom = uiPaddingHalf;
+  final double paddingHorizontal = uiPaddingHalf;
 
   EdgeInsets _buildPadding() {
     return EdgeInsets.only(
@@ -39,12 +41,7 @@ class ExpenseDetailsWidgets {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text("$key:"),
-          Text(
-            value,
-            style: TextStyle(
-              color: valueColor,
-            ),
-          ),
+          Text(value, style: TextStyle(color: valueColor)),
         ],
       ),
     );
@@ -64,17 +61,12 @@ class ExpenseDetailsWidgets {
       child: Column(
         children: <Widget>[
           Row(children: <Widget>[Text("$key:")]),
-          if (value != null && value.isNotEmpty)
-            const Divider(
-              thickness: .8,
-              indent: 8,
-              endIndent: 8,
-            ),
+          if (value != null && value.isNotEmpty) wcDividerIndented,
           if (value != null && value.isNotEmpty)
             Text(value,
                 maxLines: 5,
                 overflow: TextOverflow.fade,
-                textAlign: TextAlign.end),
+                textAlign: TextAlign.start),
         ],
       ),
     );
@@ -94,8 +86,8 @@ class ExpenseDetailsWidgets {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Row(children: const <Widget>[Text("Expense Items:")]),
-          const Divider(thickness: .8, indent: 8, endIndent: 8),
+          const Row(children: <Widget>[Text("Expense Items:")]),
+          wcDividerIndented,
           _fetchAndBuildExpenseItemsList(expense, fetchMethod),
         ],
       ),
@@ -108,12 +100,12 @@ class ExpenseDetailsWidgets {
         future: fetchMethod(expense.id),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            return buildExpenseItemsList(snapshot.data, expense, context);
+            return wcSpinnerDefault;
           }
+          if (snapshot.hasError) {
+            return wcSnapshotErrorText(snapshot.error);
+          }
+          return buildExpenseItemsList(snapshot.data, expense, context);
         });
   }
 
@@ -123,12 +115,11 @@ class ExpenseDetailsWidgets {
       constraints: const BoxConstraints(maxHeight: 250),
       child: SingleChildScrollView(
         child: DataTable(
-          columnSpacing: 15,
-          dataRowHeight: 35,
+          columnSpacing: uiSizeX2,
+          dataRowMinHeight: uiDataRowSize,
+          dataRowMaxHeight: uiDataRowSize,
           columns: const [
-            DataColumn(
-              label: Text('Name'),
-            ),
+            DataColumn(label: Text('Name')),
             DataColumn(label: Text('Amt')),
             DataColumn(label: Text('Qty')),
             DataColumn(label: Text('Total')),

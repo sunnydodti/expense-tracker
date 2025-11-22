@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../data/constants/form_constants.dart';
 import '../../../data/constants/shared_preferences_constants.dart';
+import '../../../data/constants/ui_constants.dart';
 import '../../../data/helpers/color_helper.dart';
 import '../../../data/helpers/navigation_helper.dart';
 import '../../../data/helpers/shared_preferences_helper.dart';
@@ -17,7 +18,11 @@ class ExpenseSummary extends StatefulWidget {
   final EdgeInsets margin;
   const ExpenseSummary({
     Key? key,
-    this.margin = const EdgeInsets.only(top: 10, left: 10, right: 10),
+    this.margin = const EdgeInsets.only(
+      top: uiPadding,
+      left: uiPadding,
+      right: uiPadding,
+    ),
   }) : super(key: key);
 
   @override
@@ -86,10 +91,10 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
                   "Total Balance",
                   expenseProvider.getTotalBalance(),
                   theme,
-                  top: 10,
-                  bottom: 5,
-                  left: 10,
-                  right: 10,
+                  top: uiPadding,
+                  bottom: uiPaddingHalf,
+                  left: uiPadding,
+                  right: uiPadding,
                 ),
                 buildIcons(theme)
               ],
@@ -102,10 +107,10 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
                     "Total Income",
                     expenseProvider.getTotalIncome(),
                     theme,
-                    top: 5,
-                    bottom: 10,
-                    left: 10,
-                    right: 5,
+                    top: uiPaddingHalf,
+                    bottom: uiPadding,
+                    left: uiPadding,
+                    right: uiPaddingHalf,
                   ),
                 ),
                 Expanded(
@@ -113,10 +118,10 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
                     "Total Expense",
                     expenseProvider.getTotalExpenses() * -1,
                     theme,
-                    top: 5,
-                    bottom: 10,
-                    left: 5,
-                    right: 10,
+                    top: uiPaddingHalf,
+                    bottom: uiPadding,
+                    left: uiPaddingHalf,
+                    right: uiPadding,
                   ),
                 ),
               ],
@@ -131,11 +136,11 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
     String summaryText,
     double amount,
     ThemeData theme, {
-    double top = 10,
-    double bottom = 10,
-    double left = 10,
-    double right = 10,
-    double padding = 5,
+    double top = uiPadding,
+    double bottom = uiPadding,
+    double left = uiPadding,
+    double right = uiPadding,
+    double padding = uiPaddingHalf,
   }) {
     return Card(
       margin:
@@ -147,7 +152,7 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
         child: Column(
           children: [
             _getSummaryText(summaryText),
-            const SizedBox(height: 5),
+            const SizedBox(height: uiSizeHalf),
             hideTotal
                 ? BlurWidget(widget: _getSummaryAmountConsumer(amount))
                 : _getSummaryAmountConsumer(amount),
@@ -165,7 +170,6 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
           FormConstants.expense.currencies[settingsProvider.defaultCurrency]!;
       return Text(
         '$sign $currency ${amount.abs().round()}',
-        textScaleFactor: 1.1,
         style: TextStyle(
           fontWeight: FontWeight.bold,
           color: amount > 0
@@ -180,7 +184,6 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
     return Text(
       summaryText,
       textAlign: TextAlign.center,
-      textScaleFactor: 1.1,
       style: const TextStyle(
         fontWeight: FontWeight.bold,
       ),
@@ -201,7 +204,7 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
 
   Padding buildChartIcon(Color? color) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: uiPadding, vertical: 2),
       child: IconButton(
           onPressed: () => navigateToChartsScreen(context),
           tooltip: "View Charts",
@@ -211,7 +214,8 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
 
   Padding buildIHideIcon(Color? color) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      padding: const EdgeInsets.symmetric(
+          horizontal: uiPadding, vertical: uiPadding),
       child: IconButton(
         onPressed: () {
           setState(() {
@@ -228,7 +232,7 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
   }
 
   void setHideTotalPreference() async {
-    sharedPreferencesService.setBoolPreference(
+    await sharedPreferencesService.setBoolPreference(
         SharedPreferencesConstants.summary.HIDE_TOTAL_KEY, hideTotal);
     await sharedPreferencesService
         .getBoolPreference(SharedPreferencesConstants.summary.HIDE_TOTAL_KEY);
