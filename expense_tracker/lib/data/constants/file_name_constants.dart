@@ -1,6 +1,7 @@
 class FileConstants {
-  static ExportConstants export = ExportConstants();
-  static CacheConstants cache = CacheConstants();
+  FileConstants._();
+  static final ExportConstants export = ExportConstants();
+  static final CacheConstants cache = CacheConstants();
 }
 
 class ExportConstants {

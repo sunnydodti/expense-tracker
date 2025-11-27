@@ -1,23 +1,24 @@
 class DBConstants {
-  static String databaseName = "expense_tracker.db";
-  static int databaseVersion = 4;
+  DBConstants._();
+  static const String databaseName = "expense_tracker.db";
+  static const int databaseVersion = 4;
 
-  static DatabaseVersionConstants version = DatabaseVersionConstants();
+  static final DatabaseVersionConstants version = DatabaseVersionConstants();
 
-  static CommonConstants common = CommonConstants();
-  static ExpenseConstants expense = ExpenseConstants();
-  static ExpenseItemConstants expenseItem = ExpenseItemConstants();
-  static CategoryConstants category = CategoryConstants();
-  static TagConstants tag = TagConstants();
-  static UserConstants user = UserConstants();
-  static ProfileConstants profile = ProfileConstants();
-  static SearchConstants search = SearchConstants();
+  static final CommonConstants common = CommonConstants();
+  static final ExpenseConstants expense = ExpenseConstants();
+  static final ExpenseItemConstants expenseItem = ExpenseItemConstants();
+  static final CategoryConstants category = CategoryConstants();
+  static final TagConstants tag = TagConstants();
+  static final UserConstants user = UserConstants();
+  static final ProfileConstants profile = ProfileConstants();
+  static final SearchConstants search = SearchConstants();
 }
 
 class CommonConstants {
   final String createdAt = "created_at";
   final String modifiedAt = "modified_at";
-  static String id = "id";
+  static const String id = "id";
 }
 
 class ExpenseConstants {

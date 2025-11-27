@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../data/constants/ui_constants.dart';
 import '../../data/helpers/color_helper.dart';
+import '../../data/helpers/navigation_helper.dart';
 import '../../models/expense_filters.dart';
 
 class FilterExpensesDialog extends StatefulWidget {
   final ExpenseFilters expenseFilters;
 
   const FilterExpensesDialog({
-    Key? key,
+    super.key,
     required this.expenseFilters,
-  }) : super(key: key);
+  });
 
   @override
   FilterExpensesDialogState createState() => FilterExpensesDialogState();
@@ -30,7 +32,12 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
     return AlertDialog(
+      titlePadding: const EdgeInsets.all(uiPaddingX2),
+      contentPadding: const EdgeInsets.all(uiPaddingX2),
       backgroundColor: ColorHelper.getTileColor(theme),
+      actionsPadding: const EdgeInsets.symmetric(
+          horizontal: uiPaddingHalf, vertical: uiPaddingX2),
+      insetPadding: const EdgeInsets.all(uiPadding),
       title: buildDialogTitle(),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -67,13 +74,12 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Text('Expense Filters'),
-        const SizedBox(width: 70),
-        Expanded(
-          child: IconButton(
-            onPressed: _closeFilterDialog,
-            icon: const Icon(Icons.clear),
-          ),
+        const Expanded(
+            child: Text('Expense Filters',
+                textScaler: TextScaler.linear(uiTextScalerAlertTitle))),
+        IconButton(
+          onPressed: _closeFilterDialog,
+          icon: const Icon(Icons.clear),
         )
       ],
     );
@@ -105,7 +111,7 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
   }
 
   void _closeFilterDialog() {
-    Navigator.pop(context, _expenseFilters);
+    NavigationHelper.navigateBackWithResult(context, _expenseFilters);
   }
 
   Expanded _buildMonthDropdown(ThemeData theme) {
@@ -182,7 +188,7 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
         controlAffinity: ListTileControlAffinity.leading,
         title: const Text(
           'Month Filter',
-          textScaleFactor: 0.9,
+          textScaler: TextScaler.linear(uiTextScaler),
         ),
         value: _expenseFilters.filterByMonth,
         onChanged: (val) {
@@ -207,7 +213,7 @@ class FilterExpensesDialogState extends State<FilterExpensesDialog> {
         controlAffinity: ListTileControlAffinity.leading,
         title: const Text(
           'Year Filter',
-          textScaleFactor: 0.9,
+          textScaler: TextScaler.linear(uiTextScaler),
         ),
         value: _expenseFilters.filterByYear,
         onChanged: (val) {

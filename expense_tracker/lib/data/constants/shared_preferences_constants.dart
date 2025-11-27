@@ -1,14 +1,16 @@
-// ignore_for_file: non_constant_identifier_names
+
+// ignore_for_file: constant_identifier_names, non_constant_identifier_names
 
 class SharedPreferencesConstants {
-  static String IS_FIRST_TIME_KEY = "is_first_time";
-  static SortPreferencesConstants sort = SortPreferencesConstants();
-  static FilterPreferencesConstants filter = FilterPreferencesConstants();
-  static SettingsPreferencesConstants settings = SettingsPreferencesConstants();
-  static SummaryPreferencesConstants summary = SummaryPreferencesConstants();
-  static AppThemeConstants theme = AppThemeConstants();
-  static UserConstants user = UserConstants();
-  static ProfileConstants profile = ProfileConstants();
+  SharedPreferencesConstants._();
+  static const String IS_FIRST_TIME_KEY = "is_first_time";
+  static final SortPreferencesConstants sort = SortPreferencesConstants();
+  static final FilterPreferencesConstants filter = FilterPreferencesConstants();
+  static final SettingsPreferencesConstants settings = SettingsPreferencesConstants();
+  static final SummaryPreferencesConstants summary = SummaryPreferencesConstants();
+  static final AppThemeConstants theme = AppThemeConstants();
+  static final UserConstants user = UserConstants();
+  static final ProfileConstants profile = ProfileConstants();
 }
 
 class SortPreferencesConstants {
