@@ -81,6 +81,7 @@ class ExpenseBottomSheet {
       {required bool readonly}) {
     return ListView(
       shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       children: [
         ListTile(
           iconColor: Colors.blue.shade800,
