@@ -101,6 +101,22 @@ class NavigationHelper {
     );
   }
 
+  // Smart back navigation wrapper
+  static Widget withSmartBackNavigation(BuildContext context,
+      {required Widget child}) {
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final shouldPop = await handleBackPress();
+        if (shouldPop && context.mounted) {
+          justNavigateBack(context);
+        }
+      },
+      child: child,
+    );
+  }
+
   // Handle system back button press
   static Future<bool> handleBackPress() async {
     if (desktopContentAreaKey.currentState?.canPop() ?? false) {

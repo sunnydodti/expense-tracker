@@ -9,18 +9,8 @@ import '../screens/profile_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/tag_screen.dart';
 
-class HomeDrawer extends StatefulWidget {
+class HomeDrawer extends StatelessWidget {
   const HomeDrawer({super.key});
-
-  @override
-  HomeDrawerState createState() => HomeDrawerState();
-}
-
-class HomeDrawerState extends State<HomeDrawer> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {

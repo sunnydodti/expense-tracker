@@ -17,8 +17,8 @@ class TabletScaffold extends StatelessWidget {
   const TabletScaffold({super.key});
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: NavigationHelper.handleBackPress,
+    return NavigationHelper.withSmartBackNavigation(
+      context,
       child: Scaffold(
         drawer: const SafeArea(child: HomeDrawer()),
         appBar: const MainAppBar(),
