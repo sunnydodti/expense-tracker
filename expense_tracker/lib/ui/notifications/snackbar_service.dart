@@ -11,7 +11,7 @@ class SnackBarService {
 
   //region Section 1: SnackBarWithContext
 
-  static showSnackBarWithContext(BuildContext context, String message,
+  static void showSnackBarWithContext(BuildContext context, String message,
       {bool removeCurrent = false, int duration = 2}) {
     if (removeCurrent) ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -23,7 +23,7 @@ class SnackBarService {
     );
   }
 
-  static showErrorSnackBarWithContext(BuildContext context, String message,
+  static void showErrorSnackBarWithContext(BuildContext context, String message,
       {bool removeCurrent = false, int duration = 2}) {
     if (removeCurrent) ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
@@ -36,8 +36,9 @@ class SnackBarService {
     );
   }
 
-  static showSuccessSnackBarWithContext(BuildContext context, String message,
-      {bool removeCurrent = false, int duration = 2}) async {
+  static void showSuccessSnackBarWithContext(
+      BuildContext context, String message,
+      {bool removeCurrent = false, int duration = 2}) {
     if (removeCurrent) ScaffoldMessenger.of(context).removeCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -76,11 +77,11 @@ class SnackBarService {
 
   static void emptyFunction() {}
 
-  static showUndoSnackBarWithContextAndCallback(
-      BuildContext context, String message, Function onUndo,
+  static Future<void> showUndoSnackBarWithContextAndCallback(
+      BuildContext context, String message, VoidCallback onUndo,
       {bool removeCurrent = false,
       int duration = 2,
-      Function onNotUndo = emptyFunction}) async {
+      VoidCallback onNotUndo = emptyFunction}) async {
     if (removeCurrent) ScaffoldMessenger.of(context).removeCurrentSnackBar();
     bool isUndoPressed = false;
     ScaffoldMessenger.of(context).showSnackBar(
@@ -103,7 +104,7 @@ class SnackBarService {
 //endregion
 
 //region Section 2: SnackBarWithoutContext
-  static showSnackBar(
+  static void showSnackBar(
     String message, {
     bool removeCurrent = false,
     int duration = 2,
@@ -113,7 +114,7 @@ class SnackBarService {
     snackbarKey.currentState!.showSnackBar(snackBar);
   }
 
-  static showErrorSnackBar(
+  static void showErrorSnackBar(
     String message, {
     bool removeCurrent = false,
     int duration = 2,
@@ -128,11 +129,11 @@ class SnackBarService {
     snackbarKey.currentState!.showSnackBar(snackBar);
   }
 
-  static showSuccessSnackBar(
+  static void showSuccessSnackBar(
     String message, {
     bool removeCurrent = false,
     int duration = 2,
-  }) async {
+  }) {
     SnackBar snackBar = SnackBar(
       content: Text(message),
       duration: Duration(seconds: duration),
@@ -169,12 +170,12 @@ class SnackBarService {
     return completer.future;
   }
 
-  static showUndoSnackBarCallback(
+  static Future<void> showUndoSnackBarCallback(
     String message,
-    Function onUndo, {
+    VoidCallback onUndo, {
     bool removeCurrent = false,
     int duration = 2,
-    Function onNotUndo = emptyFunction,
+    VoidCallback onNotUndo = emptyFunction,
   }) async {
     bool isUndoPressed = false;
 

@@ -18,8 +18,8 @@ class DesktopScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: NavigationHelper.handleBackPress,
+    return NavigationHelper.withSmartBackNavigation(
+      context,
       child: Scaffold(
         appBar: const MainAppBar(centerTitle: false),
         backgroundColor: ColorHelper.getBackgroundColor(Theme.of(context)),
@@ -48,8 +48,7 @@ class DesktopScaffold extends StatelessWidget {
               child: Column(
                 children: [
                   ExpenseSummary(
-                    margin: EdgeInsets.only(
-                        top: uiSize, right: uiSize),
+                    margin: EdgeInsets.only(top: uiSize, right: uiSize),
                   ),
                   InstallPwaButton(
                     padding: EdgeInsets.only(
