@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../data/constants/ui_constants.dart';
 import '../../../data/helpers/color_helper.dart';
+import '../../../data/helpers/navigation_helper.dart';
 import '../../../models/delete_input.dart';
 
 class DeleteConfirmationDialog extends StatefulWidget {
@@ -29,8 +31,8 @@ class _DeleteConfirmationDialogState extends State<DeleteConfirmationDialog> {
   final String cancelAction = "Cancel";
   final String confirmAction = "Confirm";
 
-  defaultOnTap() {
-    Navigator.pop(context);
+  void defaultOnTap() {
+    NavigationHelper.justNavigateBack(context);
   }
 
   @override
@@ -38,7 +40,12 @@ class _DeleteConfirmationDialogState extends State<DeleteConfirmationDialog> {
     ThemeData theme = Theme.of(context);
     Color? activeColor = ColorHelper.getToggleColor(theme);
     return AlertDialog(
+      titlePadding: const EdgeInsets.all(uiPaddingX2),
+      contentPadding: const EdgeInsets.all(uiPaddingX2),
       backgroundColor: ColorHelper.getTileColor(theme),
+      actionsPadding: const EdgeInsets.symmetric(
+          horizontal: uiPaddingHalf, vertical: uiPaddingX2),
+      insetPadding: const EdgeInsets.all(uiPadding),
       title: _buildDialogTitle(),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -97,7 +104,7 @@ class _DeleteConfirmationDialogState extends State<DeleteConfirmationDialog> {
                       TextStyle(color: ColorHelper.getButtonTextColor(theme)),
                 ),
                 onPressed: () {
-                  if (widget.onCancel != null) widget.onCancel!();
+                  widget.onCancel?.call();
                   defaultOnTap();
                 }),
             ElevatedButton(
@@ -117,7 +124,9 @@ class _DeleteConfirmationDialogState extends State<DeleteConfirmationDialog> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Text('Confirm Deletion'),
+        const Expanded(
+            child: Text('Confirm Deletion',
+                textScaler: TextScaler.linear(uiTextScalerAlertTitle))),
         IconButton(
           onPressed: _closeFilterDialog,
           icon: const Icon(Icons.clear),
@@ -126,7 +135,7 @@ class _DeleteConfirmationDialogState extends State<DeleteConfirmationDialog> {
     );
   }
 
-  void _closeFilterDialog() => Navigator.pop(context);
+  void _closeFilterDialog() => NavigationHelper.justNavigateBack(context);
 
   void handleDeleteAll(value) => setState(() {
         deleteEverything = value!;
@@ -136,7 +145,7 @@ class _DeleteConfirmationDialogState extends State<DeleteConfirmationDialog> {
         deleteTags = deleteEverything ? true : false;
       });
 
-  handleConfirmation() {
+  void handleConfirmation() {
     if (widget.onConfirm != null) {
       DeleteInput deleteInput = DeleteInput(
           deleteExpenses: deleteExpenses,
