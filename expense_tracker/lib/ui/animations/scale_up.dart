@@ -19,6 +19,7 @@ class _ScaleUpState extends State<ScaleUp> with SingleTickerProviderStateMixin {
     _controller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 150));
     _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
+    _controller.forward();
   }
 
   @override
@@ -29,7 +30,6 @@ class _ScaleUpState extends State<ScaleUp> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    _controller.forward();
     return ScaleTransition(
       scale: _scaleAnimation,
       child: widget.child,
