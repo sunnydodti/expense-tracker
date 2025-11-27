@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ColorHelper {
+  ColorHelper._();
   static Color? _appBarColor;
   static Color? _screenAppBarColor;
   static Color? _backgroundColor;

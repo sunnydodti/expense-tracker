@@ -1,7 +1,8 @@
 import '../../models/enums/transaction_type.dart';
 
 class FormConstants {
-  static ExpenseFormConstants expense = ExpenseFormConstants();
+  FormConstants._();
+  static final ExpenseFormConstants expense = ExpenseFormConstants();
 }
 
 class ExpenseFormConstants {

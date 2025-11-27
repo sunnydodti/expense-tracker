@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class ChartConstants {
-  static BarChartConstants bar = BarChartConstants();
-  static LineChartConstants line = LineChartConstants();
-  static PieChartConstants pie = PieChartConstants();
-  static CommonChartConstants common = CommonChartConstants();
+  ChartConstants._();
+  static final BarChartConstants bar = BarChartConstants();
+  static final LineChartConstants line = LineChartConstants();
+  static final PieChartConstants pie = PieChartConstants();
 }
 
 class BarChartConstants {
@@ -43,13 +43,14 @@ class PieChartConstants {
 }
 
 class CommonChartConstants {
+  CommonChartConstants._();
   static Color color = Colors.blue.shade400;
   static Color colorExpense = Colors.red.shade400;
   static Color colorIncome = Colors.green.shade400;
   static Color colorReimbursement = Colors.white;
 
-  static Color colorAccent = Colors.indigoAccent;
-  static Color colorExpenseAccent = Colors.redAccent;
-  static Color colorIncomeAccent = Colors.greenAccent;
-  static Color colorReimbursementAccent = Colors.indigoAccent;
+  static const Color colorAccent = Colors.indigoAccent;
+  static const Color colorExpenseAccent = Colors.redAccent;
+  static const Color colorIncomeAccent = Colors.greenAccent;
+  static const Color colorReimbursementAccent = Colors.indigoAccent;
 }

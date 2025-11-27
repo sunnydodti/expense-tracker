@@ -13,10 +13,9 @@ class NavigationHelper {
       if (!didPop) {
         Navigator.pop(context);
       }
-    } else {
-      // Regular navigation for mobile layout
-      Navigator.pop(context);
     }
+    // Regular navigation for mobile layout
+    Navigator.pop(context);
   }
 
   static void justNavigateBack(BuildContext context) {
@@ -32,10 +31,9 @@ class NavigationHelper {
       if (!didPop) {
         Navigator.pop(context, result);
       }
-    } else {
-      // Regular navigation for mobile layout
-      Navigator.pop(context, result);
     }
+    // Regular navigation for mobile layout
+    Navigator.pop(context, result);
   }
 
   // Regular forward navigation (only used when content area isn't appropriate)
@@ -94,14 +92,13 @@ class NavigationHelper {
   static void smartNavigate(BuildContext context, Widget content) {
     if (isLargeScreen(context)) {
       _navigateToContentArea(context, content);
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => content,
-        ),
-      );
     }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => content,
+      ),
+    );
   }
 
   // Handle system back button press
@@ -130,10 +127,9 @@ class NavigationHelper {
       }
       // If no reporter found (shouldn't happen), fall back to regular navigation
       navigateBackFromContentArea(context);
-    } else {
-      // Regular navigation for mobile layout
-      Navigator.pop(context, result);
     }
+    // Regular navigation for mobile layout
+    Navigator.pop(context, result);
   }
 
   static Future<T?> navigateToScreenWithResult<T>(
@@ -156,15 +152,14 @@ class NavigationHelper {
       // Push the wrapped content
       key.currentState?.pushContent(wrappedContent);
       return completer.future;
-    } else {
-      // For small screens, use regular navigation that already supports results
-      return Navigator.push<T>(
-        context,
-        MaterialPageRoute(
-          builder: (context) => screenWidget,
-        ),
-      );
     }
+    // For small screens, use regular navigation that already supports results
+    return Navigator.push<T>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => screenWidget,
+      ),
+    );
   }
 
 // Wrapper widget that can report results back
@@ -203,15 +198,15 @@ class NavigationHelper {
       // Push the wrapped content
       key.currentState?.pushContent(wrappedContent);
       return completer.future;
-    } else {
-      // For small screens, use regular navigation that already supports results
-      return Navigator.push<T>(
-        context,
-        MaterialPageRoute(
-          builder: (context) => content,
-        ),
-      );
     }
+
+    // For small screens, use regular navigation that already supports results
+    return Navigator.push<T>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => content,
+      ),
+    );
   }
 }
 

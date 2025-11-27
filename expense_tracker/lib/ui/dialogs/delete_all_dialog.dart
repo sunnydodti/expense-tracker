@@ -8,21 +8,17 @@ import '../../service/delete_service.dart';
 import '../notifications/snackbar_service.dart';
 import 'common/delete_confirmation_dialog.dart';
 
-class DeleteAllDialog extends StatefulWidget {
+class DeleteAllDialog extends StatelessWidget {
   const DeleteAllDialog({super.key});
 
   @override
-  State<DeleteAllDialog> createState() => _DeleteAllDialogState();
-}
-
-class _DeleteAllDialogState extends State<DeleteAllDialog> {
-  @override
   Widget build(BuildContext context) {
     return ListTile(
-        title: const Text('Delete'), onTap: _showDeleteConfirmationDialog);
+        title: const Text('Delete'),
+        onTap: () => _showDeleteConfirmationDialog(context));
   }
 
-  _showDeleteConfirmationDialog() async {
+  void _showDeleteConfirmationDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => DeleteConfirmationDialog(
@@ -35,7 +31,7 @@ class _DeleteAllDialogState extends State<DeleteAllDialog> {
       BuildContext context, DeleteInput deleteInput) async {
     DeleteOutput deleteOutput = await DeleteService.deleteFromDatabase(
         deleteInput,
-        refreshMethod: _refreshExpenses);
+        refreshMethod: () => _refreshExpenses(context));
 
     if (deleteOutput.totalDeletedCount > 0) {
       String message = _getSnackbarMessage(deleteOutput);
@@ -47,7 +43,7 @@ class _DeleteAllDialogState extends State<DeleteAllDialog> {
     }
   }
 
-  _refreshExpenses() {
+  void _refreshExpenses(BuildContext context) {
     final expenseProvider =
         Provider.of<ExpenseProvider>(context, listen: false);
     expenseProvider.refreshExpenses();

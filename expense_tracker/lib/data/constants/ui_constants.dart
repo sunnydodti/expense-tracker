@@ -31,3 +31,4 @@ const double uiTextScaler = 0.9;
 const double uiTextScalerTags = 0.7;
 const double uiTextScalerNotes = 0.8;
 const double uiTextScalerAmount = 1.1;
+const double uiTextScalerAlertTitle = 0.8;

@@ -1,9 +1,10 @@
 import 'dart:math';
 
 class ResponseConstants {
-  static UpcomingFeature upcoming = UpcomingFeature();
-  static ExportResponse export = ExportResponse();
-  static ImportResponse import = ImportResponse();
+  ResponseConstants._();
+  static final UpcomingFeature upcoming = UpcomingFeature();
+  static final ExportResponse export = ExportResponse();
+  static final ImportResponse import = ImportResponse();
 }
 
 class UpcomingFeature {
