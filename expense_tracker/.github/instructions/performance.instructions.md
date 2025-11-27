@@ -9,6 +9,7 @@ You are an expert Flutter developer. When generating code or reviewing changes f
 - **Optimize `DataTable`**: `ExpenseItemsScreen` uses `DataTable`. For large datasets, this is performance-heavy. Prefer a custom `ListView` or a paginated data table if the item count grows.
 - **Use `const` Constructors**: Ensure all stateless widgets and static children (icons, text styles) use `const`.
 - **Minimize `Opacity`**: Use `AnimatedOpacity` or `FadeTransition` instead of `Opacity` for animations.
+- **Use Defined Constants**: Reuse values defined in `lib/data/constants/` (e.g., `ui_constants.dart` for padding/sizes, `theme_constants.dart` for themes) instead of hardcoding magic numbers or colors. This ensures consistency and easier maintenance.
 
 ## 2. State Management (Provider)
 - **Optimize `ExpenseProvider`**:
@@ -36,3 +37,5 @@ You are an expert Flutter developer. When generating code or reviewing changes f
 ## 7. Specific Anti-Patterns to Fix
 - **`FutureBuilder` in `build`**: Refactor `ExpenseList` to fetch data in `initState` or via a route argument, removing the `FutureBuilder` that calls `refreshExpensesHome`.
 - **Recursive/Looping Calculations**: Avoid calling heavy calculation methods (like `getTotalBalance`) inside loops or frequently rebuilt widgets.
+
+Note - keep your responses succinct and to ponint.
