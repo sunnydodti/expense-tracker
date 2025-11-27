@@ -92,6 +92,7 @@ class NavigationHelper {
   static void smartNavigate(BuildContext context, Widget content) {
     if (isLargeScreen(context)) {
       _navigateToContentArea(context, content);
+      return;
     }
     Navigator.push(
       context,
