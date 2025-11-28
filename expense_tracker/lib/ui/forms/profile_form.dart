@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/constants/ui_constants.dart';
 import '../../models/profile.dart';
 import '../../providers/profile_provider.dart';
 import '../../service/profile_service.dart';
@@ -19,7 +20,7 @@ class _ProfileFormState extends State<ProfileForm> {
   final _formKey = GlobalKey<FormState>();
 
   static final Logger _logger =
-  Logger(printer: SimplePrinter(), level: Level.info);
+      Logger(printer: SimplePrinter(), level: Level.info);
 
   final _profileController = TextEditingController();
 
@@ -36,26 +37,31 @@ class _ProfileFormState extends State<ProfileForm> {
 
   @override
   Widget build(BuildContext context) {
+    final color = _getColor(context);
     return ListTile(
-      visualDensity: const VisualDensity(vertical: 4),
+        visualDensity: const VisualDensity(vertical: 4),
         title: Form(
           key: _formKey,
           child: TextFormField(
             controller: _profileController,
             decoration: InputDecoration(
-                hintText: "Add Profile Name",
-                labelStyle: TextStyle(
-                  color: getColor(context),
-                ),
-                focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: getColor(context),
-                    )),
-                enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: getColor(context),
-                    )),
-                label: const Text("New Profile", textScaleFactor: .9)),
+              hintText: "Add Profile Name",
+              labelStyle: TextStyle(
+                color: color,
+              ),
+              focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                color: color,
+              )),
+              enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                color: color,
+              )),
+              label: const Text(
+                "New Profile",
+                textScaler: TextScaler.linear(uiTextScaler),
+              ),
+            ),
             validator: _validateNewProfile,
             onSaved: submitProfile,
             onChanged: (value) {
@@ -67,7 +73,7 @@ class _ProfileFormState extends State<ProfileForm> {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              icon: Icon(Icons.add, color: getColor(context)),
+              icon: Icon(Icons.add, color: color),
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
@@ -80,7 +86,7 @@ class _ProfileFormState extends State<ProfileForm> {
         ));
   }
 
-  Color getColor(BuildContext context) {
+  Color _getColor(BuildContext context) {
     Brightness brightness = Theme.of(context).brightness;
     return (brightness == Brightness.dark
         ? Colors.green.shade300
@@ -90,7 +96,7 @@ class _ProfileFormState extends State<ProfileForm> {
   void submitProfile(newValue) async {
     if (_formKey.currentState?.validate() ?? false) {
       ProfileFormModel profile =
-      ProfileFormModel(name: _profileController.text.trim());
+          ProfileFormModel(name: _profileController.text.trim());
       _addProfile(profile).then((value) {
         if (value > 0) {
           _profileController.clear();
@@ -107,7 +113,7 @@ class _ProfileFormState extends State<ProfileForm> {
 
   void _refreshProfiles() {
     final profileProvider =
-    Provider.of<ProfileProvider>(context, listen: false);
+        Provider.of<ProfileProvider>(context, listen: false);
     profileProvider.refreshProfiles();
   }
 

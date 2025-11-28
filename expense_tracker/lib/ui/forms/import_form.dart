@@ -7,6 +7,7 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/constants/response_constants.dart';
+import '../../data/constants/ui_constants.dart';
 import '../../data/helpers/color_helper.dart';
 import '../../models/import_result.dart';
 import '../../providers/expense_provider.dart';
@@ -65,12 +66,12 @@ class _ImportFormState extends State<ImportForm> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (!kIsWeb) getDefaultStoragePathFile(),
-            const SizedBox(height: 20),
+            const SizedBox(height: uiSizeX2),
             getFileNameField(theme),
             if (isError) getErrorMessage(),
-            if (isError) const SizedBox(height: 20),
+            if (isError) const SizedBox(height: uiSizeX2),
             getImportButton(theme),
-            const SizedBox(height: 10)
+            const SizedBox(height: uiSize)
           ],
         ));
   }
@@ -204,7 +205,7 @@ class _ImportFormState extends State<ImportForm> {
               selectedFileController.clear();
               selectedFile = null;
             },
-            icon: const Icon(Icons.clear, size: 20),
+            icon: const Icon(Icons.clear, size: uiIconSize),
           ),
         ),
         validator: (value) => validateTextField(value, "enter FileName"),

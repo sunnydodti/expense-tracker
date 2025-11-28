@@ -6,6 +6,7 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/constants/form_constants.dart';
+import '../../../data/constants/ui_constants.dart';
 import '../../../data/helpers/color_helper.dart';
 import '../../../data/helpers/navigation_helper.dart';
 import '../../../models/enums/form_modes.dart';
@@ -202,11 +203,11 @@ class _ExpenseFormState extends State<ExpenseForm> {
     return Theme(
       data: theme.copyWith(
           textTheme: theme.textTheme.apply(
-            fontSizeFactor: .9,
+            fontSizeFactor: uiTextScaler,
           ),
           inputDecorationTheme: InputDecorationTheme(
             contentPadding:
-                const EdgeInsets.symmetric(horizontal: 15, vertical: 1),
+                const EdgeInsets.symmetric(horizontal: uiPaddingX2, vertical: 1),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
                 color: _highlightColor,
@@ -259,19 +260,19 @@ class _ExpenseFormState extends State<ExpenseForm> {
   Widget _buildSuggestionsRow() {
     return Container(
       height: 50,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: uiPaddingX2, vertical: uiPadding),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: _suggestions.length,
         itemBuilder: (context, index) {
           final suggestion = _suggestions[index];
           return Padding(
-            padding: const EdgeInsets.only(right: 8.0),
+            padding: const EdgeInsets.only(right: uiPadding),
             child: ActionChip(
               backgroundColor: ColorHelper.getTileColor(Theme.of(context)),
               avatar: Icon(
                 2 > 1 ? Icons.history_outlined : Icons.lightbulb_outline,
-                size: 16,
+                size: uiSizeX2,
                 color: _highlightColor,
               ),
               label: Text(
@@ -290,7 +291,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
   ListTile _buildRecurringFrequencyField() {
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+      contentPadding: const EdgeInsets.symmetric(horizontal: uiPaddingX2),
       title: const Text("Recurring Frequency"),
       subtitle:
           Text("${RecurringFrequency.monthly.name} on ${dateController.text}"),
@@ -312,7 +313,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
       activeColor: ColorHelper.getToggleColor(Theme.of(context)),
       dense: true,
       visualDensity: const VisualDensity(vertical: -2),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+      contentPadding: const EdgeInsets.symmetric(horizontal: uiPaddingX2),
       title: const Text("Add Expense Items"),
       value: _containsExpenseItems,
       onChanged: (value) => _toggleExpenseItems(value),
@@ -326,7 +327,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
       activeColor: ColorHelper.getToggleColor(Theme.of(context)),
       dense: true,
       visualDensity: const VisualDensity(vertical: -2),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+      contentPadding: const EdgeInsets.symmetric(horizontal: uiPaddingX2),
       title: const Text("Recurring Expense"),
       subtitle: Text(text),
       value: _isRecurring,
@@ -336,7 +337,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
   Container _buildSubmitButton() {
     return Container(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: uiPadding),
       width: double.infinity,
       child: ExpenseWidgets.form
           .buildSubmitButton(_submitExpense, widget.formMode, _highlightColor),

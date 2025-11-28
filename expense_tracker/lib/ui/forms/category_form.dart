@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/constants/ui_constants.dart';
 import '../../models/expense_category.dart';
 import '../../providers/category_provider.dart';
 import '../../service/category_service.dart';
@@ -36,6 +37,7 @@ class _CategoryFormState extends State<CategoryForm> {
 
   @override
   Widget build(BuildContext context) {
+    final color = _getColor(context);
     return ListTile(
         visualDensity: const VisualDensity(vertical: 4),
         title: Form(
@@ -43,19 +45,23 @@ class _CategoryFormState extends State<CategoryForm> {
           child: TextFormField(
             controller: _categoryController,
             decoration: InputDecoration(
-                hintText: "Add Category Name",
-                labelStyle: TextStyle(
-                  color: getColor(context),
-                ),
-                focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                  color: getColor(context),
-                )),
-                enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                  color: getColor(context),
-                )),
-                label: const Text("New Category", textScaleFactor: .9)),
+              hintText: "Add Category Name",
+              labelStyle: TextStyle(
+                color: color,
+              ),
+              focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                color: color,
+              )),
+              enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                color: color,
+              )),
+              label: const Text(
+                "New Category",
+                textScaler: TextScaler.linear(uiTextScaler),
+              ),
+            ),
             validator: _validateNewCategory,
             onSaved: submitCategory,
             onChanged: (value) {
@@ -67,7 +73,7 @@ class _CategoryFormState extends State<CategoryForm> {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              icon: Icon(Icons.add, color: getColor(context)),
+              icon: Icon(Icons.add, color: color),
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
@@ -80,7 +86,7 @@ class _CategoryFormState extends State<CategoryForm> {
         ));
   }
 
-  Color getColor(BuildContext context) {
+  Color _getColor(BuildContext context) {
     Brightness brightness = Theme.of(context).brightness;
     return (brightness == Brightness.dark
         ? Colors.green.shade300
