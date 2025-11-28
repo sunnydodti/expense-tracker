@@ -4,6 +4,7 @@ import 'package:logger/logger.dart';
 
 import '../../data/constants/file_name_constants.dart';
 import '../../data/constants/response_constants.dart';
+import '../../data/constants/ui_constants.dart';
 import '../../data/helpers/color_helper.dart';
 import '../../models/export_result.dart';
 import '../../service/export_service.dart';
@@ -60,12 +61,12 @@ class _ExportFormState extends State<ExportForm> {
           children: [
             if (!kIsWeb) getPathToggle(theme),
             if (!kIsWeb) getStoragePathFile(),
-            const SizedBox(height: 20),
+            const SizedBox(height: uiSizeX2),
             if (isError) getErrorMessage(),
-            if (isError) const SizedBox(height: 20),
+            if (isError) const SizedBox(height: uiSizeX2),
             getFileNameField(),
             getExportButton(theme),
-            const SizedBox(height: 10)
+            const SizedBox(height: uiSize)
           ],
         ));
   }
@@ -206,7 +207,7 @@ class _ExportFormState extends State<ExportForm> {
           onPressed: () {
             fileNameController.clear();
           },
-          icon: const Icon(Icons.clear, size: 20),
+          icon: const Icon(Icons.clear, size: uiIconSize),
         ),
       ),
       validator: (value) => validateTextField(value, "enter FileName"),

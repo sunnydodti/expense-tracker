@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
+import '../../data/constants/ui_constants.dart';
 import '../../models/tag.dart';
 import '../../providers/tag_provider.dart';
 import '../../service/tag_service.dart';
@@ -28,6 +29,7 @@ class _TagFormState extends State<TagForm> {
 
   @override
   Widget build(BuildContext context) {
+    final color = _getColor(context);
     return ListTile(
       visualDensity: const VisualDensity(vertical: 4),
       dense: true, // Compact spacing
@@ -36,19 +38,23 @@ class _TagFormState extends State<TagForm> {
         child: TextFormField(
           controller: _tagController,
           decoration: InputDecoration(
-              hintText: "Add Tag Name",
-              labelStyle: TextStyle(
-                color: getColor(context),
-              ),
-              focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                color: getColor(context),
-              )),
-              enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                color: getColor(context),
-              )),
-              label: const Text("New Tag")),
+            hintText: "Add Tag Name",
+            labelStyle: TextStyle(
+              color: color,
+            ),
+            focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+              color: color,
+            )),
+            enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+              color: color,
+            )),
+            label: const Text(
+              "New Tag",
+              textScaler: TextScaler.linear(uiTextScaler),
+            ),
+          ),
           validator: _validateNewTag,
           onSaved: submitTag,
           onChanged: (value) {
@@ -60,15 +66,15 @@ class _TagFormState extends State<TagForm> {
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
-            icon: Icon(Icons.add, color: getColor(context)),
+            icon: Icon(Icons.add, color: color),
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
               }
             },
-          tooltip: "Save Tag",
+            tooltip: "Save Tag",
           ),
-        const Expanded(child: Text("Add"))
+          const Expanded(child: Text("Add"))
         ],
       ),
     );
@@ -80,7 +86,7 @@ class _TagFormState extends State<TagForm> {
     super.dispose();
   }
 
-  Color getColor(BuildContext context) {
+  Color _getColor(BuildContext context) {
     Brightness brightness = Theme.of(context).brightness;
     return (brightness == Brightness.dark
         ? Colors.green.shade300

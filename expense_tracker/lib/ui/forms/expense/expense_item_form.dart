@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/constants/ui_constants.dart';
 import '../../../models/expense_item.dart';
 import '../../../providers/expense_items_provider.dart';
 
@@ -26,13 +27,10 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
   final _quantityController = TextEditingController();
   final _totalController = TextEditingController();
 
-  // late String _currency = "";
-
   @override
   void initState() {
     super.initState();
     setDefaults();
-    // getCurrency();
   }
 
   setDefaults() {
@@ -53,8 +51,7 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // color: Colors.blue,
-      padding: const EdgeInsets.symmetric(horizontal: 5),
+      padding: const EdgeInsets.symmetric(horizontal: uiPaddingHalf),
       child: Form(
         key: _formKey,
         child: ListTile(
@@ -78,10 +75,10 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
 
   Padding _buildSign(String sign) {
     return Padding(
-      padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
+      padding: const EdgeInsets.only(left: uiPadding, right: uiPadding, bottom: uiPaddingHalf),
       child: Text(
         sign,
-        style: const TextStyle(fontSize: 20),
+        style: const TextStyle(fontSize: uiIconSize),
       ),
     );
   }
@@ -89,106 +86,95 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
   Expanded _buildNameField() {
     return Expanded(
       flex: 6,
-      child: Container(
-        child: TextFormField(
-          controller: _nameController,
-          decoration: const InputDecoration(
-            hintText: "Name",
-            label: Text("Name", textScaleFactor: .8),
-          ),
-          validator: _validateItemName,
-          onChanged: (value) {
-            _logger.i("tag: $value");
-          },
-          keyboardType: TextInputType.text,
+      child: TextFormField(
+        controller: _nameController,
+        decoration: const InputDecoration(
+          hintText: "Name",
+          label: Text("Name", textScaler: TextScaler.linear(uiTextScalerNotes)),
         ),
+        validator: _validateItemName,
+        onChanged: (value) {
+          _logger.i("tag: $value");
+        },
+        keyboardType: TextInputType.text,
       ),
     );
   }
 
   Expanded _buildAmountField() {
     return Expanded(
-      child: Container(
-        // padding: const EdgeInsets.only(left: 5),
-        child: TextFormField(
-          controller: _amountController,
-          decoration: InputDecoration(
-            isDense: true,
-            contentPadding: const EdgeInsets.only(top: 15, left: 10, bottom: 5),
-            helperText: "Amount",
-            prefix: Text("${widget.currency} "),
-            // label: Text("Amount", textScaleFactor: .8),
-            focusedBorder: const OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.transparent),
-            ),
+      child: TextFormField(
+        controller: _amountController,
+        decoration: InputDecoration(
+          isDense: true,
+          contentPadding: const EdgeInsets.only(top: uiPaddingX2, left: uiPadding, bottom: uiPaddingHalf),
+          helperText: "Amount",
+          prefix: Text("${widget.currency} "),
+          // label: Text("Amount", textScaleFactor: .8),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent),
           ),
-          validator: _validateItemAmount,
-          keyboardType: const TextInputType.numberWithOptions(decimal: false),
-          inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-          ],
-          onChanged: (value) {
-            _logger.i("tag: $value");
-            _updateAmount();
-          },
         ),
+        validator: _validateItemAmount,
+        keyboardType: const TextInputType.numberWithOptions(decimal: false),
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+        ],
+        onChanged: (value) {
+          _logger.i("tag: $value");
+          _updateAmount();
+        },
       ),
     );
   }
 
   Expanded _buildQuantityField() {
     return Expanded(
-      child: Container(
-        // padding: const EdgeInsets.only(left: 5),
-        child: TextFormField(
-          controller: _quantityController,
-          decoration: const InputDecoration(
-            isDense: true,
-            contentPadding: EdgeInsets.only(top: 15, left: 10, bottom: 5),
-            helperText: "Quantity",
-            // label: Text("Quantity", textScaleFactor: .8),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.transparent),
-            ),
+      child: TextFormField(
+        controller: _quantityController,
+        decoration: const InputDecoration(
+          isDense: true,
+          contentPadding: EdgeInsets.only(top: uiPaddingX2, left: uiPadding, bottom: uiPaddingHalf),
+          helperText: "Quantity",
+          // label: Text("Quantity", textScaleFactor: .8),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent),
           ),
-          validator: _validateItemAmount,
-          keyboardType: const TextInputType.numberWithOptions(decimal: false),
-          inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-          ],
-          onChanged: (value) {
-            _logger.i("tag: $value");
-            _updateAmount();
-          },
         ),
+        validator: _validateItemAmount,
+        keyboardType: const TextInputType.numberWithOptions(decimal: false),
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+        ],
+        onChanged: (value) {
+          _logger.i("tag: $value");
+          _updateAmount();
+        },
       ),
     );
   }
 
   Expanded _buildTotalField() {
     return Expanded(
-      child: Container(
-        // padding: const EdgeInsets.only(left: 5),
-        child: TextFormField(
-          controller: _totalController,
-          readOnly: true,
-          decoration: InputDecoration(
-            isDense: true,
-            contentPadding: const EdgeInsets.only(top: 15, left: 10, bottom: 5),
-            prefix: Text("${widget.currency} "),
-            helperText: "Total",
-            focusedBorder: const OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.transparent),
-            ),
+      child: TextFormField(
+        controller: _totalController,
+        readOnly: true,
+        decoration: InputDecoration(
+          isDense: true,
+          contentPadding: const EdgeInsets.only(top: uiPaddingX2, left: uiPadding, bottom: uiPaddingHalf),
+          prefix: Text("${widget.currency} "),
+          helperText: "Total",
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent),
           ),
-          keyboardType: const TextInputType.numberWithOptions(decimal: false),
-          inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-          ],
-          onChanged: (value) {
-            _logger.i("tag: $value");
-          },
         ),
+        keyboardType: const TextInputType.numberWithOptions(decimal: false),
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+        ],
+        onChanged: (value) {
+          _logger.i("tag: $value");
+        },
       ),
     );
   }
@@ -250,11 +236,4 @@ class _ExpenseItemFormState extends State<ExpenseItemForm> {
     });
   }
 
-// getCurrency() async {
-//   final provider = Provider.of<SettingsProvider>(context, listen: false);
-//   await provider.refreshDefaultCurrency(notify: false);
-//   setState(() {
-//     _currency = "${FormConstants.expense.currencies[provider.defaultCurrency]!} ";
-//   });
-// }
 }
