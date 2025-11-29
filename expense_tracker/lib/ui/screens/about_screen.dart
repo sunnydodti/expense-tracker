@@ -1,41 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../data/constants/db_constants.dart';
+import '../../data/constants/ui_constants.dart';
 import '../../data/helpers/color_helper.dart';
-import '../notifications/snackbar_service.dart';
+import '../widgets/common/link_tile.dart';
 import '../widgets/common/screen_app_bar.dart';
+import '../widgets/common/credit_tile.dart';
 
-class AboutScreen extends StatefulWidget {
+class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
 
   @override
-  State<AboutScreen> createState() => _AboutScreenState();
-}
-
-class _AboutScreenState extends State<AboutScreen> {
-  final PackageInfo _packageInfo = PackageInfo(
-    appName: 'Expense Tracker',
-    packageName: 'com.sunnydodti.expense_tracker',
-    version: '${DBConstants.version.appVersion}-alpha',
-    buildNumber: '1',
-  );
-
-  @override
-  void initState() {
-    super.initState();
-    // _initPackageInfo();
-  }
-
-  // Future<void> _initPackageInfo() async {
-  //   final info = await PackageInfo.fromPlatform();
-  //   setState(() {
-  //     _packageInfo = info;
-  //   });
-  // }
-
-  @override
   Widget build(BuildContext context) {
+    final PackageInfo packageInfo = PackageInfo(
+      appName: 'Expense Tracker',
+      packageName: 'com.sunnydodti.expense_tracker',
+      version: '${DBConstants.version.appVersion}-alpha',
+      buildNumber: '1',
+    );
+
     final theme = Theme.of(context);
     final cardColor = ColorHelper.getTileColor(theme);
     final textColor = ColorHelper.getButtonTextColor(theme);
@@ -43,386 +26,203 @@ class _AboutScreenState extends State<AboutScreen> {
 
     return Scaffold(
       appBar: const ScreenAppBar(title: 'About'),
-      body: ListView(
-        padding: const EdgeInsets.all(8),
+      backgroundColor: ColorHelper.getBackgroundColor(Theme.of(context)),
+      body: _buildAboutList(
+        context,
+        cardColor,
+        textColor,
+        accentColor,
+        packageInfo,
+      ),
+    );
+  }
+
+  Padding _buildAboutList(BuildContext context, Color cardColor,
+      Color? textColor, Color accentColor, PackageInfo packageInfo) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: uiPadding,
+        right: uiPadding,
+        top: uiPadding,
+      ),
+      child: ListView(
         children: [
-          _buildAppInfoSection(cardColor, textColor, accentColor),
-          const SizedBox(height: 4),
+          _buildAppInfoSection(
+              context, cardColor, textColor, accentColor, packageInfo),
           _buildLinksSection(cardColor, textColor, accentColor),
-          const SizedBox(height: 4),
           _buildCreatorSection(cardColor, textColor, accentColor),
-          const SizedBox(height: 4),
           _buildCreditsSection(cardColor, textColor, accentColor),
         ],
       ),
     );
   }
 
-  Widget _buildAppInfoSection(
-      Color cardColor, Color? textColor, Color accentColor) {
+  Widget _buildSectionCard({
+    String? title,
+    required Color cardColor,
+    required List<Widget> children,
+  }) {
     return Card(
       color: cardColor,
       elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      margin: const EdgeInsets.only(bottom: uiMargin),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(uiPadding),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // App Logo
-            Stack(
-              children: [
-                Image.asset('assets/icon/icon-72.png'),
-                Opacity(
-                  opacity: ColorHelper.getOpacity(Theme.of(context)),
-                  child: ColorFiltered(
-                    colorFilter: ColorFilter.mode(
-                      ColorHelper.getIconColor(Theme.of(context)),
-                      BlendMode.srcIn,
-                    ),
-                    child: Image.asset('assets/icon/icon-72.png'),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            // App Name
-            Text(
-              _packageInfo.appName,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: textColor,
-              ),
-            ),
-
-            const SizedBox(height: 8),
-
-            // Version Info
-            Text(
-              'Version ${_packageInfo.version} (${_packageInfo.buildNumber})',
-              style: TextStyle(
-                fontSize: 16,
-                color: textColor,
-              ),
-            ),
-
-            const SizedBox(height: 16),
-
-            // App Description
-            Text(
-              'A simple, intuitive expense tracker app to help you manage your finances across multiple devices.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: textColor,
-              ),
-            ),
+            if (title != null) _buildSectionTitle(title, null),
+            ...children,
           ],
         ),
       ),
     );
   }
 
-  Widget _buildLinksSection(
-      Color cardColor, Color? textColor, Color accentColor) {
-    return Card(
-      color: cardColor,
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Links',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: textColor,
+  Widget _buildSectionTitle(String title, Color? textColor) {
+    return Text(
+      title,
+      textScaler: const TextScaler.linear(uiTextScalerAboutSubTitle),
+      style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
+    );
+  }
+
+  Widget _buildAppInfoSection(
+    BuildContext context,
+    Color cardColor,
+    Color? textColor,
+    Color accentColor,
+    PackageInfo packageInfo,
+  ) {
+    return _buildSectionCard(
+      cardColor: cardColor,
+      children: [
+        Center(
+          child: Column(
+            children: [
+              // App Logo
+              Stack(
+                children: [
+                  Image.asset('assets/icon/icon-72.png'),
+                  Opacity(
+                    opacity: ColorHelper.getOpacity(Theme.of(context)),
+                    child: ColorFiltered(
+                      colorFilter: ColorFilter.mode(
+                        ColorHelper.getIconColor(Theme.of(context)),
+                        BlendMode.srcIn,
+                      ),
+                      child: Image.asset('assets/icon/icon-72.png'),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 16),
-            _buildLinkItem(
-              icon: Icons.code,
-              title: 'GitHub Repository',
-              subtitle: 'View source code and contribute',
-              url: 'https://github.com/sunnydodti/expense-tracker',
-              textColor: textColor,
-              accentColor: accentColor,
-            ),
-            const Divider(),
-            _buildLinkItem(
-              icon: Icons.update,
-              title: 'Release Notes',
-              subtitle: 'Check out the latest features',
-              url: 'https://github.com/sunnydodti/expense-tracker/releases',
-              textColor: textColor,
-              accentColor: accentColor,
-            ),
-            const Divider(),
-            _buildLinkItem(
-              icon: Icons.web,
-              title: 'Web App',
-              subtitle: 'Use Expense Tracker in your browser',
-              url: 'https://expense-tracker.persist.site',
-              textColor: textColor,
-              accentColor: accentColor,
-            ),
-          ],
+              const SizedBox(height: uiSizeX2),
+              // App Name
+              Text(
+                packageInfo.appName,
+                textScaler: const TextScaler.linear(uiTextScalerAboutAppTitle),
+                style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
+              ),
+
+              const SizedBox(height: uiPadding),
+
+              // Version Info
+              Text(
+                'Version ${packageInfo.version} (${packageInfo.buildNumber})',
+                style: TextStyle(
+                  fontSize: uiSizeX2,
+                  color: textColor,
+                ),
+              ),
+
+              const SizedBox(height: uiSizeX2),
+
+              // App Description
+              Text(
+                'A simple, intuitive expense tracker app to help you manage your finances across multiple devices.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: uiSizeX2, color: textColor),
+              ),
+            ],
+          ),
         ),
-      ),
+      ],
+    );
+  }
+
+  Widget _buildLinksSection(
+    Color cardColor,
+    Color? textColor,
+    Color accentColor,
+  ) {
+    return _buildSectionCard(
+      title: 'Links',
+      cardColor: cardColor,
+      children: [
+        const LinkTile(
+          title: "GitHub Repository",
+          description: "View source code and contribute",
+          link: "https://github.com/sunnydodti/expense-tracker",
+          icon: Icons.code_outlined,
+        ),
+        const LinkTile(
+          title: 'Release Notes',
+          description: 'Check out the latest features',
+          link: 'https://github.com/sunnydodti/expense-tracker/releases',
+          icon: Icons.update_outlined,
+        ),
+        const LinkTile(
+          title: 'Web App',
+          description: 'Use Expense Tracker in your browser',
+          link: 'https://expense-tracker.persist.site',
+          icon: Icons.web_outlined,
+        ),
+      ],
     );
   }
 
   Widget _buildCreatorSection(
       Color cardColor, Color? textColor, Color accentColor) {
-    return Card(
-      color: cardColor,
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Creator',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: textColor,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                CircleAvatar(
-                  backgroundColor: accentColor,
-                  radius: 30,
-                  child: Text(
-                    'SD',
-                    style: TextStyle(
-                      color: cardColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Sunny Dodti',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: textColor,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Developer & Designer',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: textColor,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            _buildLinkItem(
-              icon: Icons.link,
-              title: 'Portfolio',
-              subtitle: 'See more projects',
-              url: 'https://sunnydodti.com',
-              textColor: textColor,
-              accentColor: accentColor,
-            ),
-            const Divider(),
-            _buildLinkItem(
-              icon: Icons.alternate_email,
-              title: 'Contact',
-              subtitle: 'Email the developer',
-              url: 'mailto:sunny@persist.site',
-              textColor: textColor,
-              accentColor: accentColor,
-            ),
-          ],
+    return _buildSectionCard(
+      title: 'Developer',
+      cardColor: cardColor,
+      children: [
+        const CreditTile(
+          name: 'Sunny Dodti',
+          description: 'Software Engineer',
+          link: 'https://sunnydodti.com',
         ),
-      ),
+        const LinkTile(
+          title: 'Portfolio',
+          description: 'See more projects',
+          link: 'https://sunnydodti.com',
+          icon: Icons.link_outlined,
+        ),
+        const LinkTile(
+          title: 'Contact',
+          description: 'Email the developer',
+          link: 'mailto:sunny@persist.site',
+          icon: Icons.alternate_email_outlined,
+        ),
+      ],
     );
   }
 
   Widget _buildCreditsSection(
       Color cardColor, Color? textColor, Color accentColor) {
-    return Card(
-      color: cardColor,
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Credits & Thanks',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: textColor,
-              ),
-            ),
-            const SizedBox(height: 16),
-            _buildCreditItem(
-              name: 'Zara Qureshi',
-              role: 'Bench Tester',
-              link: 'https://github.com/ZaraQureshi',
-              textColor: textColor,
-              accentColor: accentColor,
-              cardColor: cardColor,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Special thanks to everyone who provided feedback, reported bugs, and helped test the app.',
-              style: TextStyle(
-                fontSize: 14,
-                fontStyle: FontStyle.italic,
-                color: textColor,
-              ),
-            ),
-          ],
+    return _buildSectionCard(
+      title: 'Credits & Thanks',
+      cardColor: cardColor,
+      children: [
+        const CreditTile(
+            name: 'Zara Qureshi',
+            description: 'Bench Tester',
+            link: 'https://github.com/ZaraQureshi'),
+        Text(
+          'Special thanks to everyone who provided feedback, reported bugs, and helped test the app.',
+          style: TextStyle(fontStyle: FontStyle.italic, color: textColor),
         ),
-      ),
+      ],
     );
-  }
-
-  Widget _buildLinkItem({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required String url,
-    required Color? textColor,
-    required Color accentColor,
-  }) {
-    return InkWell(
-      onTap: () => _launchURL(url),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: accentColor,
-              size: 24,
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: textColor,
-                    ),
-                  ),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: textColor,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.arrow_forward_ios,
-              color: textColor,
-              size: 16,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCreditItem({
-    required String name,
-    required String role,
-    required String? link,
-    required Color? textColor,
-    required Color accentColor,
-    required Color cardColor,
-  }) {
-    String initials =
-        name.split(" ").take(2).map((s) => s[0]).join().toUpperCase();
-    return InkWell(
-      onTap: link != null ? () => _launchURL(link) : null,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Row(
-          children: [
-            CircleAvatar(
-              backgroundColor: accentColor,
-              radius: 20,
-              child: Text(
-                initials,
-                style: TextStyle(
-                  color: cardColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: textColor,
-                    ),
-                  ),
-                  Text(
-                    role,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: textColor,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if (link != null)
-              Icon(
-                Icons.link,
-                color: accentColor,
-                size: 16,
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _launchURL(String url) async {
-    final Uri uri = Uri.parse(url);
-    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      SnackBarService.showErrorSnackBar('Could not launch $url');
-    }
   }
 }
