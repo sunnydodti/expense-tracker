@@ -1,4 +1,5 @@
 // padding
+const double uiPaddingQuarter = 2.0;
 const double uiPaddingHalf = 4.0;
 const double uiPadding = 8.0;
 const double uiPaddingX2 = 16.0;
@@ -32,3 +33,8 @@ const double uiTextScalerTags = 0.7;
 const double uiTextScalerNotes = 0.8;
 const double uiTextScalerAmount = 1.1;
 const double uiTextScalerAlertTitle = 0.8;
+const double uiTextScalerAboutAppTitle = 2;
+const double uiTextScalerAboutSubTitle = 1.2;
+
+// elevation
+const double uiElevation = 2.0;
