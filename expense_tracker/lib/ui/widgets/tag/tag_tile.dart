@@ -7,10 +7,10 @@ class TagTile extends StatelessWidget {
   final VoidCallback onDelete;
 
   const TagTile({
-    Key? key,
+    super.key,
     required this.tagName,
     required this.onDelete,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

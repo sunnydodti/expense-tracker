@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/constants/ui_constants.dart';
 import '../../../data/helpers/color_helper.dart';
 import '../../../providers/search_provider.dart';
 import '../expense/expense_tile.dart';
@@ -26,14 +27,15 @@ class SearchResults extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 10),
+            padding: EdgeInsets.only(top: uiPadding),
             child: Text("No matching results"),
           )
         ],
       );
     }
     return Padding(
-      padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
+      padding: const EdgeInsets.only(
+          top: uiPadding, left: uiPadding, right: uiPadding),
       child: ListView.builder(
         itemCount: provider.expenses.length,
         itemBuilder: (context, index) {
@@ -63,7 +65,7 @@ class SearchResults extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
-                padding: EdgeInsets.only(top: 10),
+                padding: EdgeInsets.only(top: uiPadding),
                 child: Text("Start Typing"),
               )
             ],
@@ -86,12 +88,12 @@ class SearchResults extends StatelessWidget {
     return Card(
       color: ColorHelper.getTileColor(Theme.of(context)),
       child: ListTile(
-        leading: const Icon(Icons.history_outlined),
+        leading: const Icon(Icons.history_outlined, size: uiIconSize),
         trailing: IconButton(
           onPressed: () {
             provider.deleteSearch(provider.searchHistory[index]);
           },
-          icon: const Icon(Icons.delete_outline),
+          icon: const Icon(Icons.delete_outline, size: uiIconSize),
         ),
         title: Text("${provider.searchHistory[index].title}"),
         dense: true,

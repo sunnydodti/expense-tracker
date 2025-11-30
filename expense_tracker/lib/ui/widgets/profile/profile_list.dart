@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/constants/ui_constants.dart';
 import '../../../data/helpers/color_helper.dart';
 import '../../../models/profile.dart';
 import '../../../providers/expense_provider.dart';
@@ -13,7 +14,7 @@ import '../empty_list_widget.dart';
 import 'profile_tile.dart';
 
 class ProfileList extends StatelessWidget {
-  const ProfileList({Key? key}) : super(key: key);
+  const ProfileList({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,12 +30,11 @@ class ProfileList extends StatelessWidget {
                         ? const EmptyListWidget(listName: 'Profile')
                         : Scrollbar(
                             interactive: true,
-                            radius: const Radius.circular(5),
+                            radius: const Radius.circular(uiScrollbarRadius),
                             child: ListView.builder(
                               itemCount: profileProvider.profiles.length,
                               itemBuilder: (context, index) {
-                                final profile =
-                                    profileProvider.profiles[index];
+                                final profile = profileProvider.profiles[index];
                                 return ProfileTile(
                                   profileName: profile.name,
                                   onDelete: () =>
@@ -68,16 +68,20 @@ class ProfileList extends StatelessWidget {
         .currentProfile
         .then((Profile? selectedProfile) async {
       if (selectedProfile?.id == profile.id) {
-        Provider.of<ProfileProvider>(context, listen: false)
-            .setDefaultProfile();
+        if (context.mounted) {
+          Provider.of<ProfileProvider>(context, listen: false)
+              .setDefaultProfile();
+        }
       }
       ProfileService profileService = await ProfileService.create();
 
       profileService.deleteProfile(profile.id).then((value) async {
         if (value > 0) {
-          Provider.of<ExpenseProvider>(context, listen: false)
-              .refreshExpenses();
-          _refreshProfile(context);
+          if (context.mounted) {
+            Provider.of<ExpenseProvider>(context, listen: false)
+                .refreshExpenses();
+            _refreshProfile(context);
+          }
         }
       });
     });
@@ -104,14 +108,20 @@ class ProfileList extends StatelessWidget {
     profileProvider.refreshProfiles();
   }
 
-  Container getProfileForm(
-      List<Profile> profiles, BuildContext context) {
+  Container getProfileForm(List<Profile> profiles, BuildContext context) {
     return Container(
-        decoration: BoxDecoration(
-          color: ColorHelper.getTileColor(Theme.of(context)),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-        margin: const EdgeInsets.only(top: 5, bottom: 2.5),
-        child: ProfileForm(profiles: profiles));
+      decoration: BoxDecoration(
+        color: ColorHelper.getTileColor(Theme.of(context)),
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: uiPaddingHalf,
+        vertical: uiPaddingX2,
+      ),
+      margin: const EdgeInsets.only(
+        top: uiMarginHalf,
+        bottom: uiMarginQuarter,
+      ),
+      child: ProfileForm(profiles: profiles),
+    );
   }
 }

@@ -45,8 +45,8 @@ class _SortWidgetState extends State<SortWidget> {
           child: Transform.rotate(
             angle: math.pi,
             child: Icon(
-              size: uiIconSize,
               Icons.sort_outlined,
+              size: uiIconSize,
               color: ColorHelper.getIconColor(Theme.of(context)),
             ),
           )),

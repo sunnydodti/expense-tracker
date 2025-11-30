@@ -27,7 +27,7 @@ class _SortFilterTileState extends State<SortFilterTile> {
   Widget build(BuildContext context) {
     return Card(
       color: ColorHelper.getTileColor(Theme.of(context)),
-      margin: const EdgeInsets.all(0),
+      margin: EdgeInsets.zero,
       child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [FilterWidget(), SortWidget()],
