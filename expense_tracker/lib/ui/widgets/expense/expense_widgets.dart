@@ -3,7 +3,9 @@ import 'expense_form_widgets.dart';
 import 'expense_tile_widgets.dart';
 
 class ExpenseWidgets {
-  static ExpenseDetailsWidgets detail = ExpenseDetailsWidgets();
-  static ExpenseTileWidgets tile = ExpenseTileWidgets();
-  static ExpenseFormWidgets form = ExpenseFormWidgets();
+  ExpenseWidgets._();
+
+  static final ExpenseDetailsWidgets detail = ExpenseDetailsWidgets();
+  static final ExpenseTileWidgets tile = ExpenseTileWidgets();
+  static final ExpenseFormWidgets form = ExpenseFormWidgets();
 }

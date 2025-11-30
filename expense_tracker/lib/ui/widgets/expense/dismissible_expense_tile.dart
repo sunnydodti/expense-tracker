@@ -17,11 +17,11 @@ class DismissibleExpenseTile extends StatelessWidget {
   final int index;
 
   const DismissibleExpenseTile({
-    Key? key,
+    super.key,
     required this.expense,
     required this.expenseProvider,
     required this.index,
-  }) : super(key: key);
+  });
 
   static final Logger _logger =
       Logger(printer: SimplePrinter(), level: Level.info);
@@ -163,7 +163,7 @@ class DismissibleExpenseTile extends StatelessWidget {
 
     bool result = await NavigationHelper.navigateToScreenWithResult(
         context, ExpensePage(expense: expense, formMode: FormMode.edit));
-    if (result) _refreshExpenses(context);
+    if (result && context.mounted) _refreshExpenses(context);
   }
 
   _refreshExpenses(BuildContext context) {

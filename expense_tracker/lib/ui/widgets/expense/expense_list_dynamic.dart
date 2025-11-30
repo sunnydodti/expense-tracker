@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/constants/ui_constants.dart';
 import '../../../providers/expense_provider.dart';
 import '../empty_list_widget.dart';
 import '../expense_swipe_info_widget.dart';
@@ -10,7 +11,7 @@ import 'expense_popup.dart';
 import 'expense_summary.dart';
 
 class ExpenseListDynamic extends StatelessWidget {
-  const ExpenseListDynamic({Key? key}) : super(key: key);
+  const ExpenseListDynamic({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,15 +33,16 @@ class ExpenseListDynamic extends StatelessWidget {
                       : Expanded(
                           child: Scrollbar(
                             interactive: true,
-                            thickness: 8,
-                            radius: const Radius.circular(5),
+                            thickness: uiScrollbarThickness,
+                            radius: const Radius.circular(uiScrollbarRadius),
                             child: ListView.builder(
                               itemCount: expenseCount,
                               itemBuilder: (context, index) {
                                 return DismissibleExpenseTile(
-                                    expense: expenseProvider.expenses[index],
-                                    expenseProvider: expenseProvider,
-                                    index: index);
+                                  expense: expenseProvider.expenses[index],
+                                  expenseProvider: expenseProvider,
+                                  index: index,
+                                );
                               },
                             ),
                           ),

@@ -18,12 +18,12 @@ class ExpenseTile extends StatefulWidget {
   final bool isReadonly;
 
   const ExpenseTile({
-    Key? key,
+    super.key,
     required this.expense,
     required this.editCallBack,
     required this.deleteCallBack,
     required this.isReadonly,
-  }) : super(key: key);
+  });
 
   @override
   State<ExpenseTile> createState() => _ExpenseTileState();

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../data/constants/ui_constants.dart';
 import '../../../../data/helpers/navigation_helper.dart';
 import '../../../../models/expense_item.dart';
 import '../../../../providers/expense_items_provider.dart';
@@ -12,13 +13,12 @@ class ExpenseItemsList extends StatelessWidget {
   final String expenseTitle;
 
   const ExpenseItemsList(
-      {Key? key, required this.currency, this.expenseTitle = ""})
-      : super(key: key);
+      {super.key, required this.currency, this.expenseTitle = ""});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5),
+      padding: const EdgeInsets.symmetric(horizontal: uiPaddingHalf),
       child: Consumer<ExpenseItemsProvider>(
         builder: (context, expenseItemsProvider, child) => GestureDetector(
           onLongPress: () =>
@@ -29,7 +29,10 @@ class ExpenseItemsList extends StatelessWidget {
                 : IconButton(
                     onPressed: () => showExpandedExpenseItemList(
                         context, expenseItemsProvider),
-                    icon: const Icon(Icons.fullscreen_outlined),
+                    icon: const Icon(
+                      Icons.fullscreen_outlined,
+                      size: uiIconSize,
+                    ),
                   ),
             initiallyExpanded: expenseItemsProvider.expenseItems.isNotEmpty,
             title: Text(

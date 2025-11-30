@@ -5,6 +5,7 @@ import '../../../models/expense.dart';
 import '../../../models/expense_item.dart';
 import '../../../utils/expense_utils.dart';
 import '../../screens/widget_constants.dart';
+import '../common/scaled_text.dart';
 
 class ExpenseDetailsWidgets {
   final double paddingTop = uiPaddingHalf;
@@ -25,8 +26,8 @@ class ExpenseDetailsWidgets {
     double opacity0 = (brightness == Brightness.dark) ? .05 : .1;
     double opacity1 = (brightness == Brightness.dark) ? .1 : .3;
     Color rowColor = (i == 1)
-        ? Colors.white10.withOpacity(opacity1)
-        : Colors.white10.withOpacity(opacity0);
+        ? Colors.white.withValues(alpha: opacity1)
+        : Colors.white.withValues(alpha: opacity0);
     return rowColor;
   }
 
@@ -40,8 +41,8 @@ class ExpenseDetailsWidgets {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text("$key:"),
-          Text(value, style: TextStyle(color: valueColor)),
+          ScaledText("$key:"),
+          ScaledText(value, style: TextStyle(color: valueColor)),
         ],
       ),
     );
@@ -60,10 +61,10 @@ class ExpenseDetailsWidgets {
       padding: _buildPadding(),
       child: Column(
         children: <Widget>[
-          Row(children: <Widget>[Text("$key:")]),
+          Row(children: <Widget>[ScaledText("$key:")]),
           if (value != null && value.isNotEmpty) wcDividerIndented,
           if (value != null && value.isNotEmpty)
-            Text(value,
+            ScaledText(value,
                 maxLines: 5,
                 overflow: TextOverflow.fade,
                 textAlign: TextAlign.start),
@@ -86,7 +87,7 @@ class ExpenseDetailsWidgets {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          const Row(children: <Widget>[Text("Expense Items:")]),
+          const Row(children: <Widget>[ScaledText("Expense Items:")]),
           wcDividerIndented,
           _fetchAndBuildExpenseItemsList(expense, fetchMethod),
         ],
@@ -119,10 +120,10 @@ class ExpenseDetailsWidgets {
           dataRowMinHeight: uiDataRowSize,
           dataRowMaxHeight: uiDataRowSize,
           columns: const [
-            DataColumn(label: Text('Name')),
-            DataColumn(label: Text('Amt')),
-            DataColumn(label: Text('Qty')),
-            DataColumn(label: Text('Total')),
+            DataColumn(label: ScaledText('Name')),
+            DataColumn(label: ScaledText('Amt')),
+            DataColumn(label: ScaledText('Qty')),
+            DataColumn(label: ScaledText('Total')),
           ],
           rows: [
             ..._buildDataRows(expenseItems),
@@ -136,10 +137,10 @@ class ExpenseDetailsWidgets {
   List<DataRow> _buildDataRows(List<ExpenseItemFormModel> expenseItems) {
     var dataRows = expenseItems.map((expenseItem) {
       return DataRow(cells: [
-        DataCell(Text(expenseItem.name)),
-        DataCell(Text('${expenseItem.amount.round()}')),
-        DataCell(Text('${expenseItem.quantity}')),
-        DataCell(Text('${expenseItem.total.round()}')),
+        DataCell(ScaledText(expenseItem.name)),
+        DataCell(ScaledText('${expenseItem.amount.round()}')),
+        DataCell(ScaledText('${expenseItem.quantity}')),
+        DataCell(ScaledText('${expenseItem.total.round()}')),
       ]);
     });
 
@@ -153,17 +154,18 @@ class ExpenseDetailsWidgets {
     Color color = getAmountColor(expense.transactionType, context);
     return DataRow(cells: [
       const DataCell(
-          Text('Total', style: TextStyle(fontWeight: FontWeight.bold))),
-      const DataCell(Text('')),
+        ScaledText('Total', style: TextStyle(fontWeight: FontWeight.bold)),
+      ),
+      const DataCell(ScaledText('')),
       DataCell(
-        Text(
+        ScaledText(
           getAmountText(overallTotal, expense.transactionType, expense.currency,
               includeAmount: false),
           style: TextStyle(color: color),
         ),
       ),
       DataCell(
-        Text(
+        ScaledText(
           '${overallTotal.round()}',
           style: TextStyle(fontWeight: FontWeight.bold, color: color),
         ),
