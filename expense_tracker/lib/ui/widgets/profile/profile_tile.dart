@@ -7,10 +7,10 @@ class ProfileTile extends StatelessWidget {
   final VoidCallback onDelete;
 
   const ProfileTile({
-    Key? key,
+    super.key,
     required this.profileName,
     required this.onDelete,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

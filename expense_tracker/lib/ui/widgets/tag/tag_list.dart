@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/constants/ui_constants.dart';
 import '../../../data/helpers/color_helper.dart';
 import '../../../models/tag.dart';
 import '../../../providers/tag_provider.dart';
@@ -10,7 +11,7 @@ import '../empty_list_widget.dart';
 import 'tag_tile.dart';
 
 class TagList extends StatelessWidget {
-  const TagList({Key? key}) : super(key: key);
+  const TagList({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +27,14 @@ class TagList extends StatelessWidget {
                   ? const EmptyListWidget(listName: 'Tag')
                   : Scrollbar(
                       interactive: true,
-                      radius: const Radius.circular(5),
+                      radius: const Radius.circular(uiScrollbarRadius),
                       child: ListView.builder(
                         itemCount: tagProvider.tags.length,
                         itemBuilder: (context, index) {
                           final tag = tagProvider.tags[index];
                           return TagTile(
                               tagName: tag.name,
-                              onDelete: () => _deleteTag(context, tag));
+                              onDelete: () => _deleteTag(context, tag),);
                         },
                       ),
                     ),
@@ -48,7 +49,7 @@ class TagList extends StatelessWidget {
     TagService tagService = await TagService.create();
     tagService.deleteTag(tag.id).then((value) {
       if (value > 0) {
-        _refreshTags(context);
+        if (context.mounted) _refreshTags(context);
       }
     });
   }
@@ -63,8 +64,10 @@ class TagList extends StatelessWidget {
         decoration: BoxDecoration(
           color: ColorHelper.getTileColor(Theme.of(context)),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-        margin: const EdgeInsets.only(top: 5, bottom: 2.5),
+        padding: const EdgeInsets.symmetric(
+            horizontal: uiPaddingHalf, vertical: uiPaddingHalf),
+        margin: const EdgeInsets.only(
+            top: uiMarginHalf, bottom: uiMarginQuarter),
         child: TagForm(tags: tags));
   }
 }

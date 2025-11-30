@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/constants/ui_constants.dart';
 import '../../../data/helpers/color_helper.dart';
 import '../../../data/helpers/navigation_helper.dart';
 import '../../../providers/search_provider.dart';
@@ -105,7 +106,7 @@ class _SearchAppBarState extends State<SearchAppBar> {
         provider.clearSearch();
         _focusTextField();
       },
-      icon: const Icon(Icons.close_outlined),
+      icon: const Icon(Icons.close_outlined, size: uiIconSize),
     );
     Widget searchIcon = IconButton(
       onPressed: () {
@@ -113,7 +114,7 @@ class _SearchAppBarState extends State<SearchAppBar> {
           provider.search(_searchController.text);
         }
       },
-      icon: const Icon(Icons.search_outlined),
+      icon: const Icon(Icons.search_outlined, size: uiIconSize),
     );
     actions.add(searchIcon);
     if (_searchController.text.isNotEmpty) actions.add(clearIcon);
@@ -123,7 +124,7 @@ class _SearchAppBarState extends State<SearchAppBar> {
   IconButton _buildBackButton(BuildContext context) {
     return IconButton(
       onPressed: _exitSearch,
-      icon: const Icon(Icons.arrow_back),
+      icon: const Icon(Icons.arrow_back, size: uiIconSize),
     );
   }
 

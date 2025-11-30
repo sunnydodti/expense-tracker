@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/constants/ui_constants.dart';
 import '../../../data/helpers/color_helper.dart';
 import '../../../providers/settings_provider.dart';
 import '../form_widgets.dart';
 
 class PreferencesList extends StatelessWidget {
-  const PreferencesList({Key? key}) : super(key: key);
+  const PreferencesList({super.key});
 
   static final Logger _logger =
       Logger(printer: SimplePrinter(), level: Level.info);
@@ -16,10 +17,10 @@ class PreferencesList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<SettingsProvider>(
       builder: (context, settingsProvider, child) => ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+        padding: const EdgeInsets.symmetric(horizontal: uiPadding),
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
+            padding: const EdgeInsets.symmetric(horizontal: uiPaddingX2),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
