@@ -3,23 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../data/constants/chart_constants.dart';
+import '../../../../data/constants/ui_constants.dart';
 import '../../../../models/chart_record.dart';
 import '../../../../providers/chart_data_provider.dart';
 import '../chart_options.dart';
 import '../chart_widgets.dart';
 
-class MonthlyExpenseLineChart extends StatefulWidget {
+class MonthlyExpenseLineChart extends StatelessWidget {
   const MonthlyExpenseLineChart({super.key});
-
-  @override
-  State<MonthlyExpenseLineChart> createState() => _MonthlyExpenseLineChartState();
-}
-
-class _MonthlyExpenseLineChartState extends State<MonthlyExpenseLineChart> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,31 +32,46 @@ class _MonthlyExpenseLineChartState extends State<MonthlyExpenseLineChart> {
             ? _buildLineBarsForSplit(weeklySum)
             : _buildLineBarsForTotal(weeklySum);
         return Container(
-          padding: const EdgeInsets.only(top: 20, bottom: 5, left: 10, right: 10),
+          padding: const EdgeInsets.only(
+            top: uiChartLinePaddingTop,
+            bottom: uiChartLinePaddingBottom,
+            left: uiChartLinePaddingLeft,
+            right: uiChartLinePaddingRight,
+          ),
           margin: const EdgeInsets.all(1),
           child: LineChart(
             LineChartData(
               lineBarsData: lineBars,
-              gridData: FlGridData(show: false),
+              gridData: const FlGridData(show: false),
               borderData: FlBorderData(show: false),
               titlesData: FlTitlesData(
                 show: true,
-                rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                rightTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                topTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
                 bottomTitles: AxisTitles(
                   sideTitles: SideTitles(
-                      showTitles: true,
-                      getTitlesWidget: (value, meta) =>
-                          ChartWidgets.getWeekTitlesForMonth(context, value, meta),
-                      reservedSize: 35,
-                      interval: 1),
+                    showTitles: true,
+                    getTitlesWidget: (value, meta) =>
+                        ChartWidgets.getWeekTitlesForMonth(
+                      context,
+                      value,
+                      meta,
+                    ),
+                    reservedSize: uiChartLineReservedSizeBottom,
+                    interval: 1,
+                  ),
                 ),
                 leftTitles: AxisTitles(
                   sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 40,
-                      getTitlesWidget: (value, meta) =>
-                          ChartWidgets.leftTitleWidgets(value, meta)),
+                    showTitles: true,
+                    reservedSize: uiChartLineReservedSizeLeft,
+                    getTitlesWidget: (value, meta) =>
+                        ChartWidgets.leftTitleWidgets(value, meta),
+                  ),
                 ),
               ),
               lineTouchData: buildLineTouchData(provider.currency),
@@ -83,7 +89,7 @@ class _MonthlyExpenseLineChartState extends State<MonthlyExpenseLineChart> {
       touchTooltipData: LineTouchTooltipData(
         fitInsideHorizontally: true,
         fitInsideVertically: true,
-        tooltipMargin: 50,
+        tooltipMargin: uiChartLineTooltipMargin,
         getTooltipItems: (List<LineBarSpot> touchedSpots) {
           return touchedSpots.map((spot) {
             double value = spot.y;
@@ -93,14 +99,9 @@ class _MonthlyExpenseLineChartState extends State<MonthlyExpenseLineChart> {
             if (currency.isNotEmpty) text += '$currency ';
 
             text += value.abs().round().toString();
-            TextStyle textStyle = TextStyle(
-              color: spot.bar.color,
-            );
+            TextStyle textStyle = TextStyle(color: spot.bar.color);
 
-            return LineTooltipItem(
-              text,
-              textStyle,
-            );
+            return LineTooltipItem(text, textStyle);
           }).toList();
         },
       ),
@@ -108,11 +109,15 @@ class _MonthlyExpenseLineChartState extends State<MonthlyExpenseLineChart> {
   }
 
   Map<int, ChartRecord> _getWeeklySumForMonth(ChartDataProvider provider) {
-    return provider.chartData.calculateWeeklySumForMonth(provider.splitChart,
-        month: provider.selectedMonth);
+    return provider.chartData.calculateWeeklySumForMonth(
+      provider.splitChart,
+      month: provider.selectedMonth,
+    );
   }
 
-  List<LineChartBarData> _buildLineBarsForTotal(Map<int, ChartRecord> weeklySum) {
+  List<LineChartBarData> _buildLineBarsForTotal(
+    Map<int, ChartRecord> weeklySum,
+  ) {
     List<FlSpot> spots = [];
 
     weeklySum.forEach((week, record) {
@@ -125,13 +130,15 @@ class _MonthlyExpenseLineChartState extends State<MonthlyExpenseLineChart> {
         isCurved: true,
         preventCurveOverShooting: true,
         color: ChartConstants.line.color,
-        barWidth: 3,
+        barWidth: uiChartLineBarWidth,
         belowBarData: BarAreaData(
           show: true,
           gradient: LinearGradient(
             colors: [
-              ChartConstants.line.color.withOpacity(0.3),
-              ChartConstants.line.colorAccent.withOpacity(0.05),
+              ChartConstants.line.color.withValues(alpha: uiChartLineOpacity),
+              ChartConstants.line.colorAccent.withValues(
+                alpha: uiChartLineAccentOpacity,
+              ),
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -141,7 +148,9 @@ class _MonthlyExpenseLineChartState extends State<MonthlyExpenseLineChart> {
     ];
   }
 
-  List<LineChartBarData> _buildLineBarsForSplit(Map<int, ChartRecord> weeklySum) {
+  List<LineChartBarData> _buildLineBarsForSplit(
+    Map<int, ChartRecord> weeklySum,
+  ) {
     List<FlSpot> incomeSpots = [];
     List<FlSpot> expenseSpots = [];
     List<FlSpot> reimbursementSpots = [];
@@ -149,7 +158,9 @@ class _MonthlyExpenseLineChartState extends State<MonthlyExpenseLineChart> {
     weeklySum.forEach((week, record) {
       incomeSpots.add(FlSpot(week.toDouble(), record.incomeAmount));
       expenseSpots.add(FlSpot(week.toDouble(), record.expenseAmount));
-      reimbursementSpots.add(FlSpot(week.toDouble(), record.reimbursementAmount));
+      reimbursementSpots.add(
+        FlSpot(week.toDouble(), record.reimbursementAmount),
+      );
     });
 
     return [
@@ -158,13 +169,17 @@ class _MonthlyExpenseLineChartState extends State<MonthlyExpenseLineChart> {
         isCurved: true,
         preventCurveOverShooting: true,
         color: ChartConstants.line.colorIncome,
-        barWidth: 3,
+        barWidth: uiChartLineBarWidth,
         belowBarData: BarAreaData(
           show: true,
           gradient: LinearGradient(
             colors: [
-              ChartConstants.line.colorIncome.withOpacity(0.3),
-              ChartConstants.line.colorIncomeAccent.withOpacity(0.05),
+              ChartConstants.line.colorIncome.withValues(
+                alpha: uiChartLineOpacity,
+              ),
+              ChartConstants.line.colorIncomeAccent.withValues(
+                alpha: uiChartLineAccentOpacity,
+              ),
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -176,13 +191,17 @@ class _MonthlyExpenseLineChartState extends State<MonthlyExpenseLineChart> {
         isCurved: true,
         preventCurveOverShooting: true,
         color: ChartConstants.line.colorExpense,
-        barWidth: 3,
+        barWidth: uiChartLineBarWidth,
         belowBarData: BarAreaData(
           show: true,
           gradient: LinearGradient(
             colors: [
-              ChartConstants.line.colorExpense.withOpacity(0.3),
-              ChartConstants.line.colorExpenseAccent.withOpacity(0.05),
+              ChartConstants.line.colorExpense.withValues(
+                alpha: uiChartLineOpacity,
+              ),
+              ChartConstants.line.colorExpenseAccent.withValues(
+                alpha: uiChartLineAccentOpacity,
+              ),
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -194,13 +213,17 @@ class _MonthlyExpenseLineChartState extends State<MonthlyExpenseLineChart> {
         isCurved: true,
         preventCurveOverShooting: true,
         color: ChartConstants.line.colorReimbursement,
-        barWidth: 3,
+        barWidth: uiChartLineBarWidth,
         belowBarData: BarAreaData(
           show: true,
           gradient: LinearGradient(
             colors: [
-              ChartConstants.line.colorReimbursement.withOpacity(0.3),
-              ChartConstants.line.colorReimbursementAccent.withOpacity(0.05),
+              ChartConstants.line.colorReimbursement.withValues(
+                alpha: uiChartLineOpacity,
+              ),
+              ChartConstants.line.colorReimbursementAccent.withValues(
+                alpha: uiChartLineAccentOpacity,
+              ),
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
