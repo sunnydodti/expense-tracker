@@ -57,6 +57,7 @@ class _ExpenseTileState extends State<ExpenseTile> {
       onTap: () => _buildBottomSheet(readonly: widget.isReadonly),
       onDoubleTap: widget.editCallBack,
       child: Card(
+        elevation: uiElevation,
         color: ColorHelper.getTileColor(Theme.of(context)),
         margin: const EdgeInsets.only(bottom: uiMargin),
         child: _buildExpenseTile(),

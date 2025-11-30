@@ -5,6 +5,7 @@ import '../../data/helpers/color_helper.dart';
 import '../../providers/search_provider.dart';
 import '../widgets/search/search_app_bar.dart';
 import '../widgets/search/search_results.dart';
+import 'widget_constants.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -14,20 +15,34 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+  late Future<void> _searchFuture;
+
   SearchProvider get searchProvider =>
       Provider.of<SearchProvider>(context, listen: false);
 
   @override
+  void initState() {
+    super.initState();
+    _searchFuture = _initializeSearch();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _initializeSearch(),
-      builder: (BuildContext context, snapshot) {
-        return Scaffold(
-          backgroundColor: ColorHelper.getBackgroundColor(Theme.of(context)),
-          appBar: const SearchAppBar(),
-          body: const SearchResults(),
-        );
-      },
+    return Scaffold(
+      backgroundColor: ColorHelper.getBackgroundColor(Theme.of(context)),
+      appBar: const SearchAppBar(),
+      body: FutureBuilder<void>(
+        future: _searchFuture,
+        builder: (BuildContext context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return wcSpinnerDefault;
+          }
+          if (snapshot.hasError) {
+            return Center(child: wcSnapshotErrorText(snapshot.error));
+          }
+          return const SearchResults();
+        },
+      ),
     );
   }
 

@@ -5,15 +5,27 @@ import '../../data/helpers/color_helper.dart';
 import '../../providers/profile_provider.dart';
 import '../widgets/common/screen_app_bar.dart';
 import '../widgets/profile/profile_list.dart';
+import 'widget_constants.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
-  final String title = "Profiles";
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
 
-  Future<void> _refreshProfiles(BuildContext context) async {
+class _ProfileScreenState extends State<ProfileScreen> {
+  late Future<void> _profilesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _profilesFuture = _refreshProfiles();
+  }
+
+  Future<void> _refreshProfiles() async {
     final provider = Provider.of<ProfileProvider>(context, listen: false);
-    provider.refreshProfiles();
+    await provider.refreshProfiles();
   }
 
   @override
@@ -25,15 +37,15 @@ class ProfileScreen extends StatelessWidget {
         children: [
           Expanded(
             child: FutureBuilder<void>(
-              future: _refreshProfiles(context),
+              future: _profilesFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  return const ProfileList();
+                  return wcSpinnerDefault;
                 }
+                if (snapshot.hasError) {
+                  return Center(child: wcSnapshotErrorText(snapshot.error));
+                }
+                return const ProfileList();
               },
             ),
           )
