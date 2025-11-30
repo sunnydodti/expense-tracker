@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'data/constants/ui_constants.dart';
 import 'ui/widgets/content_area_navigation.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -16,7 +17,7 @@ final GlobalKey<ContentAreaNavigationState> tabletContentAreaKey =
 // Helper function to get the appropriate content area key based on layout
 GlobalKey<ContentAreaNavigationState> getContentAreaKey(BuildContext context) {
   final width = MediaQuery.of(context).size.width;
-  if (width >= 1100) return desktopContentAreaKey;
-  if (width >= 720) return tabletContentAreaKey;
+  if (width >= uiBreakpointDesktop) return desktopContentAreaKey;
+  if (width >= uiBreakpointTablet) return tabletContentAreaKey;
   return GlobalKey<ContentAreaNavigationState>(); // Fallback, won't be used
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import '../constants/ui_constants.dart';
 import '../../globals.dart';
 
 class NavigationHelper {
@@ -79,12 +80,12 @@ class NavigationHelper {
   // Helpers to determine screen sizes
   static bool isLargeScreen(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    return width >= 720; // Tablet/desktop threshold
+    return width >= uiBreakpointTablet; // Tablet/desktop threshold
   }
 
   static bool isDesktopScreen(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    return width >= 1100;
+    return width >= uiBreakpointDesktop;
   }
 
   // Smart navigation that uses content area on large screens
