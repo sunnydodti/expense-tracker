@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../data/constants/ui_constants.dart';
 import '../../../data/helpers/color_helper.dart';
 import '../../../data/helpers/navigation_helper.dart';
 
@@ -18,7 +19,7 @@ class ScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       title: Text(
         title,
-        textScaler: const TextScaler.linear(.9),
+        textScaler: const TextScaler.linear(uiTextScaler),
         overflow: TextOverflow.fade,
       ),
       actions: actions,

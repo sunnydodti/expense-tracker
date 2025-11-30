@@ -17,8 +17,13 @@ class CreditTile extends StatelessWidget {
     final cardColor = ColorHelper.getTileColor(theme);
     final textColor = ColorHelper.getButtonTextColor(theme);
     final accentColor = ColorHelper.getIconColor(theme);
-    String initials =
-        name.split(" ").take(2).map((s) => s[0]).join().toUpperCase();
+    String initials = name
+        .split(" ")
+        .where((e) => e.isNotEmpty)
+        .take(2)
+        .map((s) => s[0])
+        .join()
+        .toUpperCase();
     return ListTile(
         contentPadding: const EdgeInsets.all(uiPaddingQuarter),
         title: Text(

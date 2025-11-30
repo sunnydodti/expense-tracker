@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:pwa_install/pwa_install.dart';
 
+import '../../../data/constants/ui_constants.dart';
 import '../../../data/helpers/color_helper.dart';
 
 class InstallPwaButton extends StatelessWidget {
   final EdgeInsets padding;
-  const InstallPwaButton(
-      {super.key, this.padding = const EdgeInsets.all(10.0)});
+  const InstallPwaButton({
+    super.key,
+    this.padding = const EdgeInsets.all(uiPadding),
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +26,12 @@ class InstallPwaButton extends StatelessWidget {
           onPressed: () {
             PWAInstall().promptInstall_();
           },
-          child: Text('Install PWA',
-              style: TextStyle(
-                  color: ColorHelper.getButtonTextColor(Theme.of(context)))),
+          child: Text(
+            'Install PWA',
+            style: TextStyle(
+              color: ColorHelper.getButtonTextColor(Theme.of(context)),
+            ),
+          ),
         ),
       ),
     );
