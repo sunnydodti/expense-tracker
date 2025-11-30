@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../data/constants/chart_constants.dart';
+import '../../../../data/constants/ui_constants.dart';
 import '../../../../models/chart_record.dart';
 import '../../../../providers/chart_data_provider.dart';
 import '../chart_options.dart';
@@ -39,13 +40,13 @@ class _YearlyExpensePieChartState extends State<YearlyExpensePieChart> {
         : _buildPieSectionsForTotal(yearlySum);
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(uiChartPiePadding),
       child: PieChart(
         PieChartData(
           sections: pieSections,
           borderData: FlBorderData(show: false),
-          sectionsSpace: 4,
-          centerSpaceRadius: 40,
+          sectionsSpace: uiChartPieSectionsSpace,
+          centerSpaceRadius: uiChartPieCenterSpaceRadius,
           pieTouchData: PieTouchData(
             touchCallback: (FlTouchEvent event, pieTouchResponse) {
               setState(() {
@@ -61,16 +62,18 @@ class _YearlyExpensePieChartState extends State<YearlyExpensePieChart> {
             },
           ),
         ),
-        swapAnimationDuration: const Duration(milliseconds: 250),
+        swapAnimationDuration: uiChartSwapAnimationDuration,
         swapAnimationCurve: Curves.linear,
       ),
     );
   }
 
   Map<int, ChartRecord> _getYearlySum(ChartDataProvider provider) {
-    Map<int, ChartRecord> yearlySum = provider.chartData
-        .calculateMonthlySumForYear(
-            iSplitChart: provider.splitChart, year: provider.selectedYear);
+    Map<int, ChartRecord> yearlySum =
+        provider.chartData.calculateMonthlySumForYear(
+      iSplitChart: provider.splitChart,
+      year: provider.selectedYear,
+    );
     yearlySum.removeWhere((key, record) => record.totalAmount == 0);
 
     Map<int, ChartRecord> updatedYearlySum = {};
@@ -89,8 +92,10 @@ class _YearlyExpensePieChartState extends State<YearlyExpensePieChart> {
         0, (previousValue, record) => previousValue + record.totalAmount.abs());
     return yearlySum.entries.map((entry) {
       final isTouched = touchedIndex == entry.key;
-      final double fontSize = isTouched ? 18.0 : 12.0;
-      final double radius = isTouched ? 60.0 : 50.0;
+      final double fontSize =
+          isTouched ? uiChartPieFontSizeTouched : uiChartPieFontSizeUntouched;
+      final double radius =
+          isTouched ? uiChartPieRadiusTouched : uiChartPieRadiusUntouched;
       double percent = (entry.value.totalAmount.abs() / totalSum) * 100;
       String title = percent > 3 ? "${percent.toStringAsFixed(1)}%" : "";
       Color color = entry.value.totalAmount > 0
@@ -113,10 +118,14 @@ class _YearlyExpensePieChartState extends State<YearlyExpensePieChart> {
 
   List<PieChartSectionData> _buildPieSectionsForSplit(
       Map<int, ChartRecord> yearlySum) {
-    double incomeSum = yearlySum.values.fold(0,
-        (previousValue, record) => previousValue + record.incomeAmount.abs());
-    double expenseSum = yearlySum.values.fold(0,
-        (previousValue, record) => previousValue + record.expenseAmount.abs());
+    double incomeSum = yearlySum.values.fold(
+      0,
+      (previousValue, record) => previousValue + record.incomeAmount.abs(),
+    );
+    double expenseSum = yearlySum.values.fold(
+      0,
+      (previousValue, record) => previousValue + record.expenseAmount.abs(),
+    );
     double reimbursementSum = yearlySum.values.fold(
         0,
         (previousValue, record) =>
@@ -126,29 +135,38 @@ class _YearlyExpensePieChartState extends State<YearlyExpensePieChart> {
     if (incomeSum > 0) {
       if (index == -999) index = -1;
       index++;
-      list.add(_buildSplitPieSection(
+      list.add(
+        _buildSplitPieSection(
           incomeSum,
           incomeSum + expenseSum + reimbursementSum,
           ChartConstants.pie.colorIncome,
-          index));
+          index,
+        ),
+      );
     }
     if (expenseSum > 0) {
       if (index == -999) index = -1;
       index++;
-      list.add(_buildSplitPieSection(
+      list.add(
+        _buildSplitPieSection(
           expenseSum,
           incomeSum + expenseSum + reimbursementSum,
           ChartConstants.pie.colorExpense,
-          index));
+          index,
+        ),
+      );
     }
     if (reimbursementSum > 0) {
       if (index == -999) index = -1;
       index++;
-      list.add(_buildSplitPieSection(
+      list.add(
+        _buildSplitPieSection(
           reimbursementSum,
           incomeSum + expenseSum + reimbursementSum,
           ChartConstants.pie.colorReimbursement,
-          index));
+          index,
+        ),
+      );
     }
     return list;
   }
@@ -156,8 +174,10 @@ class _YearlyExpensePieChartState extends State<YearlyExpensePieChart> {
   PieChartSectionData _buildSplitPieSection(
       double amount, double total, Color color, int index) {
     final isTouched = touchedIndex == index;
-    final double fontSize = isTouched ? 18.0 : 12.0;
-    final double radius = isTouched ? 60.0 : 50.0;
+    final double fontSize =
+        isTouched ? uiChartPieFontSizeTouched : uiChartPieFontSizeUntouched;
+    final double radius =
+        isTouched ? uiChartPieRadiusTouched : uiChartPieRadiusUntouched;
 
     double percent = (amount / total) * 100;
 

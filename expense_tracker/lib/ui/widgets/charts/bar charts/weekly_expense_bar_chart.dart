@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../data/constants/chart_constants.dart';
+import '../../../../data/constants/ui_constants.dart';
 import '../../../../models/chart_data.dart';
 import '../../../../models/chart_record.dart';
 import '../../../../providers/chart_data_provider.dart';
@@ -47,28 +48,33 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
         : _buildBarGroupsForTotal(dailySum, provider.chartData);
 
     return Container(
-      padding: const EdgeInsets.only(top: 20, bottom: 5, left: 10),
+      padding: const EdgeInsets.only(
+          top: uiChartBarPaddingTop,
+          bottom: uiChartBarPaddingBottom,
+          left: uiChartBarPaddingLeft),
       child: BarChart(
         BarChartData(
           barGroups: barGroups,
-          gridData: FlGridData(show: false),
+          gridData: const FlGridData(show: false),
           borderData: FlBorderData(show: false),
           titlesData: FlTitlesData(
             show: true,
-            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false)),
+            topTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false)),
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
                 getTitlesWidget: (value, meta) =>
                     ChartWidgets.getDayTitles(context, value, meta),
-                reservedSize: 35,
+                reservedSize: uiChartBarReservedSize,
               ),
             ),
             leftTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
-                reservedSize: 35,
+                reservedSize: uiChartBarReservedSize,
                 getTitlesWidget: (value, meta) =>
                     ChartWidgets.leftTitleWidgets(value, meta),
               ),
@@ -77,38 +83,42 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
           barTouchData: buildBarTouchData(provider),
         ),
         swapAnimationCurve: Curves.linear,
-        swapAnimationDuration: const Duration(milliseconds: 250),
+        swapAnimationDuration: uiChartSwapAnimationDuration,
       ),
     );
   }
 
   BarTouchData buildBarTouchData(ChartDataProvider provider) {
     return BarTouchData(
-        touchCallback: (FlTouchEvent event, barTouchResponse) {
-          setState(() {
-            if ((!event.isInterestedForInteractions ||
-                barTouchResponse == null ||
-                barTouchResponse.spot == null)) {
-              touchedIndex = -1;
-              return;
-            }
-            touchedIndex = barTouchResponse.spot!.touchedBarGroupIndex;
-          });
-        },
-        touchTooltipData: BarTouchTooltipData(
-          fitInsideHorizontally: true,
-          fitInsideVertically: true,
-          tooltipHorizontalAlignment: touchedIndex < 3
-              ? FLHorizontalAlignment.right
-              : FLHorizontalAlignment.left,
-          tooltipHorizontalOffset: touchedIndex < 3 ? 10 : -10,
-          tooltipMargin: 50,
+      touchCallback: (FlTouchEvent event, barTouchResponse) {
+        setState(() {
+          if ((!event.isInterestedForInteractions ||
+              barTouchResponse == null ||
+              barTouchResponse.spot == null)) {
+            touchedIndex = -1;
+            return;
+          }
+          touchedIndex = barTouchResponse.spot!.touchedBarGroupIndex;
+        });
+      },
+      touchTooltipData: BarTouchTooltipData(
+        fitInsideHorizontally: true,
+        fitInsideVertically: true,
+        tooltipHorizontalAlignment: touchedIndex < 3
+            ? FLHorizontalAlignment.right
+            : FLHorizontalAlignment.left,
+        tooltipHorizontalOffset: touchedIndex < 3
+            ? uiChartBarTooltipOffset
+            : -uiChartBarTooltipOffset,
+        tooltipMargin: uiChartBarTooltipMargin,
         getTooltipItem: (group, groupIndex, rod, rodIndex) {
           String text = "";
           if (provider.currency.isNotEmpty) text += '${provider.currency} ';
           text += provider.splitChart
               ? rod.toY.round().toString()
-              : (rod.toY - provider.chartData.barHeightDay * .05)
+              : (rod.toY -
+                      provider.chartData.barHeightDay *
+                          uiChartBarTouchTotalHeightFactor)
                   .round()
                   .toString();
 
@@ -141,8 +151,8 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
       bool isTouched = touchedIndex == day - 1;
 
       double total = record.totalAmount;
-      double touchTotal =
-          record.totalAmount.abs() + chartData.barHeightDay * .05;
+      double touchTotal = record.totalAmount.abs() +
+          chartData.barHeightDay * uiChartBarTouchTotalHeightFactor;
 
       final Color color =
           total > 0 ? Colors.green.shade400 : Colors.red.shade400;
@@ -156,14 +166,14 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
               toY: isTouched ? touchTotal.abs() : total.abs(),
               width: ChartConstants.bar.barWidth,
               color: isTouched ? touchColor : color,
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(4)),
+              borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(uiChartBarRadius)),
               backDrawRodData: BackgroundBarChartRodData(
                 show: true,
                 toY: maxHeight,
                 color: isTouched
-                    ? touchColor.withOpacity(.5)
-                    : color.withOpacity(.1),
+                    ? touchColor.withValues(alpha: uiChartBarTouchOpacity)
+                    : color.withValues(alpha: uiChartBarOpacity),
               ),
             ),
           ],
@@ -189,16 +199,13 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
           x: day,
           barRods: [
             if (isIncomeAmount)
-              _buildSplitBarRod(
-                record.incomeAmount,
+              _buildSplitBarRod(record.incomeAmount,
                   ChartConstants.bar.colorIncome, chartData),
             if (isExpenseAmount)
-              _buildSplitBarRod(
-                record.expenseAmount,
+              _buildSplitBarRod(record.expenseAmount,
                   ChartConstants.bar.colorExpense, chartData),
             if (isReimbursementAmount)
-              _buildSplitBarRod(
-                record.reimbursementAmount,
+              _buildSplitBarRod(record.reimbursementAmount,
                   ChartConstants.bar.colorReimbursement, chartData),
           ],
         ),
@@ -213,11 +220,12 @@ class _WeeklyExpenseBarChartState extends State<WeeklyExpenseBarChart> {
       toY: amount.abs(),
       width: ChartConstants.bar.barWidthSplit,
       color: color,
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+      borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(uiChartBarRadius)),
       backDrawRodData: BackgroundBarChartRodData(
         show: true,
         toY: chartData.barHeightDay,
-        color: color.withOpacity(.1),
+        color: color.withValues(alpha: uiChartBarOpacity),
       ),
     );
   }

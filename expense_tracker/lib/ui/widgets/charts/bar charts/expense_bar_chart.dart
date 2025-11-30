@@ -7,15 +7,8 @@ import 'monthly_expense_bar_chart.dart';
 import 'weekly_expense_bar_chart.dart';
 import 'yearly_expense_bar_chart.dart';
 
-class ExpenseBarChart extends StatefulWidget {
+class ExpenseBarChart extends StatelessWidget {
   const ExpenseBarChart({super.key});
-
-  @override
-  State<ExpenseBarChart> createState() => _ExpenseBarChartState();
-}
-
-class _ExpenseBarChartState extends State<ExpenseBarChart> {
-  int touchedIndex = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +29,6 @@ class _ExpenseBarChartState extends State<ExpenseBarChart> {
         return const YearlyExpenseBarChart();
       case ChartRange.custom:
         return _buildCustomBarChart(provider);
-      default:
-        return const WeeklyExpenseBarChart();
     }
   }
 

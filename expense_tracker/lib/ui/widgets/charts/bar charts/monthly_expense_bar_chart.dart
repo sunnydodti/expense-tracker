@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../data/constants/chart_constants.dart';
+import '../../../../data/constants/ui_constants.dart';
 import '../../../../models/chart_data.dart';
 import '../../../../models/chart_record.dart';
 import '../../../../providers/chart_data_provider.dart';
@@ -29,11 +30,13 @@ class _MonthlyExpenseBarChartState extends State<MonthlyExpenseBarChart> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Expanded(child: Consumer<ChartDataProvider>(
-          builder: (context, provider, child) {
-            return _buildMonthlyBarChart(provider);
-          },
-        )),
+        Expanded(
+          child: Consumer<ChartDataProvider>(
+            builder: (context, provider, child) {
+              return _buildMonthlyBarChart(provider);
+            },
+          ),
+        ),
         const ChartOptions(),
       ],
     );
@@ -47,28 +50,36 @@ class _MonthlyExpenseBarChartState extends State<MonthlyExpenseBarChart> {
         : _buildBarGroupsForTotal(weeklySum, provider.chartData);
 
     return Container(
-      padding: const EdgeInsets.only(top: 20, bottom: 5, left: 10),
+      padding: const EdgeInsets.only(
+        top: uiChartBarPaddingTop,
+        bottom: uiChartBarPaddingBottom,
+        left: uiChartBarPaddingLeft,
+      ),
       child: BarChart(
         BarChartData(
           barGroups: barGroups,
-          gridData: FlGridData(show: false),
+          gridData: const FlGridData(show: false),
           borderData: FlBorderData(show: false),
           titlesData: FlTitlesData(
             show: true,
-            rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-            topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            rightTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false)
+            ),
+            topTitles: const AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
                 getTitlesWidget: (value, meta) =>
                     ChartWidgets.getWeekTitlesForMonth(context, value, meta),
-                reservedSize: 35,
+                reservedSize: uiChartBarReservedSize,
               ),
             ),
             leftTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
-                reservedSize: 35,
+                reservedSize: uiChartBarReservedSize,
                 getTitlesWidget: (value, meta) =>
                     ChartWidgets.leftTitleWidgets(value, meta),
               ),
@@ -77,7 +88,7 @@ class _MonthlyExpenseBarChartState extends State<MonthlyExpenseBarChart> {
           barTouchData: buildBarTouchData(provider),
         ),
         swapAnimationCurve: Curves.linear,
-        swapAnimationDuration: const Duration(milliseconds: 250),
+        swapAnimationDuration: uiChartSwapAnimationDuration,
       ),
     );
   }
@@ -101,16 +112,20 @@ class _MonthlyExpenseBarChartState extends State<MonthlyExpenseBarChart> {
         tooltipHorizontalAlignment: touchedIndex < 2
             ? FLHorizontalAlignment.right
             : FLHorizontalAlignment.left,
-        tooltipHorizontalOffset: touchedIndex < 2 ? 10 : -10,
-        tooltipMargin: 50,
+        tooltipHorizontalOffset: touchedIndex < 2
+            ? uiChartBarTooltipOffset
+            : -uiChartBarTooltipOffset,
+        tooltipMargin: uiChartBarTooltipMargin,
         getTooltipItem: (group, groupIndex, rod, rodIndex) {
           String text = "";
           if (provider.currency.isNotEmpty) text += '${provider.currency} ';
           text += provider.splitChart
               ? rod.toY.round().toString()
-              : (rod.toY - provider.chartData.barHeightWeek * .05)
+              : (rod.toY -
+                      provider.chartData.barHeightWeek *
+                          uiChartBarTouchTotalHeightFactor)
                   .round()
-              .toString();
+                  .toString();
 
           return BarTooltipItem(
             '${ChartService.getWeekRange(group.x, provider.currentYear, provider.selectedMonth)}\n',
@@ -141,11 +156,11 @@ class _MonthlyExpenseBarChartState extends State<MonthlyExpenseBarChart> {
       bool isTouched = touchedIndex == week - 1;
 
       double total = record.totalAmount;
-      double touchTotal =
-          record.totalAmount.abs() + chartData.barHeightWeek * .05;
+      double touchTotal = record.totalAmount.abs() +
+          chartData.barHeightWeek * uiChartBarTouchTotalHeightFactor;
 
       final Color color =
-      total > 0 ? Colors.green.shade400 : Colors.red.shade400;
+          total > 0 ? Colors.green.shade400 : Colors.red.shade400;
       final Color touchColor = Colors.blue.shade600;
 
       barGroups.add(
@@ -156,13 +171,14 @@ class _MonthlyExpenseBarChartState extends State<MonthlyExpenseBarChart> {
               toY: isTouched ? touchTotal.abs() : total.abs(),
               width: ChartConstants.bar.barWidth,
               color: isTouched ? touchColor : color,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+              borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(uiChartBarRadius)),
               backDrawRodData: BackgroundBarChartRodData(
                 show: true,
                 toY: maxHeight,
                 color: isTouched
-                    ? touchColor.withOpacity(.5)
-                    : color.withOpacity(.1),
+                    ? touchColor.withValues(alpha: uiChartBarTouchOpacity)
+                    : color.withValues(alpha: uiChartBarOpacity),
               ),
             ),
           ],
@@ -217,11 +233,12 @@ class _MonthlyExpenseBarChartState extends State<MonthlyExpenseBarChart> {
       toY: amount.abs(),
       width: ChartConstants.bar.barWidthSplit,
       color: color,
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+      borderRadius:
+          const BorderRadius.vertical(top: Radius.circular(uiChartBarRadius)),
       backDrawRodData: BackgroundBarChartRodData(
         show: true,
         toY: chartData.barHeightWeek,
-        color: color.withOpacity(.1),
+        color: color.withValues(alpha: uiChartBarOpacity),
       ),
     );
   }
