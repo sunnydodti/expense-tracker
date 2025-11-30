@@ -27,8 +27,14 @@ class ExpensePage extends StatelessWidget {
       formMode.name[0].toUpperCase(),
     )} Expense';
 
-    return WillPopScope(
-      onWillPop: () => _navigateBackWithBool(context),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        if (await NavigationHelper.handleBackPress() && context.mounted) {
+          _navigateBackWithBool(context); 
+        }
+      },
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         backgroundColor: backgroundColor,
@@ -52,8 +58,8 @@ class ExpensePage extends StatelessWidget {
     ];
   }
 
-  _navigateBackWithBool(BuildContext context) {
+  void _navigateBackWithBool(BuildContext context) {
     Provider.of<ExpenseItemsProvider>(context, listen: false).clear();
-    return NavigationHelper.navigateBackWithBool(context, false);
+    NavigationHelper.navigateBackWithBool(context, false);
   }
 }
