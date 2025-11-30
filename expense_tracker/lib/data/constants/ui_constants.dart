@@ -5,9 +5,11 @@ const double uiPadding = 8.0;
 const double uiPaddingX2 = 16.0;
 
 // margin
+const double uiMarginQuarter = 2.0;
 const double uiMarginHalf = 4.0;
 const double uiMargin = 8.0;
 const double uiMarginX2 = 16.0;
+
 
 // size
 const double uiSizeQuarter = 2.0;

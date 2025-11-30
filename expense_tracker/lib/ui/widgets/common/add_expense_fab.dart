@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../data/constants/ui_constants.dart';
 import '../../../data/helpers/color_helper.dart';
 import '../../../data/helpers/navigation_helper.dart';
 import '../../../models/enums/form_modes.dart';
@@ -16,7 +17,7 @@ class AddExpenseFAB extends StatelessWidget {
       backgroundColor: ColorHelper.getIconColor(Theme.of(context)),
       tooltip: 'Add New Expense',
       onPressed: () => _addExpense(context),
-      child: const Icon(Icons.add, size: 20),
+      child: const Icon(Icons.add, size: uiIconSize),
     );
   }
 
@@ -27,7 +28,7 @@ class AddExpenseFAB extends StatelessWidget {
       const ExpensePage(formMode: FormMode.add),
     );
 
-    if (result == true) _refreshExpensesHome(context);
+    if (context.mounted && result == true) _refreshExpensesHome(context);
   }
 
   Future<void> _refreshExpensesHome(BuildContext context) async {

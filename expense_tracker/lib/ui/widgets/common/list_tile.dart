@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../data/constants/ui_constants.dart';
 import '../../../data/helpers/color_helper.dart';
 
 class DeletableTile extends StatelessWidget {
@@ -8,31 +9,28 @@ class DeletableTile extends StatelessWidget {
   final VoidCallback? onEdit;
 
   const DeletableTile({
-    Key? key,
+    super.key,
     required this.title,
     this.onDelete,
     this.onEdit,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
       color: ColorHelper.getTileColor(Theme.of(context)),
-      margin: const EdgeInsets.symmetric(vertical: 2.5, horizontal: 5),
+      margin: const EdgeInsets.symmetric(
+        vertical: uiMarginQuarter,
+        horizontal: uiMarginHalf,
+      ),
       child: ListTile(
         dense: true,
-        title: Text(
-          title,
-          textScaleFactor: 1,
-        ),
+        title: Text(title, textScaler: const TextScaler.linear(1)),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (onEdit != null)
-              IconButton(
-                icon: const Icon(Icons.edit),
-                onPressed: onEdit,
-              ),
+              IconButton(icon: const Icon(Icons.edit), onPressed: onEdit),
             if (onDelete != null)
               IconButton(
                 icon: Icon(Icons.delete, color: Colors.red.shade300),
