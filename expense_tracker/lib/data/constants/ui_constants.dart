@@ -41,6 +41,10 @@ const double uiTextScalerAboutSubTitle = 1.2;
 // elevation
 const double uiElevation = 2.0;
 
+// screen breakpoints
+const double uiBreakpointTablet = 720.0;
+const double uiBreakpointDesktop = 1100.0;
+
 // charts
 const Duration uiChartSwapAnimationDuration = Duration(milliseconds: 250);
 
