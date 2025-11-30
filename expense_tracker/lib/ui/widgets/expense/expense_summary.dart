@@ -6,7 +6,6 @@ import '../../../data/constants/shared_preferences_constants.dart';
 import '../../../data/constants/ui_constants.dart';
 import '../../../data/helpers/color_helper.dart';
 import '../../../data/helpers/navigation_helper.dart';
-import '../../../data/helpers/shared_preferences_helper.dart';
 import '../../../providers/expense_provider.dart';
 import '../../../providers/profile_provider.dart';
 import '../../../providers/settings_provider.dart';
@@ -17,13 +16,13 @@ import '../../screens/charts_screen.dart';
 class ExpenseSummary extends StatefulWidget {
   final EdgeInsets margin;
   const ExpenseSummary({
-    Key? key,
+    super.key,
     this.margin = const EdgeInsets.only(
       top: uiPadding,
       left: uiPadding,
       right: uiPadding,
     ),
-  }) : super(key: key);
+  });
 
   @override
   State<ExpenseSummary> createState() => _ExpenseSummaryState();
@@ -49,12 +48,6 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
     });
   }
 
-  Future<String> _getCurrency() async {
-    String? currencyPreference = await SharedPreferencesHelper()
-        .getString(SharedPreferencesConstants.settings.DEFAULT_CURRENCY);
-    return FormConstants.expense.currencies[currencyPreference!]!;
-  }
-
   @override
   void initState() {
     getHideTotalPreference();
@@ -74,7 +67,9 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
   void navigateToChartsScreen(BuildContext context) {
     bool refreshData = true;
     NavigationHelper.navigateToScreen(
-        context, ChartsScreen(refreshData: refreshData));
+      context,
+      ChartsScreen(refreshData: refreshData),
+    );
   }
 
   Consumer<ExpenseProvider> _buildSummary(ThemeData theme) {
@@ -233,8 +228,11 @@ class _ExpenseSummaryState extends State<ExpenseSummary> {
 
   void setHideTotalPreference() async {
     await sharedPreferencesService.setBoolPreference(
-        SharedPreferencesConstants.summary.HIDE_TOTAL_KEY, hideTotal);
-    await sharedPreferencesService
-        .getBoolPreference(SharedPreferencesConstants.summary.HIDE_TOTAL_KEY);
+      SharedPreferencesConstants.summary.HIDE_TOTAL_KEY,
+      hideTotal,
+    );
+    await sharedPreferencesService.getBoolPreference(
+      SharedPreferencesConstants.summary.HIDE_TOTAL_KEY,
+    );
   }
 }

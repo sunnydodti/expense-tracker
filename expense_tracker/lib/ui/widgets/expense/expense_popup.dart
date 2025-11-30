@@ -12,6 +12,7 @@ import '../../../utils/expense_utils.dart';
 import '../../animations/blur_screen.dart';
 import '../../animations/scale_up.dart';
 import '../../screens/widget_constants.dart';
+import '../common/scaled_text.dart';
 import 'expense_widgets.dart';
 
 class ExpensePopup extends StatefulWidget {
@@ -78,7 +79,7 @@ class _ExpensePopupState extends State<ExpensePopup> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Text(expense.title),
+        ScaledText(expense.title),
         wcDivider,
         _buildAmountRow(expense, 1),
         _buildDateRow(expense, 0),

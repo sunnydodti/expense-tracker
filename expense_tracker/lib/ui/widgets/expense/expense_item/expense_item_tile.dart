@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../data/constants/ui_constants.dart';
 import '../../../../models/expense_item.dart';
 
 class ExpenseItemTile extends StatelessWidget {
@@ -8,27 +9,31 @@ class ExpenseItemTile extends StatelessWidget {
   final VoidCallback onDelete;
 
   const ExpenseItemTile({
-    Key? key,
+    super.key,
     required this.expenseItem,
     required this.onDelete,
     required this.currency,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       // color: Colors.green.shade300,
-      padding: const EdgeInsets.only(bottom: 5),
+      padding: const EdgeInsets.only(bottom: uiPaddingHalf),
       child: ListTile(
         visualDensity: const VisualDensity(vertical: -4),
         dense: true,
         title: Text(
           expenseItem.name,
-          textScaleFactor: .9,
+          textScaler: const TextScaler.linear(uiTextScaler),
         ),
         subtitle: _buildExpenseItemDetails(),
         trailing: IconButton(
-          icon: Icon(Icons.delete, color: Colors.red.shade300),
+          icon: Icon(
+            Icons.delete,
+            color: Colors.red.shade300,
+            size: uiIconSize,
+          ),
           onPressed: onDelete,
         ),
       ),

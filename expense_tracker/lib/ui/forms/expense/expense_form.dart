@@ -206,8 +206,8 @@ class _ExpenseFormState extends State<ExpenseForm> {
             fontSizeFactor: uiTextScaler,
           ),
           inputDecorationTheme: InputDecorationTheme(
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: uiPaddingX2, vertical: 1),
+            contentPadding: const EdgeInsets.symmetric(
+                horizontal: uiPaddingX2, vertical: 1),
             focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(
                 color: _highlightColor,
@@ -260,7 +260,8 @@ class _ExpenseFormState extends State<ExpenseForm> {
   Widget _buildSuggestionsRow() {
     return Container(
       height: 50,
-      padding: const EdgeInsets.symmetric(horizontal: uiPaddingX2, vertical: uiPadding),
+      padding: const EdgeInsets.symmetric(
+          horizontal: uiPaddingX2, vertical: uiPadding),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: _suggestions.length,
@@ -339,14 +340,19 @@ class _ExpenseFormState extends State<ExpenseForm> {
     return Container(
       padding: const EdgeInsets.only(bottom: uiPadding),
       width: double.infinity,
-      child: ExpenseWidgets.form
-          .buildSubmitButton(_submitExpense, widget.formMode, _highlightColor),
+      child: ExpenseWidgets.form.buildSubmitButton(
+        _submitExpense,
+        widget.formMode,
+        _highlightColor,
+      ),
     );
   }
 
   Container _buildTitleField() {
-    return ExpenseWidgets.form
-        .buildTitleField(titleController, focusNode: _titleFocusNode);
+    return ExpenseWidgets.form.buildTitleField(
+      titleController,
+      focusNode: _titleFocusNode,
+    );
   }
 
   Consumer<ExpenseItemsProvider> _buildAmountField() {
@@ -360,8 +366,10 @@ class _ExpenseFormState extends State<ExpenseForm> {
         // isAmountReadOnly = true;
       }
       return ExpenseWidgets.form.buildAmountField(
-          amountController, amountPrefixController.text,
-          isReadOnly: isAmountReadOnly);
+        amountController,
+        amountPrefixController.text,
+        isReadOnly: isAmountReadOnly,
+      );
     });
   }
 

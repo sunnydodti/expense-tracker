@@ -8,17 +8,27 @@ import '../empty_list_widget.dart';
 import '../expense_swipe_info_widget.dart';
 import 'dismissible_expense_tile.dart';
 
-class ExpenseList extends StatelessWidget {
-  const ExpenseList({Key? key}) : super(key: key);
+class ExpenseList extends StatefulWidget {
+  const ExpenseList({super.key});
+
+  @override
+  State<ExpenseList> createState() => _ExpenseListState();
+}
+
+class _ExpenseListState extends State<ExpenseList> {
+  late Future<void> _expensesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _expensesFuture =
+        Provider.of<ExpenseProvider>(context, listen: false).refreshExpenses();
+  }
 
   @override
   Widget build(BuildContext context) {
-    Future<void> refreshExpensesHome() async {
-      Provider.of<ExpenseProvider>(context, listen: false).refreshExpenses();
-    }
-
     return FutureBuilder<void>(
-      future: refreshExpensesHome(),
+      future: _expensesFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return wcSpinnerDefault;
@@ -47,8 +57,7 @@ class ExpenseList extends StatelessWidget {
                       : _buildExpenesList(expenseCount, expenseProvider),
                 ],
               ),
-              if (expenseCount < 4 && expenseCount > 0)
-                _buildExpenseSwipeInfoWidget(),
+              if (expenseCount < 4 && expenseCount > 0) _expenseSwipeInfoWidget,
             ],
           ),
         );
@@ -64,21 +73,23 @@ class ExpenseList extends StatelessWidget {
         thickness: uiScrollbarThickness,
         radius: const Radius.circular(uiScrollbarRadius),
         child: ListView.builder(
-          shrinkWrap: true,
           itemCount: expenseCount,
           itemBuilder: (context, index) {
             return DismissibleExpenseTile(
-                expense: expenseProvider.expenses[index],
-                expenseProvider: expenseProvider,
-                index: index);
+              expense: expenseProvider.expenses[index],
+              expenseProvider: expenseProvider,
+              index: index,
+            );
           },
         ),
       ),
     );
   }
 
-  Positioned _buildExpenseSwipeInfoWidget() {
-    return const Positioned(
-        bottom: 0, left: 0, right: 0, child: ExpenseSwipeInfoWidget());
-  }
+  static const _expenseSwipeInfoWidget = Positioned(
+    bottom: 0,
+    left: 0,
+    right: 0,
+    child: ExpenseSwipeInfoWidget(),
+  );
 }

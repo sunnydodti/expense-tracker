@@ -4,13 +4,13 @@ import 'package:intl/intl.dart';
 import '../../../data/constants/ui_constants.dart';
 import '../../../models/expense.dart';
 import '../../../utils/expense_utils.dart';
+import '../common/scaled_text.dart';
 
 class ExpenseTileWidgets {
   Expanded getExpenseDate(Expense expense) {
     return Expanded(
-      child: Text(
+      child: ScaledText(
         DateFormat('dd-MM-yy').format(expense.date),
-        textScaler: const TextScaler.linear(uiTextScaler),
         overflow: TextOverflow.ellipsis,
         textAlign: TextAlign.end,
         style: const TextStyle(fontWeight: FontWeight.w500),
@@ -20,9 +20,8 @@ class ExpenseTileWidgets {
 
   Expanded titleWidget(Expense expense) {
     return Expanded(
-      child: Text(
+      child: ScaledText(
         expense.title,
-        textScaler: const TextScaler.linear(uiTextScaler),
         style: const TextStyle(fontWeight: FontWeight.w500),
       ),
     );
@@ -36,9 +35,8 @@ class ExpenseTileWidgets {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(right: uiPadding),
-              child: Text(
+              child: ScaledText(
                 '${expense.category} ',
-                textScaler: const TextScaler.linear(uiTextScaler),
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(fontWeight: FontWeight.w500),
                 textAlign: TextAlign.end,
