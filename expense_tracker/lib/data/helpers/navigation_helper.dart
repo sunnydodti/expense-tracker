@@ -14,13 +14,16 @@ class NavigationHelper {
       if (!didPop) {
         Navigator.pop(context);
       }
+      return;
     }
     // Regular navigation for mobile layout
     Navigator.pop(context);
   }
 
   static void justNavigateBack(BuildContext context) {
-    Navigator.pop(context);
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
   }
 
   // Smart "back with result" that handles both navigation modes
@@ -32,6 +35,7 @@ class NavigationHelper {
       if (!didPop) {
         Navigator.pop(context, result);
       }
+      return;
     }
     // Regular navigation for mobile layout
     Navigator.pop(context, result);
@@ -134,7 +138,6 @@ class NavigationHelper {
     return true; // Allow normal back behavior
   }
 
-  // Navigation that returns a result (usually a boolean)
   static void navigateBackWithResult<T>(BuildContext context, T result) {
     if (isLargeScreen(context)) {
       // Try to find and use the inherited result reporter
@@ -144,7 +147,9 @@ class NavigationHelper {
         return;
       }
       // If no reporter found (shouldn't happen), fall back to regular navigation
-      navigateBackFromContentArea(context);
+      if (navigateBackFromContentArea(context)) {
+        return;
+      }
     }
     // Regular navigation for mobile layout
     Navigator.pop(context, result);
